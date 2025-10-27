@@ -1,0 +1,146 @@
+/* 🌌 Pozadina */
+ion-content {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --padding-top: 72px;
+  padding: 16px;
+  font-family: 'Tilt Neon', cursive;
+  color: #e0ffff;
+}
+
+/* 🔷 Sekcije (stakleni efekat u Spite tonu) */
+.section-box {
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 26px;
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.08);
+  animation: fadeIn 0.5s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+}
+
+.section-box h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #00f7ff;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  margin-bottom: 14px;
+}
+
+/* 🔹 Kartice vežbi i treninga */
+.item-card {
+  --background: rgba(0, 0, 0, 0.35);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow: 0 2px 10px rgba(0, 255, 255, 0.1);
+  transition: all 0.25s ease;
+  padding: 10px;
+}
+
+.item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(0, 255, 255, 0.4);
+  background: rgba(0, 255, 255, 0.05);
+}
+
+ion-label h3 {
+  color: #00f7ff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+}
+
+ion-label p {
+  color: #aefcff;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+/* 🗑️ Dugme za brisanje */
+ion-button[color="danger"] {
+  --border-radius: 12px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  font-size: 1rem;
+  --background: linear-gradient(135deg, #ff4d4d, #d60000);
+  --color: #fff;
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+  transition: all 0.3s ease;
+}
+
+ion-button[color="danger"]:hover {
+  --background: linear-gradient(135deg, #ff6666, #e00000);
+  transform: scale(1.02);
+}
+
+/* Separator */
+.separator {
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(90deg, #00f7ff, #00ffaa);
+  margin: 25px auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+/* 💫 Animacija */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📱 Mobilni prikaz */
+@media (max-width: 600px) {
+  .section-box {
+    padding: 14px;
+  }
+
+  ion-label h3 {
+    font-size: 1rem;
+  }
+
+  ion-label p {
+    font-size: 0.85rem;
+  }
+
+  ion-button {
+    font-size: 0.9rem;
+  }
+}
+/* 🧾 Lista - potpuno providna “glass” verzija */
+ion-list {
+  --background: transparent !important;
+  background: rgba(0, 255, 255, 0.03);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  transition: background 0.3s ease;
+}
+
+ion-list:hover {
+  background: rgba(0, 255, 255, 0.06);
+}
+
+/* Uklanja Ionic border linije između itema */
+ion-item {
+  --inner-border-width: 0;
+  --background: transparent;
+}

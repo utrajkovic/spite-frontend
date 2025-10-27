@@ -1,0 +1,88 @@
+<ion-content fullscreen>
+
+  <ion-spinner *ngIf="loading" name="crescent" class="spinner-center">
+  </ion-spinner>
+
+  <div *ngIf="!loading" class="content-wrapper">
+    <div class="card-wrapper">
+
+      <ion-card *ngIf="started && exercises.length > 0" class="exercise-card">
+
+        <ion-progress-bar [value]="(currentExerciseIndex + 1) / exercises.length" class="progress-bar neon-progress">
+        </ion-progress-bar>
+
+        <ion-card-content>
+          <h2 class="exercise-name">{{ exercises[currentExerciseIndex]?.name }}</h2>
+          <p class="exercise-desc">{{ exercises[currentExerciseIndex]?.description }}</p>
+
+          <div class="video-container">
+            <video *ngIf="!isResting && exercises[currentExerciseIndex]?.videoUrl"
+              [src]="getVideoUrl(exercises[currentExerciseIndex]?.videoUrl)" autoplay loop muted playsinline
+              class="exercise-video">
+            </video>
+
+            <div *ngIf="isResting || !exercises[currentExerciseIndex]?.videoUrl" class="video-placeholder fade-in">
+              <ion-icon name="pause-circle-outline" class="placeholder-icon"></ion-icon>
+            </div>
+          </div>
+
+          <div class="exercise-info" *ngIf="!isResting">
+            <p><ion-icon name="repeat-outline"></ion-icon> Serija:
+              <strong>{{ currentSet }}/{{ exercises[currentExerciseIndex]?.sets }}</strong>
+            </p>
+            <p><ion-icon name="barbell-outline"></ion-icon> Ponavljanja:
+              <strong>{{ exercises[currentExerciseIndex]?.reps }}</strong>
+            </p>
+          </div>
+
+          <div *ngIf="isResting" class="rest-container">
+            <h3 class="rest-title">Rest: {{ restTimeLeft }}s</h3>
+            <div class="rest-timer">
+              <svg class="circle-timer" viewBox="0 0 100 100">
+                <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
+                <circle class="circle-progress" cx="50" cy="50" r="45" [attr.stroke-dasharray]="circumference"
+                  [attr.stroke-dashoffset]="circumference * (restTimeLeft / totalRestTime)">
+                </circle>
+              </svg>
+            </div>
+          </div>
+        </ion-card-content>
+
+        <div class="card-actions">
+          <ion-button *ngIf="isResting" expand="block" fill="outline" color="medium" (click)="skipRest()">
+            Skip Rest
+          </ion-button>
+
+          <ion-button expand="block" color="success" class="done-btn" (click)="completeSet()" [disabled]="isResting">
+            Done
+          </ion-button>
+        </div>
+      </ion-card>
+
+      <div *ngIf="started && currentExerciseIndex < exercises.length - 1" class="next-exercise">
+        <p>➡️ Sledeća vežba: <strong>{{ exercises[currentExerciseIndex + 1]?.name }}</strong></p>
+      </div>
+
+      <ion-card *ngIf="isResting && currentExerciseIndex < exercises.length - 1" class="next-exercise-card">
+        <ion-card-content>
+          <div class="video-container">
+            <video *ngIf="exercises[currentExerciseIndex + 1]?.videoUrl"
+              [src]="getVideoUrl(exercises[currentExerciseIndex]?.videoUrl)" autoplay loop muted
+              playsinline class="exercise-video">
+            </video>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-button expand="block" color="primary" class="start-btn" (click)="startWorkout()"
+        *ngIf="!started && !loading && exercises.length > 0">
+         Start Workout
+      </ion-button>
+
+      <div *ngIf="!loading && exercises.length === 0" class="no-exercises">
+        <p>⚠️ Nema pronađenih vežbi za ovaj trening.</p>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

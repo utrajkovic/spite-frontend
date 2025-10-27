@@ -1,0 +1,234 @@
+ion-content {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+}
+
+/* Wrapper */
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  width: 100%;
+}
+
+.card-wrapper {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Progress bar */
+.neon-progress {
+  margin: 0px 0 0px;
+  height: 2px;
+  --progress-background: rgba(0, 255, 255, 0.25);
+  --progress-bar-background: linear-gradient(90deg, #00f7ff, #00ffaa);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+/* Kartica (stakleni efekat u Spite tonu) */
+.exercise-card {
+  width: 100%;
+  border-radius: 18px;
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow:
+    0 0 15px rgba(0, 255, 255, 0.25),
+    inset 0 0 20px rgba(0, 255, 255, 0.05);
+  color: #d8ffff;
+  text-align: center;
+  padding: 14px;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Fade efekat */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Naziv i opis */
+.exercise-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #00f7ff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+}
+
+.exercise-desc {
+  font-size: 15px;
+  font-style: italic;
+  color: #aefcff;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+
+/* Video */
+.video-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.exercise-video,
+.video-placeholder {
+  width: 100%;
+  max-height: 35vh;
+  border-radius: 14px;
+  margin: 10px 0;
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+.placeholder-icon {
+  font-size: 64px;
+  color: #00f7ff88;
+}
+
+/* Info */
+.exercise-info p {
+  font-size: 15px;
+  margin: 6px 0;
+  color: #e0ffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+}
+
+/* Odmor */
+.rest-container {
+  padding: 12px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.rest-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #00f7ff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.rest-timer {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffcc00;
+  text-shadow: 0 0 15px #ffcc00;
+  margin: 10px 0;
+}
+
+/* Dugmad */
+.done-btn {
+  color: #000;
+  font-size: 17px;
+  font-weight: bold;
+  border-radius: 10px;
+  margin-top: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  --background: linear-gradient(90deg, #00ffaa, #00ffcc);
+  box-shadow: 0 0 12px rgba(0, 255, 180, 0.4);
+}
+
+.start-btn {
+  font-size: 17px;
+  font-weight: bold;
+  border-radius: 10px;
+  margin-top: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  --background: linear-gradient(90deg, #00f7ff, #00aaff);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+}
+
+/* Akcije pri dnu kartice */
+.card-actions {
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Next exercise */
+.next-exercise {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 15px;
+  color: #aefcff;
+}
+.next-exercise strong {
+  color: #00f7ff;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
+}
+
+.next-exercise-card {
+  width: 100%;
+  border-radius: 18px;
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  color: #d8ffff;
+  padding: 14px;
+}
+
+/* Krug tajmer */
+.circle-timer {
+  width: 140px;
+  height: 140px;
+  transform: rotate(-90deg);
+  margin: 10px auto;
+  display: block;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: rgba(0, 234, 255, 0.15);
+  stroke-width: 8;
+}
+
+.circle-progress {
+  fill: none;
+  stroke: #00f7ff;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+}
+
+.circle-text {
+  font-size: 20px;
+  font-weight: bold;
+  fill: #ffcc00;
+  text-shadow: 0 0 8px #ffcc00;
+  transform: rotate(90deg);
+  dominant-baseline: middle;
+}
+
+/* Spinner */
+.spinner-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}

@@ -1,0 +1,23 @@
+
+<ion-content [fullscreen]="true">
+  <ion-card *ngFor="let workout of workouts">
+    <ion-card-header>
+      <div class="title-container">
+        <ion-card-title class="title-size">{{ workout.title }}</ion-card-title>
+        <ion-card-subtitle class="subtitle-size">{{ workout.subtitle }}</ion-card-subtitle>
+      </div>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="content-container">
+        {{ workout.content }}
+      </div>
+      <br />
+      <div class="start-button-holder">
+        <ion-button size="small" [routerLink]="['/workout', workout.id]">
+          START
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

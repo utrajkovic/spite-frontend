@@ -1,0 +1,39 @@
+<ion-content [fullscreen]="true" class="ion-padding content-container">
+
+  <section class="section-box">
+    <h2>Vežbe</h2>
+
+    <ion-list lines="none">
+      <ion-item *ngFor="let exercise of exercises" class="item-card" button detail="false"
+        (click)="showExercisePreview(exercise)">
+        <ion-label>
+          <h3>{{ exercise.name }}</h3>
+          <p>{{ exercise.description || 'Bez opisa' }}</p>
+        </ion-label>
+
+        <ion-button color="danger" fill="outline" slot="end"
+          (click)="deleteExercise(exercise.id); $event.stopPropagation();" class="delete-btn">
+          <i class="fa-solid fa-trash"></i>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </section>
+
+  <div class="separator"></div>
+
+  <section class="section-box">
+    <h2>Treninzi</h2>
+    <ion-list>
+      <ion-item *ngFor="let workout of workouts" class="item-card">
+        <ion-label>
+          <h3>{{ workout.title }}</h3>
+          <p>{{ workout.subtitle }}</p>
+        </ion-label>
+        <ion-button color="danger" fill="outline" slot="end" (click)="deleteWorkout(workout.id)">
+          <i class="fa-solid fa-trash"></i>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </section>
+
+</ion-content>

@@ -1,0 +1,120 @@
+/* 🌌 Glavna pozadina */
+ion-content {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  padding: 12px;
+}
+
+/* 🧱 Frosted Glass kartice */
+ion-card {
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 18px;
+  margin: 14px 0;
+  padding: 8px;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.12);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.35s ease forwards;
+}
+
+ion-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 255, 255, 0.45);
+  box-shadow: 0 0 18px rgba(0, 255, 255, 0.2);
+}
+
+/* 💎 Naslov i podnaslov */
+ion-card-title.title-size {
+  text-align: center;
+  font-family: 'Tilt Neon', cursive;
+  font-size: clamp(19px, 4vw, 23px);
+  color: #00f7ff;
+  margin: 4px 0 2px 0;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
+}
+
+ion-card-subtitle.subtitle-size {
+  font-family: 'Tilt Neon', cursive;
+  font-size: clamp(13px, 3.5vw, 14px);
+  color: #aefcff;
+  text-align: center;
+  margin-bottom: 6px;
+  opacity: 0.85;
+}
+
+/* 📄 Opis */
+.content-container {
+  font-family: 'Tilt Neon', cursive;
+  font-size: 14px;
+  color: #d8ffff;
+  text-align: center;
+  line-height: 1.4;
+  margin-top: 8px;
+  opacity: 0.9;
+}
+
+/* 🚀 START dugme */
+.start-button-holder {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+ion-button {
+  --background: linear-gradient(90deg, #00f7ff, #00aaff);
+  --color: #000;
+  font-weight: 600;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+ion-button:hover {
+  box-shadow: 0 0 14px rgba(0, 255, 255, 0.4);
+}
+
+ion-button:active {
+  transform: scale(0.97);
+}
+
+/* 💫 Animacija kartica */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 📱 Mobilni prikaz */
+@media (max-width: 600px) {
+  ion-card {
+    padding: 10px;
+    border-radius: 14px;
+    margin: 10px 0;
+  }
+
+  ion-card-title.title-size {
+    font-size: 18px;
+  }
+
+  ion-card-subtitle.subtitle-size {
+    font-size: 13px;
+  }
+
+  .content-container {
+    font-size: 13px;
+  }
+
+  ion-button {
+    font-size: 14px;
+    padding: 0 16px;
+  }
+}
+ion-content {
+  --padding-top: 72px; /* visina headera + mali buffer */
+}

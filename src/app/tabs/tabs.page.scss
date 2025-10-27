@@ -1,0 +1,99 @@
+/* 🌌 Globalna pozadina */
+ion-tabs {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+}
+
+/* 💎 Header */
+.main-header {
+  background: rgba(0, 40, 60, 0.25);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow: 0 3px 8px rgba(0, 255, 255, 0.08);
+  z-index: 10;
+}
+
+ion-toolbar {
+  --background: transparent;
+}
+
+.workout-title {
+  font-family: 'Monoton', cursive;
+  color: #00f7ff;
+  font-size: clamp(22px, 5vw, 28px);
+  letter-spacing: 3px;
+  text-align: center;
+  text-shadow: 0 0 8px #00f7ff;
+}
+
+/* ✨ Lagana flicker animacija */
+.flicker {
+  animation: flicker 2.2s infinite alternate;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 0.85; }
+  20%, 24%, 55% { opacity: 1; text-shadow: none; }
+}
+
+/* 🧊 Donji meni */
+.glass-tab-bar {
+  --background: rgba(0, 40, 60, 0.25);
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  border-top: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow: 0 -2px 8px rgba(0, 255, 255, 0.1);
+  height: 60px;
+}
+
+/* Dugmad u meniju */
+ion-tab-button {
+  color: #aefcff;
+  --color-selected: #00f7ff;
+  font-family: 'Tilt Neon', cursive;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+ion-tab-button.ion-selected {
+  transform: translateY(-2px);
+  color: #00f7ff;
+}
+
+ion-tab-button:active {
+  transform: scale(0.95);
+}
+
+/* Ikonice (Font Awesome) */
+ion-tab-bar i {
+  font-size: 20px;
+  color: inherit;
+  margin-bottom: 3px;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+ion-tab-button.ion-selected i {
+  color: #00f7ff;
+  transform: scale(1.15);
+}
+
+/* 🧱 Fix: skrol i klik */
+ion-content,
+ion-router-outlet {
+  position: relative;
+  z-index: 0;
+}
+
+/* 📱 Mobilna optimizacija */
+@media (max-width: 600px) {
+  .workout-title {
+    font-size: 22px;
+  }
+
+  ion-tab-bar {
+    height: 55px;
+  }
+
+  ion-tab-bar i {
+    font-size: 18px;
+  }
+}
