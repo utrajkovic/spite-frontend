@@ -7,7 +7,8 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService } from '../services/backend.service';
 import { Workout, Exercise } from '../services/models';
-import { ToastController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-workout',
@@ -34,16 +35,19 @@ export class WorkoutPage implements OnInit {
   totalRestTime = 1;
   restCallback?: Function;
   loading = true;
+  private alertShown = false;
+
 
   constructor(
     private route: ActivatedRoute,
     private backend: BackendService,
     private router: Router,
-    private toastCtrl: ToastController
+    private alertCtrl: AlertController
   ) { }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
+    this.loading = true;
 
     this.backend.getWorkoutById(id).subscribe({
       next: (workout) => {
@@ -52,10 +56,17 @@ export class WorkoutPage implements OnInit {
         this.backend.getAllExercises().subscribe({
           next: (allExercises) => {
             this.exercises = workout.exerciseIds
-              .map(id => allExercises.find(e => e.id == id))
+              .map(id => allExercises.find(e => e.id === id))
               .filter((e): e is Exercise => !!e);
+
             console.log('🔍 Vežbe:', this.exercises);
             this.loading = false;
+
+            // ✅ Ako trening nema vežbi, odmah alert i povratak
+            if (this.exercises.length === 0 && !this.alertShown) {
+              this.alertShown = true;
+              this.showNoExercisesAlert();
+            }
           },
           error: (err) => {
             console.error('Greška pri učitavanju vežbi:', err);
@@ -69,6 +80,7 @@ export class WorkoutPage implements OnInit {
       }
     });
   }
+
 
 
   startWorkout() {
@@ -124,7 +136,7 @@ export class WorkoutPage implements OnInit {
       this.currentExerciseIndex++;
       this.currentSet = 1;
     } else {
-      this.showToast('Trening gotov');
+      this.showAlert('Training Done');
       this.router.navigate(['/tabs/tab1']);
     }
   }
@@ -139,14 +151,31 @@ export class WorkoutPage implements OnInit {
     }
     return `${this.backendUrl}${videoUrl}`;
   }
-  async showToast(message: string) {
-    const toast = await this.toastCtrl.create({
+  async showAlert(message: string) {
+    const alert = await this.alertCtrl.create({
+      header: '',
       message,
-      duration: 2000,
-      position: 'middle',
-      cssClass: 'custom-toast'
+      buttons: ['OK'],
+      cssClass: 'custom-alert'
     });
-    await toast.present();
+    await alert.present();
   }
+  async showNoExercisesAlert() {
+    const alert = await this.alertCtrl.create({
+      header: 'No Exercises Found',
+      message: 'Returning to workout list...',
+      buttons: [{
+        text: 'OK',
+        handler: () => {
+          this.router.navigate(['/tabs/tab1']);
+        }
+      }],
+      cssClass: 'custom-alert'
+    });
+
+    await alert.present();
+  }
+
+
 
 }

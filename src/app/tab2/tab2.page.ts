@@ -8,7 +8,7 @@ import {
 } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
-import { ToastController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -28,10 +28,16 @@ export class Tab2Page implements OnInit {
   exerciseForm: FormGroup;
   allExercises: Exercise[] = [];
   selectedVideo: File | null = null;
+  loading: HTMLIonLoadingElement | null = null;
 
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private toastCtrl: ToastController) {
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private alertCtrl: AlertController,
+    private loadingCtrl: LoadingController
+  ) {
     this.workoutForm = this.fb.group({
       title: ['', Validators.required],
       subtitle: [''],
@@ -51,6 +57,17 @@ export class Tab2Page implements OnInit {
   }
 
   ngOnInit() {
+    const access = localStorage.getItem('spite-access');
+    if (!access) {
+      const password = prompt('🔒 Enter access password for Spite Dev Version:');
+      if (password !== 'Uki') {
+        alert('Incorrect password!');
+        window.location.href = 'https://google.com';
+        return;
+      }
+      localStorage.setItem('spite-access', 'granted');
+    }
+
     this.loadExercises();
   }
 
@@ -72,14 +89,13 @@ export class Tab2Page implements OnInit {
   loadExercises() {
     this.http.get<Exercise[]>(`${this.backendUrl}/api/exercises`).subscribe({
       next: (res) => (this.allExercises = res),
-      error: (err) => console.error('Greška pri učitavanju vežbi', err)
+      error: (err) => console.error('Error loading exercises', err)
     });
   }
 
-  saveWorkout() {
+  async saveWorkout() {
     if (this.workoutForm.valid) {
       const formValue = this.workoutForm.value;
-
       const workout = {
         title: formValue.title,
         subtitle: formValue.subtitle,
@@ -87,55 +103,50 @@ export class Tab2Page implements OnInit {
         exerciseIds: formValue.exercises.map((e: any) => e.exerciseId)
       };
 
-      console.log('📤 Slanje treninga:', workout);
-
+      await this.showLoading('Saving workout...');
       this.http.post(`${this.backendUrl}/api/workouts`, workout).subscribe({
-        next: () => {
-          this.showToast('Trening uspesno dodat!');
+        next: async () => {
+          await this.hideLoading();
+          this.showAlert('Workout added successfully!');
           this.workoutForm.reset();
           this.exercises.clear();
           this.loadExercises();
         },
-        error: (err) => {
-          console.error('Greška pri čuvanju treninga:', err);
-          this.showToast('Trening nije sačuvan! pogledaj konzolu');
+        error: async (err) => {
+          await this.hideLoading();
+          console.error('Error saving workout:', err);
+          this.showAlert('Workout was not saved! Check the console.');
         }
       });
     } else {
-      this.showToast('Moras popuniti sva polja !');
+      this.showAlert('Please fill in all required fields!');
     }
   }
-
-
 
   async onVideoSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
-    const maxSize = 600 * 1024;
+    const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
-      this.showToast(' Video je prevelik (maksimalno 600 KB).');
-      console.warn(`Fajl prevelik: ${(file.size / 1024).toFixed(1)} KB`);
+      this.showAlert('Video is too large (maximum 10 MB).');
       this.selectedVideo = null;
       return;
     }
 
-    const allowedFormats = ['video/mp4', 'video/webm', 'video/ogg'];
+    const allowedFormats = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
     if (!allowedFormats.includes(file.type)) {
-      this.showToast('Format .MOV nije podržan. Dodajte MP4 video fajl.');
-      console.warn(' Nepodržan format:', file.type);
+      this.showAlert(`Unsupported format: ${file.type}. Please upload MP4 or MOV.`);
       this.selectedVideo = null;
       return;
     }
 
     this.selectedVideo = file;
-    console.log('🎬 Video prihvaćen:', file.name, file.type, `${(file.size / 1024).toFixed(1)} KB`);
-    this.showToast('✅ Video uspešno dodat!');
+    this.showAlert('Video selected successfully!');
   }
 
 
-
-  saveExercise() {
+  async saveExercise() {
     if (this.exerciseForm.valid) {
       const exercise = this.exerciseForm.value;
 
@@ -143,41 +154,76 @@ export class Tab2Page implements OnInit {
         const formData = new FormData();
         formData.append('video', this.selectedVideo);
 
+        await this.showLoading('Uploading video...');
         this.http.post(`${this.backendUrl}/api/exercises/upload`, formData, { responseType: 'text' }).subscribe({
-          next: (videoPath) => {
+          next: async (videoPath) => {
             exercise.videoUrl = videoPath;
+            await this.hideLoading();
+            await this.showLoading('Saving exercise...');
             this.http.post(`${this.backendUrl}/api/exercises`, exercise).subscribe({
-              next: () => {
-                this.showToast('Vezba uspesno dodata!');
+              next: async () => {
+                await this.hideLoading();
+                this.showAlert('Exercise added successfully!');
                 this.exerciseForm.reset();
                 this.selectedVideo = null;
                 this.loadExercises();
               },
-              error: (err) => console.error('Greška pri dodavanju vežbe', err)
+              error: async (err) => {
+                await this.hideLoading();
+                this.showAlert('Error saving exercise!');
+                console.error('Error adding exercise', err);
+              }
             });
           },
-          error: (err) => alert('Greška pri uploadu videa!')
+          error: async (err) => {
+            await this.hideLoading();
+            this.showAlert('Error uploading video!');
+            console.error('Upload failed:', err);
+          }
         });
       } else {
+        await this.showLoading('Saving exercise...');
         this.http.post(`${this.backendUrl}/api/exercises`, exercise).subscribe({
-          next: () => {
-            this.showToast('Vezba dodata bez videa');
+          next: async () => {
+            await this.hideLoading();
+            this.showAlert('Exercise added (without video).');
             this.exerciseForm.reset();
             this.loadExercises();
           },
-          error: (err) => console.error('Greška pri dodavanju vežbe', err)
+          error: async (err) => {
+            await this.hideLoading();
+            this.showAlert('Error adding exercise.');
+            console.error('Error adding exercise', err);
+          }
         });
       }
     }
   }
-  async showToast(message: string) {
-    const toast = await this.toastCtrl.create({
+
+  async showAlert(message: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Notification',
       message,
-      duration: 2000,
-      position: 'middle',
-      cssClass: 'custom-toast'
+      buttons: ['OK'],
+      cssClass: 'custom-alert'
     });
-    await toast.present();
+    await alert.present();
   }
 
+  async showLoading(message: string = 'Please wait...') {
+    this.loading = await this.loadingCtrl.create({
+      message,
+      spinner: 'crescent',
+      backdropDismiss: false,
+      cssClass: 'custom-loading'
+    });
+    await this.loading.present();
+  }
+
+  async hideLoading() {
+    if (this.loading) {
+      await this.loading.dismiss();
+      this.loading = null;
+    }
+  }
 }

@@ -3,30 +3,30 @@
   <form [formGroup]="workoutForm" (ngSubmit)="saveWorkout()">
 
     <ion-item>
-      <ion-label position="floating">Naziv treninga</ion-label>
+      <ion-label position="stacked">Workout Title</ion-label>
       <ion-input formControlName="title"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Opis treninga</ion-label>
+      <ion-label position="stacked">Description</ion-label>
       <ion-input formControlName="content"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Kategorija</ion-label>
+      <ion-label position="stacked">Category</ion-label>
       <ion-input formControlName="subtitle"></ion-input>
     </ion-item>
 
     <ion-list>
       <ion-list-header>
-        <ion-label>Vežbe</ion-label>
+        <ion-label>Exercises</ion-label>
       </ion-list-header>
 
       <div formArrayName="exercises">
         <div *ngFor="let ex of exercises.controls; let i = index" [formGroupName]="i">
 
           <ion-item>
-            <ion-label>Izaberi vežbu</ion-label>
+            <ion-label>Select Exercise</ion-label>
             <ion-select formControlName="exerciseId" interface="popover">
               <ion-select-option *ngFor="let e of allExercises" [value]="e.id">
                 {{ e.name }}
@@ -35,65 +35,64 @@
           </ion-item>
 
           <ion-button color="danger" expand="block" (click)="removeExercise(i)">
-             Ukloni
+            Remove
           </ion-button>
 
         </div>
       </div>
 
       <ion-button expand="block" (click)="addExercise()">
-         Dodaj vežbu
+        Add Exercise
       </ion-button>
     </ion-list>
 
-
     <ion-button expand="block" color="success" (click)="saveWorkout()">
-      Sačuvaj Trening
+      Save Workout
     </ion-button>
 
   </form>
 
   <hr />
 
-  <h2>Dodaj novu vežbu</h2>
+  <h2>Add New Exercise</h2>
   <form [formGroup]="exerciseForm" (ngSubmit)="saveExercise()">
     <ion-item>
-      <ion-label position="floating">Naziv vežbe</ion-label>
+      <ion-label position="stacked">Exercise Name</ion-label>
       <ion-input formControlName="name"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Opis</ion-label>
+      <ion-label position="stacked">Description</ion-label>
       <ion-input formControlName="description"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Serije</ion-label>
-      <ion-input type="number" formControlName="sets"></ion-input>
+      <ion-label position="stacked">Sets</ion-label>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" formControlName="sets"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Ponavljanja</ion-label>
-      <ion-input formControlName="reps"></ion-input>
+      <ion-label position="stacked">Repetitions</ion-label>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" formControlName="reps"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Odmor između serija (sekunde)</ion-label>
-      <ion-input type="number" formControlName="restBetweenSets"></ion-input>
+      <ion-label position="stacked">Rest Between Sets (seconds)</ion-label>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" formControlName="restBetweenSets"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Odmor posle vežbe (sekunde)</ion-label>
-      <ion-input type="number" formControlName="restAfterExercise"></ion-input>
+      <ion-label position="stacked">Rest After Exercise (seconds)</ion-label>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" formControlName="restAfterExercise"></ion-input>
     </ion-item>
 
-    <ion-item>
-      <ion-label>Video fajl</ion-label>
-      <input type="file" accept="video/*" (change)="onVideoSelected($event)" />
-    </ion-item>
+    <div class="video-upload">
+      <label for="videoInput">Choose Video File</label>
+      <input id="videoInput" type="file" accept="video/*" (change)="onVideoSelected($event)" />
+    </div>
 
     <ion-button expand="block" color="tertiary" type="submit">
-      ➕ Dodaj u backend
+      Add Exercise
     </ion-button>
   </form>
 

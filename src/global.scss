@@ -274,6 +274,16 @@ ion-alert.exercise-preview-modal::part(message) {
     font-size: 14px;
   }
 }
+ion-loading.custom-loading {
+  --background: rgba(0, 40, 60, 0.25);
+  --spinner-color: #00f7ff;
+  --color: #00f7ff;
+  --border-radius: 16px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
+}
 
 
 

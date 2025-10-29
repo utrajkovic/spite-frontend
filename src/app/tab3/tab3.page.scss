@@ -3,7 +3,7 @@ ion-content {
   --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   --padding-top: 72px;
   padding: 16px;
-  font-family: 'Tilt Neon', cursive;
+  font-family: 'Orbitron', sans-serif;
   color: #e0ffff;
 }
 
@@ -27,6 +27,7 @@ ion-content {
 }
 
 .section-box h2 {
+  
   font-size: 1.3rem;
   font-weight: 600;
   color: #00f7ff;
@@ -73,13 +74,11 @@ ion-button[color="danger"] {
   font-size: 1rem;
   --background: linear-gradient(135deg, #ff4d4d, #d60000);
   --color: #fff;
-  box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
   transition: all 0.3s ease;
 }
 
 ion-button[color="danger"]:hover {
-  --background: linear-gradient(135deg, #ff6666, #e00000);
-  transform: scale(1.02);
+  transform: scale(1.2);
 }
 
 /* Separator */

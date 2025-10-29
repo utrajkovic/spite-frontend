@@ -67,7 +67,7 @@
         <ion-card-content>
           <div class="video-container">
             <video *ngIf="exercises[currentExerciseIndex + 1]?.videoUrl"
-              [src]="getVideoUrl(exercises[currentExerciseIndex]?.videoUrl)" autoplay loop muted
+              [src]="getVideoUrl(exercises[currentExerciseIndex + 1]?.videoUrl)" autoplay loop muted
               playsinline class="exercise-video">
             </video>
           </div>
@@ -78,11 +78,8 @@
         *ngIf="!started && !loading && exercises.length > 0">
          Start Workout
       </ion-button>
-
       <div *ngIf="!loading && exercises.length === 0" class="no-exercises">
-        <p>⚠️ Nema pronađenih vežbi za ovaj trening.</p>
       </div>
-
     </div>
   </div>
 </ion-content>

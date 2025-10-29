@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
+
 /* 🌌 Glavna pozadina */
 ion-content {
   --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
@@ -27,15 +29,15 @@ ion-card:hover {
 /* 💎 Naslov i podnaslov */
 ion-card-title.title-size {
   text-align: center;
-  font-family: 'Tilt Neon', cursive;
+  font-family: 'Orbitron', sans-serif;
   font-size: clamp(19px, 4vw, 23px);
   color: #00f7ff;
-  margin: 4px 0 2px 0;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
+  margin: 4px 0 10px 0;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 1.00);
 }
 
 ion-card-subtitle.subtitle-size {
-  font-family: 'Tilt Neon', cursive;
+  font-family: 'Orbitron', sans-serif;
   font-size: clamp(13px, 3.5vw, 14px);
   color: #aefcff;
   text-align: center;
@@ -47,7 +49,7 @@ ion-card-subtitle.subtitle-size {
 .content-container {
   font-family: 'Tilt Neon', cursive;
   font-size: 14px;
-  color: #d8ffff;
+  color: #aefcff;
   text-align: center;
   line-height: 1.4;
   margin-top: 8px;
@@ -66,8 +68,6 @@ ion-button {
   --color: #000;
   font-weight: 600;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
-  transition: transform 0.2s ease, box-shadow 0.25s ease;
 }
 
 ion-button:hover {
@@ -118,3 +118,4 @@ ion-button:active {
 ion-content {
   --padding-top: 72px; /* visina headera + mali buffer */
 }
+

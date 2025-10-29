@@ -1,11 +1,14 @@
-/* 🌌 Pozadina */
+/* 🌌 POZADINA – Neon Sky */
 ion-content {
   --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --padding-top: 72px; /* prostor za header */
   padding: 16px;
   font-family: 'Tilt Neon', cursive;
+  color: #fff;
+  overflow-y: auto;
 }
 
-/* 🧩 Forma - staklena kartica */
+/* 🧩 FORMA – Glassmorphism */
 form {
   background: rgba(0, 40, 60, 0.25);
   border: 1px solid rgba(0, 255, 255, 0.25);
@@ -21,31 +24,31 @@ form {
 
 form:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
 }
 
-/* 🧠 Naslov sekcije */
+/* 🧠 NASLOV SEKCIJE */
 h2 {
-  font-size: 20px;
+  font-size: 21px;
   color: #00f7ff;
   text-align: center;
-  margin: 0 0 16px 0;
+  margin-bottom: 16px;
   letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
 }
 
-/* 📦 Ion elementi */
+/* 📦 ION ELEMENTI */
 ion-item {
   --background: rgba(0, 0, 0, 0.3);
-  --border-color: rgba(0, 255, 255, 0.2);
+  --border-color: rgba(0, 255, 255, 0.15);
   --highlight-color-focused: #00f7ff;
   border-radius: 10px;
   margin-top: 10px;
-  transition: all 0.2s ease;
+  transition: box-shadow 0.2s ease;
 }
 
 ion-item:focus-within {
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
 }
 
 ion-label {
@@ -59,7 +62,7 @@ ion-textarea {
   font-size: 15px;
 }
 
-/* 📁 Upload input (file) */
+/* 📁 UPLOAD INPUT */
 input[type="file"] {
   width: 100%;
   padding: 10px;
@@ -70,6 +73,7 @@ input[type="file"] {
   color: #00f7ff;
   font-family: inherit;
   cursor: pointer;
+  text-align: center;
   transition: background 0.3s ease, transform 0.2s ease;
 }
 
@@ -78,11 +82,12 @@ input[type="file"]:hover {
   transform: scale(1.01);
 }
 
-/* 🔘 Dugmad */
+/* 🔘 DUGMAD */
 ion-button {
   margin-top: 14px;
   font-weight: 600;
   border-radius: 12px;
+  letter-spacing: 0.5px;
   transition: transform 0.2s ease, box-shadow 0.25s ease;
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
 }
@@ -101,7 +106,21 @@ ion-button:active {
   transform: scale(0.96);
 }
 
-/* 💫 Animacija */
+/* 🧾 LISTA VEŽBI */
+ion-list {
+  --background: transparent !important;
+  background: rgba(0, 255, 255, 0.03);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border-radius: 16px;
+  padding: 8px;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  transition: background 0.3s ease;
+}
+
+/* 💫 ANIMACIJA */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -113,36 +132,20 @@ ion-button:active {
   }
 }
 
-/* 📱 Mobilni prikaz */
+/* 📱 RESPONSIVE OPTIMIZACIJA */
 @media (max-width: 600px) {
   form {
     padding: 14px;
     border-radius: 12px;
   }
 
-  ion-label {
-    font-size: 14px;
-  }
-
-  ion-input {
-    font-size: 14px;
-  }
-
+  ion-label,
+  ion-input,
   ion-button {
     font-size: 14px;
   }
-}
-ion-content {
-  --padding-top: 72px; /* visina headera + mali buffer */
-}
-ion-list {
-  --background: transparent !important;
-  background: rgba(0, 255, 255, 0.03);
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  border-radius: 16px;
-  padding: 8px;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.05);
-  border: 1px solid rgba(0, 255, 255, 0.1);
-  transition: background 0.3s ease;
+
+  h2 {
+    font-size: 18px;
+  }
 }
