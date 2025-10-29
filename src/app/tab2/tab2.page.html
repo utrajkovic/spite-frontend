@@ -72,24 +72,29 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Sets</ion-label>
-      <ion-input type="number" formControlName="sets"></ion-input>
+      <ion-label position="stacked">Sets 1-10</ion-label>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="10"
+        (ionInput)="sanitizeNumberInput($event)" formControlName="sets"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Repetitions</ion-label>
-      <ion-input type="number" formControlName="reps"></ion-input>
+      <ion-label position="stacked">Repetitions 1-100</ion-label>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="100"
+        (ionInput)="sanitizeNumberInput($event)" formControlName="reps"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Rest Between Sets (seconds)</ion-label>
-      <ion-input type="number" formControlName="restBetweenSets"></ion-input>
+      <ion-label position="stacked">Rest Between Sets (10-300 seconds)</ion-label>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="10" max="300"
+        (ionInput)="sanitizeNumberInput($event)" formControlName="restBetweenSets"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Rest After Exercise (seconds)</ion-label>
-      <ion-input type="number" formControlName="restAfterExercise"></ion-input>
+      <ion-label position="stacked">Rest After Exercise (30-600 seconds)</ion-label>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="30" max="600"
+        (ionInput)="sanitizeNumberInput($event)" formControlName="restAfterExercise"></ion-input>
     </ion-item>
+
 
     <div class="video-upload">
       <label for="videoInput">Choose Video File</label>

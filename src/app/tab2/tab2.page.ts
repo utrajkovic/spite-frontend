@@ -20,7 +20,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
     ReactiveFormsModule,
     IonContent, IonHeader, IonTitle, IonToolbar,
     IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonListHeader, IonSelect, IonSelectOption,IonSpinner
+    IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
   ]
 })
 export class Tab2Page implements OnInit {
@@ -140,11 +140,12 @@ export class Tab2Page implements OnInit {
     if (this.exerciseForm.valid) {
       const exercise = this.exerciseForm.value;
 
+      this.isUploading = true;
+
       if (this.selectedVideo) {
         const formData = new FormData();
         formData.append('video', this.selectedVideo);
 
-        this.isUploading = true;
         this.showLoading('Uploading video...');
 
         this.http.post(`${this.backendUrl}/api/exercises/upload`, formData, { responseType: 'text' }).subscribe({
@@ -178,7 +179,6 @@ export class Tab2Page implements OnInit {
           }
         });
       } else {
-        this.isUploading = true;
         this.showLoading('Saving exercise...');
 
         this.http.post(`${this.backendUrl}/api/exercises`, exercise).subscribe({
@@ -201,6 +201,7 @@ export class Tab2Page implements OnInit {
       this.showAlert('Please fill in all required fields!');
     }
   }
+
 
   async showAlert(message: string) {
     const alert = await this.alertCtrl.create({
@@ -228,4 +229,9 @@ export class Tab2Page implements OnInit {
       this.loading = null;
     }
   }
+  sanitizeNumberInput(event: any) {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/[^0-9]/g, '');
+  }
+
 }
