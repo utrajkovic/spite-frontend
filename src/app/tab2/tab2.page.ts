@@ -135,72 +135,64 @@ export class Tab2Page implements OnInit {
     this.showAlert('Video selected successfully!');
   }
 
-  saveExercise() {
+  async saveExercise() {
     console.log('🧩 saveExercise called');
-    if (this.exerciseForm.valid) {
-      const exercise = this.exerciseForm.value;
+    if (!this.exerciseForm.valid) {
+      this.showAlert('Please fill in all required fields!');
+      return;
+    }
 
-      this.isUploading = true;
+    const exercise = this.exerciseForm.value;
+    this.isUploading = true;                
+    await new Promise(r => setTimeout(r, 50));
 
-      if (this.selectedVideo) {
-        const formData = new FormData();
-        formData.append('video', this.selectedVideo);
+    if (this.selectedVideo) {
+      const formData = new FormData();
+      formData.append('video', this.selectedVideo);
 
+      try {
         this.showLoading('Uploading video...');
+        const videoPath = await this.http
+          .post(`${this.backendUrl}/api/exercises/upload`, formData, { responseType: 'text' })
+          .toPromise();
 
-        this.http.post(`${this.backendUrl}/api/exercises/upload`, formData, { responseType: 'text' }).subscribe({
-          next: (videoPath) => {
-            exercise.videoUrl = videoPath;
-            this.hideLoading();
-            this.showLoading('Saving exercise...');
-
-            this.http.post(`${this.backendUrl}/api/exercises`, exercise).subscribe({
-              next: () => {
-                this.hideLoading();
-                this.isUploading = false;
-                this.showAlert('Exercise added successfully!');
-                this.exerciseForm.reset();
-                this.selectedVideo = null;
-                this.loadExercises();
-              },
-              error: (err) => {
-                this.hideLoading();
-                this.isUploading = false;
-                this.showAlert('Error saving exercise!');
-                console.error('Error adding exercise', err);
-              }
-            });
-          },
-          error: (err) => {
-            this.hideLoading();
-            this.isUploading = false;
-            this.showAlert('Error uploading video!');
-            console.error('Upload failed:', err);
-          }
-        });
-      } else {
+        exercise.videoUrl = videoPath ?? '';
+        await this.hideLoading();
         this.showLoading('Saving exercise...');
 
-        this.http.post(`${this.backendUrl}/api/exercises`, exercise).subscribe({
-          next: () => {
-            this.hideLoading();
-            this.isUploading = false;
-            this.showAlert('Exercise added (without video).');
-            this.exerciseForm.reset();
-            this.loadExercises();
-          },
-          error: (err) => {
-            this.hideLoading();
-            this.isUploading = false;
-            this.showAlert('Error adding exercise.');
-            console.error('Error adding exercise', err);
-          }
-        });
+        await this.http.post(`${this.backendUrl}/api/exercises`, exercise).toPromise();
+        await this.hideLoading();
+
+        this.showAlert('Exercise added successfully!');
+        this.exerciseForm.reset();
+        this.selectedVideo = null;
+        this.loadExercises();
+      } catch (err) {
+        console.error('Error uploading/saving exercise:', err);
+        await this.hideLoading();
+        this.showAlert('Error during upload or save.');
+      } finally {
+        this.isUploading = false; 
       }
     } else {
-      this.showAlert('Please fill in all required fields!');
+      try {
+        this.showLoading('Saving exercise...');
+        await this.http.post(`${this.backendUrl}/api/exercises`, exercise).toPromise();
+        await this.hideLoading();
+
+        this.showAlert('Exercise added (without video).');
+        this.exerciseForm.reset();
+        this.loadExercises();
+      } catch (err) {
+        console.error('Error adding exercise:', err);
+        await this.hideLoading();
+        this.showAlert('Error adding exercise.');
+      } finally {
+        this.isUploading = false;
+      }
     }
   }
+
 
 
   async showAlert(message: string) {
