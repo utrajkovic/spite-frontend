@@ -57,17 +57,6 @@ export class Tab2Page implements OnInit {
   }
 
   ngOnInit() {
-    const access = localStorage.getItem('spite-access');
-    if (!access) {
-      const password = prompt('🔒 Enter access password for Spite Dev Version:');
-      if (password !== 'Uki') {
-        alert('Incorrect password!');
-        window.location.href = 'https://google.com';
-        return;
-      }
-      localStorage.setItem('spite-access', 'granted');
-    }
-
     this.loadExercises();
   }
 
@@ -93,7 +82,7 @@ export class Tab2Page implements OnInit {
     });
   }
 
-  async saveWorkout() {
+  saveWorkout() {
     if (this.workoutForm.valid) {
       const formValue = this.workoutForm.value;
       const workout = {
@@ -103,17 +92,17 @@ export class Tab2Page implements OnInit {
         exerciseIds: formValue.exercises.map((e: any) => e.exerciseId)
       };
 
-      await this.showLoading('Saving workout...');
+      this.showLoading('Saving workout...');
       this.http.post(`${this.backendUrl}/api/workouts`, workout).subscribe({
-        next: async () => {
-          await this.hideLoading();
+        next: () => {
+          this.hideLoading();
           this.showAlert('Workout added successfully!');
           this.workoutForm.reset();
           this.exercises.clear();
           this.loadExercises();
         },
-        error: async (err) => {
-          await this.hideLoading();
+        error: (err) => {
+          this.hideLoading();
           console.error('Error saving workout:', err);
           this.showAlert('Workout was not saved! Check the console.');
         }
@@ -123,7 +112,7 @@ export class Tab2Page implements OnInit {
     }
   }
 
-  async onVideoSelected(event: any) {
+  onVideoSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -145,8 +134,7 @@ export class Tab2Page implements OnInit {
     this.showAlert('Video selected successfully!');
   }
 
-
-  async saveExercise() {
+  saveExercise() {
     console.log('🧩 saveExercise called');
     if (this.exerciseForm.valid) {
       const exercise = this.exerciseForm.value;
@@ -155,49 +143,51 @@ export class Tab2Page implements OnInit {
         const formData = new FormData();
         formData.append('video', this.selectedVideo);
 
-        await this.showLoading('Uploading video...');
+        this.showLoading('Uploading video...');
         this.http.post(`${this.backendUrl}/api/exercises/upload`, formData, { responseType: 'text' }).subscribe({
-          next: async (videoPath) => {
+          next: (videoPath) => {
             exercise.videoUrl = videoPath;
-            await this.hideLoading();
-            await this.showLoading('Saving exercise...');
+            this.hideLoading();
+            this.showLoading('Saving exercise...');
             this.http.post(`${this.backendUrl}/api/exercises`, exercise).subscribe({
-              next: async () => {
-                await this.hideLoading();
+              next: () => {
+                this.hideLoading();
                 this.showAlert('Exercise added successfully!');
                 this.exerciseForm.reset();
                 this.selectedVideo = null;
                 this.loadExercises();
               },
-              error: async (err) => {
-                await this.hideLoading();
+              error: (err) => {
+                this.hideLoading();
                 this.showAlert('Error saving exercise!');
                 console.error('Error adding exercise', err);
               }
             });
           },
-          error: async (err) => {
-            await this.hideLoading();
+          error: (err) => {
+            this.hideLoading();
             this.showAlert('Error uploading video!');
             console.error('Upload failed:', err);
           }
         });
       } else {
-        await this.showLoading('Saving exercise...');
+        this.showLoading('Saving exercise...');
         this.http.post(`${this.backendUrl}/api/exercises`, exercise).subscribe({
-          next: async () => {
-            await this.hideLoading();
+          next: () => {
+            this.hideLoading();
             this.showAlert('Exercise added (without video).');
             this.exerciseForm.reset();
             this.loadExercises();
           },
-          error: async (err) => {
-            await this.hideLoading();
+          error: (err) => {
+            this.hideLoading();
             this.showAlert('Error adding exercise.');
             console.error('Error adding exercise', err);
           }
         });
       }
+    } else {
+      this.showAlert('Please fill in all required fields!');
     }
   }
 
