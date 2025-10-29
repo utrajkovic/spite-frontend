@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } fr
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
   IonItem, IonLabel, IonInput, IonButton,
-  IonList, IonListHeader, IonSelect, IonSelectOption
+  IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
 } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
@@ -20,7 +20,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
     ReactiveFormsModule,
     IonContent, IonHeader, IonTitle, IonToolbar,
     IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonListHeader, IonSelect, IonSelectOption
+    IonList, IonListHeader, IonSelect, IonSelectOption,IonSpinner
   ]
 })
 export class Tab2Page implements OnInit {
