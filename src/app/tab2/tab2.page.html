@@ -1,5 +1,8 @@
 <ion-content [fullscreen]="true">
-
+  <div *ngIf="isUploading" class="upload-fallback">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Uploading... Please wait</p>
+  </div>
   <!-- Forma za trening -->
   <form [formGroup]="workoutForm">
 

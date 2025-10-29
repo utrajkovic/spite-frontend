@@ -29,6 +29,7 @@ export class Tab2Page implements OnInit {
   allExercises: Exercise[] = [];
   selectedVideo: File | null = null;
   loading: HTMLIonLoadingElement | null = null;
+  isUploading = false;
 
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
@@ -143,15 +144,19 @@ export class Tab2Page implements OnInit {
         const formData = new FormData();
         formData.append('video', this.selectedVideo);
 
+        this.isUploading = true;
         this.showLoading('Uploading video...');
+
         this.http.post(`${this.backendUrl}/api/exercises/upload`, formData, { responseType: 'text' }).subscribe({
           next: (videoPath) => {
             exercise.videoUrl = videoPath;
             this.hideLoading();
             this.showLoading('Saving exercise...');
+
             this.http.post(`${this.backendUrl}/api/exercises`, exercise).subscribe({
               next: () => {
                 this.hideLoading();
+                this.isUploading = false;
                 this.showAlert('Exercise added successfully!');
                 this.exerciseForm.reset();
                 this.selectedVideo = null;
@@ -159,6 +164,7 @@ export class Tab2Page implements OnInit {
               },
               error: (err) => {
                 this.hideLoading();
+                this.isUploading = false;
                 this.showAlert('Error saving exercise!');
                 console.error('Error adding exercise', err);
               }
@@ -166,21 +172,26 @@ export class Tab2Page implements OnInit {
           },
           error: (err) => {
             this.hideLoading();
+            this.isUploading = false;
             this.showAlert('Error uploading video!');
             console.error('Upload failed:', err);
           }
         });
       } else {
+        this.isUploading = true;
         this.showLoading('Saving exercise...');
+
         this.http.post(`${this.backendUrl}/api/exercises`, exercise).subscribe({
           next: () => {
             this.hideLoading();
+            this.isUploading = false;
             this.showAlert('Exercise added (without video).');
             this.exerciseForm.reset();
             this.loadExercises();
           },
           error: (err) => {
             this.hideLoading();
+            this.isUploading = false;
             this.showAlert('Error adding exercise.');
             console.error('Error adding exercise', err);
           }
