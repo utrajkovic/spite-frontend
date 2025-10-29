@@ -147,6 +147,7 @@ export class Tab2Page implements OnInit {
 
 
   async saveExercise() {
+    console.log('🧩 saveExercise called');
     if (this.exerciseForm.valid) {
       const exercise = this.exerciseForm.value;
 
