@@ -80,6 +80,7 @@ export class Tab3Page implements OnInit {
   }
 
   async deleteExercise(id: string) {
+    console.log('🧨 deleteExercise triggered with ID:', id);
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this exercise?');
     if (!confirmDelete) return;
 
