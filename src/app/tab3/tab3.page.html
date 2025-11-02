@@ -12,7 +12,7 @@
         </ion-label>
 
         <ion-button color="danger" fill="outline" slot="end"
-          (click)="deleteExercise(exercise.id); $event.stopPropagation();" class="delete-btn">
+          (click)="deleteExercise(exercise.id!); $event.stopPropagation();" class="delete-btn">
           <i class="fa-solid fa-trash"></i>
         </ion-button>
       </ion-item>
@@ -24,16 +24,20 @@
   <section class="section-box">
     <h2>Trainings</h2>
     <ion-list>
-      <ion-item *ngFor="let workout of workouts" class="item-card" button detail="false" (click)="showWorkoutDetails(workout)">
+      <ion-item *ngFor="let workout of workouts" class="item-card" button detail="false"
+        (click)="showWorkoutDetails(workout)">
         <ion-label>
           <h3>{{ workout.title }}</h3>
           <p>{{ workout.subtitle }}</p>
         </ion-label>
-        <ion-button color="danger" fill="outline" slot="end" (click)="deleteWorkout(workout.id); $event.stopPropagation();">
+        <ion-button color="danger" fill="outline" slot="end"
+          (click)="deleteWorkout(workout.id!); $event.stopPropagation();">
           <i class="fa-solid fa-trash"></i>
         </ion-button>
       </ion-item>
     </ion-list>
   </section>
-
+  <ion-button color="danger" expand="block" (click)="logout()">
+    🚪 Logout
+  </ion-button>
 </ion-content>

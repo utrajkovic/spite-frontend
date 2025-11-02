@@ -12,7 +12,6 @@ export class BackendService {
 
   constructor(private http: HttpClient) { }
 
-  // --- VEŽBE ---
   getAllExercises(): Observable<Exercise[]> {
     return this.http.get<Exercise[]>(`${this.API_URL}/exercises`);
   }
@@ -21,10 +20,18 @@ export class BackendService {
     return this.http.post<Exercise>(`${this.API_URL}/exercises`, exercise);
   }
 
-  // --- TRENING ---
   getAllWorkouts(): Observable<Workout[]> {
     return this.http.get<Workout[]>(`${this.API_URL}/workouts`);
   }
+
+  getExercisesByUser(userId: string): Observable<Exercise[]> {
+    return this.http.get<Exercise[]>(`${this.API_URL}/exercises/user/${userId}`);
+  }
+
+  getWorkoutsByUser(userId: string): Observable<Workout[]> {
+    return this.http.get<Workout[]>(`${this.API_URL}/workouts/user/${userId}`);
+  }
+
 
   getWorkoutById(id: string): Observable<Workout> {
     return this.http.get<Workout>(`${this.API_URL}/workouts/${id}`);
@@ -34,11 +41,11 @@ export class BackendService {
     return this.http.post<Workout>(`${this.API_URL}/workouts`, workout);
   }
 
-  deleteWorkout(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/workouts/${id}`);
+  deleteWorkout(id: string): Observable<string> {
+    return this.http.delete(`${this.API_URL}/workouts/${id}`, { responseType: 'text' });
   }
-  deleteExercise(id: string): Observable<void> {
-  return this.http.delete<void>(`${this.API_URL}/exercises/${id}`);
-}
+  deleteExercise(id: string): Observable<string> {
+    return this.http.delete(`${this.API_URL}/exercises/${id}`, { responseType: 'text' });
+  }
 
 }

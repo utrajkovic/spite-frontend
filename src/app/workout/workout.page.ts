@@ -8,6 +8,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService } from '../services/backend.service';
 import { Workout, Exercise } from '../services/models';
 import { AlertController } from '@ionic/angular';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+
 
 
 @Component({
@@ -62,11 +64,11 @@ export class WorkoutPage implements OnInit {
             console.log('🔍 Vežbe:', this.exercises);
             this.loading = false;
 
-            // ✅ Ako trening nema vežbi, odmah alert i povratak
             if (this.exercises.length === 0 && !this.alertShown) {
               this.alertShown = true;
               this.showNoExercisesAlert();
             }
+            this.prepareLocalVideos();
           },
           error: (err) => {
             console.error('Greška pri učitavanju vežbi:', err);
@@ -144,13 +146,27 @@ export class WorkoutPage implements OnInit {
   goHome() {
     this.router.navigate(['/tabs/tab1']);
   }
-  getVideoUrl(videoUrl: string | null | undefined): string {
-    if (!videoUrl) return '';
-    if (videoUrl.startsWith('http')) {
-      return videoUrl;
+
+  async getVideoUrl(exercise: Exercise): Promise<string> {
+    try {
+      if (!exercise.localVideoPath) {
+        console.warn('⚠️ Vežba nema lokalnu putanju za video.');
+        return '';
+      }
+
+      const file = await Filesystem.readFile({
+        path: exercise.localVideoPath,
+        directory: Directory.Data
+      });
+
+      return `data:video/mp4;base64,${file.data}`;
+    } catch (err) {
+      console.error('❌ Greška pri čitanju lokalnog videa:', err);
+      return '';
     }
-    return `${this.backendUrl}${videoUrl}`;
   }
+
+
   async showAlert(message: string) {
     const alert = await this.alertCtrl.create({
       header: '',
@@ -160,6 +176,7 @@ export class WorkoutPage implements OnInit {
     });
     await alert.present();
   }
+
   async showNoExercisesAlert() {
     const alert = await this.alertCtrl.create({
       header: 'No Exercises Found',
@@ -174,6 +191,24 @@ export class WorkoutPage implements OnInit {
     });
 
     await alert.present();
+  }
+  async prepareLocalVideos() {
+    for (const ex of this.exercises) {
+      if (ex.localVideoPath) {
+        try {
+          const file = await Filesystem.readFile({
+            path: ex.localVideoPath,
+            directory: Directory.Data
+          });
+          ex.localVideoSrc = `data:video/mp4;base64,${file.data}`;
+        } catch (err) {
+          console.warn('⚠️ Video nije pronađen lokalno za', ex.name, err);
+          ex.localVideoSrc = '';
+        }
+      } else {
+        ex.localVideoSrc = '';
+      }
+    }
   }
 
 

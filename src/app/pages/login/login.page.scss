@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
+
+
+ion-content {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  font-family: 'Tilt Neon', cursive;
+  color: #fff;
+  padding: 24px;
+  text-align: center;
+}
+
+/* 🏋️‍♂️ NASLOV */
+.app-title {
+  margin-top: 40px;
+  margin-bottom: 30px;
+}
+
+.app-title h1 {
+    font-family: 'Orbitron';
+  font-size: 48px;
+  font-weight: bold;
+  color: #00ffff;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+}
+
+.app-title p {
+  font-size: 14px;
+  color: #00bfff;
+  opacity: 0.9;
+}
+
+/* ✨ Efekat treperenja naslova */
+.flicker h1 {
+  animation: flicker 1.5s infinite alternate;
+}
+
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    opacity: 1;
+    text-shadow:#00ffff, 0 0 10px #00ffff, 0 0 20px #0077ff;
+  }
+  20%, 24%, 55% {
+    opacity: 0.6;
+    text-shadow: none;
+  }
+}
+
+/* 🧩 FORMA */
+form {
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 18px;
+  padding: 30px 24px;
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
+  animation: fadeInUp 0.6s ease;
+  text-align: left;
+}
+
+/* 🧱 INPUT POLJA */
+ion-item {
+  --background: transparent;
+  margin-bottom: 20px;
+}
+
+ion-label {
+  color: #00ffff;
+  font-weight: 500;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+ion-input {
+  color: #fff;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  padding-bottom: 6px;
+}
+
+/* 🔘 LOGIN DUGME */
+ion-button[type="submit"] {
+  --border-radius: 12px;
+  --background: linear-gradient(90deg, #00ffff 0%, #0077ff 100%);
+  --color: #000;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin-top: 10px;
+}
+
+/* 🧊 REGISTER SEKCIJA */
+.register-section {
+  text-align: center;
+  margin-top: 28px;
+}
+
+.register-section p {
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 4px;
+}
+
+.register-section ion-button {
+  --color: #00ffff;
+  font-weight: 500;
+}
+
+/* ℹ️ INFO TEKST */
+.app-info {
+  margin-top: 40px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: #8fdfff;
+  opacity: 0.85;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ANIMACIJE */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}

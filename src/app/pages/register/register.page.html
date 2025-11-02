@@ -1,0 +1,56 @@
+<ion-content class="ion-padding">
+
+  <div class="app-title flicker">
+    <h1>SPITE</h1>
+    <p>Create your account</p>
+  </div>
+
+  <form [formGroup]="registerForm" (ngSubmit)="register()">
+
+    <ion-item lines="none">
+      <ion-label position="stacked">Username</ion-label>
+      <ion-input formControlName="username"></ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label position="stacked">Password</ion-label>
+      <ion-input type="password" formControlName="password"></ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label position="stacked">Confirm Password</ion-label>
+      <ion-input type="password" formControlName="confirmPassword"></ion-input>
+    </ion-item>
+    
+    <div class="password-rules">
+      <p [class.valid]="passwordStatus.length">• 6–50 characters</p>
+      <p [class.valid]="passwordStatus.upper">• At least one uppercase letter</p>
+      <p [class.valid]="passwordStatus.number">• At least one number</p>
+    </div>
+
+    <ion-button expand="block" type="submit" class="ion-margin-top">
+      Register
+    </ion-button>
+
+    <div class="spinner-container" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Registering...</p>
+    </div>
+
+    <div class="register-section">
+      <p>Already have an account?</p>
+      <ion-button expand="block" fill="clear" routerLink="/login">
+        Login
+      </ion-button>
+    </div>
+
+  </form>
+
+  <div class="app-info">
+    <p>
+      SPITE helps you stay motivated and consistent.
+      Create your account to start building your personalized workouts and reach your goals faster.
+    </p>
+  </div>
+
+</ion-content>

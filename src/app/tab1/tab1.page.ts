@@ -8,6 +8,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BackendService } from '../services/backend.service';
 import { Workout } from '../services/models';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-tab1',
@@ -23,10 +24,22 @@ import { Workout } from '../services/models';
 export class Tab1Page {
   workouts: Workout[] = [];
 
-  constructor(private backendService: BackendService) {} 
+  constructor(private backendService: BackendService) { }
 
   ionViewWillEnter() {
-    this.backendService.getAllWorkouts().subscribe({
+    this.loadUserWorkouts();
+  }
+
+  async loadUserWorkouts() {
+    const user = await Preferences.get({ key: 'user' });
+    const currentUser = user.value ? JSON.parse(user.value) : null;
+
+    if (!currentUser) {
+      console.warn('⛔ Nema ulogovanog korisnika!');
+      return;
+    }
+
+    this.backendService.getWorkoutsByUser(currentUser.id).subscribe({
       next: (data) => {
         this.workouts = data;
       },

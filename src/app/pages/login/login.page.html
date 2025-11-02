@@ -1,0 +1,40 @@
+<ion-content class="ion-padding">
+
+  <div class="app-title flicker">
+    <h1>SPITE</h1>
+    <p>Your personal fitness assistant</p>
+  </div>
+
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+    <ion-item lines="none">
+      <ion-label position="stacked">Username</ion-label>
+      <ion-input formControlName="username"></ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label position="stacked">Password</ion-label>
+      <ion-input type="password" formControlName="password"></ion-input>
+    </ion-item>
+
+    <ion-button expand="block" type="submit" class="ion-margin-top">
+      Login
+    </ion-button>
+
+    <!-- ❓ Pitanje i Register link -->
+    <div class="register-section">
+      <p>Don’t have an account?</p>
+      <ion-button expand="block" fill="clear" routerLink="/register">
+        Register
+      </ion-button>
+    </div>
+  </form>
+
+  <div class="app-info">
+    <p>
+      SPITE helps you create personalized home and gym workouts.
+      Track your progress, learn from exercise videos, and stay consistent.
+      Be stronger than your excuses.
+    </p>
+  </div>
+
+</ion-content>

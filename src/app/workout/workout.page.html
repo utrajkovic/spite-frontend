@@ -16,14 +16,15 @@
           <p class="exercise-desc">{{ exercises[currentExerciseIndex]?.description }}</p>
 
           <div class="video-container">
-            <video *ngIf="!isResting && exercises[currentExerciseIndex]?.videoUrl"
-              [src]="getVideoUrl(exercises[currentExerciseIndex]?.videoUrl)" autoplay loop muted playsinline
+            <video *ngIf="!isResting && exercises[currentExerciseIndex]?.localVideoPath"
+              [src]="exercises[currentExerciseIndex]?.localVideoSrc" autoplay loop muted playsinline
               class="exercise-video">
             </video>
 
-            <div *ngIf="isResting || !exercises[currentExerciseIndex]?.videoUrl" class="video-placeholder fade-in">
+            <div *ngIf="isResting || !exercises[currentExerciseIndex]?.localVideoSrc" class="video-placeholder fade-in">
               <ion-icon name="pause-circle-outline" class="placeholder-icon"></ion-icon>
             </div>
+
           </div>
 
           <div class="exercise-info" *ngIf="!isResting">
@@ -60,23 +61,24 @@
       </ion-card>
 
       <div *ngIf="started && currentExerciseIndex < exercises.length - 1" class="next-exercise">
-        <p>➡️ Sledeća vežba: <strong>{{ exercises[currentExerciseIndex + 1]?.name }}</strong></p>
+        <p> Next exercise: <strong>{{ exercises[currentExerciseIndex + 1]?.name }}</strong></p>
       </div>
 
       <ion-card *ngIf="isResting && currentExerciseIndex < exercises.length - 1" class="next-exercise-card">
         <ion-card-content>
           <div class="video-container">
-            <video *ngIf="exercises[currentExerciseIndex + 1]?.videoUrl"
-              [src]="getVideoUrl(exercises[currentExerciseIndex + 1]?.videoUrl)" autoplay loop muted
-              playsinline class="exercise-video">
+            <video *ngIf="exercises[currentExerciseIndex + 1]?.localVideoPath"
+              [src]="exercises[currentExerciseIndex + 1]?.localVideoSrc" autoplay loop muted playsinline
+              class="exercise-video">
             </video>
+
           </div>
         </ion-card-content>
       </ion-card>
 
       <ion-button expand="block" color="primary" class="start-btn" (click)="startWorkout()"
         *ngIf="!started && !loading && exercises.length > 0">
-         Start Workout
+        Start Workout
       </ion-button>
       <div *ngIf="!loading && exercises.length === 0" class="no-exercises">
       </div>
