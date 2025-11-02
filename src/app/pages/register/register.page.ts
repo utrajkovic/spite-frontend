@@ -33,7 +33,6 @@ export class RegisterPage {
     );
   }
 
-  // ✅ Validacija lozinke (dužina, veliko slovo, broj)
   passwordValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.value;
     if (!password) return null;
@@ -48,7 +47,6 @@ export class RegisterPage {
     return null;
   }
 
-  // ✅ Za prikaz statusa svakog pravila
   get password() {
     return this.registerForm.get('password')?.value || '';
   }
@@ -62,7 +60,6 @@ export class RegisterPage {
     };
   }
 
-  // ✅ Provera da li se lozinke poklapaju
   passwordMatchValidator(form: AbstractControl) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
@@ -74,7 +71,6 @@ export class RegisterPage {
     return null;
   }
 
-  // ✅ Registracija korisnika
   async register() {
     if (this.registerForm.invalid) {
       if (this.registerForm.get('confirmPassword')?.hasError('passwordMismatch')) {
@@ -104,7 +100,6 @@ export class RegisterPage {
     });
   }
 
-  // ✅ Lepši alert
   async showAlert(msg: string) {
     const alert = await this.alertCtrl.create({
       header: 'Register',

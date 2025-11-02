@@ -34,7 +34,7 @@ import { AlertController } from '@ionic/angular';
 })
 export class LoginPage {
   loginForm: FormGroup;
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com/api/users/login';
+  readonly backendUrl = 'https://dead-jade-spite-11d3e918.koyeb.app/api/users/login';
 
   constructor(
     private fb: FormBuilder,

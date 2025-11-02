@@ -25,7 +25,7 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 export class WorkoutPage implements OnInit {
   workout!: Workout;
   exercises: Exercise[] = [];
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+  readonly backendUrl = 'https://dead-jade-spite-11d3e918.koyeb.app';
 
   currentExerciseIndex = 0;
   currentSet = 1;

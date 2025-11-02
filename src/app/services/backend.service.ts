@@ -8,7 +8,7 @@ import { Workout, Exercise } from './models';
 })
 export class BackendService {
 
-  private readonly API_URL = 'https://spite-backend-v2.onrender.com/api';
+  private readonly API_URL = 'https://dead-jade-spite-11d3e918.koyeb.app/api';
 
   constructor(private http: HttpClient) { }
 
