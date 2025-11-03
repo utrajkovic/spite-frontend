@@ -91,72 +91,44 @@ export class Tab3Page implements OnInit {
 
   async deleteExercise(id: string) {
     console.log('🧨 [START] deleteExercise triggered with ID:', id);
-
-    // 1️⃣ potvrda brisanja
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this exercise?');
     if (!confirmDelete) {
       console.log('🚫 [CANCELLED] User aborted delete');
       return;
     }
 
-    // 2️⃣ pronalazak objekta u listi
     const exerciseToDelete = this.exercises.find(e => e.id === id);
     console.log('🔍 [FOUND] Exercise to delete:', exerciseToDelete);
 
-    // 3️⃣ test pre loading-a
     try {
-      console.log('🧩 [DEBUG] Before showLoading');
-      await this.showLoading('Deleting exercise...');
-      console.log('⏳ [DEBUG] Spinner created');
-    } catch (err) {
-      console.error('🔥 [DEBUG] showLoading() crashed:', err);
-      await this.showAlert('❌ Spinner error: ' + (err as any).message);
-      return;
-    }
+      console.log('📡 [HTTP] Sending DELETE request...');
+      await this.backend.deleteExercise(id).toPromise();
+      console.log('✅ [SUCCESS] Backend delete complete');
 
-    // 4️⃣ slanje HTTP DELETE zahteva
-    try {
-      console.log('📡 [DEBUG] Sending DELETE request now...');
-      this.backend.deleteExercise(id).subscribe({
-        next: async (res) => {
-          console.log('✅ [DEBUG] Backend responded:', res);
-
-          // ažuriranje liste na ekranu
-          this.zone.run(() => {
-            this.exercises = this.exercises.filter(e => e.id !== id);
-          });
-          console.log('🧹 [DEBUG] Filtered exercise list');
-
-          // pokušaj brisanja lokalnog fajla (ako postoji)
-          if (exerciseToDelete?.localVideoPath) {
-            console.log('💾 [DEBUG] Trying to delete local file...');
-            try {
-              await Filesystem.deleteFile({
-                path: exerciseToDelete.localVideoPath,
-                directory: Directory.Data
-              });
-              console.log('📁 [DEBUG] Local file deleted');
-            } catch (err) {
-              console.warn('⚠️ [DEBUG] File delete error:', err);
-            }
-          }
-
-          await this.hideLoading();
-          console.log('🚀 [DEBUG] Loading hidden');
-          await this.showAlert('Exercise deleted successfully!');
-        },
-        error: async (err) => {
-          console.error('💥 [DEBUG] HTTP DELETE failed:', err);
-          await this.hideLoading();
-          await this.showAlert('DELETE failed: ' + JSON.stringify(err));
-        }
+      this.zone.run(() => {
+        this.exercises = this.exercises.filter(e => e.id !== id);
       });
+      console.log('🧹 [CLEANUP] Removed exercise from list');
+
+      if (exerciseToDelete?.localVideoPath) {
+        try {
+          await Filesystem.deleteFile({
+            path: exerciseToDelete.localVideoPath,
+            directory: Directory.Data
+          });
+          console.log('📁 Local video deleted:', exerciseToDelete.localVideoPath);
+        } catch (err) {
+          console.warn('⚠️ File deletion skipped (web env):', err);
+        }
+      }
+
+      await this.showAlert('✅ Exercise deleted successfully!');
     } catch (err) {
-      console.error('🔥 [DEBUG] Crash in deleteExercise():', err);
-      await this.hideLoading();
-      await this.showAlert('Crash: ' + (err as any).message);
+      console.error('💥 Error deleting exercise:', err);
+      await this.showAlert('❌ Failed to delete exercise. Check console.');
     }
   }
+
 
 
   async deleteWorkout(id: string) {
