@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
-  IonList, IonItem, IonLabel, IonButton, IonIcon,IonSpinner
+  IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner
 } from '@ionic/angular/standalone';
 import { BackendService } from '../services/backend.service';
 import { Exercise, Workout } from '../services/models';
@@ -29,7 +29,7 @@ import { Capacitor } from '@capacitor/core';
     IonLabel,
     IonButton,
     IonIcon,
-    IonSpinner   
+    IonSpinner
 
   ]
 })
@@ -91,57 +91,73 @@ export class Tab3Page implements OnInit {
 
   async deleteExercise(id: string) {
     console.log('🧨 [START] deleteExercise triggered with ID:', id);
+
+    // 1️⃣ potvrda brisanja
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this exercise?');
     if (!confirmDelete) {
       console.log('🚫 [CANCELLED] User aborted delete');
       return;
     }
 
+    // 2️⃣ pronalazak objekta u listi
     const exerciseToDelete = this.exercises.find(e => e.id === id);
     console.log('🔍 [FOUND] Exercise to delete:', exerciseToDelete);
 
-    await this.showLoading('Deleting exercise...');
-    console.log('⏳ [LOADING] Spinner shown');
-
+    // 3️⃣ test pre loading-a
     try {
-      console.log('📡 [HTTP] Sending DELETE request...');
-      this.backend.deleteExercise(id).subscribe({
-        next: async () => {
-          console.log('✅ [SUCCESS] Backend delete complete');
+      console.log('🧩 [DEBUG] Before showLoading');
+      await this.showLoading('Deleting exercise...');
+      console.log('⏳ [DEBUG] Spinner created');
+    } catch (err) {
+      console.error('🔥 [DEBUG] showLoading() crashed:', err);
+      await this.showAlert('❌ Spinner error: ' + (err as any).message);
+      return;
+    }
 
+    // 4️⃣ slanje HTTP DELETE zahteva
+    try {
+      console.log('📡 [DEBUG] Sending DELETE request now...');
+      this.backend.deleteExercise(id).subscribe({
+        next: async (res) => {
+          console.log('✅ [DEBUG] Backend responded:', res);
+
+          // ažuriranje liste na ekranu
           this.zone.run(() => {
             this.exercises = this.exercises.filter(e => e.id !== id);
           });
-          console.log('🧹 [CLEANUP] Removed exercise from list');
+          console.log('🧹 [DEBUG] Filtered exercise list');
 
+          // pokušaj brisanja lokalnog fajla (ako postoji)
           if (exerciseToDelete?.localVideoPath) {
-            console.log('💾 [FILESYSTEM] Trying to delete local file...');
+            console.log('💾 [DEBUG] Trying to delete local file...');
             try {
               await Filesystem.deleteFile({
                 path: exerciseToDelete.localVideoPath,
                 directory: Directory.Data
               });
-              console.log('📁 [FILESYSTEM] Local video deleted');
+              console.log('📁 [DEBUG] Local file deleted');
             } catch (err) {
-              console.warn('⚠️ [FILESYSTEM] Error deleting local video:', err);
+              console.warn('⚠️ [DEBUG] File delete error:', err);
             }
           }
 
           await this.hideLoading();
-          console.log('🧩 [LOADING HIDDEN]');
+          console.log('🚀 [DEBUG] Loading hidden');
           await this.showAlert('Exercise deleted successfully!');
         },
         error: async (err) => {
-          console.error('❌ [ERROR] Backend delete failed:', err);
+          console.error('💥 [DEBUG] HTTP DELETE failed:', err);
           await this.hideLoading();
-          await this.showAlert('Failed to delete exercise.');
+          await this.showAlert('DELETE failed: ' + JSON.stringify(err));
         }
       });
-    } catch (err: any) {
-      console.error('💥 [FATAL ERROR] Unexpected crash:', err);
+    } catch (err) {
+      console.error('🔥 [DEBUG] Crash in deleteExercise():', err);
       await this.hideLoading();
+      await this.showAlert('Crash: ' + (err as any).message);
     }
   }
+
 
   async deleteWorkout(id: string) {
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this workout?');
