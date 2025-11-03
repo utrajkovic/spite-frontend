@@ -150,3 +150,15 @@ ion-item {
   border: 1px solid rgba(0, 255, 255, 0.25);
 }
 
+.delete-btn {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-spinner {
+    width: 22px;
+    height: 22px;
+  }
+}

@@ -12,8 +12,10 @@
         </ion-label>
 
         <ion-button color="danger" fill="outline" slot="end"
-          (click)="deleteExercise(exercise.id!); $event.stopPropagation();" class="delete-btn">
-          <i class="fa-solid fa-trash"></i>
+          (click)="deleteExercise(exercise.id!); $event.stopPropagation();" class="delete-btn"
+          [disabled]="isDeleting === exercise.id">
+          <ion-spinner name="crescent" *ngIf="isDeleting === exercise.id"></ion-spinner>
+          <i class="fa-solid fa-trash" *ngIf="isDeleting !== exercise.id"></i>
         </ion-button>
       </ion-item>
     </ion-list>
@@ -31,9 +33,12 @@
           <p>{{ workout.subtitle }}</p>
         </ion-label>
         <ion-button color="danger" fill="outline" slot="end"
-          (click)="deleteWorkout(workout.id!); $event.stopPropagation();">
-          <i class="fa-solid fa-trash"></i>
+          (click)="deleteWorkout(workout.id!); $event.stopPropagation();" class="delete-btn"
+          [disabled]="isDeleting === workout.id">
+          <ion-spinner name="crescent" *ngIf="isDeleting === workout.id"></ion-spinner>
+          <i class="fa-solid fa-trash" *ngIf="isDeleting !== workout.id"></i>
         </ion-button>
+
       </ion-item>
     </ion-list>
   </section>

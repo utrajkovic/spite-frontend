@@ -52,6 +52,7 @@ export class Tab3Page implements OnInit {
     this.localData.refreshTab3$.subscribe(() => this.loadData());
   }
   loading: HTMLIonLoadingElement | null = null;
+  isDeleting: string | null = null;
 
   async ionViewWillEnter() {
     await this.loadData();
@@ -62,7 +63,7 @@ export class Tab3Page implements OnInit {
     const currentUser = user.value ? JSON.parse(user.value) : null;
 
     if (!currentUser) {
-      console.warn('⛔ Nema ulogovanog korisnika!');
+      console.warn('Nema ulogovanog korisnika!');
       return;
     }
 
@@ -70,62 +71,54 @@ export class Tab3Page implements OnInit {
 
     this.backend.getExercisesByUser(currentUser.id).subscribe({
       next: (res) => {
-        console.log('📦 Vežbe sa servera:', res);
+        console.log('Vežbe sa servera:', res);
         this.zone.run(() => {
           this.exercises = res;
         });
       },
-      error: (err) => console.error('❌ Greška pri učitavanju vežbi:', err)
+      error: (err) => console.error('Greška pri učitavanju vežbi:', err)
     });
 
     this.backend.getWorkoutsByUser(currentUser.id).subscribe({
       next: (res) => {
-        console.log('📦 Treninzi sa servera:', res);
+        console.log('Treninzi sa servera:', res);
         this.zone.run(() => {
           this.workouts = res;
         });
       },
-      error: (err) => console.error('❌ Greška pri učitavanju treninga:', err)
+      error: (err) => console.error('Greška pri učitavanju treninga:', err)
     });
   }
 
   async deleteExercise(id: string) {
-    console.log('🧨 [START] deleteExercise triggered with ID:', id);
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this exercise?');
-    if (!confirmDelete) {
-      console.log('🚫 [CANCELLED] User aborted delete');
-      return;
-    }
+    if (!confirmDelete) return;
 
-    const exerciseToDelete = this.exercises.find(e => e.id === id);
-    console.log('🔍 [FOUND] Exercise to delete:', exerciseToDelete);
+    this.isDeleting = id; 
 
     try {
-      console.log('📡 [HTTP] Sending DELETE request...');
       await this.backend.deleteExercise(id).toPromise();
-      console.log('✅ [SUCCESS] Backend delete complete');
 
       this.zone.run(() => {
         this.exercises = this.exercises.filter(e => e.id !== id);
       });
-      console.log('🧹 [CLEANUP] Removed exercise from list');
 
+      const exerciseToDelete = this.exercises.find(e => e.id === id);
       if (exerciseToDelete?.localVideoPath) {
         try {
           await Filesystem.deleteFile({
             path: exerciseToDelete.localVideoPath,
             directory: Directory.Data
           });
-          console.log('📁 Local video deleted:', exerciseToDelete.localVideoPath);
-        } catch (err) {
-          console.warn('⚠️ File deletion skipped (web env):', err);
-        }
+        } catch { }
       }
 
-      await this.showAlert('✅ Exercise deleted successfully!');
+      await this.showAlert('Exercise deleted successfully!');
     } catch (err) {
-      console.error('💥 Error deleting exercise:', err);
-      await this.showAlert('❌ Failed to delete exercise. Check console.');
+      console.error('Error deleting exercise:', err);
+      await this.showAlert('Failed to delete exercise. Check console.');
+    } finally {
+      this.isDeleting = null;
     }
   }
 
@@ -135,25 +128,24 @@ export class Tab3Page implements OnInit {
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this workout?');
     if (!confirmDelete) return;
 
-    await this.showLoading('Deleting workout...');
+    this.isDeleting = id;
 
-    this.backend.deleteWorkout(id).subscribe({
-      next: async () => {
-        this.zone.run(() => {
-          this.workouts = this.workouts.filter(w => w.id !== id);
-        });
-        console.log('🗑️ Workout deleted:', id);
+    try {
+      await this.backend.deleteWorkout(id).toPromise();
 
-        await this.hideLoading();
-        await this.showAlert('Workout deleted successfully!');
-      },
-      error: async (err) => {
-        console.error('Error deleting workout:', err);
-        await this.hideLoading();
-        await this.showAlert('Failed to delete workout.');
-      }
-    });
+      this.zone.run(() => {
+        this.workouts = this.workouts.filter(w => w.id !== id);
+      });
+
+      await this.showAlert('Workout deleted successfully!');
+    } catch (err) {
+      console.error('Error deleting workout:', err);
+      await this.showAlert('Failed to delete workout. Check console.');
+    } finally {
+      this.isDeleting = null;
+    }
   }
+
 
   async confirmDelete(message: string): Promise<boolean> {
     const alert = await this.alertCtrl.create({
@@ -197,8 +189,8 @@ export class Tab3Page implements OnInit {
         </div>
       `;
     } catch (err) {
-      console.error('❌ Video nije pronađen:', err);
-      messageEl.innerHTML = `<p>⚠️ Video nije pronađen na uređaju.</p>`;
+      console.error('Video nije pronađen:', err);
+      messageEl.innerHTML = `<p> Video nije pronađen na uređaju.</p>`;
     }
   }
 
