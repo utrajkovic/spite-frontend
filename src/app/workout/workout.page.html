@@ -15,17 +15,21 @@
           <h2 class="exercise-name">{{ exercises[currentExerciseIndex]?.name }}</h2>
           <p class="exercise-desc">{{ exercises[currentExerciseIndex]?.description }}</p>
 
-          <div class="video-container">
-            <video *ngIf="!isResting && exercises[currentExerciseIndex]?.localVideoPath"
+          <div class="video-container" *ngIf="!isResting">
+            <video *ngIf="exercises[currentExerciseIndex]?.localVideoSrc"
               [src]="exercises[currentExerciseIndex]?.localVideoSrc" autoplay loop muted playsinline
-              class="exercise-video">
+              class="exercise-video fade-in">
             </video>
 
-            <div *ngIf="isResting || !exercises[currentExerciseIndex]?.localVideoSrc" class="video-placeholder fade-in">
-              <ion-icon name="pause-circle-outline" class="placeholder-icon"></ion-icon>
+            <div *ngIf="!exercises[currentExerciseIndex]?.localVideoSrc" class="video-placeholder fade-in">
+              <div class="placeholder-content">
+                <ion-icon name="videocam-off-outline" class="placeholder-icon"></ion-icon>
+                <p class="placeholder-text">No video available</p>
+              </div>
             </div>
-
           </div>
+
+
 
           <div class="exercise-info" *ngIf="!isResting">
             <p><ion-icon name="repeat-outline"></ion-icon> Serija:

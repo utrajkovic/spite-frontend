@@ -232,3 +232,45 @@ ion-content {
   background: rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
+.rest-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 40vh; /* fleksibilno, a ne preveliko */
+  max-height: 70vh;
+  width: 100%;
+
+  padding: 1.5rem;
+  box-sizing: border-box;
+
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0, 255, 255, 0.08);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+  animation: fadeIn 0.4s ease;
+}
+
+.rest-title {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 600;
+  color: #00ffff;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.rest-timer {
+  width: min(160px, 45vw);
+  height: min(160px, 45vw);
+}
+
+.circle-timer {
+  width: 100%;
+  height: 100%;
+}
+
+.circle-progress {
+  transition: stroke-dashoffset 1s linear;
+}

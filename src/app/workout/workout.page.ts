@@ -194,6 +194,8 @@ export class WorkoutPage implements OnInit {
   }
   async prepareLocalVideos() {
     for (const ex of this.exercises) {
+      ex.localVideoSrc = '';
+
       if (ex.localVideoPath) {
         try {
           const file = await Filesystem.readFile({
@@ -201,16 +203,20 @@ export class WorkoutPage implements OnInit {
             directory: Directory.Data
           });
           ex.localVideoSrc = `data:video/mp4;base64,${file.data}`;
+          console.log(`🎥 Lokalni video učitan: ${ex.name}`);
+          continue; 
         } catch (err) {
-          console.warn('⚠️ Video nije pronađen lokalno za', ex.name, err);
-          ex.localVideoSrc = '';
+          console.warn(`⚠️ Lokalni video nije pronađen za ${ex.name}`, err);
         }
+      }
+
+      if (ex.videoUrl) {
+        ex.localVideoSrc = ex.videoUrl;
+        console.log(`☁️ Cloudinary video korišćen za: ${ex.name}`);
       } else {
-        ex.localVideoSrc = '';
+        console.warn(`🚫 Nema video ni lokalno ni na Cloudinary za: ${ex.name}`);
       }
     }
   }
-
-
 
 }
