@@ -81,44 +81,58 @@ export class Tab3Page implements OnInit {
   }
 
   async deleteExercise(id: string) {
-    console.log('🧨 deleteExercise triggered with ID:', id);
+    console.log('🧨 [START] deleteExercise triggered with ID:', id);
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this exercise?');
-    if (!confirmDelete) return;
+    if (!confirmDelete) {
+      console.log('🚫 [CANCELLED] User aborted delete');
+      return;
+    }
 
     const exerciseToDelete = this.exercises.find(e => e.id === id);
+    console.log('🔍 [FOUND] Exercise to delete:', exerciseToDelete);
 
     await this.showLoading('Deleting exercise...');
+    console.log('⏳ [LOADING] Spinner shown');
 
-    this.backend.deleteExercise(id).subscribe({
-      next: async () => {
-        this.zone.run(() => {
-          this.exercises = this.exercises.filter(e => e.id !== id);
-        });
-        console.log('🗑️ Exercise deleted:', id);
+    try {
+      console.log('📡 [HTTP] Sending DELETE request...');
+      this.backend.deleteExercise(id).subscribe({
+        next: async () => {
+          console.log('✅ [SUCCESS] Backend delete complete');
 
-        if (exerciseToDelete?.localVideoPath) {
-          try {
-            await Filesystem.deleteFile({
-              path: exerciseToDelete.localVideoPath,
-              directory: Directory.Data
-            });
-            console.log('📁 Lokalni video obrisan:', exerciseToDelete.localVideoPath);
-          } catch (err) {
-            console.warn('⚠️ Nije moguće obrisati lokalni video:', err);
+          this.zone.run(() => {
+            this.exercises = this.exercises.filter(e => e.id !== id);
+          });
+          console.log('🧹 [CLEANUP] Removed exercise from list');
+
+          if (exerciseToDelete?.localVideoPath) {
+            console.log('💾 [FILESYSTEM] Trying to delete local file...');
+            try {
+              await Filesystem.deleteFile({
+                path: exerciseToDelete.localVideoPath,
+                directory: Directory.Data
+              });
+              console.log('📁 [FILESYSTEM] Local video deleted');
+            } catch (err) {
+              console.warn('⚠️ [FILESYSTEM] Error deleting local video:', err);
+            }
           }
+
+          await this.hideLoading();
+          console.log('🧩 [LOADING HIDDEN]');
+          await this.showAlert('Exercise deleted successfully!');
+        },
+        error: async (err) => {
+          console.error('❌ [ERROR] Backend delete failed:', err);
+          await this.hideLoading();
+          await this.showAlert('Failed to delete exercise.');
         }
-
-        await this.hideLoading();
-        await this.showAlert('Exercise deleted successfully!');
-      },
-      error: async (err) => {
-        console.error('Error deleting exercise:', err);
-        await this.hideLoading();
-        await this.showAlert('Failed to delete exercise.');
-      }
-    });
+      });
+    } catch (err: any) {
+      console.error('💥 [FATAL ERROR] Unexpected crash:', err);
+      await this.hideLoading();
+    }
   }
-
 
   async deleteWorkout(id: string) {
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this workout?');
