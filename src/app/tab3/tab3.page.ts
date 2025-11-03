@@ -11,6 +11,7 @@ import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { LocalDataService } from '../services/local-data.service';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-tab3',
