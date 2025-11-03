@@ -6,6 +6,7 @@ ion-content {
   color: #e0ffff;
 }
 
+/* 🩵 SECTIONS */
 .section-box {
   background: rgba(0, 40, 60, 0.25);
   border: 1px solid rgba(0, 255, 255, 0.25);
@@ -25,7 +26,6 @@ ion-content {
 }
 
 .section-box h2 {
-  
   font-size: 1.3rem;
   font-weight: 600;
   color: #00f7ff;
@@ -34,6 +34,29 @@ ion-content {
   margin-bottom: 14px;
 }
 
+/* 💾 LISTS */
+ion-list {
+  --background: transparent !important;
+  background: rgba(0, 255, 255, 0.03);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  transition: background 0.3s ease;
+}
+
+ion-list:hover {
+  background: rgba(0, 255, 255, 0.06);
+}
+
+ion-item {
+  --inner-border-width: 0;
+  --background: transparent;
+}
+
+/* 🔹 ITEM CARDS */
 .item-card {
   --background: rgba(0, 0, 0, 0.35);
   border-radius: 14px;
@@ -63,6 +86,7 @@ ion-label p {
   opacity: 0.85;
 }
 
+/* 🗑 DELETE BUTTON */
 ion-button[color="danger"] {
   --border-radius: 12px;
   --padding-start: 12px;
@@ -77,15 +101,53 @@ ion-button[color="danger"]:hover {
   transform: scale(1.2);
 }
 
-.separator {
-  width: 80%;
-  height: 2px;
-  background: linear-gradient(90deg, #00f7ff, #00ffaa);
-  margin: 25px auto;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+.delete-btn {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-spinner {
+    width: 22px;
+    height: 22px;
+  }
 }
 
+/* ✨ PREVIEW MODAL */
+.exercise-preview-alert {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  text-align: center;
+  color: #ccefff;
+
+  video {
+    width: 100%;
+    max-height: 280px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: #ccefff;
+    margin-top: 8px;
+  }
+}
+
+.preview-spinner {
+  width: 40px;
+  height: 40px;
+  color: #00ffff;
+  margin-bottom: 12px;
+  animation: pulse 1.4s infinite ease-in-out;
+}
+
+/* 🌀 ANIMATIONS */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -97,6 +159,28 @@ ion-button[color="danger"]:hover {
   }
 }
 
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* 🪩 SEPARATOR */
+.separator {
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(90deg, #00f7ff, #00ffaa);
+  margin: 25px auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+/* 📱 RESPONSIVE */
 @media (max-width: 600px) {
   .section-box {
     padding: 14px;
@@ -113,27 +197,13 @@ ion-button[color="danger"]:hover {
   ion-button {
     font-size: 0.9rem;
   }
-}
-ion-list {
-  --background: transparent !important;
-  background: rgba(0, 255, 255, 0.03);
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  border-radius: 16px;
-  padding: 8px;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.05);
-  border: 1px solid rgba(0, 255, 255, 0.1);
-  transition: background 0.3s ease;
+
+  .exercise-preview-alert video {
+    max-height: 220px;
+  }
 }
 
-ion-list:hover {
-  background: rgba(0, 255, 255, 0.06);
-}
-
-ion-item {
-  --inner-border-width: 0;
-  --background: transparent;
-}
+/* 🌌 IONIC DEFAULT OVERRIDES */
 .custom-loading {
   --background: rgba(0, 20, 30, 0.9);
   --spinner-color: #00ffff;
@@ -149,16 +219,18 @@ ion-item {
   text-align: center;
   border: 1px solid rgba(0, 255, 255, 0.25);
 }
+/* 🔵 Custom spinner koji radi unutar ion-alert */
+.custom-spinner {
+  border: 3px solid rgba(0, 255, 255, 0.2);
+  border-top: 3px solid #00ffff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.9s linear infinite;
+  margin: 0 auto 12px auto;
+}
 
-.delete-btn {
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  ion-spinner {
-    width: 22px;
-    height: 22px;
-  }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

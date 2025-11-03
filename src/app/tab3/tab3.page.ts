@@ -94,7 +94,7 @@ export class Tab3Page implements OnInit {
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this exercise?');
     if (!confirmDelete) return;
 
-    this.isDeleting = id; 
+    this.isDeleting = id;
 
     try {
       await this.backend.deleteExercise(id).toPromise();
@@ -166,33 +166,61 @@ export class Tab3Page implements OnInit {
   async showExercisePreview(exercise: Exercise) {
     const alert = await this.alertCtrl.create({
       header: exercise.name,
-      message: ' ',
+      message: ' ', 
       buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
       cssClass: 'custom-alert exercise-preview-modal'
     });
 
     await alert.present();
+
     const messageEl = document.querySelector('ion-alert .alert-message');
     if (!messageEl) return;
 
+    messageEl.innerHTML = `
+    <div class="exercise-preview-alert">
+      <div class="custom-spinner"></div>
+      <p>Loading video...</p>
+    </div>
+  `;
+
     try {
-      if (!exercise.localVideoPath) throw new Error('No local video path');
-      const file = await Filesystem.readFile({
-        path: exercise.localVideoPath,
-        directory: Directory.Data
-      });
-      const videoSrc = `data:video/mp4;base64,${file.data}`;
+      let videoSrc = '';
+
+      if (exercise.localVideoPath) {
+        try {
+          const file = await Filesystem.readFile({
+            path: exercise.localVideoPath,
+            directory: Directory.Data
+          });
+          videoSrc = `data:video/mp4;base64,${file.data}`;
+        } catch {
+          console.warn('⚠️ Lokalni video nije pronađen, koristi Cloudinary URL');
+        }
+      }
+
+      if (!videoSrc && exercise.videoUrl) {
+        videoSrc = exercise.videoUrl;
+      }
+
+      if (!videoSrc) {
+        messageEl.innerHTML = `<p>⚠️ Nema dostupnog videa za ovu vežbu.</p>`;
+        return;
+      }
+
       messageEl.innerHTML = `
-        <div class="exercise-preview-alert">
-          <video src="${videoSrc}" autoplay loop muted playsinline controls></video>
-          <p>${exercise.description || 'No description available.'}</p>
-        </div>
-      `;
+      <div class="exercise-preview-alert">
+        <video id="previewVideo" src="${videoSrc}" autoplay loop muted playsinline controls></video>
+        <p>${exercise.description || 'No description available.'}</p>
+      </div>
+    `;
     } catch (err) {
-      console.error('Video nije pronađen:', err);
-      messageEl.innerHTML = `<p> Video nije pronađen na uređaju.</p>`;
+      console.error('❌ Greška pri prikazu videa:', err);
+      messageEl.innerHTML = `<p>⚠️ Video nije moguće učitati.</p>`;
     }
   }
+
+
+
 
   async showWorkoutDetails(workout: Workout) {
     const exerciseNames = workout.exerciseIds
