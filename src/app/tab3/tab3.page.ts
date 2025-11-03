@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
-  IonList, IonItem, IonLabel, IonButton, IonIcon
+  IonList, IonItem, IonLabel, IonButton, IonIcon,IonSpinner
 } from '@ionic/angular/standalone';
 import { BackendService } from '../services/backend.service';
 import { Exercise, Workout } from '../services/models';
@@ -20,8 +20,17 @@ import { Capacitor } from '@capacitor/core';
   standalone: true,
   imports: [
     CommonModule,
-    IonContent, IonHeader, IonTitle, IonToolbar,
-    IonList, IonItem, IonLabel, IonButton, IonIcon
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonButton,
+    IonIcon,
+    IonSpinner   
+
   ]
 })
 export class Tab3Page implements OnInit {
