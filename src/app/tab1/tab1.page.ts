@@ -35,7 +35,7 @@ export class Tab1Page {
     const currentUser = user.value ? JSON.parse(user.value) : null;
 
     if (!currentUser) {
-      console.warn('⛔ Nema ulogovanog korisnika!');
+      console.warn('Nema ulogovanog korisnika!');
       return;
     }
 

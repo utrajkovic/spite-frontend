@@ -35,6 +35,7 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
 ion-alert.custom-alert {
   --background: rgba(0, 40, 60, 0.25) !important;
   --backdrop-opacity: 0.3;
@@ -75,6 +76,7 @@ ion-alert.custom-alert::part(button):hover {
   filter: brightness(1.2);
   transform: scale(1.03);
 }
+
 ion-toast.custom-toast {
   position: fixed !important;
   top: 50% !important;
@@ -119,10 +121,12 @@ ion-toast.success-toast::part(message) {
   color: #00ffaa;
   text-shadow: 0 0 8px rgba(0, 255, 170, 0.6);
 }
+
 ion-toast.error-toast::part(message) {
   color: #ff4d4d;
   text-shadow: 0 0 8px rgba(255, 80, 80, 0.6);
 }
+
 ion-alert.exercise-preview-modal {
   --background: rgba(0, 40, 60, 0.25);
   --backdrop-opacity: 0.3;
@@ -164,6 +168,7 @@ ion-alert.exercise-preview-modal::part(button) {
   border-radius: 10px;
   letter-spacing: 0.5px;
 }
+
 .item-card {
   --background: rgba(0, 0, 0, 0.35);
   border-radius: 14px;
@@ -219,10 +224,13 @@ ion-alert.exercise-preview-modal.allow-html::part(message) {
   margin: 0;
   opacity: 0.9;
 }
+
 /* 🧊 Spite video alert modal */
 ion-alert.exercise-preview-modal::part(message) {
-  max-height: 80vh;          /* alert sada zauzima max 80% visine ekrana */
-  overflow-y: auto;           /* ako je sadržaj duži — scroll */
+  max-height: 80vh;
+  /* alert sada zauzima max 80% visine ekrana */
+  overflow-y: auto;
+  /* ako je sadržaj duži — scroll */
   padding-bottom: 0 !important;
 }
 
@@ -239,11 +247,14 @@ ion-alert.exercise-preview-modal::part(message) {
 /* 🎬 Video – lepo se uklapa i ne izlazi iz modala */
 .exercise-preview-alert video {
   width: 100%;
-  max-width: 90vw;            /* prilagođava širinu ekrana telefona */
-  max-height: 40vh;           /* ograniči visinu da ne prelazi pola ekrana */
+  max-width: 90vw;
+  /* prilagođava širinu ekrana telefona */
+  max-height: 40vh;
+  /* ograniči visinu da ne prelazi pola ekrana */
   border-radius: 14px;
   margin: 8px 0 10px;
-  object-fit: contain;        /* zadrži proporcije */
+  object-fit: contain;
+  /* zadrži proporcije */
   box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
   background: rgba(0, 255, 255, 0.05);
   border: 1px solid rgba(0, 255, 255, 0.2);
@@ -274,6 +285,7 @@ ion-alert.exercise-preview-modal::part(message) {
     font-size: 14px;
   }
 }
+
 ion-loading.custom-loading {
   --background: rgba(0, 40, 60, 0.25);
   --spinner-color: #00f7ff;
@@ -284,13 +296,60 @@ ion-loading.custom-loading {
   border: 1px solid rgba(0, 255, 255, 0.25);
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
 }
+/* 🌌 Workout details alert styling (global) */
+ion-alert.workout-preview-modal.allow-html::part(message) {
+  white-space: normal;
+  overflow-y: auto;
+  max-height: 80vh;
+  padding-bottom: 0;
+}
 
+/* Glavni kontejner */
+.workout-details-alert {
+  color: #e0ffff;
+  font-family: 'Orbitron', sans-serif;
+  line-height: 1.4em;
+  padding: 6px 4px;
+}
 
+/* Naslov */
+.workout-details-alert h3 {
+  color: #00ffff;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 8px;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
 
+/* Podnaslov (Exercises) */
+.workout-details-alert h4 {
+  margin-top: 10px;
+  color: #00ffaa;
+  text-shadow: 0 0 6px rgba(0, 255, 170, 0.4);
+}
 
+/* Paragrafi */
+.workout-details-alert p {
+  font-size: 14px;
+  margin: 4px 0;
+  opacity: 0.9;
+  text-align: left;
+}
 
-
-
-
-
-
+/* Separator linija */
+.workout-details-alert hr {
+  border: 0;
+  height: 1px;
+  background: rgba(0, 255, 255, 0.2);
+  margin: 10px 0;
+}
+ion-alert.workout-preview-modal {
+  --background: rgba(0, 40, 60, 0.25);
+  --backdrop-opacity: 0.3;
+  --border-radius: 18px;
+  --box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+  backdrop-filter: blur(12px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  font-family: 'Orbitron', sans-serif;
+}

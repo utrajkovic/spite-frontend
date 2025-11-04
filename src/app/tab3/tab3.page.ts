@@ -9,9 +9,7 @@ import { Exercise, Workout } from '../services/models';
 import { AlertController, ToastController, LoadingController } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
-import { Filesystem, Directory } from '@capacitor/filesystem';
 import { LocalDataService } from '../services/local-data.service';
-import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-tab3',
@@ -30,12 +28,13 @@ import { Capacitor } from '@capacitor/core';
     IonButton,
     IonIcon,
     IonSpinner
-
   ]
 })
 export class Tab3Page implements OnInit {
   exercises: Exercise[] = [];
   workouts: Workout[] = [];
+  loading: HTMLIonLoadingElement | null = null;
+  isDeleting: string | null = null;
 
   constructor(
     private backend: BackendService,
@@ -51,8 +50,6 @@ export class Tab3Page implements OnInit {
     this.loadData();
     this.localData.refreshTab3$.subscribe(() => this.loadData());
   }
-  loading: HTMLIonLoadingElement | null = null;
-  isDeleting: string | null = null;
 
   async ionViewWillEnter() {
     await this.loadData();
@@ -63,7 +60,7 @@ export class Tab3Page implements OnInit {
     const currentUser = user.value ? JSON.parse(user.value) : null;
 
     if (!currentUser) {
-      console.warn('Nema ulogovanog korisnika!');
+      console.warn('⚠️ Nema ulogovanog korisnika!');
       return;
     }
 
@@ -71,7 +68,7 @@ export class Tab3Page implements OnInit {
 
     this.backend.getExercisesByUser(currentUser.id).subscribe({
       next: (res) => {
-        console.log('Vežbe sa servera:', res);
+        console.log('📦 Vežbe sa servera:', res);
         this.zone.run(() => {
           this.exercises = res;
         });
@@ -81,7 +78,7 @@ export class Tab3Page implements OnInit {
 
     this.backend.getWorkoutsByUser(currentUser.id).subscribe({
       next: (res) => {
-        console.log('Treninzi sa servera:', res);
+        console.log('📦 Treninzi sa servera:', res);
         this.zone.run(() => {
           this.workouts = res;
         });
@@ -103,26 +100,14 @@ export class Tab3Page implements OnInit {
         this.exercises = this.exercises.filter(e => e.id !== id);
       });
 
-      const exerciseToDelete = this.exercises.find(e => e.id === id);
-      if (exerciseToDelete?.localVideoPath) {
-        try {
-          await Filesystem.deleteFile({
-            path: exerciseToDelete.localVideoPath,
-            directory: Directory.Data
-          });
-        } catch { }
-      }
-
       await this.showAlert('Exercise deleted successfully!');
     } catch (err) {
       console.error('Error deleting exercise:', err);
-      await this.showAlert('Failed to delete exercise. Check console.');
+      await this.showAlert('Failed to delete exercise.');
     } finally {
       this.isDeleting = null;
     }
   }
-
-
 
   async deleteWorkout(id: string) {
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this workout?');
@@ -140,12 +125,11 @@ export class Tab3Page implements OnInit {
       await this.showAlert('Workout deleted successfully!');
     } catch (err) {
       console.error('Error deleting workout:', err);
-      await this.showAlert('Failed to delete workout. Check console.');
+      await this.showAlert('Failed to delete workout.');
     } finally {
       this.isDeleting = null;
     }
   }
-
 
   async confirmDelete(message: string): Promise<boolean> {
     const alert = await this.alertCtrl.create({
@@ -166,7 +150,7 @@ export class Tab3Page implements OnInit {
   async showExercisePreview(exercise: Exercise) {
     const alert = await this.alertCtrl.create({
       header: exercise.name,
-      message: ' ', 
+      message: '',
       buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
       cssClass: 'custom-alert exercise-preview-modal'
     });
@@ -178,48 +162,39 @@ export class Tab3Page implements OnInit {
 
     messageEl.innerHTML = `
     <div class="exercise-preview-alert">
-      <div class="custom-spinner"></div>
+      <ion-spinner name="crescent"></ion-spinner>
       <p>Loading video...</p>
     </div>
   `;
 
     try {
-      let videoSrc = '';
-
-      if (exercise.localVideoPath) {
-        try {
-          const file = await Filesystem.readFile({
-            path: exercise.localVideoPath,
-            directory: Directory.Data
-          });
-          videoSrc = `data:video/mp4;base64,${file.data}`;
-        } catch {
-          console.warn('⚠️ Lokalni video nije pronađen, koristi Cloudinary URL');
-        }
-      }
-
-      if (!videoSrc && exercise.videoUrl) {
-        videoSrc = exercise.videoUrl;
-      }
-
-      if (!videoSrc) {
-        messageEl.innerHTML = `<p>⚠️ Nema dostupnog videa za ovu vežbu.</p>`;
+      if (!exercise.videoUrl) {
+        messageEl.innerHTML = `<p>⚠️ No video available for this exercise.</p>`;
         return;
       }
 
-      messageEl.innerHTML = `
-      <div class="exercise-preview-alert">
-        <video id="previewVideo" src="${videoSrc}" autoplay loop muted playsinline controls></video>
-        <p>${exercise.description || 'No description available.'}</p>
-      </div>
-    `;
+      const videoEl = document.createElement('video');
+      videoEl.src = exercise.videoUrl;
+      videoEl.autoplay = true;
+      videoEl.loop = true;
+      videoEl.muted = true;
+      videoEl.controls = true;
+      videoEl.playsInline = true;
+      videoEl.className = 'exercise-video';
+
+      videoEl.onloadeddata = () => {
+        messageEl.innerHTML = `
+        <div class="exercise-preview-alert">
+          <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
+          <p>${exercise.description || 'No description available.'}</p>
+        </div>
+      `;
+      };
     } catch (err) {
-      console.error('❌ Greška pri prikazu videa:', err);
-      messageEl.innerHTML = `<p>⚠️ Video nije moguće učitati.</p>`;
+      console.error('Error loading video:', err);
+      messageEl.innerHTML = `<p> Unable to load video.</p>`;
     }
   }
-
-
 
 
   async showWorkoutDetails(workout: Workout) {
@@ -229,24 +204,27 @@ export class Tab3Page implements OnInit {
 
     const alert = await this.alertCtrl.create({
       header: workout.title,
-      message: ' ',
+      message: '', 
       buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
-      cssClass: 'custom-alert workout-preview-modal'
+      cssClass: 'custom-alert workout-preview-modal allow-html'
     });
 
     await alert.present();
+
     const messageEl = document.querySelector('ion-alert .alert-message');
-    if (messageEl) {
-      messageEl.innerHTML = `
-        <div class="workout-details-alert">
-          <p><strong>Category:</strong> ${workout.subtitle || '—'}</p>
-          <p><strong>Description:</strong> ${workout.content || '—'}</p>
-          <hr>
-          <p><strong>Exercises:</strong><br>${exerciseNames || 'No exercises listed.'}</p>
-        </div>
-      `;
-    }
+    if (!messageEl) return;
+
+    messageEl.innerHTML = `
+    <div class="workout-details-alert">
+      <p><strong>Category:</strong> ${workout.subtitle || '—'}</p>
+      <p><strong>Description:</strong> ${workout.content || '—'}</p>
+      <hr>
+      <h4>Exercises:</h4>
+      <p>${exerciseNames || 'No exercises listed.'}</p>
+    </div>
+  `;
   }
+
 
   async logout() {
     const alert = await this.alertCtrl.create({
@@ -284,6 +262,7 @@ export class Tab3Page implements OnInit {
       this.loading = null;
     }
   }
+
   async showAlert(message: string) {
     const alert = await this.alertCtrl.create({
       header: 'Notification',
@@ -293,5 +272,4 @@ export class Tab3Page implements OnInit {
     });
     await alert.present();
   }
-
 }

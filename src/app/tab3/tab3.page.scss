@@ -234,3 +234,29 @@ ion-button[color="danger"]:hover {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+.logout-btn{
+  font-family: 'Orbitron', sans-serif;
+}
+
+.exercise-preview-alert {
+  text-align: center;
+  p {
+    color: #e0ffff;
+    margin-top: 10px;
+  }
+}
+
+.spinner {
+  border: 4px solid rgba(0, 255, 255, 0.2);
+  border-top: 4px solid cyan;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  margin: 20px auto;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

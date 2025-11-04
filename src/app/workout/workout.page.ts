@@ -8,16 +8,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService } from '../services/backend.service';
 import { Workout, Exercise } from '../services/models';
 import { AlertController } from '@ionic/angular';
-import { Filesystem, Directory } from '@capacitor/filesystem';
-
-
 
 @Component({
   selector: 'app-workout',
   templateUrl: './workout.page.html',
   styleUrls: ['./workout.page.scss'],
   standalone: true,
-  imports: [IonSpinner,
+  imports: [
+    IonSpinner,
     IonButtons, IonProgressBar, IonIcon, CommonModule, IonContent,
     IonHeader, IonTitle, IonToolbar, IonButton, IonCard, IonCardContent
   ],
@@ -38,6 +36,7 @@ export class WorkoutPage implements OnInit {
   restCallback?: Function;
   loading = true;
   private alertShown = false;
+  isVideoLoading = false;
 
 
   constructor(
@@ -68,22 +67,19 @@ export class WorkoutPage implements OnInit {
               this.alertShown = true;
               this.showNoExercisesAlert();
             }
-            this.prepareLocalVideos();
           },
           error: (err) => {
-            console.error('Greška pri učitavanju vežbi:', err);
+            console.error('❌ Greška pri učitavanju vežbi:', err);
             this.loading = false;
           }
         });
       },
       error: (err) => {
-        console.error('Greška pri učitavanju treninga:', err);
+        console.error('❌ Greška pri učitavanju treninga:', err);
         this.loading = false;
       }
     });
   }
-
-
 
   startWorkout() {
     this.started = true;
@@ -135,37 +131,23 @@ export class WorkoutPage implements OnInit {
 
   nextExercise() {
     if (this.currentExerciseIndex < this.exercises.length - 1) {
-      this.currentExerciseIndex++;
-      this.currentSet = 1;
+      this.isVideoLoading = true;
+
+      setTimeout(() => {
+        this.currentExerciseIndex++;
+        this.currentSet = 1;
+        this.isVideoLoading = false;
+      }, 800);
     } else {
-      this.showAlert('Training Done');
+      this.showAlert('✅ Training completed!');
       this.router.navigate(['/tabs/tab1']);
     }
   }
 
+
   goHome() {
     this.router.navigate(['/tabs/tab1']);
   }
-
-  async getVideoUrl(exercise: Exercise): Promise<string> {
-    try {
-      if (!exercise.localVideoPath) {
-        console.warn('⚠️ Vežba nema lokalnu putanju za video.');
-        return '';
-      }
-
-      const file = await Filesystem.readFile({
-        path: exercise.localVideoPath,
-        directory: Directory.Data
-      });
-
-      return `data:video/mp4;base64,${file.data}`;
-    } catch (err) {
-      console.error('❌ Greška pri čitanju lokalnog videa:', err);
-      return '';
-    }
-  }
-
 
   async showAlert(message: string) {
     const alert = await this.alertCtrl.create({
@@ -189,34 +171,6 @@ export class WorkoutPage implements OnInit {
       }],
       cssClass: 'custom-alert'
     });
-
     await alert.present();
   }
-  async prepareLocalVideos() {
-    for (const ex of this.exercises) {
-      ex.localVideoSrc = '';
-
-      if (ex.localVideoPath) {
-        try {
-          const file = await Filesystem.readFile({
-            path: ex.localVideoPath,
-            directory: Directory.Data
-          });
-          ex.localVideoSrc = `data:video/mp4;base64,${file.data}`;
-          console.log(`🎥 Lokalni video učitan: ${ex.name}`);
-          continue; 
-        } catch (err) {
-          console.warn(`⚠️ Lokalni video nije pronađen za ${ex.name}`, err);
-        }
-      }
-
-      if (ex.videoUrl) {
-        ex.localVideoSrc = ex.videoUrl;
-        console.log(`☁️ Cloudinary video korišćen za: ${ex.name}`);
-      } else {
-        console.warn(`🚫 Nema video ni lokalno ni na Cloudinary za: ${ex.name}`);
-      }
-    }
-  }
-
 }

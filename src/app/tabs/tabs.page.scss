@@ -1,13 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
 
-/* 🌌 Globalna pozadina */
 ion-tabs {
-  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  background: transparent !important;
+  --background: transparent !important;
+}
+
+ion-content {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%) !important;
 }
 
 /* 💎 Header */
 .main-header {
-  background: rgba(0, 40, 60, 0.25);
+  background: transparent !important;
   backdrop-filter: blur(10px) saturate(140%);
   -webkit-backdrop-filter: blur(10px) saturate(140%);
   border-bottom: 1px solid rgba(0, 255, 255, 0.25);
@@ -20,13 +24,20 @@ ion-toolbar {
 }
 
 .workout-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
   font-family: 'Monoton', cursive;
   color: #00f7ff;
   font-size: clamp(22px, 5vw, 28px);
   letter-spacing: 3px;
-  text-align: center;
   text-shadow: 0 0 8px #00f7ff;
+  margin: 0 auto;
+  position: relative;
 }
+
 
 /* ✨ Lagana flicker animacija */
 .flicker {
@@ -34,19 +45,40 @@ ion-toolbar {
 }
 
 @keyframes flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 0.85; }
-  20%, 24%, 55% { opacity: 1; text-shadow: none; }
+
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    opacity: 0.85;
+  }
+
+  20%,
+  24%,
+  55% {
+    opacity: 1;
+    text-shadow: none;
+  }
 }
 
-/* 🧊 Donji meni */
 .glass-tab-bar {
-  --background: rgba(0, 40, 60, 0.25);
-  backdrop-filter: blur(8px) saturate(140%);
-  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  background: transparent !important; /* bez boje */
+  --background: transparent !important;
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
   border-top: 1px solid rgba(0, 255, 255, 0.25);
   box-shadow: 0 -2px 8px rgba(0, 255, 255, 0.1);
   height: 60px;
+  z-index: 10;
 }
+
 
 /* Dugmad u meniju */
 ion-tab-button {

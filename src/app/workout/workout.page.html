@@ -1,7 +1,5 @@
 <ion-content fullscreen>
-
-  <ion-spinner *ngIf="loading" name="crescent" class="spinner-center">
-  </ion-spinner>
+  <ion-spinner *ngIf="loading" name="crescent" class="spinner-center"></ion-spinner>
 
   <div *ngIf="!loading" class="content-wrapper">
     <div class="card-wrapper">
@@ -16,20 +14,22 @@
           <p class="exercise-desc">{{ exercises[currentExerciseIndex]?.description }}</p>
 
           <div class="video-container" *ngIf="!isResting">
-            <video *ngIf="exercises[currentExerciseIndex]?.localVideoSrc"
-              [src]="exercises[currentExerciseIndex]?.localVideoSrc" autoplay loop muted playsinline
-              class="exercise-video fade-in">
+            <video *ngIf="exercises[currentExerciseIndex]?.videoUrl" [src]="exercises[currentExerciseIndex]?.videoUrl"
+              autoplay loop [muted]="true" playsinline class="exercise-video fade-in" controls>
             </video>
 
-            <div *ngIf="!exercises[currentExerciseIndex]?.localVideoSrc" class="video-placeholder fade-in">
+            <div *ngIf="isVideoLoading" class="video-loading-overlay fade-in">
+              <ion-spinner name="crescent"></ion-spinner>
+              <p>Loading next exercise...</p>
+            </div>
+
+            <div *ngIf="!exercises[currentExerciseIndex]?.videoUrl" class="video-placeholder fade-in">
               <div class="placeholder-content">
                 <ion-icon name="videocam-off-outline" class="placeholder-icon"></ion-icon>
                 <p class="placeholder-text">No video available</p>
               </div>
             </div>
           </div>
-
-
 
           <div class="exercise-info" *ngIf="!isResting">
             <p><ion-icon name="repeat-outline"></ion-icon> Serija:
@@ -65,17 +65,16 @@
       </ion-card>
 
       <div *ngIf="started && currentExerciseIndex < exercises.length - 1" class="next-exercise">
-        <p> Next exercise: <strong>{{ exercises[currentExerciseIndex + 1]?.name }}</strong></p>
+        <p>Next exercise: <strong>{{ exercises[currentExerciseIndex + 1]?.name }}</strong></p>
       </div>
 
       <ion-card *ngIf="isResting && currentExerciseIndex < exercises.length - 1" class="next-exercise-card">
         <ion-card-content>
           <div class="video-container">
-            <video *ngIf="exercises[currentExerciseIndex + 1]?.localVideoPath"
-              [src]="exercises[currentExerciseIndex + 1]?.localVideoSrc" autoplay loop muted playsinline
-              class="exercise-video">
+            <video *ngIf="exercises[currentExerciseIndex + 1]?.videoUrl"
+              [src]="exercises[currentExerciseIndex + 1]?.videoUrl" autoplay loop [muted]="true" playsinline
+              class="exercise-video" controls>
             </video>
-
           </div>
         </ion-card-content>
       </ion-card>
@@ -84,8 +83,8 @@
         *ngIf="!started && !loading && exercises.length > 0">
         Start Workout
       </ion-button>
-      <div *ngIf="!loading && exercises.length === 0" class="no-exercises">
-      </div>
+
+      <div *ngIf="!loading && exercises.length === 0" class="no-exercises"></div>
     </div>
   </div>
 </ion-content>

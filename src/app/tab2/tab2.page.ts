@@ -10,7 +10,6 @@ import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
-import { Filesystem, Directory } from '@capacitor/filesystem';
 
 @Component({
   selector: 'app-tab2',
@@ -55,7 +54,6 @@ export class Tab2Page implements OnInit {
       sets: [3, Validators.required],
       reps: ['10', Validators.required],
       videoUrl: [''],
-      localVideoPath: [''],
       restBetweenSets: [60, Validators.required],
       restAfterExercise: [180, Validators.required]
     });
@@ -85,18 +83,18 @@ export class Tab2Page implements OnInit {
         this.allExercises = [];
         return;
       }
+
       this.http.get<Exercise[]>(`${this.backendUrl}/api/exercises/user/${user.id}`).subscribe({
         next: (res) => {
           this.allExercises = res;
           console.log('Loaded user exercises:', res);
         },
-        error: (err) => console.error('.Error loading user exercises', err)
+        error: (err) => console.error('Error loading user exercises', err)
       });
     } catch (err) {
       console.error('Error fetching user for exercises:', err);
     }
   }
-
 
   async saveWorkout() {
     if (!this.workoutForm.valid) {
@@ -118,7 +116,6 @@ export class Tab2Page implements OnInit {
       exerciseIds: formValue.exercises.map((e: any) => e.exerciseId),
       userId: user.id
     };
-    console.log('📤 Sending workout:', workout);
 
     try {
       this.showLoading('Saving workout...');
@@ -156,9 +153,8 @@ export class Tab2Page implements OnInit {
     this.showAlert(`🎥 Video selected: ${file.name}`);
   }
 
-
   async saveExercise() {
-    if (this.isUploading) return; // ⛔ spreči duple klikove
+    if (this.isUploading) return;
     this.isUploading = true;
 
     if (!this.exerciseForm.valid) {
@@ -179,36 +175,18 @@ export class Tab2Page implements OnInit {
 
     if (this.selectedVideo) {
       try {
-        const base64Data = await this.readFileAsBase64(this.selectedVideo);
-        const fileName = `${Date.now()}_${this.selectedVideo.name}`;
-        const savePath = `SpiteVideos/${fileName}`;
+        const formData = new FormData();
+        formData.append('video', this.selectedVideo);
 
-        await Filesystem.writeFile({
-          path: savePath,
-          data: base64Data,
-          directory: Directory.Data
-        });
+        const cloudUrl = await this.http
+          .post(`${this.backendUrl}/api/exercises/upload`, formData, { responseType: 'text' })
+          .toPromise();
 
-        exercise.localVideoPath = savePath;
-        console.log('✅ Video saved locally at', savePath);
-
-        try {
-          const formData = new FormData();
-          formData.append('video', this.selectedVideo);
-
-          const cloudUrl = await this.http
-            .post(`${this.backendUrl}/api/exercises/upload`, formData, { responseType: 'text' })
-            .toPromise();
-
-          exercise.videoUrl = cloudUrl;
-          console.log('☁️ Cloudinary upload success:', cloudUrl);
-        } catch (err) {
-          console.warn('⚠️ Cloudinary upload failed — keeping local only.');
-        }
-
+        exercise.videoUrl = cloudUrl;
+        console.log('Cloudinary upload success:', cloudUrl);
       } catch (err) {
-        console.error('❌ Error saving video locally:', err);
-        this.showAlert('Error saving video locally.');
+        console.error('Cloudinary upload failed:', err);
+        this.showAlert('Upload failed. Please try again.');
         this.isUploading = false;
         return;
       }
@@ -220,14 +198,13 @@ export class Tab2Page implements OnInit {
       await this.hideLoading();
 
       this.localData.triggerTab3Refresh();
-      this.showAlert('✅ Exercise added successfully!');
+      this.showAlert('Exercise added successfully!');
       this.exerciseForm.reset({
         name: '',
         description: '',
         sets: 3,
         reps: '10',
         videoUrl: '',
-        localVideoPath: '',
         restBetweenSets: 60,
         restAfterExercise: 180
       });
@@ -237,28 +214,11 @@ export class Tab2Page implements OnInit {
     } catch (err) {
       console.error('Error adding exercise:', err);
       await this.hideLoading();
-      this.showAlert('❌ Error adding exercise.');
+      this.showAlert('Error adding exercise.');
     } finally {
       this.isUploading = false;
     }
   }
-
-
-
-  private readFileAsBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        resolve(result.split(',')[1]);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-
-
 
   async showAlert(message: string) {
     const alert = await this.alertCtrl.create({
