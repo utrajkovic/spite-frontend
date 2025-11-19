@@ -22,9 +22,6 @@ import { AlertController } from '@ionic/angular';
     CommonModule,
     ReactiveFormsModule,
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
     IonItem,
     IonLabel,
     IonInput,
@@ -34,7 +31,7 @@ import { AlertController } from '@ionic/angular';
 })
 export class LoginPage {
   loginForm: FormGroup;
-  readonly backendUrl = 'https://dead-jade-spite-11d3e918.koyeb.app/api/users/login';
+  readonly backendUrl = 'https://spite-backend-v2.onrender.com/api/users/login';
 
   constructor(
     private fb: FormBuilder,
@@ -59,11 +56,15 @@ export class LoginPage {
 
     try {
       const user: any = await this.http.post(this.backendUrl, credentials).toPromise();
-
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('username', user.username);
+      localStorage.setItem('role', user.role);
+      
       await Preferences.set({
         key: 'user',
         value: JSON.stringify(user)
       });
+      localStorage.setItem('user', JSON.stringify(user));
 
       this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true });
 

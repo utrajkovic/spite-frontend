@@ -10,6 +10,7 @@ import { AlertController, ToastController, LoadingController } from '@ionic/angu
 import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../services/local-data.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-tab3',
@@ -33,8 +34,11 @@ import { LocalDataService } from '../services/local-data.service';
 export class Tab3Page implements OnInit {
   exercises: Exercise[] = [];
   workouts: Workout[] = [];
+  assignedWorkouts: Workout[] = []; // 🟢 novi deo
   loading: HTMLIonLoadingElement | null = null;
   isDeleting: string | null = null;
+
+  readonly backendUrl = 'https://spite-backend-v2.onrender.com'; 
 
   constructor(
     private backend: BackendService,
@@ -43,7 +47,8 @@ export class Tab3Page implements OnInit {
     private router: Router,
     private localData: LocalDataService,
     private zone: NgZone,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
@@ -66,6 +71,7 @@ export class Tab3Page implements OnInit {
 
     console.log('👤 Ulogovan korisnik:', currentUser);
 
+    // 🔹 Vežbe
     this.backend.getExercisesByUser(currentUser.id).subscribe({
       next: (res) => {
         console.log('📦 Vežbe sa servera:', res);
@@ -78,14 +84,25 @@ export class Tab3Page implements OnInit {
 
     this.backend.getWorkoutsByUser(currentUser.id).subscribe({
       next: (res) => {
-        console.log('📦 Treninzi sa servera:', res);
+        console.log('📦 Moji treninzi:', res);
         this.zone.run(() => {
           this.workouts = res;
         });
       },
       error: (err) => console.error('Greška pri učitavanju treninga:', err)
     });
+
+    this.http.get<Workout[]>(`${this.backendUrl}/api/trainer/client-workouts-full/${currentUser.username}`).subscribe({
+      next: (res) => {
+        console.log('🎯 Dodeljeni treninzi od trenera:', res);
+        this.zone.run(() => {
+          this.assignedWorkouts = res;
+        });
+      },
+      error: (err) => console.error('Greška pri učitavanju dodeljenih treninga:', err)
+    });
   }
+
 
   async deleteExercise(id: string) {
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this exercise?');
@@ -197,14 +214,16 @@ export class Tab3Page implements OnInit {
   }
 
 
-  async showWorkoutDetails(workout: Workout) {
-    const exerciseNames = workout.exerciseIds
-      .map(id => this.exercises.find(e => e.id === id)?.name || 'Unknown exercise')
-      .join('<br>');
+  async showWorkoutDetails(workout: any) {
+    const exerciseNames = workout.exercises
+      ? workout.exercises.map((e: any) => e.name).join('<br>')
+      : (workout.exerciseIds
+        ?.map((id: string) => this.exercises.find(e => e.id === id)?.name || 'Unknown')
+        .join('<br>') || 'No exercises listed.');
 
     const alert = await this.alertCtrl.create({
       header: workout.title,
-      message: '', 
+      message: '',
       buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
       cssClass: 'custom-alert workout-preview-modal allow-html'
     });
@@ -215,16 +234,15 @@ export class Tab3Page implements OnInit {
     if (!messageEl) return;
 
     messageEl.innerHTML = `
-    <div class="workout-details-alert">
-      <p><strong>Category:</strong> ${workout.subtitle || '—'}</p>
-      <p><strong>Description:</strong> ${workout.content || '—'}</p>
-      <hr>
-      <h4>Exercises:</h4>
-      <p>${exerciseNames || 'No exercises listed.'}</p>
-    </div>
-  `;
+      <div class="workout-details-alert">
+        <p><strong>Category:</strong> ${workout.subtitle || '—'}</p>
+        <p><strong>Description:</strong> ${workout.content || '—'}</p>
+        <hr>
+        <h4>Exercises:</h4>
+        <p>${exerciseNames || 'No exercises listed.'}</p>
+      </div>
+    `;
   }
-
 
   async logout() {
     const alert = await this.alertCtrl.create({
@@ -244,23 +262,6 @@ export class Tab3Page implements OnInit {
       cssClass: 'custom-alert'
     });
     await alert.present();
-  }
-
-  async showLoading(message: string = 'Please wait...') {
-    this.loading = await this.loadingCtrl.create({
-      message,
-      spinner: 'crescent',
-      backdropDismiss: false,
-      cssClass: 'custom-loading'
-    });
-    await this.loading.present();
-  }
-
-  async hideLoading() {
-    if (this.loading) {
-      await this.loading.dismiss();
-      this.loading = null;
-    }
   }
 
   async showAlert(message: string) {

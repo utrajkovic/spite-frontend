@@ -1,18 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
 
-/* 🌌 Glavna pozadina */
 ion-content {
   --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --padding-top: 72px;
   padding: 12px;
 }
 
-/* 🧱 Frosted Glass kartice */
 ion-card {
   background: rgba(0, 40, 60, 0.25);
   border: 1px solid rgba(0, 255, 255, 0.25);
   border-radius: 18px;
   margin: 14px 0;
-  padding: 8px;
+  padding: 12px;
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   box-shadow: 0 0 8px rgba(0, 255, 255, 0.12);
@@ -23,44 +22,40 @@ ion-card {
 ion-card:hover {
   transform: translateY(-3px);
   border-color: rgba(0, 255, 255, 0.45);
-  box-shadow: 0 0 18px rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 18px rgba(0, 255, 255, 0.25);
 }
 
-/* 💎 Naslov i podnaslov */
-ion-card-title.title-size {
+.title-container {
   text-align: center;
+}
+
+ion-card-title.title-size {
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(19px, 4vw, 23px);
   color: #00f7ff;
-  margin: 4px 0 10px 0;
-  text-shadow: 0 0 20px rgba(0, 255, 255, 1.00);
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.9);
 }
 
 ion-card-subtitle.subtitle-size {
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(13px, 3.5vw, 14px);
   color: #aefcff;
-  text-align: center;
-  margin-bottom: 6px;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
-/* 📄 Opis */
 .content-container {
   font-family: 'Tilt Neon', cursive;
   font-size: 14px;
   color: #aefcff;
   text-align: center;
-  line-height: 1.4;
-  margin-top: 8px;
-  opacity: 0.9;
 }
 
-/* 🚀 START dugme */
 .start-button-holder {
   display: flex;
-  justify-content: center;
-  margin-top: 10px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
 }
 
 ion-button {
@@ -68,54 +63,114 @@ ion-button {
   --color: #000;
   font-weight: 600;
   border-radius: 10px;
+  width: 80%;
+  max-width: 240px;
+  text-transform: uppercase;
 }
 
-ion-button:hover {
-  box-shadow: 0 0 14px rgba(0, 255, 255, 0.4);
-}
+.exercise-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 
-ion-button:active {
-  transform: scale(0.97);
-}
-
-/* 💫 Animacija kartica */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.96) translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* 📱 Mobilni prikaz */
-@media (max-width: 600px) {
-  ion-card {
-    padding: 10px;
-    border-radius: 14px;
-    margin: 10px 0;
+  video {
+    width: 100%;
+    max-height: 320px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
   }
 
-  ion-card-title.title-size {
-    font-size: 18px;
+  h3 {
+    font-family: 'Orbitron', sans-serif;
+    color: #00f7ff;
+    margin-top: 4px;
   }
 
-  ion-card-subtitle.subtitle-size {
-    font-size: 13px;
-  }
-
-  .content-container {
-    font-size: 13px;
-  }
-
-  ion-button {
+  p {
+    font-family: 'Tilt Neon', cursive;
+    color: #aefcff;
     font-size: 14px;
-    padding: 0 16px;
+    margin: 6px 0;
+  }
+
+  .index-indicator {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 6px;
+
+    ion-button {
+      --background: rgba(0, 255, 255, 0.2);
+      --color: #00f7ff;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
   }
 }
-ion-content {
-  --padding-top: 72px; /* visina headera + mali buffer */
+
+/* 🔹 Veći alert na mobilnom, bez unutrašnjeg scrolla */
+.custom-alert.exercise-preview-modal {
+  --max-height: 90vh !important;
+  --max-width: 95vw !important;
+  --background: rgba(0, 20, 35, 0.96);
+  --border-radius: 14px;
+  --color: #e0ffff;
+
+  .alert-wrapper {
+    width: 95vw !important;
+    max-width: 600px;
+    max-height: 90vh !important;
+    overflow: visible !important;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    background: rgba(0, 20, 35, 0.96);
+  }
+
+  .alert-message {
+    overflow: visible !important;
+    padding: 4px 0 10px;
+  }
+
+  video {
+    display: block;
+    margin: 0 auto;
+    border-radius: 12px;
+  }
 }
 
+
+@media (max-width: 600px) {
+  .custom-alert.exercise-preview-modal,
+  .custom-alert.exercise-preview-alert {
+    --max-height: 100dvh; /* koristi dinamičku visinu */
+  }
+
+  .alert-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: env(safe-area-inset-bottom); /* iPhone notch */
+  }
+
+  .exercise-preview video {
+    max-height: 45vh;
+    object-fit: contain;
+  }
+
+  .alert-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}

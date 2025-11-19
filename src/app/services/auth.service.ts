@@ -8,7 +8,7 @@ import { User } from './models';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly backendUrl = 'https://dead-jade-spite-11d3e918.koyeb.app/api/users';
+  private readonly backendUrl = 'https://spite-backend-v2.onrender.com/api/users';
 
   constructor(private http: HttpClient) {}
 

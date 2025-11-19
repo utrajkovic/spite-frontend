@@ -42,15 +42,35 @@ export const routes: Routes = [
           import('./tab3/tab3.page').then((m) => m.Tab3Page),
       },
       {
+        path: 'tab-trainer',
+        loadComponent: () =>
+          import('./tab-trainer/tab-trainer.page').then((m) => m.TabTrainerPage),
+      },
+      {
+        path: 'tab-admin',
+        loadComponent: () =>
+          import('./tab-admin/tab-admin.page').then((m) => m.TabAdminPage),
+      },
+      {
         path: '',
         redirectTo: '/tabs/tab1',
         pathMatch: 'full',
       },
     ],
   },
+
   {
     path: 'workout/:id',
     loadComponent: () =>
       import('./workout/workout.page').then((m) => m.WorkoutPage),
   },
+{
+  path: 'trainer-client/:username',
+  loadComponent: () =>
+    import('./tab-trainer-client/tab-trainer-client.page').then(m => m.TabTrainerClientPage),
+},
+  {
+    path: 'tab-trainings',
+    loadComponent: () => import('./tab-trainings/tab-trainings.page').then( m => m.TabTrainingsPage)
+  }
 ];

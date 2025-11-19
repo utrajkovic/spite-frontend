@@ -32,7 +32,7 @@ export class Tab2Page implements OnInit {
   loading: HTMLIonLoadingElement | null = null;
   isUploading = false;
 
-  readonly backendUrl = 'https://dead-jade-spite-11d3e918.koyeb.app';
+  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
   constructor(
     private fb: FormBuilder,

@@ -19,7 +19,8 @@ export interface Workout {
   subtitle: string;
   content: string;
   exerciseIds: string[];
-  userId?: string;       
+  userId?: string;    
+  exercises?: Exercise[];   
 }
 
 export interface User {

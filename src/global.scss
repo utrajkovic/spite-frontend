@@ -296,6 +296,7 @@ ion-loading.custom-loading {
   border: 1px solid rgba(0, 255, 255, 0.25);
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
 }
+
 /* 🌌 Workout details alert styling (global) */
 ion-alert.workout-preview-modal.allow-html::part(message) {
   white-space: normal;
@@ -343,6 +344,7 @@ ion-alert.workout-preview-modal.allow-html::part(message) {
   background: rgba(0, 255, 255, 0.2);
   margin: 10px 0;
 }
+
 ion-alert.workout-preview-modal {
   --background: rgba(0, 40, 60, 0.25);
   --backdrop-opacity: 0.3;
@@ -352,4 +354,37 @@ ion-alert.workout-preview-modal {
   -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
   border: 1px solid rgba(0, 255, 255, 0.25);
   font-family: 'Orbitron', sans-serif;
+}
+
+/* 🔄 Animacije za glatki prelaz između vežbi */
+.fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.2s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
 }

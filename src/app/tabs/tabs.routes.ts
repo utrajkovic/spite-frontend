@@ -6,7 +6,7 @@ export const routes: Routes = [
   {
     path: 'tabs',
     component: TabsPage,
-    canActivate: [AuthGuard], // 🔒 zaštita svih tabova
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'tab1',
@@ -24,11 +24,26 @@ export const routes: Routes = [
           import('../tab3/tab3.page').then((m) => m.Tab3Page),
       },
       {
+        path: 'tab-trainer',
+        loadComponent: () =>
+          import('../tab-trainer/tab-trainer.page').then((m) => m.TabTrainerPage),
+      },
+      {
+        path: 'tab-admin',
+        loadComponent: () =>
+          import('../tab-admin/tab-admin.page').then((m) => m.TabAdminPage),
+      },
+      {
         path: '',
         redirectTo: '/tabs/tab1',
         pathMatch: 'full',
       },
     ],
+
+  },
+  {
+    path: 'test',
+    loadComponent: () => import('../tab-trainer/tab-trainer.page').then(m => m.TabTrainerPage),
   },
   {
     path: '',

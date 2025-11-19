@@ -1,5 +1,7 @@
+<ion-content [fullscreen]="true" class="ion-padding">
 
-<ion-content [fullscreen]="true">
+  <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+
   <ion-card *ngFor="let workout of workouts">
     <ion-card-header>
       <div class="title-container">
@@ -12,12 +14,21 @@
       <div class="content-container">
         {{ workout.content }}
       </div>
-      <br />
+
       <div class="start-button-holder">
-        <ion-button size="small" [routerLink]="['/workout', workout.id]">
-          START
+        <ion-button size="small" fill="succsess" color="medium" [routerLink]="['/tab-trainings']"
+          [state]="{ workout: workout }">
+          Preview
+        </ion-button>
+
+        <ion-button size="small" color="primary" [routerLink]="['/workout', workout.id]">
+          Start
         </ion-button>
       </div>
     </ion-card-content>
   </ion-card>
+
+  <p *ngIf="!loading && workouts.length === 0" class="empty-text">
+  </p>
+
 </ion-content>

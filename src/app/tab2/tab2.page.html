@@ -1,12 +1,13 @@
 <ion-content [fullscreen]="true">
-  
+
   <div *ngIf="isUploading" class="upload-fallback">
     <ion-spinner name="crescent"></ion-spinner>
     <p>Uploading... Please wait</p>
   </div>
+  <h2>Add New Workout</h2>
+
   <!-- Forma za trening -->
   <form [formGroup]="workoutForm">
-
     <ion-item>
       <ion-label position="stacked">Workout Title</ion-label>
       <ion-input formControlName="title"></ion-input>

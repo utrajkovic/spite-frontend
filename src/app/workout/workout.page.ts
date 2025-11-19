@@ -15,15 +15,13 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./workout.page.scss'],
   standalone: true,
   imports: [
-    IonSpinner,
-    IonButtons, IonProgressBar, IonIcon, CommonModule, IonContent,
-    IonHeader, IonTitle, IonToolbar, IonButton, IonCard, IonCardContent
+    IonSpinner, IonProgressBar, IonIcon, CommonModule, IonContent, IonButton, IonCard, IonCardContent
   ],
 })
 export class WorkoutPage implements OnInit {
   workout!: Workout;
   exercises: Exercise[] = [];
-  readonly backendUrl = 'https://dead-jade-spite-11d3e918.koyeb.app';
+  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
   currentExerciseIndex = 0;
   currentSet = 1;
