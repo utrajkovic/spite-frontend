@@ -1,0 +1,29 @@
+<ion-content [fullscreen]="true" class="ion-padding" *ngIf="workout">
+
+  <!-- 🔙 Floating Back Dugme -->
+  <ion-button class="back-btn" fill="clear" (click)="goBack()">
+    <span>Back</span>
+  </ion-button>
+
+  <div class="workout-header">
+    <h2>{{ workout.title }}</h2>
+    <p>{{ workout.content }}</p>
+  </div>
+
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="6" size-md="3" *ngFor="let ex of workout.exercises">
+        <ion-card (click)="openExercisePreview(ex)">
+          <ion-card-header>
+            <ion-card-title class="truncate">{{ ex.name }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <video [src]="ex.videoUrl" muted playsinline></video>
+            <p class="truncate-description">{{ ex.description }}</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

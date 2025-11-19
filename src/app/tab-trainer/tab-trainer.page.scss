@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Tilt+Neon&display=swap');
+
+ion-content {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  color: #e0ffff;
+  font-family: 'Tilt Neon', cursive;
+  padding: 24px 16px;
+  overflow-y: auto;
+
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+}
+
+
+/* 🧊 Polje za unos */
+ion-item {
+  --background: rgba(0, 40, 60, 0.25);
+  --color: #aefcff;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 12px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  transition: all 0.3s ease;
+}
+
+ion-item:hover {
+  border-color: rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+/* ✨ Labela */
+ion-label {
+  font-family: 'Orbitron', sans-serif;
+  color: #00f7ff;
+  font-size: 14px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+/* 🧠 Input */
+ion-input {
+  --color: #e0ffff;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+/* 🔘 Dugme */
+ion-button {
+  --background: linear-gradient(90deg, #00f7ff, #00aaff);
+  --color: #000;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 12px;
+  margin: 20px 0 28px;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+  transition: all 0.25s ease;
+}
+
+ion-button:hover {
+  box-shadow: 0 0 18px rgba(0, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+ion-list {
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 18px;
+  padding: 6px 10px;
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+  animation: fadeIn 0.4s ease;
+}
+
+ion-list-header {
+  font-family: 'Orbitron', sans-serif;
+  color: #00f7ff;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  text-align: center;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+}
+
+ion-item[routerLink] {
+  --background: transparent;
+  border-radius: 10px;
+  margin: 6px 0;
+  transition: all 0.3s ease;
+  font-size: 15px;
+}
+
+ion-item[routerLink]:hover {
+  background: rgba(0, 255, 255, 0.08);
+  transform: scale(1.02);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+ion-item[routerLink] ion-label {
+  color: #aefcff;
+  font-family: 'Tilt Neon', cursive;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📱 Responsivnost */
+@media (max-width: 600px) {
+  ion-button {
+    font-size: 14px;
+  }
+
+  ion-list-header {
+    font-size: 14px;
+  }
+
+  ion-item {
+    font-size: 14px;
+  }
+}
+
+:host {
+  display: block;
+}
+
+.content-wrapper {
+  margin-top: 70px;
+}

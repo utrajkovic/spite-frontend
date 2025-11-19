@@ -1,0 +1,50 @@
+<ion-content [fullscreen]="true" class="admin-page">
+
+  <div class="admin-wrapper">
+
+    <div class="admin-header">
+      <h2>Admin Panel</h2>
+    </div>
+
+    <ion-item class="filter-box" (click)="openRoleFilter()">
+      <ion-label>Filter by role</ion-label>
+      <ion-button fill="clear" color="primary">
+        {{ selectedRole }}
+      </ion-button>
+    </ion-item>
+
+    <ion-card *ngFor="let u of filteredUsers">
+      <ion-card-header>
+        <ion-card-title>{{ u.username }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>Role: <b>{{ u.role }}</b></p>
+
+        <div class="btn-wrap">
+          <ion-button color="secondary" size="small" (click)="changePassword(u)">
+            Change Password
+          </ion-button>
+
+          <ion-button color="primary" size="small" (click)="changeRole(u, u.role === 'TRAINER' ? 'USER' : 'TRAINER')">
+
+            <ion-spinner *ngIf="loadingAction === 'role-' + u.username" name="crescent"></ion-spinner>
+
+            <span *ngIf="loadingAction !== 'role-' + u.username">
+              {{ u.role === 'TRAINER' ? 'Demote to User' : 'Promote to Trainer' }}
+            </span>
+
+          </ion-button>
+
+          <ion-button color="danger" size="small" (click)="deleteUser(u)">
+            <ion-spinner *ngIf="loadingAction === 'delete-' + u.username" name="crescent"></ion-spinner>
+            <span *ngIf="loadingAction !== 'delete-' + u.username">Delete</span>
+          </ion-button>
+
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+
+</ion-content>

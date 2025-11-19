@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Tilt+Neon&display=swap');
+
+/* 🌌 GLOBAL SPITE BACKGROUND */
+ion-content {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  color: #e0ffff;
+  font-family: 'Tilt Neon', cursive;
+  padding: 24px 16px;
+  padding-top: 80px; /* content da ne ulazi u global header */
+
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+}
+
+/* 🧩 ADMIN HEADER */
+.admin-header {
+  text-align: center;
+  margin-bottom: 24px;
+
+  h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    color: #00f7ff;
+    letter-spacing: 1px;
+    text-shadow: 0 0 14px rgba(0,255,255,0.9);
+  }
+
+  p {
+    font-size: 14px;
+    color: #aefcff;
+    opacity: 0.85;
+  }
+}
+
+/* 🎛 FILTER BOX */
+.filter-box {
+  --background: rgba(0,40,60,0.25);
+  --color: #00f7ff;
+  border-radius: 14px;
+
+  border: 1px solid rgba(0,255,255,0.25);
+  padding: 4px 10px;
+
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+
+  transition: all 0.3s ease;
+}
+
+.filter-box:hover {
+  border-color: rgba(0,255,255,0.5);
+  box-shadow: 0 0 12px rgba(0,255,255,0.25);
+}
+
+/* 🧱 USER CARD */
+ion-card {
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid rgba(0,255,255,0.25);
+  border-radius: 16px;
+
+  padding: 14px;
+  margin-bottom: 20px;
+
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+
+  box-shadow: 0 0 14px rgba(0,255,255,0.15);
+  animation: fadeIn 0.4s ease;
+
+  ion-card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    color: #00f7ff;
+    text-shadow: 0 0 12px rgba(0,255,255,0.8);
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 15px;
+    color: #aefcff;
+    margin: 4px 0;
+  }
+}
+
+/* 🔘 ADMIN BUTTON GROUP */
+.btn-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+
+  ion-button {
+    --border-radius: 12px;
+    --color: #000;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    font-weight: 600;
+
+    box-shadow: 0 0 10px rgba(0,255,255,0.3);
+    transition: all 0.25s ease;
+  }
+
+  ion-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 14px rgba(0,255,255,0.5);
+  }
+}
+
+.custom-alert .alert-wrapper {
+  background: rgba(0, 25, 45, 0.95) !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(0,255,255,0.5) !important;
+
+  box-shadow: 0 0 20px rgba(0,255,255,0.35);
+  color: #e0ffff !important;
+}
+
+.custom-alert input {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+
+  border-radius: 10px;
+  background: rgba(0,40,60,0.25);
+  border: 1px solid rgba(0,255,255,0.4);
+  color: #00f7ff;
+}
+
+/* 🎨 CUSTOM FILTER ALERT */
+.admin-filter-alert .alert-wrapper {
+  background: rgba(0,20,35,0.97);
+  border-radius: 16px;
+  border: 1px solid rgba(0,255,255,0.4);
+  box-shadow: 0 0 18px rgba(0,255,255,0.4);
+}
+
+.admin-filter-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 10px;
+
+  .filter-btn {
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+
+    background: rgba(0,255,255,0.10);
+    border: 1px solid rgba(0,255,255,0.35);
+    color: #00f7ff;
+
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+
+    transition: all 0.25s ease;
+  }
+
+  .filter-btn:hover {
+    background: rgba(0,255,255,0.20);
+    box-shadow: 0 0 12px rgba(0,255,255,0.35);
+    transform: translateY(-2px);
+  }
+}
+
+/* ✨ ANIMACIJA */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 600px) {
+  ion-card-title { font-size: 16px; }
+  ion-button { font-size: 14px; }
+}
+.admin-wrapper {
+  margin-top: 70px;
+}
