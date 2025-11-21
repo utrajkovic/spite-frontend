@@ -1,82 +1,3 @@
-<!-- ======================= EDIT WORKOUT MODAL ======================= -->
-<ion-modal [isOpen]="showEditModal" (didDismiss)="showEditModal = false" cssClass="edit-workout-modal">
-  <ng-template>
-
-    <!-- HEADER -->
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Edit Workout</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="showEditModal = false">Close</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-
-    <!-- CONTENT -->
-    <ion-content class="ion-padding">
-
-      <!-- FORM -->
-      <ng-container *ngIf="editingWorkout">
-
-        <ion-item>
-          <ion-label position="stacked">Title</ion-label>
-          <ion-input [(ngModel)]="editingWorkout.title"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Category</ion-label>
-          <ion-input [(ngModel)]="editingWorkout.subtitle"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Description</ion-label>
-          <ion-input [(ngModel)]="editingWorkout.content"></ion-input>
-        </ion-item>
-
-      </ng-container>
-
-      <!-- ========================= DRAG & DROP LISTA ========================= -->
-      <h3 class="modal-section-title">Exercises (drag to reorder)</h3>
-
-      <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
-        <ion-item *ngFor="let ex of editableExercises; let i = index">
-
-          <ion-reorder slot="start"></ion-reorder>
-
-          <ion-label>
-            {{ ex.name }}
-          </ion-label>
-
-          <ion-button color="danger" fill="outline" (click)="removeExercise(i)">
-            Remove
-          </ion-button>
-
-        </ion-item>
-      </ion-reorder-group>
-
-      <!-- ======================== ADD NEW EXERCISE ========================== -->
-      <h3 class="modal-section-title">Add Exercise</h3>
-
-      <ion-list>
-        <ion-item *ngFor="let ex of exercises">
-          <ion-label>{{ ex.name }}</ion-label>
-          <ion-button fill="outline" (click)="addExercise(ex)">
-            Add
-          </ion-button>
-        </ion-item>
-      </ion-list>
-
-      <!-- ========================= SAVE CHANGES ========================= -->
-      <ion-button expand="block" color="success" (click)="saveEdit()">
-        Save Changes
-      </ion-button>
-
-    </ion-content>
-  </ng-template>
-</ion-modal>
-<!-- =================================================================== -->
-
-
 <ion-content [fullscreen]="true" class="ion-padding content-container">
 
   <section class="section-box">
@@ -115,12 +36,6 @@
           <h3>{{ workout.title }}</h3>
           <p>{{ workout.subtitle || 'Bez kategorije' }}</p>
         </ion-label>
-
-        <ion-button color="warning" fill="outline" slot="end"
-          (click)="openEditWorkout(workout); $event.stopPropagation();" class="edit-btn">
-          <i class="fa-solid fa-pen"></i>
-        </ion-button>
-
 
         <ion-button color="danger" fill="outline" slot="end"
           (click)="deleteWorkout(workout.id!); $event.stopPropagation();" class="delete-btn"

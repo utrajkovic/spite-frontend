@@ -11,7 +11,6 @@ import { Workout } from '../services/models';
 import { Preferences } from '@capacitor/preferences';
 import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
-import { LocalDataService } from '../services/local-data.service';
 
 @Component({
   selector: 'app-tab1',
@@ -34,19 +33,15 @@ export class Tab1Page {
     private http: HttpClient,
     private alertCtrl: AlertController,
     private zone: NgZone,
-    private localData: LocalDataService
   ) { }
 
   private initialized = false;
 
-  ngOnInit() {
-    this.localData.refreshWorkouts$.subscribe(() => {
-      console.log("🔄 Tab1 detected workout update → refreshing...");
-      this.loadUserWorkouts();
-    });
-  }
   ionViewWillEnter() {
-    this.loadUserWorkouts();
+    if (!this.initialized) {
+      this.loadUserWorkouts();
+      this.initialized = true;
+    }
   }
 
   async loadUserWorkouts() {
@@ -149,7 +144,7 @@ export class Tab1Page {
         const newIndex = index % total;
         this.renderExercise(alert, workout.exercises![newIndex], newIndex + 1, total, workout);
       });
-    }, 150);
+    }, 150); 
   }
 
 }

@@ -9,16 +9,9 @@ import { Subject } from 'rxjs';
 export class LocalDataService {
   private refreshTab3Subject = new Subject<void>();
   refreshTab3$ = this.refreshTab3Subject.asObservable();
-
+  
   private refreshTab2Subject = new Subject<void>();
-  refreshTab2$ = this.refreshTab2Subject.asObservable();
-
-  private refreshWorkouts = new Subject<void>();
-  refreshWorkouts$ = this.refreshWorkouts.asObservable();
-
-  triggerWorkoutsRefresh() {
-    this.refreshWorkouts.next();
-  }
+  refreshTab2$ = this.refreshTab3Subject.asObservable();
 
   triggerTab3Refresh() {
     this.refreshTab3Subject.next();

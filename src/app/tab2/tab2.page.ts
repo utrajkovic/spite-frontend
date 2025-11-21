@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
-import { IonContent, IonItem, IonLabel, IonInput, IonButton, IonList, IonSpinner, IonReorderGroup, IonReorder, IonAccordionGroup, IonAccordion, IonSearchbar } from '@ionic/angular/standalone';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import {
+  IonContent, IonHeader, IonTitle, IonToolbar,
+  IonItem, IonLabel, IonInput, IonButton,
+  IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
+} from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
 import { AlertController, LoadingController } from '@ionic/angular';
@@ -15,15 +19,9 @@ import { LocalDataService } from '../services/local-data.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FormsModule,
-    IonContent,
+    IonContent, IonHeader, IonTitle, IonToolbar,
     IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonSpinner,
-    IonReorderGroup,
-    IonReorder,
-    IonAccordionGroup,
-    IonAccordion,
-    IonSearchbar
+    IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
   ]
 })
 export class Tab2Page implements OnInit {
@@ -47,6 +45,7 @@ export class Tab2Page implements OnInit {
       title: ['', Validators.required],
       subtitle: [''],
       content: [''],
+      exercises: this.fb.array([])
     });
 
     this.exerciseForm = this.fb.group({
@@ -64,28 +63,17 @@ export class Tab2Page implements OnInit {
     this.loadExercises();
   }
 
-  editableExercises: Exercise[] = [];
-
-  handleReorder(ev: any) {
-    const from = ev.detail.from;
-    const to = ev.detail.to;
-
-    const moved = this.editableExercises.splice(from, 1)[0];
-    this.editableExercises.splice(to, 0, moved);
-
-    ev.detail.complete();
+  get exercises(): FormArray {
+    return this.workoutForm.get('exercises') as FormArray;
   }
 
-  addExercise(ex: Exercise) {
-    this.editableExercises.push(ex);
+  addExercise() {
+    this.exercises.push(this.fb.group({ exerciseId: [null, Validators.required] }));
   }
 
-  removeExercise(i: number) {
-    this.editableExercises.splice(i, 1);
+  removeExercise(index: number) {
+    this.exercises.removeAt(index);
   }
-
-  exerciseSearch: string = '';
-  filteredExercises: Exercise[] = [];
 
   async loadExercises() {
     try {
@@ -99,7 +87,6 @@ export class Tab2Page implements OnInit {
       this.http.get<Exercise[]>(`${this.backendUrl}/api/exercises/user/${user.id}`).subscribe({
         next: (res) => {
           this.allExercises = res;
-          this.filteredExercises = res;
           console.log('Loaded user exercises:', res);
         },
         error: (err) => console.error('Error loading user exercises', err)
@@ -121,17 +108,12 @@ export class Tab2Page implements OnInit {
       return;
     }
 
-    if (this.editableExercises.length === 0) {
-      this.showAlert('Workout must contain at least one exercise!');
-      return;
-    }
-
     const formValue = this.workoutForm.value;
     const workout = {
       title: formValue.title,
       subtitle: formValue.subtitle,
       content: formValue.content,
-      exerciseIds: this.editableExercises.map(ex => ex.id),
+      exerciseIds: formValue.exercises.map((e: any) => e.exerciseId),
       userId: user.id
     };
 
@@ -142,9 +124,8 @@ export class Tab2Page implements OnInit {
 
       this.localData.triggerTab3Refresh();
       this.showAlert('Workout added successfully!');
-
       this.workoutForm.reset();
-      this.editableExercises = [];
+      this.exercises.clear();
       this.loadExercises();
     } catch (err) {
       console.error('Error saving workout:', err);
@@ -152,7 +133,6 @@ export class Tab2Page implements OnInit {
       this.showAlert('Workout was not saved! Check console.');
     }
   }
-
 
   async onVideoSelected(event: any) {
     const file = event.target.files[0];
@@ -271,19 +251,4 @@ export class Tab2Page implements OnInit {
     const input = event.target as HTMLInputElement;
     input.value = input.value.replace(/[^0-9]/g, '');
   }
-
-  onSearchChange(ev: any) {
-    const value = (ev.detail?.value || '').toLowerCase();
-    this.exerciseSearch = value;
-
-    if (!value) {
-      this.filteredExercises = this.allExercises;
-      return;
-    }
-
-    this.filteredExercises = this.allExercises.filter(ex =>
-      ex.name.toLowerCase().includes(value)
-    );
-  }
-
 }

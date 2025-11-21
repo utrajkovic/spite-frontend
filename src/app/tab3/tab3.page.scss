@@ -89,7 +89,8 @@ ion-label p {
 ion-button[color="danger"] {
   --border-radius: 12px;
   font-size: 0.9rem;
-  --background: #00111a --color: #fff;
+  --background: #00111a
+  --color: #fff;
   transition: box-shadow 0.3s ease;
 }
 
@@ -152,7 +153,6 @@ ion-button[color="danger"]:hover {
     opacity: 0;
     transform: translateY(8px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -196,111 +196,4 @@ ion-button[color="danger"]:hover {
   .exercise-preview-alert video {
     max-height: 200px;
   }
-}
-
-/* ======================= MODAL GLASS LAYER ======================= */
-.edit-workout-modal::part(backdrop) {
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(6px);
-}
-
-.edit-workout-modal::part(content) {
-  --background: rgba(0, 20, 30, 0.65);
-  backdrop-filter: blur(14px) saturate(160%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-  border-radius: 18px;
-  border: 1px solid rgba(0, 255, 255, 0.15);
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.18);
-  color: #e0ffff !important;
-}
-
-/* HEADER */
-.edit-workout-modal ion-header {
-  --background: rgba(0, 25, 35, 0.6);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
-  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
-
-  ion-title {
-    font-family: 'Orbitron', sans-serif;
-    color: #00faff;
-    text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
-  }
-}
-
-.edit-workout-modal ion-toolbar {
-  --background: transparent;
-}
-
-/* ===================== FORM INPUTS ===================== */
-.edit-workout-modal ion-item {
-  --background: rgba(0, 30, 40, 0.35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 12px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(0, 255, 255, 0.18);
-}
-
-.edit-workout-modal ion-label {
-  color: #96faff;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.edit-workout-modal ion-input {
-  color: #e0ffff;
-}
-
-.edit-workout-modal ion-reorder-group {
-  background: transparent;
-  padding: 8px;
-  border-radius: 12px;
-}
-
-.edit-workout-modal ion-item[reorder] {
-  --background: rgba(0, 20, 30, 0.4);
-  border: 1px solid rgba(0, 255, 255, 0.12);
-  border-radius: 12px;
-  margin-bottom: 8px;
-  backdrop-filter: blur(10px);
-}
-
-.edit-workout-modal ion-reorder {
-  color: #00ffff;
-}
-
-.edit-workout-modal ion-list {
-  background: transparent !important;
-}
-
-.edit-workout-modal ion-item button {
-  --background: rgba(0, 40, 50, 0.5);
-  color: #00eaff;
-}
-
-.edit-workout-modal ion-item button:hover {
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
-}
-
-.edit-workout-modal ion-button[color="success"] {
-  --background: linear-gradient(90deg, #00eaff, #00ffff);
-  --color: #000;
-  font-family: 'Orbitron', sans-serif;
-  margin-top: 12px;
-  border-radius: 14px;
-  transition: 0.3s ease;
-}
-
-.edit-workout-modal ion-button[color="success"]:hover {
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-}
-
-.modal-section-title {
-  font-family: 'Orbitron', sans-serif;
-  text-align: center;
-  font-size: 1.05rem;
-  color: #00faff;
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
-  margin-top: 20px;
-  margin-bottom: 10px;
 }

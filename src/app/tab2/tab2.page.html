@@ -4,87 +4,64 @@
     <ion-spinner name="crescent"></ion-spinner>
     <p>Uploading... Please wait</p>
   </div>
-
   <h2>Add New Workout</h2>
 
-  <div class="form-wrapper">
-    <form [formGroup]="workoutForm">
+  <!-- Forma za trening -->
+  <form [formGroup]="workoutForm">
+    <ion-item>
+      <ion-label position="stacked">Workout Title</ion-label>
+      <ion-input formControlName="title"></ion-input>
+    </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Workout Title</ion-label>
-        <ion-input formControlName="title"></ion-input>
-      </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Description</ion-label>
+      <ion-input formControlName="content"></ion-input>
+    </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Description</ion-label>
-        <ion-input formControlName="content"></ion-input>
-      </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Category</ion-label>
+      <ion-input formControlName="subtitle"></ion-input>
+    </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Category</ion-label>
-        <ion-input formControlName="subtitle"></ion-input>
-      </ion-item>
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Exercises</ion-label>
+      </ion-list-header>
 
-      <!-- DRAG & DROP LISTA VEŽBI -->
-      <h3 class="modal-section-title">Exercises</h3>
+      <div formArrayName="exercises">
+        <div *ngFor="let ex of exercises.controls; let i = index" [formGroupName]="i">
 
-      <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
-        <ion-item *ngFor="let ex of editableExercises; let i = index">
+          <ion-item>
+            <ion-label>Select Exercise</ion-label>
+            <ion-select formControlName="exerciseId" interface="popover">
+              <ion-select-option *ngFor="let e of allExercises" [value]="e.id">
+                {{ e.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
 
-          <ion-reorder slot="start"></ion-reorder>
-
-          <ion-label>{{ ex.name }}</ion-label>
-
-          <ion-button color="danger" fill="outline" (click)="removeExercise(i)">
+          <ion-button color="danger" expand="block" (click)="removeExercise(i)">
             Remove
           </ion-button>
 
-        </ion-item>
-      </ion-reorder-group>
+        </div>
+      </div>
 
-      <ion-accordion-group expand="inset">
-        <ion-accordion value="exercise-list">
-
-          <!-- HEADER -->
-          <ion-item slot="header" class="accordion-header-glass">
-            <ion-label>Available Exercises</ion-label>
-          </ion-item>
-
-          <!-- CONTENT -->
-          <div slot="content" class="accordion-content">
-
-            <!-- 🔍 SEARCH BAR -->
-            <ion-searchbar [value]="exerciseSearch" (ionInput)="onSearchChange($event)"
-              placeholder="Search exercises..." debounce="150">
-            </ion-searchbar>
-
-            <!-- 📋 FILTERED LIST -->
-            <ion-list>
-              <ion-item *ngFor="let ex of filteredExercises">
-                <ion-label>{{ ex.name }}</ion-label>
-                <ion-button fill="outline" (click)="addExercise(ex)">
-                  Add
-                </ion-button>
-              </ion-item>
-            </ion-list>
-
-          </div>
-
-        </ion-accordion>
-      </ion-accordion-group>
-
-
-      <ion-button expand="block" color="success" (click)="saveWorkout()">
-        Save Workout
+      <ion-button expand="block" (click)="addExercise()">
+        Add Exercise
       </ion-button>
+    </ion-list>
 
-    </form>
-  </div>
+    <ion-button expand="block" color="success" (click)="saveWorkout()">
+      Save Workout
+    </ion-button>
+
+  </form>
 
   <hr />
 
+  <!-- Forma za dodavanje nove vežbe -->
   <h2>Add New Exercise</h2>
-
   <form [formGroup]="exerciseForm">
     <ion-item>
       <ion-label position="stacked">Exercise Name</ion-label>
@@ -98,23 +75,28 @@
 
     <ion-item>
       <ion-label position="stacked">Sets 1-10</ion-label>
-      <ion-input type="number" formControlName="sets"></ion-input>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="10"
+        (ionInput)="sanitizeNumberInput($event)" formControlName="sets"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Repetitions 1-100</ion-label>
-      <ion-input type="number" formControlName="reps"></ion-input>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="100"
+        (ionInput)="sanitizeNumberInput($event)" formControlName="reps"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Rest Between Sets</ion-label>
-      <ion-input type="number" formControlName="restBetweenSets"></ion-input>
+      <ion-label position="stacked">Rest Between Sets (10-300 seconds)</ion-label>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="10" max="300"
+        (ionInput)="sanitizeNumberInput($event)" formControlName="restBetweenSets"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Rest After Exercise</ion-label>
-      <ion-input type="number" formControlName="restAfterExercise"></ion-input>
+      <ion-label position="stacked">Rest After Exercise (30-600 seconds)</ion-label>
+      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="30" max="600"
+        (ionInput)="sanitizeNumberInput($event)" formControlName="restAfterExercise"></ion-input>
     </ion-item>
+
 
     <div class="video-upload">
       <label for="videoInput">Choose Video File</label>

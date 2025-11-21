@@ -9,10 +9,11 @@ import { triangle, ellipse, square } from 'ionicons/icons';
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
   imports: [
+    IonApp, IonContent,
     IonRouterOutlet, IonToolbar,
     IonTitle, IonHeader, IonTabs,
-    IonTabBar, IonTabButton,IonLabel, 
-    CommonModule
+    IonTabBar, IonTabButton,
+    IonIcon, IonLabel, CommonModule
   ],
 })
 export class TabsPage {
