@@ -35,19 +35,18 @@ export class Tab1Page {
     private alertCtrl: AlertController,
     private zone: NgZone,
     private localData: LocalDataService
-  ) {
-    this.localData.refreshTab1$.subscribe(() => {
-      this.loadUserWorkouts();  
-    });
-  }
+  ) { }
 
   private initialized = false;
 
-  ionViewWillEnter() {
-    if (!this.initialized) {
+  ngOnInit() {
+    this.localData.refreshWorkouts$.subscribe(() => {
+      console.log("🔄 Tab1 detected workout update → refreshing...");
       this.loadUserWorkouts();
-      this.initialized = true;
-    }
+    });
+  }
+  ionViewWillEnter() {
+    this.loadUserWorkouts();
   }
 
   async loadUserWorkouts() {

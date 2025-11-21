@@ -4,39 +4,87 @@
     <ion-spinner name="crescent"></ion-spinner>
     <p>Uploading... Please wait</p>
   </div>
+
   <h2>Add New Workout</h2>
 
-  <!-- Forma za trening -->
-  <form [formGroup]="workoutForm">
-    <ion-item>
-      <ion-label position="stacked">Workout Title</ion-label>
-      <ion-input formControlName="title"></ion-input>
-    </ion-item>
+  <div class="form-wrapper">
+    <form [formGroup]="workoutForm">
 
-    <ion-item>
-      <ion-label position="stacked">Description</ion-label>
-      <ion-input formControlName="content"></ion-input>
-    </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Workout Title</ion-label>
+        <ion-input formControlName="title"></ion-input>
+      </ion-item>
 
-    <ion-item>
-      <ion-label position="stacked">Category</ion-label>
-      <ion-input formControlName="subtitle"></ion-input>
-    </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Description</ion-label>
+        <ion-input formControlName="content"></ion-input>
+      </ion-item>
 
-    <ion-button expand="block" color="primary" (click)="openExerciseSelectModal()">
-      Select Exercises
-    </ion-button>
+      <ion-item>
+        <ion-label position="stacked">Category</ion-label>
+        <ion-input formControlName="subtitle"></ion-input>
+      </ion-item>
 
-    <ion-button expand="block" color="success" (click)="saveWorkout()">
-      Save Workout
-    </ion-button>
+      <!-- DRAG & DROP LISTA VEŽBI -->
+      <h3 class="modal-section-title">Exercises</h3>
 
-  </form>
+      <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
+        <ion-item *ngFor="let ex of editableExercises; let i = index">
+
+          <ion-reorder slot="start"></ion-reorder>
+
+          <ion-label>{{ ex.name }}</ion-label>
+
+          <ion-button color="danger" fill="outline" (click)="removeExercise(i)">
+            Remove
+          </ion-button>
+
+        </ion-item>
+      </ion-reorder-group>
+
+      <ion-accordion-group expand="inset">
+        <ion-accordion value="exercise-list">
+
+          <!-- HEADER -->
+          <ion-item slot="header" class="accordion-header-glass">
+            <ion-label>Available Exercises</ion-label>
+          </ion-item>
+
+          <!-- CONTENT -->
+          <div slot="content" class="accordion-content">
+
+            <!-- 🔍 SEARCH BAR -->
+            <ion-searchbar [value]="exerciseSearch" (ionInput)="onSearchChange($event)"
+              placeholder="Search exercises..." debounce="150">
+            </ion-searchbar>
+
+            <!-- 📋 FILTERED LIST -->
+            <ion-list>
+              <ion-item *ngFor="let ex of filteredExercises">
+                <ion-label>{{ ex.name }}</ion-label>
+                <ion-button fill="outline" (click)="addExercise(ex)">
+                  Add
+                </ion-button>
+              </ion-item>
+            </ion-list>
+
+          </div>
+
+        </ion-accordion>
+      </ion-accordion-group>
+
+
+      <ion-button expand="block" color="success" (click)="saveWorkout()">
+        Save Workout
+      </ion-button>
+
+    </form>
+  </div>
 
   <hr />
 
-  <!-- Forma za dodavanje nove vežbe -->
   <h2>Add New Exercise</h2>
+
   <form [formGroup]="exerciseForm">
     <ion-item>
       <ion-label position="stacked">Exercise Name</ion-label>
@@ -50,28 +98,23 @@
 
     <ion-item>
       <ion-label position="stacked">Sets 1-10</ion-label>
-      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="10"
-        (ionInput)="sanitizeNumberInput($event)" formControlName="sets"></ion-input>
+      <ion-input type="number" formControlName="sets"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Repetitions 1-100</ion-label>
-      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="100"
-        (ionInput)="sanitizeNumberInput($event)" formControlName="reps"></ion-input>
+      <ion-input type="number" formControlName="reps"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Rest Between Sets (10-300 seconds)</ion-label>
-      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="10" max="300"
-        (ionInput)="sanitizeNumberInput($event)" formControlName="restBetweenSets"></ion-input>
+      <ion-label position="stacked">Rest Between Sets</ion-label>
+      <ion-input type="number" formControlName="restBetweenSets"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Rest After Exercise (30-600 seconds)</ion-label>
-      <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="30" max="600"
-        (ionInput)="sanitizeNumberInput($event)" formControlName="restAfterExercise"></ion-input>
+      <ion-label position="stacked">Rest After Exercise</ion-label>
+      <ion-input type="number" formControlName="restAfterExercise"></ion-input>
     </ion-item>
-
 
     <div class="video-upload">
       <label for="videoInput">Choose Video File</label>
@@ -84,45 +127,3 @@
   </form>
 
 </ion-content>
-
-<!-- 🌟 Exercise Select Modal -->
-<ion-modal [isOpen]="showExerciseSelectModal" (didDismiss)="showExerciseSelectModal = false"
-  cssClass="exercise-select-modal">
-
-  <ion-header translucent>
-    <ion-toolbar>
-      <ion-title>Select Exercises</ion-title>
-      <ion-buttons slot="end">
-        <ion-button (click)="showExerciseSelectModal = false">Close</ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-content class="modal-content">
-
-    <ion-item class="glass-item">
-      <ion-input [(ngModel)]="searchQuery" placeholder="Search exercises..." class="search-input"></ion-input>
-    </ion-item>
-
-    <ion-list class="glass-list">
-      <ion-item *ngFor="let ex of filteredExercises" class="glass-item" (click)="toggleExerciseSelection(ex.id!)">
-
-        <div class="num-checkbox" [class.active]="isSelected(ex.id!)">
-          {{ isSelected(ex.id!) ? getSelectionIndex(ex.id!) : '' }}
-        </div>
-
-        <ion-label>
-          <h3>{{ ex.name }}</h3>
-          <p>{{ ex.description }}</p>
-        </ion-label>
-
-      </ion-item>
-    </ion-list>
-
-    <ion-button expand="block" color="primary" class="confirm-btn" (click)="confirmExerciseSelection()">
-      Confirm Selection
-    </ion-button>
-
-  </ion-content>
-
-</ion-modal>

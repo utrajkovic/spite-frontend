@@ -78,19 +78,18 @@ ion-card {
     opacity: 0.9;
   }
 }
-
 .back-btn {
   position: fixed;
   top: 14px;
   left: 14px;
   z-index: 1000;
-  --background: rgba(0, 255, 255, 0.1);
-  border: 1px solid rgba(0, 255, 255, 0.25);
+  --background: rgba(0, 255, 255, 0);
+  border: 1px solid rgba(0, 255, 255, 0.268);
   border-radius: 12px;
-  color: #00f7ff;
+  color: #00f7ff00;
   backdrop-filter: blur(6px) saturate(140%);
   -webkit-backdrop-filter: blur(6px) saturate(140%);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0);
   text-transform: uppercase;
   font-family: 'Orbitron', sans-serif;
   font-weight: 500;
@@ -98,7 +97,7 @@ ion-card {
 
   ion-icon {
     margin-right: 4px;
-    color: #00f7ff;
+    color: #00f7ff00;
   }
 
   span {
@@ -108,7 +107,7 @@ ion-card {
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 18px rgba(0, 255, 255, 0.4);
+    box-shadow: 0 0 18px rgb(0, 255, 255);
   }
 
   &:active {
@@ -141,7 +140,7 @@ ion-card {
     left: 10px;
     font-size: 13px;
     padding: 6px 10px;
-    --background: rgba(0, 255, 255, 0.15);
+    --background: rgba(0, 255, 255, 0);
   }
 }
 .truncate,

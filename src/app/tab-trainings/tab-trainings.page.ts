@@ -6,6 +6,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { LocalDataService } from '../services/local-data.service';
 
 @Component({
   selector: 'app-tab-trainings',
@@ -14,41 +15,51 @@ import { AlertController } from '@ionic/angular';
   standalone: true,
   imports: [
     CommonModule,
-    IonHeader, IonToolbar, IonTitle, IonButton, IonIcon,
+    IonButton,
     IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
     IonGrid, IonRow, IonCol
   ],
 })
 export class TabTrainingsPage implements OnInit {
   workout: any;
+  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
-  constructor(private router: Router, private alertCtrl: AlertController) { }
+  constructor(
+    private router: Router,
+    private alertCtrl: AlertController
+  ) { }
 
   ngOnInit() {
     const nav = this.router.getCurrentNavigation();
-    const workout = nav?.extras.state?.['workout'];
+    const workoutId = nav?.extras.state?.['workoutId'];
 
-    if (workout?.id) {
-      this.loadFreshWorkout(workout.id);
+    if (workoutId) {
+      this.loadWorkout(workoutId);
     }
   }
 
-  async loadFreshWorkout(id: string) {
-    const fresh = await fetch(
-      `https://spite-backend-v2.onrender.com/api/workouts/${id}`
-    ).then(r => r.json());
+  private async getAlertMessageElement(alert: HTMLIonAlertElement): Promise<HTMLElement | null> {
+    await new Promise(res => setTimeout(res, 20));
 
-    const allExercises = await fetch(
-      `https://spite-backend-v2.onrender.com/api/exercises/user/${fresh.userId}`
-    ).then(r => r.json());
+    const anyAlert = alert as any;
+    if (anyAlert.shadowRoot) {
+      const el = anyAlert.shadowRoot.querySelector('.alert-message') as HTMLElement | null;
+      if (el) return el;
+    }
+    return document.querySelector('ion-alert .alert-message') as HTMLElement | null;
+  }
 
-    const exerciseMap = new Map(allExercises.map((e: any) => [e.id, e]));
 
-    fresh.exercises = fresh.exerciseIds
-      .map((id: string) => exerciseMap.get(id))
-      .filter((e: any) => !!e);
+  async loadWorkout(id: string) {
+    const w = await fetch(`${this.backendUrl}/api/workouts/${id}`).then(r => r.json());
 
-    this.workout = fresh;
+    if (w.exerciseIds && w.exercises && w.exercises.length > 0) {
+      w.exercises = w.exerciseIds
+        .map((eid: string) => w.exercises.find((e: any) => e.id === eid))
+        .filter((e: any) => !!e);
+    }
+
+    this.workout = w;
   }
 
 
@@ -65,15 +76,18 @@ export class TabTrainingsPage implements OnInit {
     });
 
     await alert.present();
-
-    const messageEl = alert.querySelector('.alert-message');
-    if (messageEl) {
-      messageEl.innerHTML = `
-      <div class="exercise-preview-alert">
-        <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
-        <p>${exercise.description || 'No description available.'}</p>
-      </div>
-    `;
+    const messageEl = await this.getAlertMessageElement(alert);
+    if (!messageEl) {
+      console.warn('❗ Could not find alert message element');
+      return;
     }
+
+    messageEl.innerHTML = `
+    <div class="exercise-preview-alert">
+      <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
+      <p>${exercise.description || 'No description available.'}</p>
+    </div>
+  `;
   }
+
 }

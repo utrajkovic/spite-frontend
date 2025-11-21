@@ -32,7 +32,6 @@
     "@ffmpeg/util": "^0.12.2",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@ionic/angular": "^8.0.0",
-    "firebase": "^12.6.0",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner, IonInput, IonModal, IonButtons, IonReorderGroup, IonReorder } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner, IonReorder, IonReorderGroup } from '@ionic/angular/standalone';
 import { BackendService } from '../services/backend.service';
 import { Exercise, Workout } from '../services/models';
 import { AlertController, ToastController, LoadingController } from '@ionic/angular';
@@ -8,7 +8,14 @@ import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../services/local-data.service';
 import { HttpClient } from '@angular/common/http';
+import { IonModal } from '@ionic/angular/standalone';
+import { IonInput } from '@ionic/angular/standalone';
+import { IonButtons } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
+
+
+
+
 
 @Component({
   selector: 'app-tab3',
@@ -26,13 +33,12 @@ import { FormsModule } from '@angular/forms';
     IonItem,
     IonLabel,
     IonButton,
-    IonIcon,
-    IonSpinner,
-    IonInput,
-    IonModal,
     IonButtons,
-    IonReorderGroup,
-    IonReorder
+    IonSpinner,
+    IonModal,
+    IonInput,
+    IonReorder,
+    IonReorderGroup
   ]
 })
 export class Tab3Page implements OnInit {
@@ -44,6 +50,7 @@ export class Tab3Page implements OnInit {
   editingWorkout: Workout | null = null;
   showEditModal = false;
   editableExercises: Exercise[] = [];
+
 
 
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
@@ -64,9 +71,23 @@ export class Tab3Page implements OnInit {
     this.localData.refreshTab3$.subscribe(() => this.loadData());
   }
 
-  async ionViewWillEnter() {
-    await this.loadData();
+  ionViewWillEnter() {
+    this.loadData();
   }
+
+  private async getAlertMessageElement(alert: HTMLIonAlertElement): Promise<HTMLElement | null> {
+    await new Promise(res => setTimeout(res, 20));
+
+    const anyAlert = alert as any;
+
+    if (anyAlert.shadowRoot) {
+      const el = anyAlert.shadowRoot.querySelector('.alert-message') as HTMLElement | null;
+      if (el) return el;
+    }
+    return document.querySelector('ion-alert .alert-message') as HTMLElement | null;
+  }
+
+
 
   async loadData() {
     const user = await Preferences.get({ key: 'user' });
@@ -147,9 +168,6 @@ export class Tab3Page implements OnInit {
         this.workouts = this.workouts.filter(w => w.id !== id);
       });
 
-      this.localData.triggerWorkoutsRefresh();
-      this.localData.triggerTab1Refresh();
-      
       await this.showAlert('Workout deleted successfully!');
     } catch (err) {
       console.error('Error deleting workout:', err);
@@ -185,8 +203,11 @@ export class Tab3Page implements OnInit {
 
     await alert.present();
 
-    const messageEl = document.querySelector('ion-alert .alert-message');
-    if (!messageEl) return;
+    const messageEl = await this.getAlertMessageElement(alert);
+    if (!messageEl) {
+      console.warn('❗ Cannot find alert message element for exercise preview');
+      return;
+    }
 
     messageEl.innerHTML = `
     <div class="exercise-preview-alert">
@@ -220,51 +241,83 @@ export class Tab3Page implements OnInit {
       };
     } catch (err) {
       console.error('Error loading video:', err);
-      messageEl.innerHTML = `<p> Unable to load video.</p>`;
+      messageEl.innerHTML = `<p>Unable to load video.</p>`;
     }
   }
 
-  async showWorkoutDetails(workout: any) {
 
-    const fresh = await fetch(
+
+  async showWorkoutDetails(workout: Workout) {
+    if (!workout?.id) {
+      this.showAlert("Invalid workout.");
+      return;
+    }
+
+    const fresh: Workout = await fetch(
       `${this.backendUrl}/api/workouts/${workout.id}`
     ).then(r => r.json());
 
-    let sortedExercises: any[] = [];
-
-    if (fresh.exercises && fresh.exerciseIds) {
-      const map = new Map(fresh.exercises.map((e: any) => [e.id, e]));
-      sortedExercises = fresh.exerciseIds
-        .map((id: string) => map.get(id))
-        .filter((e: any) => !!e);
+    if (!fresh.exerciseIds || fresh.exerciseIds.length === 0) {
+      this.showAlert("This workout has no exercises.");
+      return;
     }
 
-    const exerciseNames = sortedExercises.length > 0
-      ? sortedExercises.map(e => e.name).join('<br>')
-      : 'No exercises listed.';
+    const allExercises = await this.http
+      .get<Exercise[]>(`${this.backendUrl}/api/exercises/user/${fresh.userId}`)
+      .toPromise()
+      .then(res => res ?? []);
 
+    fresh.exercises = fresh.exerciseIds
+      .map(id => allExercises.find(e => e.id === id))
+      .filter((e): e is Exercise => !!e);
+
+    if (fresh.exercises.length === 0) {
+      this.showAlert("This workout has no exercises.");
+      return;
+    }
+
+    this.openWorkoutModal(fresh);
+  }
+
+
+
+
+  async openWorkoutModal(workout: Workout) {
     const alert = await this.alertCtrl.create({
-      header: fresh.title,
-      message: '',
-      buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
-      cssClass: 'custom-alert workout-preview-modal allow-html'
+      header: workout.title,
+      message: "",
+      buttons: [
+        { text: "Close", role: "cancel", cssClass: "alert-confirm" }
+      ],
+      cssClass: "custom-alert workout-preview-modal allow-html"
     });
 
     await alert.present();
 
-    const messageEl = document.querySelector('ion-alert .alert-message');
-    if (!messageEl) return;
+    const msgEl = await this.getAlertMessageElement(alert);
+    if (!msgEl) {
+      console.warn('❗ Cannot find alert message element for workout preview');
+      return;
+    }
 
-    messageEl.innerHTML = `
+    const exerciseHtml = (workout.exercises ?? [])
+      .map(e => `<p>${e.name}</p>`)
+      .join("");
+
+    msgEl.innerHTML = `
     <div class="workout-details-alert">
-      <p><strong>Category:</strong> ${fresh.subtitle || '—'}</p>
-      <p><strong>Description:</strong> ${fresh.content || '—'}</p>
+      <p><strong>Category:</strong> ${workout.subtitle || "—"}</p>
+      <p><strong>Description:</strong> ${workout.content || "—"}</p>
       <hr>
       <h4>Exercises:</h4>
-      <p>${exerciseNames}</p>
+      ${exerciseHtml}
     </div>
   `;
   }
+
+
+
+
 
 
 
@@ -298,25 +351,24 @@ export class Tab3Page implements OnInit {
     await alert.present();
   }
 
-  async openEditWorkout(workout: Workout) {
+  // PRIKAZ MODAL-A I EDIT TRENINGA
 
-    const fresh: Workout = await fetch(
-      `${this.backendUrl}/api/workouts/${workout.id}`
-    ).then(r => r.json());
+  openEditWorkout(workout: Workout) {
+    this.editingWorkout = { ...workout };
 
-    const user = await this.localData.getUser();
-    const allExercises: Exercise[] = await this.http
-      .get<Exercise[]>(`${this.backendUrl}/api/exercises/user/${user.id}`)
-      .toPromise() ?? [];
+    const exs = workout.exercises || [];
 
-    const map = new Map(allExercises.map(e => [e.id, e]));
-    this.editableExercises = fresh.exerciseIds
-      .map(id => map.get(id))
-      .filter((e): e is Exercise => !!e);
+    if (workout.exerciseIds?.length && exs.length) {
+      this.editableExercises = workout.exerciseIds
+        .map(id => exs.find(e => e.id === id)!)
+        .filter((e): e is Exercise => !!e);
+    } else {
+      this.editableExercises = [...exs];
+    }
 
-    this.editingWorkout = { ...fresh };
     this.showEditModal = true;
   }
+
 
 
   handleReorder(ev: any) {
@@ -328,19 +380,24 @@ export class Tab3Page implements OnInit {
 
     ev.detail.complete();
   }
-  addExercise(ex: Exercise) {
-    this.editableExercises.push(ex);
-  }
+
+
 
   removeExercise(i: number) {
     this.editableExercises.splice(i, 1);
   }
+
+  addExercise(ex: Exercise) {
+    this.editableExercises.push(ex);
+  }
+
+
   async saveEdit() {
     if (!this.editingWorkout) return;
 
     const updatedWorkout = {
       ...this.editingWorkout,
-      exerciseIds: this.editableExercises.map(e => e.id!)
+      exerciseIds: this.editableExercises.map(e => e.id!) // ID je sada 100% siguran
     };
 
     try {
@@ -353,8 +410,9 @@ export class Tab3Page implements OnInit {
       this.editingWorkout = null;
 
       this.loadData();
+
       this.localData.triggerWorkoutsRefresh();
-      this.localData.triggerTab1Refresh();
+
       this.showAlert("Workout updated successfully!");
 
     } catch (err) {
@@ -362,5 +420,6 @@ export class Tab3Page implements OnInit {
       this.showAlert("Error updating workout");
     }
   }
+
 
 }
