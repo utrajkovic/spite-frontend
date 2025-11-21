@@ -1,9 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  IonContent, IonHeader, IonTitle, IonToolbar,
-  IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner
-} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner, IonInput, IonModal, IonButtons, IonReorderGroup, IonReorder } from '@ionic/angular/standalone';
 import { BackendService } from '../services/backend.service';
 import { Exercise, Workout } from '../services/models';
 import { AlertController, ToastController, LoadingController } from '@ionic/angular';
@@ -11,6 +8,7 @@ import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../services/local-data.service';
 import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tab3',
@@ -19,6 +17,7 @@ import { HttpClient } from '@angular/common/http';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     IonContent,
     IonHeader,
     IonTitle,
@@ -28,7 +27,12 @@ import { HttpClient } from '@angular/common/http';
     IonLabel,
     IonButton,
     IonIcon,
-    IonSpinner
+    IonSpinner,
+    IonInput,
+    IonModal,
+    IonButtons,
+    IonReorderGroup,
+    IonReorder
   ]
 })
 export class Tab3Page implements OnInit {
@@ -37,8 +41,12 @@ export class Tab3Page implements OnInit {
   assignedWorkouts: Workout[] = []; // 🟢 novi deo
   loading: HTMLIonLoadingElement | null = null;
   isDeleting: string | null = null;
+  editingWorkout: Workout | null = null;
+  showEditModal = false;
+  editableExercises: Exercise[] = [];
 
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com'; 
+
+  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
   constructor(
     private backend: BackendService,
@@ -139,6 +147,9 @@ export class Tab3Page implements OnInit {
         this.workouts = this.workouts.filter(w => w.id !== id);
       });
 
+      this.localData.triggerWorkoutsRefresh();
+      this.localData.triggerTab1Refresh();
+      
       await this.showAlert('Workout deleted successfully!');
     } catch (err) {
       console.error('Error deleting workout:', err);
@@ -213,16 +224,27 @@ export class Tab3Page implements OnInit {
     }
   }
 
-
   async showWorkoutDetails(workout: any) {
-    const exerciseNames = workout.exercises
-      ? workout.exercises.map((e: any) => e.name).join('<br>')
-      : (workout.exerciseIds
-        ?.map((id: string) => this.exercises.find(e => e.id === id)?.name || 'Unknown')
-        .join('<br>') || 'No exercises listed.');
+
+    const fresh = await fetch(
+      `${this.backendUrl}/api/workouts/${workout.id}`
+    ).then(r => r.json());
+
+    let sortedExercises: any[] = [];
+
+    if (fresh.exercises && fresh.exerciseIds) {
+      const map = new Map(fresh.exercises.map((e: any) => [e.id, e]));
+      sortedExercises = fresh.exerciseIds
+        .map((id: string) => map.get(id))
+        .filter((e: any) => !!e);
+    }
+
+    const exerciseNames = sortedExercises.length > 0
+      ? sortedExercises.map(e => e.name).join('<br>')
+      : 'No exercises listed.';
 
     const alert = await this.alertCtrl.create({
-      header: workout.title,
+      header: fresh.title,
       message: '',
       buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
       cssClass: 'custom-alert workout-preview-modal allow-html'
@@ -234,15 +256,17 @@ export class Tab3Page implements OnInit {
     if (!messageEl) return;
 
     messageEl.innerHTML = `
-      <div class="workout-details-alert">
-        <p><strong>Category:</strong> ${workout.subtitle || '—'}</p>
-        <p><strong>Description:</strong> ${workout.content || '—'}</p>
-        <hr>
-        <h4>Exercises:</h4>
-        <p>${exerciseNames || 'No exercises listed.'}</p>
-      </div>
-    `;
+    <div class="workout-details-alert">
+      <p><strong>Category:</strong> ${fresh.subtitle || '—'}</p>
+      <p><strong>Description:</strong> ${fresh.content || '—'}</p>
+      <hr>
+      <h4>Exercises:</h4>
+      <p>${exerciseNames}</p>
+    </div>
+  `;
   }
+
+
 
   async logout() {
     const alert = await this.alertCtrl.create({
@@ -273,4 +297,70 @@ export class Tab3Page implements OnInit {
     });
     await alert.present();
   }
+
+  async openEditWorkout(workout: Workout) {
+
+    const fresh: Workout = await fetch(
+      `${this.backendUrl}/api/workouts/${workout.id}`
+    ).then(r => r.json());
+
+    const user = await this.localData.getUser();
+    const allExercises: Exercise[] = await this.http
+      .get<Exercise[]>(`${this.backendUrl}/api/exercises/user/${user.id}`)
+      .toPromise() ?? [];
+
+    const map = new Map(allExercises.map(e => [e.id, e]));
+    this.editableExercises = fresh.exerciseIds
+      .map(id => map.get(id))
+      .filter((e): e is Exercise => !!e);
+
+    this.editingWorkout = { ...fresh };
+    this.showEditModal = true;
+  }
+
+
+  handleReorder(ev: any) {
+    const from = ev.detail.from;
+    const to = ev.detail.to;
+
+    const moved = this.editableExercises.splice(from, 1)[0];
+    this.editableExercises.splice(to, 0, moved);
+
+    ev.detail.complete();
+  }
+  addExercise(ex: Exercise) {
+    this.editableExercises.push(ex);
+  }
+
+  removeExercise(i: number) {
+    this.editableExercises.splice(i, 1);
+  }
+  async saveEdit() {
+    if (!this.editingWorkout) return;
+
+    const updatedWorkout = {
+      ...this.editingWorkout,
+      exerciseIds: this.editableExercises.map(e => e.id!)
+    };
+
+    try {
+      await this.http.put(
+        `${this.backendUrl}/api/workouts/${updatedWorkout.id}`,
+        updatedWorkout
+      ).toPromise();
+
+      this.showEditModal = false;
+      this.editingWorkout = null;
+
+      this.loadData();
+      this.localData.triggerWorkoutsRefresh();
+      this.localData.triggerTab1Refresh();
+      this.showAlert("Workout updated successfully!");
+
+    } catch (err) {
+      console.error(err);
+      this.showAlert("Error updating workout");
+    }
+  }
+
 }

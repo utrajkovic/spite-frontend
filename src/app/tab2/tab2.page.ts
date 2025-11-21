@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import {
-  IonContent, IonHeader, IonTitle, IonToolbar,
-  IonItem, IonLabel, IonInput, IonButton,
-  IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
-} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonInput, IonButton, IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner, IonModal, IonButtons, IonCheckbox } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
+import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-tab2',
@@ -19,10 +17,14 @@ import { LocalDataService } from '../services/local-data.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     IonContent, IonHeader, IonTitle, IonToolbar,
     IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
-  ]
+    IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner,
+    IonModal,
+    IonButtons,
+    IonCheckbox
+]
 })
 export class Tab2Page implements OnInit {
   workoutForm: FormGroup;
@@ -31,6 +33,11 @@ export class Tab2Page implements OnInit {
   selectedVideo: File | null = null;
   loading: HTMLIonLoadingElement | null = null;
   isUploading = false;
+  showExerciseSelectModal = false;
+
+  searchQuery = '';
+  tempSelectedIds: string[] = [];
+
 
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
@@ -62,6 +69,31 @@ export class Tab2Page implements OnInit {
   ngOnInit() {
     this.loadExercises();
   }
+
+  openExerciseSelectModal() {
+    this.tempSelectedIds = [...this.workoutForm.value.exercises.map((e: any) => e.exerciseId)];
+    this.showExerciseSelectModal = true;
+  }
+
+  get filteredExercises() {
+    return this.allExercises.filter(e =>
+      e.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
+  }
+
+  confirmExerciseSelection() {
+    const fa = this.exercises;
+    fa.clear();
+
+    this.tempSelectedIds.forEach(id => {
+      fa.push(this.fb.group({ exerciseId: id }));
+    });
+
+    this.showExerciseSelectModal = false;
+  }
+
+  
+
 
   get exercises(): FormArray {
     return this.workoutForm.get('exercises') as FormArray;
@@ -251,4 +283,23 @@ export class Tab2Page implements OnInit {
     const input = event.target as HTMLInputElement;
     input.value = input.value.replace(/[^0-9]/g, '');
   }
+
+  isSelected(id: string): boolean {
+  return this.tempSelectedIds.includes(id);
+}
+
+getSelectionIndex(id: string): number {
+  return this.tempSelectedIds.indexOf(id) + 1;
+}
+
+toggleExerciseSelection(id: string) {
+  const index = this.tempSelectedIds.indexOf(id);
+
+  if (index === -1) {
+    this.tempSelectedIds.push(id);
+  } else {
+    this.tempSelectedIds.splice(index, 1);
+  }
+}
+
 }

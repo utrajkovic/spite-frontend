@@ -23,34 +23,9 @@
       <ion-input formControlName="subtitle"></ion-input>
     </ion-item>
 
-    <ion-list>
-      <ion-list-header>
-        <ion-label>Exercises</ion-label>
-      </ion-list-header>
-
-      <div formArrayName="exercises">
-        <div *ngFor="let ex of exercises.controls; let i = index" [formGroupName]="i">
-
-          <ion-item>
-            <ion-label>Select Exercise</ion-label>
-            <ion-select formControlName="exerciseId" interface="popover">
-              <ion-select-option *ngFor="let e of allExercises" [value]="e.id">
-                {{ e.name }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-button color="danger" expand="block" (click)="removeExercise(i)">
-            Remove
-          </ion-button>
-
-        </div>
-      </div>
-
-      <ion-button expand="block" (click)="addExercise()">
-        Add Exercise
-      </ion-button>
-    </ion-list>
+    <ion-button expand="block" color="primary" (click)="openExerciseSelectModal()">
+      Select Exercises
+    </ion-button>
 
     <ion-button expand="block" color="success" (click)="saveWorkout()">
       Save Workout
@@ -109,3 +84,45 @@
   </form>
 
 </ion-content>
+
+<!-- 🌟 Exercise Select Modal -->
+<ion-modal [isOpen]="showExerciseSelectModal" (willDismiss)="showExerciseSelectModal = false"
+  cssClass="exercise-select-modal"> <ng-template>
+    <ion-header translucent>
+      <ion-toolbar>
+        <ion-title>Select Exercises</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="showExerciseSelectModal = false">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="modal-content">
+
+      <!-- 🔍 SEARCHBAR -->
+      <ion-item class="glass-item">
+        <ion-input [(ngModel)]="searchQuery" placeholder="Search exercises..." class="search-input"></ion-input>
+      </ion-item>
+
+      <!-- 📋 Exercise list -->
+      <ion-list class="glass-list">
+        <ion-item *ngFor="let ex of filteredExercises" class="glass-item" (click)="toggleExerciseSelection(ex.id!)">
+          <!-- CUSTOM NUMERIČKI CHECKBOX -->
+          <div class="num-checkbox" [class.active]="isSelected(ex.id!)">
+            {{ isSelected(ex.id!) ? getSelectionIndex(ex.id!) : '' }}
+          </div>
+          <ion-label>
+            <h3>{{ ex.name }}</h3>
+            <p>{{ ex.description }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <ion-button expand="block" color="primary" class="confirm-btn" (click)="confirmExerciseSelection()">
+        Confirm Selection
+      </ion-button>
+
+    </ion-content>
+
+  </ng-template>
+</ion-modal>
