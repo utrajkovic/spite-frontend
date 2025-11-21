@@ -1,0 +1,64 @@
+<ng-container *ngIf="workout">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Edit Workout</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="router.navigateByUrl('/tabs/tab3')">Close</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+
+    <ion-item>
+      <ion-label position="stacked">Title</ion-label>
+      <ion-input [(ngModel)]="workout.title"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Category</ion-label>
+      <ion-input [(ngModel)]="workout.subtitle"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Description</ion-label>
+      <ion-input [(ngModel)]="workout.content"></ion-input>
+    </ion-item>
+
+    <h3>Exercises (drag to reorder)</h3>
+
+    <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
+      <ion-item *ngFor="let ex of editableExercises; let i = index">
+        <ion-reorder slot="start"></ion-reorder>
+        <ion-label>{{ ex.name }}</ion-label>
+
+        <ion-button fill="outline" color="danger" (click)="removeExercise(i)">
+          Remove
+        </ion-button>
+      </ion-item>
+    </ion-reorder-group>
+
+    <h3>Add Exercise</h3>
+
+    <ion-item class="search-box">
+      <ion-input [(ngModel)]="searchQuery" placeholder="Search exercises..."></ion-input>
+    </ion-item>
+
+    <ion-list>
+      <ion-item *ngFor="let ex of filteredExercises">
+        <ion-label>{{ ex.name }}</ion-label>
+        <ion-button fill="outline" (click)="addExercise(ex)">Add</ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" color="success" (click)="saveChanges()" [disabled]="isSaving">
+
+      <ion-spinner name="crescent" *ngIf="isSaving"></ion-spinner>
+      <span *ngIf="!isSaving">Save Changes</span>
+
+    </ion-button>
+
+
+
+  </ion-content>
+</ng-container>

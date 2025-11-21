@@ -20,14 +20,10 @@ import { HttpClient } from '@angular/common/http';
   imports: [
     CommonModule,
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
     IonList,
     IonItem,
     IonLabel,
     IonButton,
-    IonIcon,
     IonSpinner
   ]
 })
@@ -38,7 +34,8 @@ export class Tab3Page implements OnInit {
   loading: HTMLIonLoadingElement | null = null;
   isDeleting: string | null = null;
 
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com'; 
+
+  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
   constructor(
     private backend: BackendService,
@@ -71,7 +68,6 @@ export class Tab3Page implements OnInit {
 
     console.log('👤 Ulogovan korisnik:', currentUser);
 
-    // 🔹 Vežbe
     this.backend.getExercisesByUser(currentUser.id).subscribe({
       next: (res) => {
         console.log('📦 Vežbe sa servera:', res);
@@ -124,6 +120,10 @@ export class Tab3Page implements OnInit {
     } finally {
       this.isDeleting = null;
     }
+  }
+
+  openEditWorkout(workout: Workout) {
+    this.router.navigate(['/tab-edit', workout.id]);
   }
 
   async deleteWorkout(id: string) {
@@ -215,16 +215,19 @@ export class Tab3Page implements OnInit {
 
 
   async showWorkoutDetails(workout: any) {
-    const exerciseNames = workout.exercises
-      ? workout.exercises.map((e: any) => e.name).join('<br>')
-      : (workout.exerciseIds
-        ?.map((id: string) => this.exercises.find(e => e.id === id)?.name || 'Unknown')
-        .join('<br>') || 'No exercises listed.');
+    const fresh = await fetch(`${this.backendUrl}/api/workouts/${workout.id}`)
+      .then(r => r.json());
+
+    const map = new Map(fresh.exercises.map((e: any) => [e.id, e]));
+
+    const sorted = fresh.exerciseIds
+      .map((id: string) => map.get(id))
+      .filter((e: any) => !!e);
 
     const alert = await this.alertCtrl.create({
-      header: workout.title,
+      header: fresh.title,
       message: '',
-      buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
+      buttons: [{ text: 'Close', role: 'cancel' }],
       cssClass: 'custom-alert workout-preview-modal allow-html'
     });
 
@@ -234,15 +237,16 @@ export class Tab3Page implements OnInit {
     if (!messageEl) return;
 
     messageEl.innerHTML = `
-      <div class="workout-details-alert">
-        <p><strong>Category:</strong> ${workout.subtitle || '—'}</p>
-        <p><strong>Description:</strong> ${workout.content || '—'}</p>
-        <hr>
-        <h4>Exercises:</h4>
-        <p>${exerciseNames || 'No exercises listed.'}</p>
-      </div>
-    `;
+    <div class="workout-details-alert">
+      <p><strong>Category:</strong> ${fresh.subtitle || '—'}</p>
+      <p><strong>Description:</strong> ${fresh.content || '—'}</p>
+      <hr>
+      <h4>Exercises:</h4>
+      <p>${sorted.map((e: Exercise) => e.name).join('<br>')}</p>
+    </div>
+  `;
   }
+
 
   async logout() {
     const alert = await this.alertCtrl.create({

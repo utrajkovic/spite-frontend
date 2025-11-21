@@ -64,13 +64,18 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./workout/workout.page').then((m) => m.WorkoutPage),
   },
-{
-  path: 'trainer-client/:username',
-  loadComponent: () =>
-    import('./tab-trainer-client/tab-trainer-client.page').then(m => m.TabTrainerClientPage),
-},
+  {
+    path: 'trainer-client/:username',
+    loadComponent: () =>
+      import('./tab-trainer-client/tab-trainer-client.page').then(m => m.TabTrainerClientPage),
+  },
   {
     path: 'tab-trainings',
-    loadComponent: () => import('./tab-trainings/tab-trainings.page').then( m => m.TabTrainingsPage)
+    loadComponent: () => import('./tab-trainings/tab-trainings.page').then(m => m.TabTrainingsPage)
+  },
+  {
+    path: 'tab-edit/:id',
+    loadComponent: () =>
+      import('./tab-edit/tab-edit.page').then(m => m.TabEditPage)
   }
 ];

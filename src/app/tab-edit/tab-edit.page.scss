@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Tilt+Neon&display=swap');
+
+ion-content {
+    --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+    color: #e0ffff;
+    font-family: 'Tilt Neon', cursive;
+    padding: 24px 16px;
+
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+}
+
+/* HEADER */
+ion-toolbar {
+    --background: rgba(0, 30, 40, 0.45);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+ion-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #00f7ff;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+/* INPUT POLJA */
+ion-item {
+    --background: rgba(0, 40, 60, 0.25);
+    --color: #aefcff;
+    border: 1px solid rgba(0, 255, 255, 0.22);
+    border-radius: 14px;
+    margin-bottom: 14px;
+    transition: all .25s ease;
+    backdrop-filter: blur(12px) saturate(140%);
+}
+
+ion-item:hover {
+    border-color: rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+}
+
+ion-label {
+    font-family: 'Orbitron', sans-serif;
+    color: #00f7ff;
+    font-size: 14px;
+    text-shadow: 0 0 12px rgba(0, 255, 255, 0.35);
+}
+
+ion-input {
+    --color: #e0ffff;
+    font-size: 15px;
+}
+
+/* SECTION TITLES */
+h3 {
+    margin-top: 22px;
+    margin-bottom: 12px;
+    color: #00f7ff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+}
+
+/* LISTE */
+ion-list {
+    background: rgba(0, 40, 60, 0.25);
+    border: 1px solid rgba(0, 255, 255, 0.22);
+    border-radius: 16px;
+    padding: 8px 12px;
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+    backdrop-filter: blur(10px) saturate(150%);
+    animation: fadeIn .4s ease;
+}
+
+/* EXERCISE ITEMS IN REORDER */
+ion-reorder-group ion-item {
+    margin-bottom: 10px;
+    --background: rgba(0, 45, 70, 0.28);
+}
+
+ion-reorder {
+    color: #00f7ff;
+    font-size: 24px;
+}
+
+/* ADD/REMOVE BUTTONS */
+ion-button {
+    --background: linear-gradient(90deg, #00f7ff, #00aaff);
+    --color: #000;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    border-radius: 12px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+    transition: all .25s ease;
+}
+
+ion-button:hover {
+    box-shadow: 0 0 16px rgba(0, 255, 255, 0.45);
+    transform: translateY(-2px);
+}
+
+/* DELETE BUTTON */
+ion-button[color="danger"] {
+    --background: rgba(255, 0, 0, 0.18);
+    --color: #ff4d4d;
+    --border-color: rgba(255, 80, 80, 0.4);
+    border: 1px solid rgba(255, 80, 80, 0.4);
+    box-shadow: 0 0 10px rgba(255, 80, 80, 0.25);
+}
+
+ion-button[color="danger"]:hover {
+    box-shadow: 0 0 16px rgba(255, 80, 80, 0.45);
+}
+
+/* SAVE MAIN BUTTON */
+ion-button[color="success"] {
+    margin-top: 20px;
+    --background: linear-gradient(90deg, #00ffbf, #00dba0);
+    --color: #002b25;
+    font-weight: 700;
+}
+
+/* Fade-in efekt */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    ion-button {
+        font-size: 14px;
+    }
+}
+
+.search-box {
+    --background: rgba(0, 40, 60, 0.25);
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    ion-input {
+        --color: #aefcff;
+        font-family: 'Tilt Neon', cursive;
+        letter-spacing: 0.5px;
+    }
+
+    &:hover {
+        border-color: rgba(0, 255, 255, 0.5);
+        box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
+    }
+}

@@ -37,6 +37,11 @@
           <p>{{ workout.subtitle || 'Bez kategorije' }}</p>
         </ion-label>
 
+        <ion-button color="warning" fill="outline" slot="end"
+          (click)="openEditWorkout(workout); $event.stopPropagation();" class="delete-btn">
+          <i class="fa-solid fa-pen"></i>
+        </ion-button>
+
         <ion-button color="danger" fill="outline" slot="end"
           (click)="deleteWorkout(workout.id!); $event.stopPropagation();" class="delete-btn"
           [disabled]="isDeleting === workout.id">

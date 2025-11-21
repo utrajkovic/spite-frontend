@@ -14,7 +14,7 @@ import { AlertController } from '@ionic/angular';
   standalone: true,
   imports: [
     CommonModule,
-    IonHeader, IonToolbar, IonTitle, IonButton, IonIcon,
+    IonButton,
     IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
     IonGrid, IonRow, IonCol
   ],
@@ -26,8 +26,20 @@ export class TabTrainingsPage implements OnInit {
 
   ngOnInit() {
     const nav = this.router.getCurrentNavigation();
-    this.workout = nav?.extras.state?.['workout'];
+    const w = nav?.extras.state?.['workout'];
+
+    if (!w) return;
+
+    const map = new Map(w.exercises.map((e: any) => [e.id, e]));
+
+    this.workout = {
+      ...w,
+      exercises: w.exerciseIds
+        .map((id: string) => map.get(id))
+        .filter((e: any) => !!e)
+    };
   }
+
 
   goBack() {
     this.router.navigateByUrl('/tabs/tab1');
@@ -36,7 +48,7 @@ export class TabTrainingsPage implements OnInit {
   async openExercisePreview(exercise: any) {
     const alert = await this.alertCtrl.create({
       header: exercise.name,
-      message: '', 
+      message: '',
       buttons: ['Close'],
       cssClass: 'custom-alert exercise-preview-alert',
     });
