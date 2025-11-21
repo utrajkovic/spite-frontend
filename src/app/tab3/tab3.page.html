@@ -83,66 +83,66 @@
 
 <!-- ======================= EDIT WORKOUT MODAL ======================= -->
 <ion-modal [isOpen]="showEditModal" (didDismiss)="showEditModal = false">
-  <ng-template>
 
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Edit Workout</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="showEditModal = false">Close</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Edit Workout</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="showEditModal = false">Close</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
 
-    <ion-content class="ion-padding">
+  <ion-content class="ion-padding">
 
-      <ng-container *ngIf="editingWorkout">
+    <ng-container *ngIf="editingWorkout">
 
-        <ion-item>
-          <ion-label position="stacked">Title</ion-label>
-          <ion-input [(ngModel)]="editingWorkout.title"></ion-input>
+      <ion-item>
+        <ion-label position="stacked">Title</ion-label>
+        <ion-input [(ngModel)]="editingWorkout.title"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Category</ion-label>
+        <ion-input [(ngModel)]="editingWorkout.subtitle"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Description</ion-label>
+        <ion-input [(ngModel)]="editingWorkout.content"></ion-input>
+      </ion-item>
+
+      <h3 class="modal-section-title">Exercises (drag to reorder)</h3>
+
+      <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
+        <ion-item *ngFor="let ex of editableExercises; let i = index">
+          <ion-reorder slot="start"></ion-reorder>
+          <ion-label>{{ ex.name }}</ion-label>
+          <ion-button color="danger" fill="outline" (click)="removeExercise(i)">
+            Remove
+          </ion-button>
         </ion-item>
+      </ion-reorder-group>
 
-        <ion-item>
-          <ion-label position="stacked">Category</ion-label>
-          <ion-input [(ngModel)]="editingWorkout.subtitle"></ion-input>
+      <h3 class="modal-section-title">Add Exercise</h3>
+
+      <ion-list>
+        <ion-item *ngFor="let ex of exercises">
+          <ion-label>{{ ex.name }}</ion-label>
+          <ion-button fill="outline" (click)="addExercise(ex)">
+            Add
+          </ion-button>
         </ion-item>
+      </ion-list>
 
-        <ion-item>
-          <ion-label position="stacked">Description</ion-label>
-          <ion-input [(ngModel)]="editingWorkout.content"></ion-input>
-        </ion-item>
+      <ion-button expand="block" color="success" (click)="saveEdit()">
+        Save Changes
+      </ion-button>
 
-        <h3 class="modal-section-title">Exercises (drag to reorder)</h3>
+    </ng-container>
 
-        <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
-          <ion-item *ngFor="let ex of editableExercises; let i = index">
-            <ion-reorder slot="start"></ion-reorder>
-            <ion-label>{{ ex.name }}</ion-label>
-            <ion-button color="danger" fill="outline" (click)="removeExercise(i)">
-              Remove
-            </ion-button>
-          </ion-item>
-        </ion-reorder-group>
+  </ion-content>
 
-        <h3 class="modal-section-title">Add Exercise</h3>
-
-        <ion-list>
-          <ion-item *ngFor="let ex of exercises">
-            <ion-label>{{ ex.name }}</ion-label>
-            <ion-button fill="outline" (click)="addExercise(ex)">
-              Add
-            </ion-button>
-          </ion-item>
-        </ion-list>
-
-        <ion-button expand="block" color="success" (click)="saveEdit()">
-          Save Changes
-        </ion-button>
-      </ng-container>
-
-    </ion-content>
-
-  </ng-template>
 </ion-modal>
+
 <!-- =================================================================== -->
