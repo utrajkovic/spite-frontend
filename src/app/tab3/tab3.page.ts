@@ -168,13 +168,16 @@ export class Tab3Page implements OnInit {
     const alert = await this.alertCtrl.create({
       header: exercise.name,
       message: '',
-      buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
+      buttons: [{ text: 'Close', role: 'cancel' }],
       cssClass: 'custom-alert exercise-preview-modal'
     });
 
     await alert.present();
 
-    const messageEl = document.querySelector('ion-alert .alert-message');
+    const alertEl = await this.alertCtrl.getTop();
+    if (!alertEl) return;
+
+    const messageEl = alertEl.querySelector('.alert-message');
     if (!messageEl) return;
 
     messageEl.innerHTML = `
@@ -186,7 +189,7 @@ export class Tab3Page implements OnInit {
 
     try {
       if (!exercise.videoUrl) {
-        messageEl.innerHTML = `<p>⚠️ No video available for this exercise.</p>`;
+        messageEl.innerHTML = `<p>No video available.</p>`;
         return;
       }
 
@@ -196,44 +199,42 @@ export class Tab3Page implements OnInit {
       videoEl.loop = true;
       videoEl.muted = true;
       videoEl.controls = true;
-      videoEl.playsInline = true;
-      videoEl.className = 'exercise-video';
 
       videoEl.onloadeddata = () => {
         messageEl.innerHTML = `
         <div class="exercise-preview-alert">
           <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
-          <p>${exercise.description || 'No description available.'}</p>
+          <p>${exercise.description || ''}</p>
         </div>
       `;
       };
-    } catch (err) {
-      console.error('Error loading video:', err);
-      messageEl.innerHTML = `<p> Unable to load video.</p>`;
+    } catch {
+      messageEl.innerHTML = `<p>Error loading video.</p>`;
     }
   }
 
 
+
+
   async showWorkoutDetails(workout: any) {
-    const fresh = await fetch(`${this.backendUrl}/api/workouts/${workout.id}`)
-      .then(r => r.json());
+    const fresh = await fetch(`${this.backendUrl}/api/workouts/${workout.id}`).then(r => r.json());
 
     const map = new Map(fresh.exercises.map((e: any) => [e.id, e]));
-
-    const sorted = fresh.exerciseIds
-      .map((id: string) => map.get(id))
-      .filter((e: any) => !!e);
+    const sorted = fresh.exerciseIds.map((id: any) => map.get(id)).filter((e: any) => !!e);
 
     const alert = await this.alertCtrl.create({
       header: fresh.title,
       message: '',
-      buttons: [{ text: 'Close', role: 'cancel' }],
+      buttons: ['Close'],
       cssClass: 'custom-alert workout-preview-modal allow-html'
     });
 
     await alert.present();
 
-    const messageEl = document.querySelector('ion-alert .alert-message');
+    const alertEl = await this.alertCtrl.getTop();
+    if (!alertEl) return;
+
+    const messageEl = alertEl.querySelector('.alert-message');
     if (!messageEl) return;
 
     messageEl.innerHTML = `
@@ -246,6 +247,7 @@ export class Tab3Page implements OnInit {
     </div>
   `;
   }
+
 
 
   async logout() {

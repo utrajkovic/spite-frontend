@@ -50,19 +50,25 @@ export class TabTrainingsPage implements OnInit {
       header: exercise.name,
       message: '',
       buttons: ['Close'],
-      cssClass: 'custom-alert exercise-preview-alert',
+      cssClass: 'custom-alert exercise-preview-alert'
     });
 
     await alert.present();
 
-    const messageEl = alert.querySelector('.alert-message');
-    if (messageEl) {
-      messageEl.innerHTML = `
-      <div class="exercise-preview-alert">
-        <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
-        <p>${exercise.description || 'No description available.'}</p>
-      </div>
-    `;
-    }
+    const alertEl = await this.alertCtrl.getTop();
+    if (!alertEl) return;
+
+    const messageEl = alertEl.querySelector('.alert-message');
+    if (!messageEl) return;
+
+    if (!messageEl) return;
+
+    messageEl.innerHTML = `
+    <div class="exercise-preview-alert">
+      <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
+      <p>${exercise.description || 'No description available.'}</p>
+    </div>
+  `;
   }
+
 }
