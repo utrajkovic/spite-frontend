@@ -20,10 +20,14 @@ import { HttpClient } from '@angular/common/http';
   imports: [
     CommonModule,
     IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
     IonList,
     IonItem,
     IonLabel,
     IonButton,
+    IonIcon,
     IonSpinner
   ]
 })
@@ -34,8 +38,7 @@ export class Tab3Page implements OnInit {
   loading: HTMLIonLoadingElement | null = null;
   isDeleting: string | null = null;
 
-
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+  readonly backendUrl = 'https://spite-backend-v2.onrender.com'; 
 
   constructor(
     private backend: BackendService,
@@ -68,6 +71,7 @@ export class Tab3Page implements OnInit {
 
     console.log('👤 Ulogovan korisnik:', currentUser);
 
+    // 🔹 Vežbe
     this.backend.getExercisesByUser(currentUser.id).subscribe({
       next: (res) => {
         console.log('📦 Vežbe sa servera:', res);
@@ -122,10 +126,6 @@ export class Tab3Page implements OnInit {
     }
   }
 
-  openEditWorkout(workout: Workout) {
-    this.router.navigate(['/tab-edit', workout.id]);
-  }
-
   async deleteWorkout(id: string) {
     const confirmDelete = await this.confirmDelete('Are you sure you want to delete this workout?');
     if (!confirmDelete) return;
@@ -168,16 +168,13 @@ export class Tab3Page implements OnInit {
     const alert = await this.alertCtrl.create({
       header: exercise.name,
       message: '',
-      buttons: [{ text: 'Close', role: 'cancel' }],
+      buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
       cssClass: 'custom-alert exercise-preview-modal'
     });
 
     await alert.present();
 
-    const alertEl = await this.alertCtrl.getTop();
-    if (!alertEl) return;
-
-    const messageEl = alertEl.querySelector('.alert-message');
+    const messageEl = document.querySelector('ion-alert .alert-message');
     if (!messageEl) return;
 
     messageEl.innerHTML = `
@@ -189,7 +186,7 @@ export class Tab3Page implements OnInit {
 
     try {
       if (!exercise.videoUrl) {
-        messageEl.innerHTML = `<p>No video available.</p>`;
+        messageEl.innerHTML = `<p>⚠️ No video available for this exercise.</p>`;
         return;
       }
 
@@ -199,56 +196,53 @@ export class Tab3Page implements OnInit {
       videoEl.loop = true;
       videoEl.muted = true;
       videoEl.controls = true;
+      videoEl.playsInline = true;
+      videoEl.className = 'exercise-video';
 
       videoEl.onloadeddata = () => {
         messageEl.innerHTML = `
         <div class="exercise-preview-alert">
           <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
-          <p>${exercise.description || ''}</p>
+          <p>${exercise.description || 'No description available.'}</p>
         </div>
       `;
       };
-    } catch {
-      messageEl.innerHTML = `<p>Error loading video.</p>`;
+    } catch (err) {
+      console.error('Error loading video:', err);
+      messageEl.innerHTML = `<p> Unable to load video.</p>`;
     }
   }
 
 
-
-
   async showWorkoutDetails(workout: any) {
-    const fresh = await fetch(`${this.backendUrl}/api/workouts/${workout.id}`).then(r => r.json());
-
-    const map = new Map(fresh.exercises.map((e: any) => [e.id, e]));
-    const sorted = fresh.exerciseIds.map((id: any) => map.get(id)).filter((e: any) => !!e);
+    const exerciseNames = workout.exercises
+      ? workout.exercises.map((e: any) => e.name).join('<br>')
+      : (workout.exerciseIds
+        ?.map((id: string) => this.exercises.find(e => e.id === id)?.name || 'Unknown')
+        .join('<br>') || 'No exercises listed.');
 
     const alert = await this.alertCtrl.create({
-      header: fresh.title,
+      header: workout.title,
       message: '',
-      buttons: ['Close'],
+      buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
       cssClass: 'custom-alert workout-preview-modal allow-html'
     });
 
     await alert.present();
 
-    const alertEl = await this.alertCtrl.getTop();
-    if (!alertEl) return;
-
-    const messageEl = alertEl.querySelector('.alert-message');
+    const messageEl = document.querySelector('ion-alert .alert-message');
     if (!messageEl) return;
 
     messageEl.innerHTML = `
-    <div class="workout-details-alert">
-      <p><strong>Category:</strong> ${fresh.subtitle || '—'}</p>
-      <p><strong>Description:</strong> ${fresh.content || '—'}</p>
-      <hr>
-      <h4>Exercises:</h4>
-      <p>${sorted.map((e: Exercise) => e.name).join('<br>')}</p>
-    </div>
-  `;
+      <div class="workout-details-alert">
+        <p><strong>Category:</strong> ${workout.subtitle || '—'}</p>
+        <p><strong>Description:</strong> ${workout.content || '—'}</p>
+        <hr>
+        <h4>Exercises:</h4>
+        <p>${exerciseNames || 'No exercises listed.'}</p>
+      </div>
+    `;
   }
-
-
 
   async logout() {
     const alert = await this.alertCtrl.create({

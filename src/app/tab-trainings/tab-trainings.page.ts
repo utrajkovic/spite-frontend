@@ -14,7 +14,7 @@ import { AlertController } from '@ionic/angular';
   standalone: true,
   imports: [
     CommonModule,
-    IonButton,
+    IonHeader, IonToolbar, IonTitle, IonButton, IonIcon,
     IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
     IonGrid, IonRow, IonCol
   ],
@@ -26,20 +26,8 @@ export class TabTrainingsPage implements OnInit {
 
   ngOnInit() {
     const nav = this.router.getCurrentNavigation();
-    const w = nav?.extras.state?.['workout'];
-
-    if (!w) return;
-
-    const map = new Map(w.exercises.map((e: any) => [e.id, e]));
-
-    this.workout = {
-      ...w,
-      exercises: w.exerciseIds
-        .map((id: string) => map.get(id))
-        .filter((e: any) => !!e)
-    };
+    this.workout = nav?.extras.state?.['workout'];
   }
-
 
   goBack() {
     this.router.navigateByUrl('/tabs/tab1');
@@ -48,27 +36,21 @@ export class TabTrainingsPage implements OnInit {
   async openExercisePreview(exercise: any) {
     const alert = await this.alertCtrl.create({
       header: exercise.name,
-      message: '',
+      message: '', 
       buttons: ['Close'],
-      cssClass: 'custom-alert exercise-preview-alert'
+      cssClass: 'custom-alert exercise-preview-alert',
     });
 
     await alert.present();
 
-    const alertEl = await this.alertCtrl.getTop();
-    if (!alertEl) return;
-
-    const messageEl = alertEl.querySelector('.alert-message');
-    if (!messageEl) return;
-
-    if (!messageEl) return;
-
-    messageEl.innerHTML = `
-    <div class="exercise-preview-alert">
-      <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
-      <p>${exercise.description || 'No description available.'}</p>
-    </div>
-  `;
+    const messageEl = alert.querySelector('.alert-message');
+    if (messageEl) {
+      messageEl.innerHTML = `
+      <div class="exercise-preview-alert">
+        <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
+        <p>${exercise.description || 'No description available.'}</p>
+      </div>
+    `;
+    }
   }
-
 }

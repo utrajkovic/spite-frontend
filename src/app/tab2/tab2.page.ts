@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonInput, IonButton, IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner, IonAccordionGroup, IonAccordion, IonReorderGroup, IonReorder } from '@ionic/angular/standalone';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import {
+  IonContent, IonHeader, IonTitle, IonToolbar,
+  IonItem, IonLabel, IonInput, IonButton,
+  IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
+} from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
 import { AlertController, LoadingController } from '@ionic/angular';
@@ -15,14 +19,9 @@ import { LocalDataService } from '../services/local-data.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FormsModule,
-    IonContent,
+    IonContent, IonHeader, IonTitle, IonToolbar,
     IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonSpinner,
-    IonAccordionGroup,
-    IonAccordion,
-    IonReorderGroup,
-    IonReorder
+    IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
   ]
 })
 export class Tab2Page implements OnInit {
@@ -60,11 +59,6 @@ export class Tab2Page implements OnInit {
     });
   }
 
-  searchText: string = '';
-  filteredExercises: Exercise[] = [];
-
-
-
   ngOnInit() {
     this.loadExercises();
   }
@@ -73,19 +67,13 @@ export class Tab2Page implements OnInit {
     return this.workoutForm.get('exercises') as FormArray;
   }
 
-  addExercise(ex: Exercise) {
-    this.exercises.push(
-      this.fb.group({
-        exerciseId: [ex.id, Validators.required]
-      })
-    );
+  addExercise() {
+    this.exercises.push(this.fb.group({ exerciseId: [null, Validators.required] }));
   }
-
 
   removeExercise(index: number) {
     this.exercises.removeAt(index);
   }
-
 
   async loadExercises() {
     try {
@@ -99,7 +87,6 @@ export class Tab2Page implements OnInit {
       this.http.get<Exercise[]>(`${this.backendUrl}/api/exercises/user/${user.id}`).subscribe({
         next: (res) => {
           this.allExercises = res;
-          this.filteredExercises = [...this.allExercises];
           console.log('Loaded user exercises:', res);
         },
         error: (err) => console.error('Error loading user exercises', err)
@@ -107,10 +94,6 @@ export class Tab2Page implements OnInit {
     } catch (err) {
       console.error('Error fetching user for exercises:', err);
     }
-  }
-
-  getExerciseName(id: string) {
-    return this.allExercises.find(e => e.id === id)?.name || 'Unknown';
   }
 
   async saveWorkout() {
@@ -169,18 +152,6 @@ export class Tab2Page implements OnInit {
     this.selectedVideo = file;
     this.showAlert(`🎥 Video selected: ${file.name}`);
   }
-
-  reorderExercises(event: any) {
-    const from = event.detail.from;
-    const to = event.detail.to;
-
-    const array = this.exercises.controls;
-    const moved = array.splice(from, 1)[0];
-    array.splice(to, 0, moved);
-
-    event.detail.complete();
-  }
-
 
   async saveExercise() {
     if (this.isUploading) return;
@@ -280,11 +251,4 @@ export class Tab2Page implements OnInit {
     const input = event.target as HTMLInputElement;
     input.value = input.value.replace(/[^0-9]/g, '');
   }
-  filterExercises() {
-    const t = this.searchText.toLowerCase();
-    this.filteredExercises = this.allExercises.filter(e =>
-      e.name.toLowerCase().includes(t)
-    );
-  }
-
 }
