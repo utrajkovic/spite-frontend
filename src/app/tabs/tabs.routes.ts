@@ -9,6 +9,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
+        path: 'tab-messages',
+        loadComponent: () =>
+          import('../tab-messages/tab-messages.page').then(m => m.TabMessagesPage),
+      },
+      {
         path: 'tab1',
         loadComponent: () =>
           import('../tab1/tab1.page').then((m) => m.Tab1Page),
@@ -50,4 +55,10 @@ export const routes: Routes = [
     redirectTo: '/login',
     pathMatch: 'full',
   },
+  {
+    path: 'chat/:username',
+    loadComponent: () =>
+      import('../chat/chat.page').then(m => m.ChatPage),
+  },
+
 ];

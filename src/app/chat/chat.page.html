@@ -1,0 +1,28 @@
+<ion-content class="chat-page">
+
+  <ion-button class="back-btn" fill="clear" (click)="goBack()">
+    <i class="fa-regular fa-circle-left"></i>
+  </ion-button>
+
+  <!-- CHAT CONTAINER -->
+  <div class="chat-container">
+
+    <div class="chat-list">
+      <div *ngFor="let msg of messages" class="msg" [class.me]="msg.senderId === me">
+
+        <div class="bubble">
+          {{ msg.text }}
+        </div>
+
+      </div>
+
+      <div id="chat-bottom"></div>
+    </div>
+
+  </div>
+
+</ion-content>
+<div class="input-row">
+  <ion-input [(ngModel)]="text" placeholder="Message..."></ion-input>
+  <ion-button (click)="send()">Send</ion-button>
+</div>

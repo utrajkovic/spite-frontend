@@ -8,18 +8,21 @@ export const routes: Routes = [
     redirectTo: '/login',
     pathMatch: 'full',
   },
+
   {
     path: 'login',
     canActivate: [LoginGuard],
     loadComponent: () =>
       import('./pages/login/login.page').then((m) => m.LoginPage),
   },
+
   {
     path: 'register',
     canActivate: [LoginGuard],
     loadComponent: () =>
       import('./pages/register/register.page').then((m) => m.RegisterPage),
   },
+
   {
     path: 'tabs',
     canActivate: [AuthGuard],
@@ -52,6 +55,11 @@ export const routes: Routes = [
           import('./tab-admin/tab-admin.page').then((m) => m.TabAdminPage),
       },
       {
+        path: 'tab-messages',   // <-- OVO JE NAŠ TAB
+        loadComponent: () =>
+          import('./tab-messages/tab-messages.page').then(m => m.TabMessagesPage)
+      },
+      {
         path: '',
         redirectTo: '/tabs/tab1',
         pathMatch: 'full',
@@ -60,19 +68,29 @@ export const routes: Routes = [
   },
 
   {
+    path: 'chat/:username', 
+    loadComponent: () =>
+      import('./chat/chat.page').then(m => m.ChatPage),
+  },
+
+  {
     path: 'workout/:id',
     loadComponent: () =>
       import('./workout/workout.page').then((m) => m.WorkoutPage),
   },
+
   {
     path: 'trainer-client/:username',
     loadComponent: () =>
       import('./tab-trainer-client/tab-trainer-client.page').then(m => m.TabTrainerClientPage),
   },
+
   {
     path: 'tab-trainings',
-    loadComponent: () => import('./tab-trainings/tab-trainings.page').then(m => m.TabTrainingsPage)
+    loadComponent: () =>
+      import('./tab-trainings/tab-trainings.page').then(m => m.TabTrainingsPage)
   },
+
   {
     path: 'tab-edit/:id',
     loadComponent: () =>

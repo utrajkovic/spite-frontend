@@ -1,0 +1,27 @@
+<ion-content [fullscreen]="true" class="messages-page">
+
+  <div class="new-chat-box">
+    <ion-input [(ngModel)]="newChatUsername" placeholder="Enter username..." class="chat-input"></ion-input>
+
+    <ion-button class="start-btn" (click)="startNewChat()">
+      Start
+    </ion-button>
+  </div>
+
+  <div class="chat-list">
+
+    <ion-item *ngFor="let user of conversations" button class="chat-item" (click)="openChat(user)">
+      <div class="chat-card">
+        <div class="avatar">
+          {{ user[0] | uppercase }}
+        </div>
+
+        <ion-label class="username">
+          {{ user }}
+        </ion-label>
+      </div>
+    </ion-item>
+
+  </div>
+
+</ion-content>

@@ -1,0 +1,103 @@
+ion-content {
+    --background: radial-gradient(circle at top, #00111a 0%, #000 100%);
+    font-family: 'Orbitron', sans-serif;
+    color: #e0ffff;
+    --padding-top: 72px;
+    /* da ne ide ispod globalnog headera */
+    padding: 16px;
+}
+
+/* TOP INPUT ZA NOVI CHAT */
+.new-chat-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 0 4px;
+}
+
+.chat-input {
+    flex: 1;
+    --background: rgba(0, 255, 255, 0.08);
+    --color: #e0ffff;
+    border-radius: 12px;
+    padding: 6px 10px;
+}
+
+.start-btn {
+    --background: rgba(0, 255, 255, 0.20);
+    --color: #00f7ff;
+    border-radius: 12px;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+/* LISTA CHATOVA */
+.chat-list {
+    padding: 0 6px;
+}
+
+/* JEDAN CHAT ITEM */
+.chat-item {
+    margin-bottom: 10px;
+    padding: 12px;
+    background: rgba(0, 40, 60, 0.15);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: 0.2s ease;
+    border: 1px solid rgba(0, 255, 255, 0.12);
+}
+
+.chat-item:hover {
+    background: rgba(0, 40, 60, 0.25);
+    transform: scale(1.02);
+    border-color: rgba(0, 255, 255, 0.4);
+}
+
+/* AVATAR */
+.avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #00f7ff33;
+    color: #00f7ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 18px;
+    border: 1px solid #00f7ff66;
+    text-transform: uppercase;
+}
+
+/* IME USERA */
+.username {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e0ffff;
+    letter-spacing: 0.5px;
+}
+
+/* uklanja sivo od ion-item */
+ion-item.chat-item {
+    --background: transparent !important;
+    --ion-item-background: transparent !important;
+    background: transparent !important;
+    padding: 0;
+}
+
+/* pravi pravi card */
+.chat-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    transition: 0.2s ease;
+}
+
+.chat-card:hover {
+    transform: scale(1.02);
+}
