@@ -1,12 +1,11 @@
 <ion-content [fullscreen]="true" class="page" *ngIf="workout && currentExercise">
 
   <ion-button class="back-btn" fill="clear" (click)="goBack()">
-    <span>Back</span>
+    <i class="fa-regular fa-circle-left"></i>
   </ion-button>
 
   <div class="workout-header">
     <h2>{{ workout.title }}</h2>
-    <p>{{ workout.content }}</p>
   </div>
 
   <div class="exercise-card">
