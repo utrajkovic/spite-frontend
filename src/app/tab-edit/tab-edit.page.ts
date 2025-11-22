@@ -7,6 +7,8 @@ import { Exercise, Workout } from '../services/models';
 import { AlertController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
 import { FormsModule } from '@angular/forms';
+import { IonSearchbar } from '@ionic/angular/standalone';
+
 
 @Component({
   standalone: true,
@@ -25,11 +27,12 @@ import { FormsModule } from '@angular/forms';
     IonInput,
     IonButton,
     IonList,
+    IonSearchbar,
     IonReorderGroup,
     IonReorder,
     IonButtons,
     IonSpinner
-]
+  ]
 })
 export class TabEditPage implements OnInit {
 
@@ -37,9 +40,9 @@ export class TabEditPage implements OnInit {
   workout!: Workout;
   editableExercises: Exercise[] = [];
   allExercises: Exercise[] = [];
+  filteredExercises: Exercise[] = [];
   searchQuery: string = '';
   isSaving: boolean = false;
-
 
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
@@ -55,6 +58,7 @@ export class TabEditPage implements OnInit {
     this.workoutId = this.route.snapshot.paramMap.get('id')!;
     await this.loadWorkout();
     await this.loadAllUserExercises();
+    this.filterList();
   }
 
   async loadWorkout() {
@@ -70,17 +74,23 @@ export class TabEditPage implements OnInit {
       .filter((e): e is Exercise => !!e);
   }
 
-  get filteredExercises() {
-    return this.allExercises.filter(ex =>
-      ex.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
-  }
-
   async loadAllUserExercises() {
     const user = await this.localData.getUser();
     this.allExercises =
       await this.http.get<Exercise[]>(`${this.backendUrl}/api/exercises/user/${user.id}`).toPromise()
       ?? [];
+  }
+
+  onSearch(ev: any) {
+    this.searchQuery = ev.target.value?.toLowerCase() || '';
+    this.filterList();
+  }
+
+  filterList() {
+    this.filteredExercises = this.allExercises.filter(ex =>
+      ex.name.toLowerCase().includes(this.searchQuery) &&
+      !this.editableExercises.some(e => e.id === ex.id)
+    );
   }
 
   handleReorder(ev: any) {
@@ -93,17 +103,23 @@ export class TabEditPage implements OnInit {
 
   addExercise(ex: Exercise) {
     this.editableExercises.push(ex);
+    this.filterList(); 
   }
 
   removeExercise(i: number) {
+    const removed = this.editableExercises[i];
     this.editableExercises.splice(i, 1);
+
+    if (removed) this.filterList();
   }
 
   async saveChanges() {
     this.isSaving = true;
 
     const updated = {
-      ...this.workout,
+      title: this.workout.title,
+      subtitle: this.workout.subtitle,
+      content: this.workout.content,
       exerciseIds: this.editableExercises.map(e => e.id!)
     };
 
@@ -118,8 +134,9 @@ export class TabEditPage implements OnInit {
 
       await alert.present();
 
-      this.localData.triggerWorkoutsRefresh();
+      this.localData.triggerTab3Refresh();
       this.localData.triggerTab1Refresh();
+      this.localData.triggerWorkoutRefresh();
       this.router.navigateByUrl('/tabs/tab3');
 
     } catch (err) {

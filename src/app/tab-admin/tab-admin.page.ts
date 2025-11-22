@@ -4,6 +4,7 @@ import { IonContent, IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonBu
 import { BackendService } from '../services/backend.service';
 import { AlertController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-tab-admin',
@@ -15,34 +16,42 @@ import { FormsModule } from '@angular/forms';
     IonContent, IonCard, IonCardHeader, IonCardContent, IonCardTitle,
     IonButton, IonItem, IonLabel, IonSelect, IonSelectOption, FormsModule,
     IonSpinner
-],
+  ],
 })
 export class TabAdminPage implements OnInit {
 
   users: any[] = [];
   filteredUsers: any[] = [];
   selectedRole = 'ALL';
+  currentUser: any = null;
+
 
   constructor(
     private backend: BackendService,
     private alertCtrl: AlertController
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    const user = await Preferences.get({ key: 'user' });
+    this.currentUser = user.value ? JSON.parse(user.value) : null;
+
     this.loadUsers();
   }
+
 
   loadingAction: string | null = null;
 
   loadUsers() {
     this.backend.getAllUsers().subscribe({
       next: data => {
-        this.users = data;
+        this.users = data.filter(u => u.username !== this.currentUser.username);
+
         this.applyFilter();
       },
       error: err => console.error(err)
     });
   }
+
 
   applyFilter() {
     if (this.selectedRole === 'ALL') {

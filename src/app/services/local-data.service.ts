@@ -7,17 +7,31 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class LocalDataService {
+
+  private refreshWorkoutSubject = new Subject<void>();
+  refreshWorkout$ = this.refreshWorkoutSubject.asObservable();
+
   private refreshTab3Subject = new Subject<void>();
   refreshTab3$ = this.refreshTab3Subject.asObservable();
-  
+
+  private refreshTab1Subject = new Subject<void>();
+  refreshTab1$ = this.refreshTab1Subject.asObservable();
+
   private refreshTab2Subject = new Subject<void>();
   refreshTab2$ = this.refreshTab3Subject.asObservable();
 
   triggerTab3Refresh() {
     this.refreshTab3Subject.next();
   }
+  triggerTab1Refresh() {
+    this.refreshTab1Subject.next();
+  }
   triggerTab2Refresh() {
     this.refreshTab2Subject.next();
+  }
+
+  triggerWorkoutRefresh() {
+    this.refreshWorkoutSubject.next();
   }
 
   async saveWorkouts(data: any) {

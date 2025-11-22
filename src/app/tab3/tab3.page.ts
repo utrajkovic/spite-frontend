@@ -38,7 +38,7 @@ export class Tab3Page implements OnInit {
   loading: HTMLIonLoadingElement | null = null;
   isDeleting: string | null = null;
 
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com'; 
+  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
   constructor(
     private backend: BackendService,
@@ -212,6 +212,11 @@ export class Tab3Page implements OnInit {
       messageEl.innerHTML = `<p> Unable to load video.</p>`;
     }
   }
+
+  openEditWorkout(workout: Workout) {
+    this.router.navigate(['/tab-edit', workout.id]);
+  }
+
 
 
   async showWorkoutDetails(workout: any) {

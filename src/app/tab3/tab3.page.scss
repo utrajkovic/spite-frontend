@@ -1,32 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
 
 ion-content {
-  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --background: radial-gradient(circle at top, #00111a 0%, #000 100%);
   --padding-top: 72px;
   padding: 16px;
   font-family: 'Orbitron', sans-serif;
   color: #e0ffff;
 }
 
-/* 🌌 SEKCIJE */
 .section-box {
   background: #00111a;
   border-radius: 18px;
   padding: 16px;
   margin-bottom: 32px;
   backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.05);
-  transition: box-shadow 0.3s ease;
   animation: fadeIn 0.4s ease;
+  transition: box-shadow 0.3s ease;
 }
 
-/* 👇 Samo spoljašnji glow pri hoveru sekcije */
 .section-box:hover {
   box-shadow: 0 0 18px rgba(0, 255, 255, 0.25);
 }
 
-/* Naslov sekcije */
 .section-box h2 {
   font-size: 1.2rem;
   font-weight: 600;
@@ -36,7 +32,6 @@ ion-content {
   margin-bottom: 14px;
 }
 
-/* 💾 LISTA */
 ion-list {
   background: transparent !important;
   border-radius: 14px;
@@ -47,20 +42,17 @@ ion-item {
   --inner-border-width: 0;
   --background: #00111a;
   border-bottom: 1px solid rgba(0, 255, 255, 0.08);
-  border-radius: 0;
-  transition: box-shadow 0.3s ease;
-}
-
-/* 👇 Samo spoljašnji glow — nema pozadinskih promena */
-ion-item:hover {
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+  transition: box-shadow 0.25s ease;
 }
 
 ion-item:last-child {
   border-bottom: none;
 }
 
-/* 🔹 KARTICE VEŽBI I TRENINGA */
+ion-item:hover {
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+}
+
 .item-card {
   border-radius: 12px;
   margin-bottom: 10px;
@@ -68,7 +60,6 @@ ion-item:last-child {
   transition: box-shadow 0.25s ease;
 }
 
-/* 👇 Samo ivica svetli */
 .item-card:hover {
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
 }
@@ -81,88 +72,67 @@ ion-label h3 {
 
 ion-label p {
   color: #aefcff;
-  font-size: 0.85rem;
   opacity: 0.85;
+  font-size: 0.85rem;
 }
 
-/* 🗑 DELETE dugme */
-ion-button[color="danger"] {
-  --border-radius: 12px;
-  font-size: 0.9rem;
-  --background: #00111a
-  --color: #fff;
-  transition: box-shadow 0.3s ease;
-}
-
-/* 👇 Samo spoljašnji glow — nema uvećanja */
-ion-button[color="danger"]:hover {
-  box-shadow: 0 0 12px rgba(255, 80, 80, 0.5);
-}
-
-.delete-btn {
+.delete-btn,
+.edit-btn {
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  ion-spinner {
-    width: 20px;
-    height: 20px;
-  }
 }
 
-/* ✨ PREVIEW MODAL */
+.delete-btn ion-spinner,
+.edit-btn ion-spinner {
+  width: 20px;
+  height: 20px;
+}
+
+ion-button[color="danger"],
+ion-button[color="warning"] {
+  --border-radius: 12px;
+  font-size: 0.9rem;
+  --background: #00111a;
+  transition: box-shadow 0.3s ease;
+}
+
+ion-button[color="danger"]:hover,
+ion-button[color="warning"]:hover {
+  box-shadow: 0 0 12px rgba(255, 80, 80, 0.5);
+}
+
 .exercise-preview-alert {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 200px;
   text-align: center;
   color: #ccefff;
-
-  video {
-    width: 100%;
-    max-height: 260px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    box-shadow: 0 0 6px rgba(0, 255, 255, 0.25);
-  }
-
-  p {
-    font-size: 0.9rem;
-    color: #ccefff;
-    margin-top: 8px;
-  }
+  min-height: 200px;
 }
 
-/* 🌈 Separator */
+.exercise-preview-alert video {
+  width: 100%;
+  max-height: 260px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 6px rgba(0, 255, 255, 0.25);
+}
+
 .separator {
   width: 70%;
   height: 1px;
   background: linear-gradient(90deg, transparent, #00f7ff, transparent);
   margin: 28px auto;
-  border-radius: 10px;
   opacity: 0.8;
+  border-radius: 10px;
 }
 
-/* 🌀 Animacija */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 🔘 Logout */
 .logout-btn {
-  font-family: 'Orbitron', sans-serif;
   margin-top: 20px;
+  font-family: 'Orbitron', sans-serif;
   --background: linear-gradient(90deg, #00ffff, #00ccff);
   --color: #000;
   font-weight: 600;
@@ -170,12 +140,22 @@ ion-button[color="danger"]:hover {
   transition: box-shadow 0.3s ease;
 }
 
-/* 👇 Neon sjaj spolja na hover */
 .logout-btn:hover {
   box-shadow: 0 0 16px rgba(0, 255, 255, 0.4);
 }
 
-/* 📱 Responsive */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 600px) {
   .section-box {
     padding: 12px;

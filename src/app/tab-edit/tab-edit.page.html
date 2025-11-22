@@ -40,9 +40,13 @@
 
     <h3>Add Exercise</h3>
 
-    <ion-item class="search-box">
-      <ion-input [(ngModel)]="searchQuery" placeholder="Search exercises..."></ion-input>
-    </ion-item>
+    <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="onSearch($event)" placeholder="Search exercises..."
+      animated="true">
+    </ion-searchbar>
+
+
+
+
 
     <ion-list>
       <ion-item *ngFor="let ex of filteredExercises">

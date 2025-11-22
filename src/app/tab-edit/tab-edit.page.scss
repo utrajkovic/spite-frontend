@@ -163,3 +163,20 @@ ion-button[color="success"] {
         box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
     }
 }
+
+ion-searchbar {
+    --background: rgba(0, 40, 60, 0.35);
+    --border-radius: 12px;
+    --color: #c7faff;
+    --placeholder-color: #8ee7ff;
+    --icon-color: #00f7ff;
+
+    margin: 12px 0 20px 0;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
+    backdrop-filter: blur(8px) saturate(130%);
+    -webkit-backdrop-filter: blur(8px) saturate(130%);
+}
+
+ion-searchbar:hover {
+    box-shadow: 0 0 14px rgba(0, 255, 255, 0.3);
+}
