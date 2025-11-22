@@ -1,22 +1,41 @@
+ion-content {
+  --padding-top: 56px !important;
+}
+
 .chat-page {
   --background: radial-gradient(circle at top, #00111a 0%, #000 100%);
 }
+.chat-header {
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  z-index: 20;
+  background: rgba(0, 17, 26, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 247, 255, 0.15);
+}
+
+.chat-scroll-area {
+  padding: 0px 0;
+  display: flex;
+  justify-content: center;
+}
 
 .chat-container {
+  width: 100%;
   max-width: 600px;
-  height: 100%;
-  margin: 0 auto;
+  border-left: 2px solid rgba(0, 247, 255, 0.25);
+  border-right: 2px solid rgba(0, 247, 255, 0.25);
   padding: 0 12px;
-
-  border-left: 2px solid rgba(0, 247, 255, 0.4);
-  border-right: 2px solid rgba(0, 247, 255, 0.4);
-
-  box-shadow:
-    inset 0 0 18px rgba(0, 247, 255, 0.15),
-    inset 0 0 28px rgba(88, 0, 170, 0.15);
-
-  border-radius: 4px;
+  box-sizing: border-box;
 }
+
 
 
 .chat-list {
@@ -47,27 +66,28 @@
 }
 
 .back-btn {
-  position: fixed;
-  top: 12px;
-  left: 20px;
-  z-index: 20;
   --color: #00f7ff;
-  --padding-start: 6px;
-  --padding-end: 6px;
-  font-size: 34px;
+  font-size: 20px;
+  margin-right: 10px;
+}
+.chat-username {
+  font-size: 18px;
+  font-weight: 600;
+  color: #00f7ff;
+  letter-spacing: 0.5px;
 }
 
 .input-row {
   display: flex;
   padding: 8px;
-  background: #000;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #08004200;
+  border-top: 2px solid rgba(0, 247, 255, 0.25);
 }
 
 ion-input {
   flex: 1;
   margin-right: 8px;
-  --background: #111;
+  background: #08004200;
   color: #fff;
   border-radius: 10px;
   padding-left: 8px;
