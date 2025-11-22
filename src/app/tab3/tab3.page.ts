@@ -20,14 +20,10 @@ import { HttpClient } from '@angular/common/http';
   imports: [
     CommonModule,
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
     IonList,
     IonItem,
     IonLabel,
     IonButton,
-    IonIcon,
     IonSpinner
   ]
 })

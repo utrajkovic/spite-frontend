@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
-  IonGrid, IonRow, IonCol, IonButton, IonIcon, IonToolbar, IonTitle, IonHeader
-} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { IonButton, IonContent } from '@ionic/angular/standalone';
+import { HttpClient } from '@angular/common/http';
+import { Exercise, Workout } from '../services/models';
 
 @Component({
   selector: 'app-tab-trainings',
@@ -14,43 +12,81 @@ import { AlertController } from '@ionic/angular';
   standalone: true,
   imports: [
     CommonModule,
-    IonHeader, IonToolbar, IonTitle, IonButton, IonIcon,
-    IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
-    IonGrid, IonRow, IonCol
+    IonButton,
+    IonContent
   ],
 })
 export class TabTrainingsPage implements OnInit {
-  workout: any;
 
-  constructor(private router: Router, private alertCtrl: AlertController) { }
+  workout: (Workout & { exercises: Exercise[] }) | null = null;
+  currentIndex = 0;
 
-  ngOnInit() {
+  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+
+  constructor(
+    private router: Router,
+    private http: HttpClient
+  ) {}
+
+  async ngOnInit() {
     const nav = this.router.getCurrentNavigation();
-    this.workout = nav?.extras.state?.['workout'];
+    const w = nav?.extras.state?.['workout'];
+
+    // Ako se uđe direktno bez state-a, vrati korisnika na listu
+    if (!w || !w.id) {
+      this.router.navigateByUrl('/tabs/tab1');
+      return;
+    }
+
+    await this.loadWorkout(w.id);
+  }
+
+  async loadWorkout(id: string) {
+    // povuci svež workout sa backenda
+    const fresh = await this.http
+      .get<Workout & { exercises?: Exercise[]; exerciseIds?: string[] }>(
+        `${this.backendUrl}/api/workouts/${id}`
+      )
+      .toPromise();
+
+    if (!fresh) return;
+
+    const rawExercises = fresh.exercises ?? [];
+    const rawIds = fresh.exerciseIds ?? [];
+
+    const map = new Map(rawExercises.map((e: any) => [e.id, e]));
+
+    const orderedExercises: Exercise[] = rawIds
+      .map((exId: string) => map.get(exId))
+      .filter((e: Exercise | undefined): e is Exercise => !!e);
+
+    this.workout = {
+      ...fresh,
+      exercises: orderedExercises
+    };
+
+    this.currentIndex = 0;
+  }
+
+  get currentExercise(): Exercise | null {
+    return this.workout?.exercises?.[this.currentIndex] ?? null;
   }
 
   goBack() {
     this.router.navigateByUrl('/tabs/tab1');
   }
 
-  async openExercisePreview(exercise: any) {
-    const alert = await this.alertCtrl.create({
-      header: exercise.name,
-      message: '', 
-      buttons: ['Close'],
-      cssClass: 'custom-alert exercise-preview-alert',
-    });
+  prevExercise() {
+    if (!this.workout) return;
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+    }
+  }
 
-    await alert.present();
-
-    const messageEl = alert.querySelector('.alert-message');
-    if (messageEl) {
-      messageEl.innerHTML = `
-      <div class="exercise-preview-alert">
-        <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
-        <p>${exercise.description || 'No description available.'}</p>
-      </div>
-    `;
+  nextExercise() {
+    if (!this.workout) return;
+    if (this.currentIndex < this.workout.exercises.length - 1) {
+      this.currentIndex++;
     }
   }
 }

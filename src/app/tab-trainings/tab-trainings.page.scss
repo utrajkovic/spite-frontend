@@ -1,204 +1,107 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap');
-
-ion-content {
+.page {
   --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   font-family: 'Orbitron', sans-serif;
   color: #e0ffff;
-}
-
-.workout-header {
   text-align: center;
-  margin: 18px 0;
-
-  h2 {
-    font-size: 22px;
-    color: #00f7ff;
-    text-shadow: 0 0 12px rgba(0, 255, 255, 0.8);
-    margin-bottom: 6px;
-  }
-
-  p {
-    font-size: 14px;
-    color: #aefcff;
-    opacity: 0.85;
-  }
 }
 
-ion-grid {
-  padding: 6px 10px;
+/* Centriranje */
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: calc(100vh - 60px);
 }
 
-ion-card {
+.card-wrapper {
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Progress bar */
+.neon-progress {
+  margin: 0 0 8px 0;
+  height: 3px;
+  --progress-background: rgba(0, 255, 255, 0.25);
+  --progress-bar-background: linear-gradient(90deg, #00f7ff, #00ffaa);
+  border-radius: 10px;
+}
+
+/* CARD */
+.exercise-card {
+  width: 100%;
+  min-height: 75vh;
+  border-radius: 18px;
   background: rgba(0, 40, 60, 0.25);
   border: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Video container */
+.video-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.exercise-video {
+  width: 100%;
+  max-height: 35vh;
+  object-fit: contain;
   border-radius: 14px;
-  text-align: center;
-  padding: 10px;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  background: #000;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+}
 
-  &:hover {
-    transform: translateY(-3px) scale(1.02);
-    border-color: rgba(0, 255, 255, 0.5);
-    box-shadow: 0 0 18px rgba(0, 255, 255, 0.3);
-  }
+/* Text */
+.exercise-name {
+  font-size: 20px;
+  color: #00f7ff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+  margin-bottom: 6px;
+}
 
-  ion-card-title {
-    font-size: 15px;
-    color: #00f7ff;
-    margin-bottom: 8px;
-  }
+.exercise-desc {
+  font-size: 14px;
+  color: #aefcff;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
 
-  ion-card-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+/* Navigation buttons */
+.nav-buttons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 
-  video {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-    &:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 18px rgba(0, 255, 255, 0.35);
-    }
-  }
-
-  p {
-    font-size: 13px;
-    color: #aefcff;
-    text-align: center;
-    line-height: 1.4;
-    opacity: 0.9;
+  ion-button {
+    width: 48%;
+    --border-radius: 12px;
+    --color: #00f7ff;
+    --border-color: #00f7ff;
   }
 }
 
+/* Counter */
+.counter-box {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #00f7ff;
+}
+
+/* Back button */
 .back-btn {
   position: fixed;
-  top: 14px;
-  left: 14px;
-  z-index: 1000;
-  --background: rgba(0, 255, 255, 0.1);
-  border: 1px solid rgba(0, 255, 255, 0.25);
-  border-radius: 12px;
-  color: #00f7ff;
-  backdrop-filter: blur(6px) saturate(140%);
-  -webkit-backdrop-filter: blur(6px) saturate(140%);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
-  text-transform: uppercase;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 500;
-  transition: all 0.25s ease;
-
-  ion-icon {
-    margin-right: 4px;
-    color: #00f7ff;
-  }
-
-  span {
-    color: #00f7ff;
-    letter-spacing: 1px;
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 18px rgba(0, 255, 255, 0.4);
-  }
-
-  &:active {
-    transform: scale(0.96);
-  }
+  top: 12px;
+  left: 12px;
+  z-index: 999;
+  --color: #00f7ff;
+  font-size: 14px;
 }
-
-@media (min-width: 992px) {
-  ion-col[size="6"] {
-    flex: 0 0 25%;
-    max-width: 25%;
-  }
-}
-
-@media (max-width: 991px) and (min-width: 600px) {
-  ion-col[size="6"] {
-    flex: 0 0 50%;
-    max-width: 50%;
-  }
-}
-
-@media (max-width: 600px) {
-  ion-col[size="6"] {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-
-  .back-btn {
-    top: 10px;
-    left: 10px;
-    font-size: 13px;
-    padding: 6px 10px;
-    --background: rgba(0, 255, 255, 0.15);
-  }
-}
-.truncate,
-.truncate-description {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-}
-
-.custom-alert.exercise-preview-alert {
-  --background: rgba(0, 25, 40, 0.96);
-  --max-width: 90vw;
-  --max-height: 85vh;
-  --border-radius: 14px;
-  color: #e0ffff;
-
-  .alert-wrapper {
-    border: 1px solid rgba(0, 255, 255, 0.25);
-    box-shadow: 0 0 18px rgba(0, 255, 255, 0.25);
-    backdrop-filter: blur(10px) saturate(150%);
-    -webkit-backdrop-filter: blur(10px) saturate(150%);
-  }
-
-  .alert-message {
-    padding: 0;
-    overflow: hidden;
-  }
-
-  video {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-  }
-
-  p {
-    font-size: 14px;
-    color: #aefcff;
-    text-align: center;
-    margin: 8px 10px;
-  }
-}
-
-@media (max-width: 600px) {
-  .custom-alert.exercise-preview-alert {
-    --max-width: 95vw;
-    --max-height: 90vh;
-
-    video {
-      max-height: 280px;
-    }
-
-    p {
-      font-size: 13px;
-    }
-  }
-}
-
