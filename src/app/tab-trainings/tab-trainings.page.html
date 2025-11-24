@@ -16,8 +16,8 @@
     <h3>Exercise {{ currentIndex + 1 }}</h3>
 
     <div class="video-container">
-      <video *ngIf="currentExercise?.videoUrl" [src]="currentExercise.videoUrl" autoplay loop muted playsinline
-        class="exercise-video" controls>
+      <video *ngIf="currentExercise?.videoUrl" [src]="currentExercise.videoUrl" autoplay loop [muted]="true" playsinline
+        class="exercise-video">
       </video>
 
       <div *ngIf="!currentExercise?.videoUrl" class="video-placeholder">

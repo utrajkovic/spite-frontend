@@ -15,7 +15,7 @@
 
           <div class="video-container" *ngIf="!isResting">
             <video *ngIf="exercises[currentExerciseIndex]?.videoUrl" [src]="exercises[currentExerciseIndex]?.videoUrl"
-              autoplay loop [muted]="true" playsinline class="exercise-video fade-in" controls>
+              autoplay loop [muted]="true" playsinline class="exercise-video fade-in" >
             </video>
 
             <div *ngIf="isVideoLoading" class="video-loading-overlay fade-in">
@@ -73,7 +73,7 @@
           <div class="video-container">
             <video *ngIf="exercises[currentExerciseIndex + 1]?.videoUrl"
               [src]="exercises[currentExerciseIndex + 1]?.videoUrl" autoplay loop [muted]="true" playsinline
-              class="exercise-video" controls>
+              class="exercise-video">
             </video>
           </div>
         </ion-card-content>

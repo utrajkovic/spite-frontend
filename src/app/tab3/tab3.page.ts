@@ -191,7 +191,7 @@ export class Tab3Page implements OnInit {
       videoEl.autoplay = true;
       videoEl.loop = true;
       videoEl.muted = true;
-      videoEl.controls = true;
+      videoEl.controls = false;
       videoEl.playsInline = true;
       videoEl.className = 'exercise-video';
 
