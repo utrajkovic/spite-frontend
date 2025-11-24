@@ -39,12 +39,6 @@ export const routes: Routes = [
           import('../tab-admin/tab-admin.page').then((m) => m.TabAdminPage),
       },
       {
-        path: 'exercise-selector',
-        loadComponent: () =>
-          import('../exercise-selector/exercise-selector.page')
-            .then(m => m.ExerciseSelectorPage)
-      },
-      {
         path: '',
         redirectTo: '/tabs/tab1',
         pathMatch: 'full',

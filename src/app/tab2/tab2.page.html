@@ -23,22 +23,44 @@
       <ion-input formControlName="subtitle"></ion-input>
     </ion-item>
 
-    <ion-button expand="block" color="primary" (click)="openExerciseSelector()">
-      Select Exercises
-    </ion-button>
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Exercises</ion-label>
+      </ion-list-header>
+
+      <div formArrayName="exercises">
+        <div *ngFor="let ex of exercises.controls; let i = index" [formGroupName]="i">
+
+          <ion-item>
+            <ion-label>Select Exercise</ion-label>
+            <ion-select formControlName="exerciseId" interface="popover">
+              <ion-select-option *ngFor="let e of allExercises" [value]="e.id">
+                {{ e.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-button color="danger" expand="block" (click)="removeExercise(i)">
+            Remove
+          </ion-button>
+
+        </div>
+      </div>
+
+      <ion-button expand="block" (click)="addExercise()">
+        Add Exercise
+      </ion-button>
+    </ion-list>
 
     <ion-button expand="block" color="success" (click)="saveWorkout()">
       Save Workout
     </ion-button>
-    <div *ngIf="selectedExerciseIds.length" class="selected-preview">
-      <p>Selected exercises ({{ selectedExerciseIds.length }}):</p>
-      <div class="chip" *ngFor="let id of selectedExerciseIds; let i = index">
-        {{ i+1 }}. {{ getExerciseName(id) }}
-      </div>
-    </div>
+
   </form>
+
   <hr />
 
+  <!-- Forma za dodavanje nove vežbe -->
   <h2>Add New Exercise</h2>
   <form [formGroup]="exerciseForm">
     <ion-item>
@@ -74,6 +96,7 @@
       <ion-input type="number" inputmode="numeric" pattern="[0-9]*" min="30" max="600"
         (ionInput)="sanitizeNumberInput($event)" formControlName="restAfterExercise"></ion-input>
     </ion-item>
+
 
     <div class="video-upload">
       <label for="videoInput">Choose Video File</label>

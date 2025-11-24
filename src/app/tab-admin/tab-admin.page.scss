@@ -6,8 +6,7 @@ ion-content {
   color: #e0ffff;
   font-family: 'Tilt Neon', cursive;
   padding: 24px 16px;
-  padding-top: 80px;
-  /* content da ne ulazi u global header */
+  padding-top: 80px; /* content da ne ulazi u global header */
 
   backdrop-filter: blur(10px) saturate(150%);
   -webkit-backdrop-filter: blur(10px) saturate(150%);
@@ -23,7 +22,7 @@ ion-content {
     font-size: 22px;
     color: #00f7ff;
     letter-spacing: 1px;
-    text-shadow: 0 0 14px rgba(0, 255, 255, 0.9);
+    text-shadow: 0 0 14px rgba(0,255,255,0.9);
   }
 
   p {
@@ -35,11 +34,11 @@ ion-content {
 
 /* 🎛 FILTER BOX */
 .filter-box {
-  --background: rgba(0, 40, 60, 0.25);
+  --background: rgba(0,40,60,0.25);
   --color: #00f7ff;
   border-radius: 14px;
 
-  border: 1px solid rgba(0, 255, 255, 0.25);
+  border: 1px solid rgba(0,255,255,0.25);
   padding: 4px 10px;
 
   backdrop-filter: blur(12px) saturate(150%);
@@ -49,14 +48,14 @@ ion-content {
 }
 
 .filter-box:hover {
-  border-color: rgba(0, 255, 255, 0.5);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
+  border-color: rgba(0,255,255,0.5);
+  box-shadow: 0 0 12px rgba(0,255,255,0.25);
 }
 
 /* 🧱 USER CARD */
 ion-card {
   background: rgba(0, 40, 60, 0.25);
-  border: 1px solid rgba(0, 255, 255, 0.25);
+  border: 1px solid rgba(0,255,255,0.25);
   border-radius: 16px;
 
   padding: 14px;
@@ -65,14 +64,14 @@ ion-card {
   backdrop-filter: blur(12px) saturate(150%);
   -webkit-backdrop-filter: blur(12px) saturate(150%);
 
-  box-shadow: 0 0 14px rgba(0, 255, 255, 0.15);
+  box-shadow: 0 0 14px rgba(0,255,255,0.15);
   animation: fadeIn 0.4s ease;
 
   ion-card-title {
     font-family: 'Orbitron', sans-serif;
     font-size: 18px;
     color: #00f7ff;
-    text-shadow: 0 0 12px rgba(0, 255, 255, 0.8);
+    text-shadow: 0 0 12px rgba(0,255,255,0.8);
     margin-bottom: 8px;
   }
 
@@ -97,22 +96,22 @@ ion-card {
     text-transform: uppercase;
     font-weight: 600;
 
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0,255,255,0.3);
     transition: all 0.25s ease;
   }
 
   ion-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 14px rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 14px rgba(0,255,255,0.5);
   }
 }
 
 .custom-alert .alert-wrapper {
   background: rgba(0, 25, 45, 0.95) !important;
   border-radius: 16px !important;
-  border: 1px solid rgba(0, 255, 255, 0.5) !important;
+  border: 1px solid rgba(0,255,255,0.5) !important;
 
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.35);
+  box-shadow: 0 0 20px rgba(0,255,255,0.35);
   color: #e0ffff !important;
 }
 
@@ -122,17 +121,17 @@ ion-card {
   padding: 10px;
 
   border-radius: 10px;
-  background: rgba(0, 40, 60, 0.25);
-  border: 1px solid rgba(0, 255, 255, 0.4);
+  background: rgba(0,40,60,0.25);
+  border: 1px solid rgba(0,255,255,0.4);
   color: #00f7ff;
 }
 
 /* 🎨 CUSTOM FILTER ALERT */
 .admin-filter-alert .alert-wrapper {
-  background: rgba(0, 20, 35, 0.97);
+  background: rgba(0,20,35,0.97);
   border-radius: 16px;
-  border: 1px solid rgba(0, 255, 255, 0.4);
-  box-shadow: 0 0 18px rgba(0, 255, 255, 0.4);
+  border: 1px solid rgba(0,255,255,0.4);
+  box-shadow: 0 0 18px rgba(0,255,255,0.4);
 }
 
 .admin-filter-container {
@@ -146,8 +145,8 @@ ion-card {
     border-radius: 10px;
     text-align: center;
 
-    background: rgba(0, 255, 255, 0.10);
-    border: 1px solid rgba(0, 255, 255, 0.35);
+    background: rgba(0,255,255,0.10);
+    border: 1px solid rgba(0,255,255,0.35);
     color: #00f7ff;
 
     font-family: 'Orbitron', sans-serif;
@@ -157,51 +156,23 @@ ion-card {
   }
 
   .filter-btn:hover {
-    background: rgba(0, 255, 255, 0.20);
-    box-shadow: 0 0 12px rgba(0, 255, 255, 0.35);
+    background: rgba(0,255,255,0.20);
+    box-shadow: 0 0 12px rgba(0,255,255,0.35);
     transform: translateY(-2px);
   }
 }
 
 /* ✨ ANIMACIJA */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* 📱 RESPONSIVE */
 @media (max-width: 600px) {
-  ion-card-title {
-    font-size: 16px;
-  }
-
-  ion-button {
-    font-size: 14px;
-  }
+  ion-card-title { font-size: 16px; }
+  ion-button { font-size: 14px; }
 }
-
 .admin-wrapper {
   margin-top: 70px;
-}
-
-.fltr-btn {
-  font-family: 'Orbitron', sans-serif;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #00eaff;
-  background: rgba(0, 20, 30, 0.5);
-  color: #00eaff;
-  font-size: 13px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
 }

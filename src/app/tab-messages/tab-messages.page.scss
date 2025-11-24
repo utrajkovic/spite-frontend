@@ -3,16 +3,17 @@ ion-content {
     font-family: 'Orbitron', sans-serif;
     color: #e0ffff;
     --padding-top: 72px;
+    /* da ne ide ispod globalnog headera */
     padding: 16px;
 }
 
+/* TOP INPUT ZA NOVI CHAT */
 .new-chat-box {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 18px;
     padding: 0 4px;
-    padding: 12px;
 }
 
 .chat-input {
@@ -51,7 +52,7 @@ ion-content {
 
 .chat-item:hover {
     background: rgba(0, 40, 60, 0.25);
-    transform: scale(1.001);
+    transform: scale(1.02);
     border-color: rgba(0, 255, 255, 0.4);
 }
 
@@ -98,5 +99,5 @@ ion-item.chat-item {
 }
 
 .chat-card:hover {
-    transform: scale(1.01);
+    transform: scale(1.02);
 }

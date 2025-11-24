@@ -191,14 +191,14 @@ export class Tab3Page implements OnInit {
       videoEl.autoplay = true;
       videoEl.loop = true;
       videoEl.muted = true;
-      videoEl.controls = false;
+      videoEl.controls = true;
       videoEl.playsInline = true;
       videoEl.className = 'exercise-video';
 
       videoEl.onloadeddata = () => {
         messageEl.innerHTML = `
         <div class="exercise-preview-alert">
-          <video src="${exercise.videoUrl}" autoplay loop muted playsinline></video>
+          <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
           <p>${exercise.description || 'No description available.'}</p>
         </div>
       `;
