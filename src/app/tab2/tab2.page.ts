@@ -10,6 +10,8 @@ import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
+import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -32,6 +34,8 @@ export class Tab2Page implements OnInit {
   loading: HTMLIonLoadingElement | null = null;
   isUploading = false;
 
+  selectedExerciseIds: string[] = [];
+
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
   constructor(
@@ -39,7 +43,9 @@ export class Tab2Page implements OnInit {
     private http: HttpClient,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    private localData: LocalDataService
+    private localData: LocalDataService,
+    private navCtrl: NavController,
+    private router: Router
   ) {
     this.workoutForm = this.fb.group({
       title: ['', Validators.required],
@@ -62,6 +68,16 @@ export class Tab2Page implements OnInit {
   ngOnInit() {
     this.loadExercises();
   }
+
+  ionViewWillEnter() {
+    const state = history.state;
+
+    if (state?.selected) {
+      this.selectedExerciseIds = state.selected;
+      console.log("Selected from selector:", this.selectedExerciseIds);
+    }
+  }
+
 
   get exercises(): FormArray {
     return this.workoutForm.get('exercises') as FormArray;
@@ -113,7 +129,7 @@ export class Tab2Page implements OnInit {
       title: formValue.title,
       subtitle: formValue.subtitle,
       content: formValue.content,
-      exerciseIds: formValue.exercises.map((e: any) => e.exerciseId),
+      exerciseIds: this.selectedExerciseIds,
       userId: user.id
     };
 
@@ -126,6 +142,7 @@ export class Tab2Page implements OnInit {
       this.showAlert('Workout added successfully!');
       this.workoutForm.reset();
       this.exercises.clear();
+      this.selectedExerciseIds = [];
       this.loadExercises();
     } catch (err) {
       console.error('Error saving workout:', err);
@@ -250,5 +267,16 @@ export class Tab2Page implements OnInit {
   sanitizeNumberInput(event: any) {
     const input = event.target as HTMLInputElement;
     input.value = input.value.replace(/[^0-9]/g, '');
+  }
+
+  openExerciseSelector() {
+    this.navCtrl.navigateForward('/tabs/exercise-selector', {
+      state: { preselected: this.selectedExerciseIds }
+    });
+  }
+
+  getExerciseName(id: string) {
+    const ex = this.allExercises.find(e => e.id === id);
+    return ex ? ex.name : 'Unknown';
   }
 }
