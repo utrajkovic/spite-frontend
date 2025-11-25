@@ -23,34 +23,23 @@
       <ion-input formControlName="subtitle"></ion-input>
     </ion-item>
 
-    <ion-list>
-      <ion-list-header>
-        <ion-label>Exercises</ion-label>
-      </ion-list-header>
+    <ion-button expand="block" (click)="goToSelectExercises()">
+      Select Exercises
+    </ion-button>
+    <!-- Selected Exercises Preview -->
+    <div *ngIf="selectedExerciseNames.length > 0" class="selected-preview">
 
-      <div formArrayName="exercises">
-        <div *ngFor="let ex of exercises.controls; let i = index" [formGroupName]="i">
+      <h3>Selected Exercises</h3>
 
-          <ion-item>
-            <ion-label>Select Exercise</ion-label>
-            <ion-select formControlName="exerciseId" interface="popover">
-              <ion-select-option *ngFor="let e of allExercises" [value]="e.id">
-                {{ e.name }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
+      <ion-list class="preview-list">
+        <ion-item *ngFor="let name of selectedExerciseNames">
+          <ion-label>{{ name }}</ion-label>
+        </ion-item>
+      </ion-list>
 
-          <ion-button color="danger" expand="block" (click)="removeExercise(i)">
-            Remove
-          </ion-button>
+    </div>
 
-        </div>
-      </div>
 
-      <ion-button expand="block" (click)="addExercise()">
-        Add Exercise
-      </ion-button>
-    </ion-list>
 
     <ion-button expand="block" color="success" (click)="saveWorkout()">
       Save Workout
