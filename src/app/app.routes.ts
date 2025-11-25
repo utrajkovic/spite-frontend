@@ -96,8 +96,4 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./tab-edit/tab-edit.page').then(m => m.TabEditPage),
   },
-  {
-    path: 'select-exercises',
-    loadComponent: () => import('./select-exercises/select-exercises.page').then( m => m.SelectExercisesPage)
-  },
 ];

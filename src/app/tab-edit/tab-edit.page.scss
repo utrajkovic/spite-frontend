@@ -25,6 +25,7 @@ ion-title {
     text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
+/* INPUT POLJA */
 ion-item {
     --background: rgba(0, 40, 60, 0.25);
     --color: #aefcff;
@@ -52,6 +53,7 @@ ion-input {
     font-size: 15px;
 }
 
+/* SECTION TITLES */
 h3 {
     margin-top: 22px;
     margin-bottom: 12px;
@@ -63,6 +65,7 @@ h3 {
     text-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
 }
 
+/* LISTE */
 ion-list {
     background: rgba(0, 40, 60, 0.25);
     border: 1px solid rgba(0, 255, 255, 0.22);
@@ -73,6 +76,7 @@ ion-list {
     animation: fadeIn .4s ease;
 }
 
+/* EXERCISE ITEMS IN REORDER */
 ion-reorder-group ion-item {
     margin-bottom: 10px;
     --background: rgba(0, 45, 70, 0.28);
@@ -83,6 +87,7 @@ ion-reorder {
     font-size: 24px;
 }
 
+/* ADD/REMOVE BUTTONS */
 ion-button {
     --background: linear-gradient(90deg, #00f7ff, #00aaff);
     --color: #000;
@@ -99,6 +104,7 @@ ion-button:hover {
     transform: translateY(-2px);
 }
 
+/* DELETE BUTTON */
 ion-button[color="danger"] {
     --background: rgba(255, 0, 0, 0.18);
     --color: #ff4d4d;
@@ -111,6 +117,7 @@ ion-button[color="danger"]:hover {
     box-shadow: 0 0 16px rgba(255, 80, 80, 0.45);
 }
 
+/* SAVE MAIN BUTTON */
 ion-button[color="success"] {
     margin-top: 20px;
     --background: linear-gradient(90deg, #00ffbf, #00dba0);
@@ -118,6 +125,7 @@ ion-button[color="success"] {
     font-weight: 700;
 }
 
+/* Fade-in efekt */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -171,8 +179,4 @@ ion-searchbar {
 
 ion-searchbar:hover {
     box-shadow: 0 0 14px rgba(0, 255, 255, 0.3);
-}
-
-ion-reorder-group .reorder-animated {
-    transition: transform 40ms ease-out !important;
 }

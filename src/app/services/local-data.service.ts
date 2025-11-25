@@ -18,7 +18,7 @@ export class LocalDataService {
   refreshTab1$ = this.refreshTab1Subject.asObservable();
 
   private refreshTab2Subject = new Subject<void>();
-  refreshTab2$ = this.refreshTab2Subject.asObservable();
+  refreshTab2$ = this.refreshTab3Subject.asObservable();
 
   triggerTab3Refresh() {
     this.refreshTab3Subject.next();

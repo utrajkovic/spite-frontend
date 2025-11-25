@@ -10,8 +10,6 @@ import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
-import { Router } from '@angular/router';
-import { SelectedExercisesService } from '../services/selected-exercises.service';
 
 @Component({
   selector: 'app-tab2',
@@ -41,9 +39,7 @@ export class Tab2Page implements OnInit {
     private http: HttpClient,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    private localData: LocalDataService,
-    private router: Router,
-    private selectedService: SelectedExercisesService
+    private localData: LocalDataService
   ) {
     this.workoutForm = this.fb.group({
       title: ['', Validators.required],
@@ -62,43 +58,21 @@ export class Tab2Page implements OnInit {
       restAfterExercise: [180, Validators.required]
     });
   }
-  selectedExerciseNames: string[] = [];
 
   ngOnInit() {
     this.loadExercises();
-
-    this.localData.refreshTab2$.subscribe(() => {
-      this.loadExercises();
-    });
-
-    this.selectedService.selectedIds$.subscribe(ids => {
-      if (ids.length > 0) {
-        this.exercises.clear();
-        this.selectedExerciseNames = [];
-
-        ids.forEach(id => {
-          this.exercises.push(this.fb.group({ exerciseId: [id] }));
-
-          const found = this.allExercises.find(e => e.id === id);
-          if (found) this.selectedExerciseNames.push(found.name);
-        });
-      }
-    });
-
   }
-
-  goToSelectExercises() {
-    const ids = this.exercises.controls.map(c => c.value.exerciseId);
-
-    this.selectedService.setSelected(ids);
-
-    this.router.navigateByUrl('/select-exercises');
-  }
-
-
 
   get exercises(): FormArray {
     return this.workoutForm.get('exercises') as FormArray;
+  }
+
+  addExercise() {
+    this.exercises.push(this.fb.group({ exerciseId: [null, Validators.required] }));
+  }
+
+  removeExercise(index: number) {
+    this.exercises.removeAt(index);
   }
 
   async loadExercises() {
@@ -123,19 +97,14 @@ export class Tab2Page implements OnInit {
   }
 
   async saveWorkout() {
-    if (this.isUploading) return;
-
     if (!this.workoutForm.valid) {
       this.showAlert('Please fill in all required fields!');
       return;
     }
 
-    this.isUploading = true;
-
     const user = await this.localData.getUser();
     if (!user) {
       this.showAlert('Error: No user logged in!');
-      this.isUploading = false;
       return;
     }
 
@@ -149,27 +118,21 @@ export class Tab2Page implements OnInit {
     };
 
     try {
-      await this.showLoading('Saving workout...');
-
+      this.showLoading('Saving workout...');
       await this.http.post(`${this.backendUrl}/api/workouts`, workout).toPromise();
-
       await this.hideLoading();
+
       this.localData.triggerTab3Refresh();
       this.showAlert('Workout added successfully!');
-
       this.workoutForm.reset();
       this.exercises.clear();
       this.loadExercises();
-
     } catch (err) {
       console.error('Error saving workout:', err);
       await this.hideLoading();
       this.showAlert('Workout was not saved! Check console.');
-    } finally {
-      this.isUploading = false;
     }
   }
-
 
   async onVideoSelected(event: any) {
     const file = event.target.files[0];

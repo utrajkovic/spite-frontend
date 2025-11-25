@@ -120,7 +120,6 @@ ion-list {
     opacity: 0;
     transform: translateY(6px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -164,24 +163,4 @@ ion-list {
     font-weight: 500;
     margin-top: 10px;
   }
-}
-
-.selected-preview {
-  margin-top: 20px;
-}
-
-.preview-list {
-  --background: rgba(0, 40, 60, 0.25);
-  border: 1px solid rgba(0, 255, 255, 0.15);
-  border-radius: 12px;
-  padding: 6px;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.10);
-  backdrop-filter: blur(10px);
-}
-
-.preview-list ion-item {
-  --background: transparent;
-  --border-radius: 8px;
-  margin-bottom: 6px;
-  border: 1px solid rgba(0, 255, 255, 0.18);
 }
