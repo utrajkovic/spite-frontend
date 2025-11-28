@@ -388,3 +388,12 @@ ion-alert.workout-preview-modal {
     transform: scale(0.98);
   }
 }
+
+ion-alert,
+ion-alert::part(content),
+.alert-wrapper,
+.alert-container,
+.alert-overlay {
+  z-index: 999999 !important;
+  position: fixed !important;
+}

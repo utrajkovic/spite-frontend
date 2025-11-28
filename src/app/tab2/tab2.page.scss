@@ -131,3 +131,9 @@ ion-button[color="success"] {
 ion-spinner {
   margin-right: 8px;
 }
+
+/* RESETUJ stacking context da alert uvek izbije na vrh */
+*, *::before, *::after {
+  position: relative !important;
+  z-index: auto !important;
+}
