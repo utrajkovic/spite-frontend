@@ -1,16 +1,15 @@
 import { Component } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
-import { StatusBar, Style } from '@capacitor/status-bar';
+import { AlertController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   imports: [IonApp, IonRouterOutlet],
+  providers: [AlertController]
 })
 export class AppComponent {
   constructor() {
-    StatusBar.setOverlaysWebView({ overlay: false });
-    StatusBar.setBackgroundColor({ color: '#00111a' });
-    StatusBar.setStyle({ style: Style.Dark });
   }
 }
