@@ -120,7 +120,6 @@ ion-list {
     opacity: 0;
     transform: translateY(6px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -145,25 +144,23 @@ ion-list {
 }
 
 .upload-fallback {
-  display: none; 
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   z-index: 9999;
-}
-
-.upload-fallback.active {
   display: flex;
-}
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
+  ion-spinner {
+    width: 60px;
+    height: 60px;
+  }
 
-ion-spinner {
-  width: 60px;
-  height: 60px;
-}
-
-p {
-  color: #00f7ff;
-  font-weight: 500;
-  margin-top: 10px;
+  p {
+    color: #00f7ff;
+    font-weight: 500;
+    margin-top: 10px;
+  }
 }

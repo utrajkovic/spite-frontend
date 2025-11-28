@@ -7,8 +7,6 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { IonSpinner } from '@ionic/angular/standalone';
-import { IonAlert } from '@ionic/angular/standalone';
-
 
 @Component({
   selector: 'app-tab-trainer-client',
@@ -19,7 +17,7 @@ import { IonAlert } from '@ionic/angular/standalone';
     IonButtons, IonBackButton,
     CommonModule,
     IonContent, IonHeader, IonTitle, IonToolbar,
-    IonItem, IonLabel, IonList, IonListHeader, IonButton, IonSpinner, IonAlert
+    IonItem, IonLabel, IonList, IonListHeader, IonButton, IonSpinner
   ]
 })
 export class TabTrainerClientPage implements OnInit {

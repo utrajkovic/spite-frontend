@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
-  IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner,IonButtons
+  IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner
 } from '@ionic/angular/standalone';
 import { BackendService } from '../services/backend.service';
 import { Exercise, Workout } from '../services/models';
@@ -11,32 +11,21 @@ import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../services/local-data.service';
 import { HttpClient } from '@angular/common/http';
-import { IonAlert } from '@ionic/angular/standalone';
-
 
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss'],
   standalone: true,
-imports: [
-  CommonModule,
-
-  IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonButton,
-  IonSpinner,
-
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonIcon,
-  IonAlert
-]
-
+  imports: [
+    CommonModule,
+    IonContent,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonButton,
+    IonSpinner
+  ]
 })
 export class Tab3Page implements OnInit {
   exercises: Exercise[] = [];

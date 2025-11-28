@@ -6,7 +6,6 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
-import { AlertController } from '@ionic/angular';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -15,8 +14,5 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideHttpClient(),
     provideAnimations(),
-
-    AlertController 
   ],
 });
-

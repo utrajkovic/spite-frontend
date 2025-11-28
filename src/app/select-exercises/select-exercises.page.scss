@@ -1,0 +1,83 @@
+ion-toolbar {
+    --background: rgba(0, 30, 40, 0.45);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+}
+
+ion-title {
+    color: #00f7ff;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+}
+
+ion-button {
+    --color: #00f7ff;
+    --background: transparent;
+    font-family: 'Orbitron', sans-serif;
+}
+
+ion-button[color="success"] {
+    --background: rgba(0, 255, 170, 0.15);
+    --color: #00ffbf;
+    border: 1px solid rgba(0, 255, 200, 0.3);
+    border-radius: 10px;
+}
+
+ion-content {
+    --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+    color: #e0ffff;
+    font-family: 'Tilt Neon', cursive;
+}
+
+/* Searchbar */
+ion-searchbar {
+    --background: rgba(0, 40, 60, 0.35);
+    --border-radius: 12px;
+    --color: #c7faff;
+    --placeholder-color: #8ee7ff;
+    --icon-color: #00f7ff;
+
+    margin: 12px 0 20px 0;
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+}
+
+/* Lista ćelija */
+ion-item {
+    --background: rgba(0, 40, 60, 0.25);
+    --color: #e0ffff;
+    --border-radius: 12px;
+    margin-bottom: 10px;
+
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+}
+
+ion-item:hover {
+    border-color: rgba(0, 255, 255, 0.4);
+}
+
+/* Checkbox */
+ion-checkbox {
+    --checkbox-background-checked: #00f7ff;
+    --checkbox-background: transparent;
+    --border-color: #00f7ff;
+    --border-color-checked: #00f7ff;
+}
+
+.neon-list {
+    padding: 12px;
+    border-radius: 14px;
+
+    background: rgba(0, 25, 40, 0.25);
+    border: 1px solid rgba(0, 255, 255, 0.18);
+
+    box-shadow: 0 0 14px rgba(0, 255, 255, 0.12);
+    backdrop-filter: blur(10px) saturate(130%);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
+}
+
+.neon-list ion-item {
+    margin: 0 0 10px 0 !important;
+    border-radius: 12px !important;
+}
+

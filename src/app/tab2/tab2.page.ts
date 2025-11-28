@@ -10,10 +10,6 @@ import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
-import { Router } from '@angular/router';
-import { IonAlert } from '@ionic/angular/standalone';
-
-
 
 @Component({
   selector: 'app-tab2',
@@ -23,22 +19,10 @@ import { IonAlert } from '@ionic/angular/standalone';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonButton,
-    IonList,
-    IonListHeader,
-    IonSelect,
-    IonSelectOption,
-    IonSpinner,
-    IonAlert
+    IonContent, IonHeader, IonTitle, IonToolbar,
+    IonItem, IonLabel, IonInput, IonButton,
+    IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
   ]
-
 })
 export class Tab2Page implements OnInit {
   workoutForm: FormGroup;
@@ -55,8 +39,7 @@ export class Tab2Page implements OnInit {
     private http: HttpClient,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    private localData: LocalDataService,
-    private router: Router
+    private localData: LocalDataService
   ) {
     this.workoutForm = this.fb.group({
       title: ['', Validators.required],
@@ -77,11 +60,6 @@ export class Tab2Page implements OnInit {
   }
 
   ngOnInit() {
-    this.alertCtrl.create({
-      message: 'TEST ALERT',
-      buttons: ['OK']
-    }).then(a => a.present());
-    
     this.loadExercises();
   }
 
@@ -97,23 +75,12 @@ export class Tab2Page implements OnInit {
     this.exercises.removeAt(index);
   }
 
-  goToCreateWorkout() {
-    this.router.navigate(['/tab-edit']);
-  }
-
-
-
   async loadExercises() {
     try {
       const user = await this.localData.getUser();
       if (!user) {
         console.warn('No logged-in user found!');
         this.allExercises = [];
-        return;
-      }
-
-      if (!user || !user.id) {
-        console.warn('User not loaded yet');
         return;
       }
 

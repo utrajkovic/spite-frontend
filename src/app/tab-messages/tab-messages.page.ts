@@ -13,8 +13,6 @@ import { FormsModule } from '@angular/forms';
 
 import { ChatService } from '../services/chat.service';
 import { LocalDataService } from '../services/local-data.service';
-import { IonAlert } from '@ionic/angular/standalone';
-
 
 @Component({
   selector: 'app-tab-messages',
@@ -32,8 +30,7 @@ import { IonAlert } from '@ionic/angular/standalone';
     IonList,
     IonItem,
     IonLabel,
-    IonInput,
-    IonAlert
+    IonInput
   ]
 })
 export class TabMessagesPage {

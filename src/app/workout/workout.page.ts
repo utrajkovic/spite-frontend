@@ -8,8 +8,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService } from '../services/backend.service';
 import { Workout, Exercise } from '../services/models';
 import { AlertController } from '@ionic/angular';
-import { IonAlert } from '@ionic/angular/standalone';
-
 
 @Component({
   selector: 'app-workout',
@@ -17,24 +15,8 @@ import { IonAlert } from '@ionic/angular/standalone';
   styleUrls: ['./workout.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    IonContent,
-
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardContent,
-
-    IonSpinner,
-    IonProgressBar,
-
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
-    IonAlert
-  ]
-
+    IonSpinner, IonProgressBar, IonIcon, CommonModule, IonContent, IonButton, IonCard, IonCardContent
+  ],
 })
 export class WorkoutPage implements OnInit {
   workout!: Workout;

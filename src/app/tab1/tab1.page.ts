@@ -11,8 +11,6 @@ import { Workout } from '../services/models';
 import { Preferences } from '@capacitor/preferences';
 import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
-import { IonAlert } from '@ionic/angular/standalone';
-
 
 @Component({
   selector: 'app-tab1',
@@ -21,25 +19,9 @@ import { IonAlert } from '@ionic/angular/standalone';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
-
-    IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardSubtitle,
-    IonCardContent,
-
-    IonButton,
-    IonIcon,
-    IonSpinner,
-    IonAlert
-  ]
-
+    IonButton, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader,
+    IonCard, IonContent, RouterLink, IonSpinner
+  ],
 })
 export class Tab1Page {
   workouts: Workout[] = [];
@@ -162,7 +144,7 @@ export class Tab1Page {
         const newIndex = index % total;
         this.renderExercise(alert, workout.exercises![newIndex], newIndex + 1, total, workout);
       });
-    }, 150);
+    }, 150); 
   }
 
 }

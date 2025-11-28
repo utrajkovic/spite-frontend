@@ -55,7 +55,7 @@ export const routes: Routes = [
           import('./tab-admin/tab-admin.page').then((m) => m.TabAdminPage),
       },
       {
-        path: 'tab-messages',
+        path: 'tab-messages',   // <-- OVO JE NAŠ TAB
         loadComponent: () =>
           import('./tab-messages/tab-messages.page').then(m => m.TabMessagesPage)
       },
@@ -68,7 +68,7 @@ export const routes: Routes = [
   },
 
   {
-    path: 'chat/:username',
+    path: 'chat/:username', 
     loadComponent: () =>
       import('./chat/chat.page').then(m => m.ChatPage),
   },
@@ -96,10 +96,4 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./tab-edit/tab-edit.page').then(m => m.TabEditPage),
   },
-
-  {
-    path: 'tab-edit',
-    loadComponent: () =>
-      import('./tab-edit/tab-edit.page').then(m => m.TabEditPage),
-  }
 ];
