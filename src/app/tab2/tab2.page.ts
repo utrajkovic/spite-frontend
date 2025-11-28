@@ -77,6 +77,11 @@ export class Tab2Page implements OnInit {
   }
 
   ngOnInit() {
+    this.alertCtrl.create({
+      message: 'TEST ALERT',
+      buttons: ['OK']
+    }).then(a => a.present());
+    
     this.loadExercises();
   }
 
