@@ -1,6 +1,6 @@
 <ion-content [fullscreen]="true">
 
-  <div *ngIf="isUploading" class="upload-fallback">
+  <div [class.active]="isUploading" class="upload-fallback">
     <ion-spinner name="crescent"></ion-spinner>
     <p>Uploading... Please wait</p>
   </div>
