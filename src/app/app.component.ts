@@ -1,15 +1,11 @@
 import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
-import { AlertController } from '@ionic/angular';
-
+import { IonApp, IonRouterOutlet, IonAlert } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet],
-  providers: [AlertController]
+  imports: [IonApp, IonRouterOutlet, IonAlert]
 })
 export class AppComponent {
-  constructor() {
-  }
+  constructor() {}
 }
