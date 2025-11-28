@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonButton, IonItem, IonLabel, IonSelect, IonSelectOption, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonCard, IonCardHeader, IonCardContent, 
+  IonCardTitle, IonButton, IonItem, IonLabel, IonSelect, 
+  IonToolbar, IonSelectOption, IonSpinner, IonHeader, IonTitle} from '@ionic/angular/standalone';
 import { BackendService } from '../services/backend.service';
 import { AlertController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
@@ -13,10 +15,27 @@ import { Preferences } from '@capacitor/preferences';
   standalone: true,
   imports: [
     CommonModule,
-    IonContent, IonCard, IonCardHeader, IonCardContent, IonCardTitle,
-    IonButton, IonItem, IonLabel, IonSelect, IonSelectOption, FormsModule,
-    IonSpinner
-  ],
+
+    IonContent,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+
+    IonCard,
+    IonCardHeader,
+    IonCardContent,
+    IonCardTitle,
+
+    IonButton,
+    IonItem,
+    IonLabel,
+    IonSelect,
+    IonSelectOption,
+    IonSpinner,
+
+    FormsModule
+  ]
+
 })
 export class TabAdminPage implements OnInit {
 

@@ -71,7 +71,6 @@ export class TabEditPage implements OnInit {
         exerciseIds: []
       } as Workout;
 
-      this.editableExercises = [];
       await this.loadAllUserExercises();
       this.filterList();
       return;
@@ -81,6 +80,7 @@ export class TabEditPage implements OnInit {
     await this.loadAllUserExercises();
     this.filterList();
   }
+
 
   async loadWorkout() {
     const response = await fetch(`${this.backendUrl}/api/workouts/${this.workoutId}`);
@@ -164,7 +164,7 @@ export class TabEditPage implements OnInit {
       subtitle: this.workout.subtitle,
       content: this.workout.content,
       exerciseIds: this.editableExercises.map(e => e.id!),
-      userId: user.id    
+      userId: user.id
     };
 
     try {

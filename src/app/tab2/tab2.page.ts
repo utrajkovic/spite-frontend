@@ -21,10 +21,21 @@ import { Router } from '@angular/router';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    IonContent, IonHeader, IonTitle, IonToolbar,
-    IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
+    IonContent,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonList,
+    IonListHeader,
+    IonSelect,
+    IonSelectOption,
+    IonSpinner
   ]
+
 })
 export class Tab2Page implements OnInit {
   workoutForm: FormGroup;
@@ -79,8 +90,9 @@ export class Tab2Page implements OnInit {
   }
 
   goToCreateWorkout() {
-    this.router.navigateByUrl('/tab-edit');
+    this.router.navigate(['/tab-edit']);
   }
+
 
 
   async loadExercises() {
@@ -89,6 +101,11 @@ export class Tab2Page implements OnInit {
       if (!user) {
         console.warn('No logged-in user found!');
         this.allExercises = [];
+        return;
+      }
+
+      if (!user || !user.id) {
+        console.warn('User not loaded yet');
         return;
       }
 

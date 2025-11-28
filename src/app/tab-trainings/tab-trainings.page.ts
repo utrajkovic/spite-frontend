@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { IonButton, IonContent } from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonHeader,IonToolbar, IonTitle, IonIcon, IonCard, IonCardContent} from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { Exercise, Workout } from '../services/models';
 
@@ -12,9 +12,19 @@ import { Exercise, Workout } from '../services/models';
   standalone: true,
   imports: [
     CommonModule,
+
+    IonContent,
     IonButton,
-    IonContent
-  ],
+
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+
+    IonIcon,
+    IonCard,
+    IonCardContent
+  ]
+
 })
 export class TabTrainingsPage implements OnInit {
 
@@ -26,13 +36,12 @@ export class TabTrainingsPage implements OnInit {
   constructor(
     private router: Router,
     private http: HttpClient
-  ) {}
+  ) { }
 
   async ngOnInit() {
     const nav = this.router.getCurrentNavigation();
     const w = nav?.extras.state?.['workout'];
 
-    // Ako se uđe direktno bez state-a, vrati korisnika na listu
     if (!w || !w.id) {
       this.router.navigateByUrl('/tabs/tab1');
       return;
@@ -42,7 +51,6 @@ export class TabTrainingsPage implements OnInit {
   }
 
   async loadWorkout(id: string) {
-    // povuci svež workout sa backenda
     const fresh = await this.http
       .get<Workout & { exercises?: Exercise[]; exerciseIds?: string[] }>(
         `${this.backendUrl}/api/workouts/${id}`

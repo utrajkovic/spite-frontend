@@ -15,8 +15,23 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./workout.page.scss'],
   standalone: true,
   imports: [
-    IonSpinner, IonProgressBar, IonIcon, CommonModule, IonContent, IonButton, IonCard, IonCardContent
-  ],
+    CommonModule,
+    IonContent,
+
+    IonButton,
+    IonIcon,
+    IonCard,
+    IonCardContent,
+
+    IonSpinner,
+    IonProgressBar,
+
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons
+  ]
+
 })
 export class WorkoutPage implements OnInit {
   workout!: Workout;

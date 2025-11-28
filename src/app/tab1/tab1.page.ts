@@ -19,9 +19,24 @@ import { AlertController } from '@ionic/angular';
   standalone: true,
   imports: [
     CommonModule,
-    IonButton, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader,
-    IonCard, IonContent, RouterLink, IonSpinner
-  ],
+    RouterLink,
+
+    IonContent,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardSubtitle,
+    IonCardContent,
+
+    IonButton,
+    IonIcon,
+    IonSpinner
+  ]
+
 })
 export class Tab1Page {
   workouts: Workout[] = [];
@@ -144,7 +159,7 @@ export class Tab1Page {
         const newIndex = index % total;
         this.renderExercise(alert, workout.exercises![newIndex], newIndex + 1, total, workout);
       });
-    }, 150); 
+    }, 150);
   }
 
 }
