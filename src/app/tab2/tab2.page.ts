@@ -1,254 +1,234 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar,
-  IonItem, IonLabel, IonInput, IonButton,
-  IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
+  IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonLabel, IonInput, IonButton,
+  IonList, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder
 } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
+
 import { Exercise } from '../services/models';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
 
 @Component({
   selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss'],
+  templateUrl: './tab2.page.html',
+  styleUrls: ['./tab2.page.scss'],
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
-    IonContent, IonHeader, IonTitle, IonToolbar,
+
+    IonContent, IonHeader, IonToolbar, IonTitle,
     IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonListHeader, IonSelect, IonSelectOption, IonSpinner
+    IonList, IonSearchbar, IonSpinner,
+    IonReorderGroup, IonReorder
   ]
 })
 export class Tab2Page implements OnInit {
-  workoutForm: FormGroup;
+
+  tab: 'exercise' | 'workout' = 'exercise';
+
+  // -------------------------
+  // ADD EXERCISE
+  // -------------------------
   exerciseForm: FormGroup;
-  allExercises: Exercise[] = [];
   selectedVideo: File | null = null;
-  loading: HTMLIonLoadingElement | null = null;
-  isUploading = false;
+  isSavingExercise = false;
+
+  // -------------------------
+  // NEW WORKOUT
+  // -------------------------
+  newWorkout = { title: '', subtitle: '', content: '' };
+  editableExercises: Exercise[] = [];
+  allExercises: Exercise[] = [];
+  filteredExercises: Exercise[] = [];
+  searchQuery = '';
+  isSavingWorkout = false;
 
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private alertCtrl: AlertController,
-    private loadingCtrl: LoadingController,
-    private localData: LocalDataService
+    private localData: LocalDataService,
+    private alertCtrl: AlertController
   ) {
-    this.workoutForm = this.fb.group({
-      title: ['', Validators.required],
-      subtitle: [''],
-      content: [''],
-      exercises: this.fb.array([])
-    });
 
     this.exerciseForm = this.fb.group({
-      name: ['', Validators.required],
+      name: [''],
       description: [''],
-      sets: [3, Validators.required],
-      reps: ['10', Validators.required],
-      videoUrl: [''],
-      restBetweenSets: [60, Validators.required],
-      restAfterExercise: [180, Validators.required]
+      sets: [3],
+      reps: ['10'],
+      restBetweenSets: [60],
+      restAfterExercise: [180],
+      videoUrl: ['']
     });
+
   }
 
-  ngOnInit() {
-    this.loadExercises();
+  async ngOnInit() {
+    await this.loadExercises();
+    this.filterList();
   }
 
-  get exercises(): FormArray {
-    return this.workoutForm.get('exercises') as FormArray;
-  }
-
-  addExercise() {
-    this.exercises.push(this.fb.group({ exerciseId: [null, Validators.required] }));
-  }
-
-  removeExercise(index: number) {
-    this.exercises.removeAt(index);
-  }
-
+  // -------------------------
+  // LOAD ALL USER EXERCISES
+  // -------------------------
   async loadExercises() {
-    try {
-      const user = await this.localData.getUser();
-      if (!user) {
-        console.warn('No logged-in user found!');
-        this.allExercises = [];
-        return;
-      }
+    const user = await this.localData.getUser();
+    if (!user) return;
 
-      this.http.get<Exercise[]>(`${this.backendUrl}/api/exercises/user/${user.id}`).subscribe({
-        next: (res) => {
-          this.allExercises = res;
-          console.log('Loaded user exercises:', res);
-        },
-        error: (err) => console.error('Error loading user exercises', err)
-      });
-    } catch (err) {
-      console.error('Error fetching user for exercises:', err);
+    try {
+      this.allExercises = await this.http
+        .get<Exercise[]>(`${this.backendUrl}/api/exercises/user/${user.id}`)
+        .toPromise() ?? [];
+    } catch {
+      this.allExercises = [];
     }
   }
 
-  async saveWorkout() {
-    if (!this.workoutForm.valid) {
-      this.showAlert('Please fill in all required fields!');
-      return;
+  // -------------------------
+  // ADD EXERCISE
+  // -------------------------
+  async onVideoSelected(ev: any) {
+    this.selectedVideo = ev.target.files?.[0] ?? null;
+  }
+
+  async saveExercise() {
+    if (this.isSavingExercise) return;
+    this.isSavingExercise = true;
+
+    const user = await this.localData.getUser();
+    if (!user) {
+      this.isSavingExercise = false;
+      return this.showAlert('User error');
+    }
+
+    const ex = this.exerciseForm.value;
+    ex.userId = user.id;
+
+    // Upload video
+    if (this.selectedVideo) {
+      try {
+        const form = new FormData();
+        form.append('video', this.selectedVideo);
+
+        ex.videoUrl = await this.http.post(
+          `${this.backendUrl}/api/exercises/upload`,
+          form,
+          { responseType: 'text' }
+        ).toPromise() ?? '';
+
+      } catch {
+        this.isSavingExercise = false;
+        return this.showAlert('Upload failed!');
+      }
+    }
+
+    try {
+      await this.http.post(`${this.backendUrl}/api/exercises`, ex).toPromise();
+      this.showAlert('Exercise added!');
+    } catch {
+      this.showAlert('Error adding exercise.');
+    }
+
+    this.exerciseForm.reset({
+      sets: 3,
+      reps: '10',
+      restBetweenSets: 60,
+      restAfterExercise: 180
+    });
+
+    this.selectedVideo = null;
+    this.isSavingExercise = false;
+
+    await this.loadExercises();
+    this.filterList();
+  }
+
+  // -------------------------
+  // ADD WORKOUT
+  // -------------------------
+
+  onSearch(ev: any) {
+    this.searchQuery = ev.target.value?.toLowerCase() ?? '';
+    this.filterList();
+  }
+
+  filterList() {
+    this.filteredExercises = this.allExercises.filter(ex =>
+      ex.name.toLowerCase().includes(this.searchQuery) &&
+      !this.editableExercises.some(e => e.id === ex.id)
+    );
+  }
+
+  addExercise(ex: Exercise) {
+    this.editableExercises.push(ex);
+    this.filterList();
+  }
+
+  removeExercise(i: number) {
+    this.editableExercises.splice(i, 1);
+    this.filterList();
+  }
+
+  handleReorder(ev: any) {
+    const from = ev.detail.from;
+    const to = ev.detail.to;
+    const moved = this.editableExercises.splice(from, 1)[0];
+    this.editableExercises.splice(to, 0, moved);
+    ev.detail.complete();
+  }
+
+  async saveNewWorkout() {
+    if (this.isSavingWorkout) return;
+    this.isSavingWorkout = true;
+
+    if (!this.newWorkout.title) {
+      this.isSavingWorkout = false;
+      return this.showAlert('Workout must have a title');
     }
 
     const user = await this.localData.getUser();
     if (!user) {
-      this.showAlert('Error: No user logged in!');
+      this.isSavingWorkout = false;
       return;
     }
 
-    const formValue = this.workoutForm.value;
-    const workout = {
-      title: formValue.title,
-      subtitle: formValue.subtitle,
-      content: formValue.content,
-      exerciseIds: formValue.exercises.map((e: any) => e.exerciseId),
+    const body = {
+      ...this.newWorkout,
+      exerciseIds: this.editableExercises.map(ex => ex.id!),
       userId: user.id
     };
 
     try {
-      this.showLoading('Saving workout...');
-      await this.http.post(`${this.backendUrl}/api/workouts`, workout).toPromise();
-      await this.hideLoading();
+      await this.http.post(`${this.backendUrl}/api/workouts`, body).toPromise();
 
-      this.localData.triggerTab3Refresh();
-      this.showAlert('Workout added successfully!');
-      this.workoutForm.reset();
-      this.exercises.clear();
-      this.loadExercises();
-    } catch (err) {
-      console.error('Error saving workout:', err);
-      await this.hideLoading();
-      this.showAlert('Workout was not saved! Check console.');
+      this.showAlert('Workout created!');
+      this.newWorkout = { title: '', subtitle: '', content: '' };
+      this.editableExercises = [];
+      this.filterList();
+
+    } catch {
+      this.showAlert('Failed to create workout');
     }
+
+    this.isSavingWorkout = false;
   }
 
-  async onVideoSelected(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    if (file.size > 10 * 1024 * 1024) {
-      this.showAlert('Video is too large (max 10MB).');
-      return;
-    }
-
-    const allowedFormats = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
-    if (!allowedFormats.includes(file.type)) {
-      this.showAlert(`Unsupported format: ${file.type}.`);
-      return;
-    }
-
-    this.selectedVideo = file;
-    this.showAlert(`🎥 Video selected: ${file.name}`);
-  }
-
-  async saveExercise() {
-    if (this.isUploading) return;
-    this.isUploading = true;
-
-    if (!this.exerciseForm.valid) {
-      this.showAlert('Please fill in all required fields!');
-      this.isUploading = false;
-      return;
-    }
-
-    const user = await this.localData.getUser();
-    if (!user) {
-      this.showAlert('Error: No user logged in!');
-      this.isUploading = false;
-      return;
-    }
-
-    const exercise = this.exerciseForm.value;
-    exercise.userId = user.id;
-
-    if (this.selectedVideo) {
-      try {
-        const formData = new FormData();
-        formData.append('video', this.selectedVideo);
-
-        const cloudUrl = await this.http
-          .post(`${this.backendUrl}/api/exercises/upload`, formData, { responseType: 'text' })
-          .toPromise();
-
-        exercise.videoUrl = cloudUrl;
-        console.log('Cloudinary upload success:', cloudUrl);
-      } catch (err) {
-        console.error('Cloudinary upload failed:', err);
-        this.showAlert('Upload failed. Please try again.');
-        this.isUploading = false;
-        return;
-      }
-    }
-
-    try {
-      this.showLoading('Saving exercise...');
-      await this.http.post(`${this.backendUrl}/api/exercises`, exercise).toPromise();
-      await this.hideLoading();
-
-      this.localData.triggerTab3Refresh();
-      this.showAlert('Exercise added successfully!');
-      this.exerciseForm.reset({
-        name: '',
-        description: '',
-        sets: 3,
-        reps: '10',
-        videoUrl: '',
-        restBetweenSets: 60,
-        restAfterExercise: 180
-      });
-
-      this.selectedVideo = null;
-      this.loadExercises();
-    } catch (err) {
-      console.error('Error adding exercise:', err);
-      await this.hideLoading();
-      this.showAlert('Error adding exercise.');
-    } finally {
-      this.isUploading = false;
-    }
-  }
-
-  async showAlert(message: string) {
-    const alert = await this.alertCtrl.create({
-      header: 'Notification',
-      message,
+  // -------------------------
+  // ALERT
+  // -------------------------
+  async showAlert(msg: string) {
+    const a = await this.alertCtrl.create({
+      message: msg,
       buttons: ['OK'],
       cssClass: 'custom-alert'
     });
-    await alert.present();
+    a.present();
   }
 
-  async showLoading(message: string = 'Please wait...') {
-    this.loading = await this.loadingCtrl.create({
-      message,
-      spinner: 'crescent',
-      backdropDismiss: false,
-      cssClass: 'custom-loading'
-    });
-    await this.loading.present();
-  }
-
-  async hideLoading() {
-    if (this.loading) {
-      await this.loading.dismiss();
-      this.loading = null;
-    }
-  }
-
-  sanitizeNumberInput(event: any) {
-    const input = event.target as HTMLInputElement;
-    input.value = input.value.replace(/[^0-9]/g, '');
-  }
 }
