@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonLabel, IonInput, IonButton, IonList, IonReorderGroup, IonReorder, IonButtons, IonSpinner } from '@ionic/angular/standalone';
+import {
+  IonContent, IonHeader, IonToolbar, IonTitle,
+  IonItem, IonLabel, IonInput, IonButton, IonList,
+  IonReorderGroup, IonReorder, IonButtons, IonSpinner, IonSearchbar
+} from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { Exercise, Workout } from '../services/models';
 import { AlertController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
 import { FormsModule } from '@angular/forms';
-import { IonSearchbar } from '@ionic/angular/standalone';
-
 
 @Component({
   standalone: true,
@@ -36,11 +38,13 @@ import { IonSearchbar } from '@ionic/angular/standalone';
 })
 export class TabEditPage implements OnInit {
 
-  workoutId!: string;
+  workoutId: string | null = null;
   workout!: Workout;
+
   editableExercises: Exercise[] = [];
   allExercises: Exercise[] = [];
   filteredExercises: Exercise[] = [];
+
   searchQuery: string = '';
   isSaving: boolean = false;
 
@@ -50,30 +54,60 @@ export class TabEditPage implements OnInit {
     private route: ActivatedRoute,
     private http: HttpClient,
     private alertCtrl: AlertController,
-    public router: Router,
-    private localData: LocalDataService
+    private localData: LocalDataService,
+    public router: Router
   ) { }
 
   async ngOnInit() {
-    this.workoutId = this.route.snapshot.paramMap.get('id')!;
+    this.workoutId = this.route.snapshot.paramMap.get('id');
+
+    if (!this.workoutId) {
+      this.workout = {
+        id: '',
+        title: '',
+        subtitle: '',
+        content: '',
+        exercises: [],
+        exerciseIds: []
+      } as Workout;
+
+      this.editableExercises = [];
+      await this.loadAllUserExercises();
+      this.filterList();
+      return;
+    }
+
     await this.loadWorkout();
     await this.loadAllUserExercises();
     this.filterList();
   }
 
   async loadWorkout() {
-    this.workout = await fetch(`${this.backendUrl}/api/workouts/${this.workoutId}`).then(r => r.json());
+    const response = await fetch(`${this.backendUrl}/api/workouts/${this.workoutId}`);
 
-    const rawExercises = this.workout.exercises ?? [];
-    const rawIds = this.workout.exerciseIds ?? [];
+    if (!response.ok) {
+      console.error('Workout not found or backend error');
+      return;
+    }
+
+    const data = await response.json();
+
+    this.workout = data;
+
+    const rawExercises = data.exercises ?? [];
+    const rawIds = data.exerciseIds ?? [];
 
     const map = new Map(rawExercises.map((e: any) => [e.id, e]));
 
     this.editableExercises = rawIds
-      .map(id => map.get(id))
-      .filter((e): e is Exercise => !!e);
+      .map((id: string) => map.get(id))
+      .filter((e: Exercise | undefined): e is Exercise => !!e);
+
   }
 
+  // -------------------------------------
+  // LOAD ALL USER EXERCISES
+  // -------------------------------------
   async loadAllUserExercises() {
     const user = await this.localData.getUser();
     this.allExercises =
@@ -81,6 +115,9 @@ export class TabEditPage implements OnInit {
       ?? [];
   }
 
+  // -------------------------------------
+  // SEARCH & FILTER
+  // -------------------------------------
   onSearch(ev: any) {
     this.searchQuery = ev.target.value?.toLowerCase() || '';
     this.filterList();
@@ -93,6 +130,9 @@ export class TabEditPage implements OnInit {
     );
   }
 
+  // -------------------------------------
+  // EDITING EXERCISE LIST
+  // -------------------------------------
   handleReorder(ev: any) {
     const from = ev.detail.from;
     const to = ev.detail.to;
@@ -103,7 +143,7 @@ export class TabEditPage implements OnInit {
 
   addExercise(ex: Exercise) {
     this.editableExercises.push(ex);
-    this.filterList(); 
+    this.filterList();
   }
 
   removeExercise(i: number) {
@@ -113,44 +153,49 @@ export class TabEditPage implements OnInit {
     if (removed) this.filterList();
   }
 
+
   async saveChanges() {
     this.isSaving = true;
 
-    const updated = {
+    const user = await this.localData.getUser();
+
+    const payload = {
       title: this.workout.title,
       subtitle: this.workout.subtitle,
       content: this.workout.content,
-      exerciseIds: this.editableExercises.map(e => e.id!)
+      exerciseIds: this.editableExercises.map(e => e.id!),
+      userId: user.id    
     };
 
     try {
-      await this.http.put(`${this.backendUrl}/api/workouts/${this.workoutId}`, updated).toPromise();
+      if (!this.workoutId) {
+        await this.http.post(`${this.backendUrl}/api/workouts`, payload).toPromise();
+      } else {
+        await this.http.put(`${this.backendUrl}/api/workouts/${this.workoutId}`, payload).toPromise();
+      }
 
       const alert = await this.alertCtrl.create({
-        message: 'Workout updated!',
+        message: this.workoutId ? 'Workout updated!' : 'Workout created!',
         buttons: ['OK'],
         cssClass: 'custom-alert'
       });
-
       await alert.present();
 
       this.localData.triggerTab3Refresh();
-      this.localData.triggerTab1Refresh();
-      this.localData.triggerWorkoutRefresh();
       this.router.navigateByUrl('/tabs/tab3');
 
     } catch (err) {
       console.error(err);
 
       const alert = await this.alertCtrl.create({
-        message: 'Failed to update workout.',
+        message: 'Failed to save workout.',
         buttons: ['OK']
       });
-
       await alert.present();
     } finally {
       this.isSaving = false;
     }
   }
+
 
 }

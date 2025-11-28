@@ -10,6 +10,8 @@ import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-tab2',
@@ -39,7 +41,8 @@ export class Tab2Page implements OnInit {
     private http: HttpClient,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    private localData: LocalDataService
+    private localData: LocalDataService,
+    private router: Router
   ) {
     this.workoutForm = this.fb.group({
       title: ['', Validators.required],
@@ -74,6 +77,11 @@ export class Tab2Page implements OnInit {
   removeExercise(index: number) {
     this.exercises.removeAt(index);
   }
+
+  goToCreateWorkout() {
+    this.router.navigateByUrl('/tab-edit');
+  }
+
 
   async loadExercises() {
     try {
