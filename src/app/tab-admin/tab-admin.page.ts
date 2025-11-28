@@ -7,6 +7,8 @@ import { BackendService } from '../services/backend.service';
 import { AlertController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Preferences } from '@capacitor/preferences';
+import { IonAlert } from '@ionic/angular/standalone';
+
 
 @Component({
   selector: 'app-tab-admin',
@@ -32,6 +34,7 @@ import { Preferences } from '@capacitor/preferences';
     IonSelect,
     IonSelectOption,
     IonSpinner,
+    IonAlert,
 
     FormsModule
   ]

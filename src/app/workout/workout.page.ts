@@ -8,6 +8,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService } from '../services/backend.service';
 import { Workout, Exercise } from '../services/models';
 import { AlertController } from '@ionic/angular';
+import { IonAlert } from '@ionic/angular/standalone';
+
 
 @Component({
   selector: 'app-workout',
@@ -29,7 +31,8 @@ import { AlertController } from '@ionic/angular';
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonButtons
+    IonButtons,
+    IonAlert
   ]
 
 })

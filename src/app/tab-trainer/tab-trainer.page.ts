@@ -8,6 +8,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { IonAlert } from '@ionic/angular/standalone';
+
 
 @Component({
   selector: 'app-tab-trainer',
@@ -18,7 +20,7 @@ import { RouterModule } from '@angular/router';
     CommonModule, FormsModule, RouterModule,
     IonHeader, IonToolbar, IonTitle, IonContent,
     IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonListHeader
+    IonList, IonListHeader, IonAlert
   ]
 
 })

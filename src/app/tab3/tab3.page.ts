@@ -11,6 +11,8 @@ import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../services/local-data.service';
 import { HttpClient } from '@angular/common/http';
+import { IonAlert } from '@ionic/angular/standalone';
+
 
 @Component({
   selector: 'app-tab3',
@@ -31,7 +33,8 @@ imports: [
   IonToolbar,
   IonTitle,
   IonButtons,
-  IonIcon
+  IonIcon,
+  IonAlert
 ]
 
 })

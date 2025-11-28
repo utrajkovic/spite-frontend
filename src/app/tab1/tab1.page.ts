@@ -11,6 +11,8 @@ import { Workout } from '../services/models';
 import { Preferences } from '@capacitor/preferences';
 import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
+import { IonAlert } from '@ionic/angular/standalone';
+
 
 @Component({
   selector: 'app-tab1',
@@ -34,7 +36,8 @@ import { AlertController } from '@ionic/angular';
 
     IonButton,
     IonIcon,
-    IonSpinner
+    IonSpinner,
+    IonAlert
   ]
 
 })

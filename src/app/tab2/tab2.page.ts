@@ -11,6 +11,8 @@ import { Exercise } from '../services/models';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
 import { Router } from '@angular/router';
+import { IonAlert } from '@ionic/angular/standalone';
+
 
 
 @Component({
@@ -33,7 +35,8 @@ import { Router } from '@angular/router';
     IonListHeader,
     IonSelect,
     IonSelectOption,
-    IonSpinner
+    IonSpinner,
+    IonAlert
   ]
 
 })

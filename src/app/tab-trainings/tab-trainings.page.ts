@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { IonButton, IonContent, IonHeader,IonToolbar, IonTitle, IonIcon, IonCard, IonCardContent} from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { Exercise, Workout } from '../services/models';
+import { IonAlert } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-tab-trainings',
@@ -22,7 +23,8 @@ import { Exercise, Workout } from '../services/models';
 
     IonIcon,
     IonCard,
-    IonCardContent
+    IonCardContent,
+    IonAlert
   ]
 
 })

@@ -11,6 +11,8 @@ import { Exercise, Workout } from '../services/models';
 import { AlertController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
 import { FormsModule } from '@angular/forms';
+import { IonAlert } from '@ionic/angular/standalone';
+
 
 @Component({
   standalone: true,
@@ -33,7 +35,8 @@ import { FormsModule } from '@angular/forms';
     IonReorderGroup,
     IonReorder,
     IonButtons,
-    IonSpinner
+    IonSpinner,
+    IonAlert
   ]
 })
 export class TabEditPage implements OnInit {
