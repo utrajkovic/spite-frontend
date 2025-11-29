@@ -11,6 +11,8 @@ import { Exercise } from '../services/models';
 import { AlertController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
 import { IonAlert } from '@ionic/angular/standalone';
+import { IonicModule } from '@ionic/angular';
+
 
 
 @Component({
@@ -22,6 +24,7 @@ import { IonAlert } from '@ionic/angular/standalone';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    IonicModule,
 
     IonContent, IonHeader, IonToolbar, IonTitle,
     IonItem, IonLabel, IonInput, IonButton,
