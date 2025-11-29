@@ -22,10 +22,20 @@ import { LocalDataService } from '../services/local-data.service';
     FormsModule,
     ReactiveFormsModule,
 
-    IonContent, IonHeader, IonToolbar, IonTitle,
-    IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonSearchbar, IonSpinner,
-    IonReorderGroup, IonReorder, IonAlert
+    IonContent, 
+    IonHeader, 
+    IonToolbar, 
+    IonTitle,
+    IonItem, 
+    IonLabel, 
+    IonInput, 
+    IonButton,
+    IonList, 
+    IonSearchbar, 
+    IonSpinner,
+    IonReorderGroup, 
+    IonReorder, 
+    IonAlert
   ]
 })
 export class Tab2Page implements OnInit {
