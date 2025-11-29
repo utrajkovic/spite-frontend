@@ -10,9 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
 import { AlertController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
-import { IonAlert } from '@ionic/angular/standalone';
 import { IonicModule } from '@ionic/angular';
-
 
 
 @Component({
@@ -29,28 +27,25 @@ import { IonicModule } from '@ionic/angular';
     IonContent, IonHeader, IonToolbar, IonTitle,
     IonItem, IonLabel, IonInput, IonButton,
     IonList, IonSearchbar, IonSpinner,
-    IonReorderGroup, IonReorder, IonAlert
+    IonReorderGroup, IonReorder
   ]
 })
 export class Tab2Page implements OnInit {
 
   tab: 'exercise' | 'workout' = 'exercise';
 
-  // -------------------------
-  // ADD EXERCISE
-  // -------------------------
+  // FORMS
   exerciseForm: FormGroup;
-  selectedVideo: File | null = null;
-  isSavingExercise = false;
+  workoutForm: FormGroup;
 
-  // -------------------------
-  // NEW WORKOUT
-  // -------------------------
-  newWorkout = { title: '', subtitle: '', content: '' };
-  editableExercises: Exercise[] = [];
+  // STATE
+  selectedVideo: File | null = null;
   allExercises: Exercise[] = [];
+  editableExercises: Exercise[] = [];
   filteredExercises: Exercise[] = [];
   searchQuery = '';
+
+  isSavingExercise = false;
   isSavingWorkout = false;
 
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
@@ -72,16 +67,20 @@ export class Tab2Page implements OnInit {
       videoUrl: ['']
     });
 
+    this.workoutForm = this.fb.group({
+      title: [''],
+      subtitle: [''],
+      content: ['']
+    });
   }
 
   async ngOnInit() {
-    console.log('[TAB2] TEST: ngOnInit PRAZAN');
+    await this.loadExercises();
+    this.filterList();
   }
 
 
-  // -------------------------
-  // LOAD ALL USER EXERCISES
-  // -------------------------
+  // LOAD
   async loadExercises() {
     const user = await this.localData.getUser();
     if (!user) return;
@@ -95,13 +94,48 @@ export class Tab2Page implements OnInit {
     }
   }
 
-  // -------------------------
-  // ADD EXERCISE
-  // -------------------------
-  async onVideoSelected(ev: any) {
+
+  // EXERCISE SEARCH
+  onSearch(ev: any) {
+    this.searchQuery = ev.target.value?.toLowerCase() ?? '';
+    this.filterList();
+  }
+
+  filterList() {
+    this.filteredExercises = this.allExercises.filter(ex =>
+      ex.name.toLowerCase().includes(this.searchQuery) &&
+      !this.editableExercises.some(e => e.id === ex.id)
+    );
+  }
+
+
+  // ADD/REMOVE EXERCISE IN WORKOUT
+  addExercise(ex: Exercise) {
+    this.editableExercises.push(ex);
+    this.filterList();
+  }
+
+  removeExercise(i: number) {
+    this.editableExercises.splice(i, 1);
+    this.filterList();
+  }
+
+  handleReorder(ev: any) {
+    const from = ev.detail.from;
+    const to = ev.detail.to;
+    const moved = this.editableExercises.splice(from, 1)[0];
+    this.editableExercises.splice(to, 0, moved);
+    ev.detail.complete();
+  }
+
+
+  // VIDEO SELECT
+  onVideoSelected(ev: any) {
     this.selectedVideo = ev.target.files?.[0] ?? null;
   }
 
+
+  // SAVE EXERCISE
   async saveExercise() {
     if (this.isSavingExercise) return;
     this.isSavingExercise = true;
@@ -115,7 +149,6 @@ export class Tab2Page implements OnInit {
     const ex = this.exerciseForm.value;
     ex.userId = user.id;
 
-    // Upload video
     if (this.selectedVideo) {
       try {
         const form = new FormData();
@@ -154,45 +187,14 @@ export class Tab2Page implements OnInit {
     this.filterList();
   }
 
-  // -------------------------
-  // ADD WORKOUT
-  // -------------------------
 
-  onSearch(ev: any) {
-    this.searchQuery = ev.target.value?.toLowerCase() ?? '';
-    this.filterList();
-  }
-
-  filterList() {
-    this.filteredExercises = this.allExercises.filter(ex =>
-      ex.name.toLowerCase().includes(this.searchQuery) &&
-      !this.editableExercises.some(e => e.id === ex.id)
-    );
-  }
-
-  addExercise(ex: Exercise) {
-    this.editableExercises.push(ex);
-    this.filterList();
-  }
-
-  removeExercise(i: number) {
-    this.editableExercises.splice(i, 1);
-    this.filterList();
-  }
-
-  handleReorder(ev: any) {
-    const from = ev.detail.from;
-    const to = ev.detail.to;
-    const moved = this.editableExercises.splice(from, 1)[0];
-    this.editableExercises.splice(to, 0, moved);
-    ev.detail.complete();
-  }
-
+  // SAVE WORKOUT
   async saveNewWorkout() {
     if (this.isSavingWorkout) return;
     this.isSavingWorkout = true;
 
-    if (!this.newWorkout.title) {
+    const value = this.workoutForm.value;
+    if (!value.title) {
       this.isSavingWorkout = false;
       return this.showAlert('Workout must have a title');
     }
@@ -204,7 +206,7 @@ export class Tab2Page implements OnInit {
     }
 
     const body = {
-      ...this.newWorkout,
+      ...value,
       exerciseIds: this.editableExercises.map(ex => ex.id!),
       userId: user.id
     };
@@ -213,7 +215,7 @@ export class Tab2Page implements OnInit {
       await this.http.post(`${this.backendUrl}/api/workouts`, body).toPromise();
 
       this.showAlert('Workout created!');
-      this.newWorkout = { title: '', subtitle: '', content: '' };
+      this.workoutForm.reset();
       this.editableExercises = [];
       this.filterList();
 
@@ -224,9 +226,8 @@ export class Tab2Page implements OnInit {
     this.isSavingWorkout = false;
   }
 
-  // -------------------------
-  // ALERT
-  // -------------------------
+
+  // ALERTS
   async showAlert(msg: string) {
     const a = await this.alertCtrl.create({
       message: msg,
@@ -247,12 +248,11 @@ export class Tab2Page implements OnInit {
       });
 
       console.log('[TEST ALERT] kreiran:', a);
-
       await a.present();
       console.log('[TEST ALERT] present pozvan');
+
     } catch (err) {
       console.error('[TEST ALERT] GREŠKA:', err);
     }
   }
-
 }

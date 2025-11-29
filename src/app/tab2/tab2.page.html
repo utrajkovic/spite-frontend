@@ -1,10 +1,11 @@
 <ion-content [fullscreen]="true">
 
-  <!-- TOP TABS -->
+  <!-- TEST ALERT BUTTON -->
   <ion-button expand="block" color="warning" (click)="testAlert()">
     TEST ALERT
   </ion-button>
 
+  <!-- TOP TABS -->
   <div class="top-tabs">
     <button (click)="tab = 'exercise'" [class.active]="tab === 'exercise'">
       Add Exercise
@@ -12,11 +13,11 @@
     <button (click)="tab = 'workout'" [class.active]="tab === 'workout'">
       Add Workout
     </button>
-
   </div>
 
   <!-- ADD EXERCISE -->
   <ng-container *ngIf="tab === 'exercise'">
+
     <h2>Add New Exercise</h2>
 
     <form [formGroup]="exerciseForm" class="neon-form">
@@ -64,28 +65,29 @@
     </form>
   </ng-container>
 
+
   <!-- ADD WORKOUT -->
   <ng-container *ngIf="tab === 'workout'">
 
     <h2>Create Workout</h2>
 
-    <div class="neon-form">
+    <form [formGroup]="workoutForm" class="neon-form">
 
       <ion-item>
         <ion-label position="stacked">Title</ion-label>
-        <ion-input [(ngModel)]="newWorkout.title"></ion-input>
+        <ion-input formControlName="title"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Category</ion-label>
-        <ion-input [(ngModel)]="newWorkout.subtitle"></ion-input>
+        <ion-input formControlName="subtitle"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Description</ion-label>
-        <ion-input [(ngModel)]="newWorkout.content"></ion-input>
+        <ion-input formControlName="content"></ion-input>
       </ion-item>
-    </div>
+    </form>
 
     <h3>Exercises in Workout</h3>
 
@@ -102,7 +104,11 @@
 
     <h3>Add Exercise</h3>
 
-    <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="onSearch($event)" placeholder="Search..." animated="true">
+    <ion-searchbar 
+      [value]="searchQuery"
+      (ionInput)="onSearch($event)"
+      placeholder="Search..."
+      animated="true">
     </ion-searchbar>
 
     <ion-list>
