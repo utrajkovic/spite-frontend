@@ -10,6 +10,8 @@ import { HttpClient } from '@angular/common/http';
 import { Exercise } from '../services/models';
 import { AlertController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
+import { IonAlert } from '@ionic/angular/standalone';
+
 
 @Component({
   selector: 'app-tab2',
@@ -24,7 +26,7 @@ import { LocalDataService } from '../services/local-data.service';
     IonContent, IonHeader, IonToolbar, IonTitle,
     IonItem, IonLabel, IonInput, IonButton,
     IonList, IonSearchbar, IonSpinner,
-    IonReorderGroup, IonReorder
+    IonReorderGroup, IonReorder, IonAlert
   ]
 })
 export class Tab2Page implements OnInit {
@@ -232,22 +234,22 @@ export class Tab2Page implements OnInit {
   }
 
   async testAlert() {
-  console.log('[TEST ALERT] kliknuto');
+    console.log('[TEST ALERT] kliknuto');
 
-  try {
-    const a = await this.alertCtrl.create({
-      header: 'TEST',
-      message: 'Radi li alert?',
-      buttons: ['OK']
-    });
+    try {
+      const a = await this.alertCtrl.create({
+        header: 'TEST',
+        message: 'Radi li alert?',
+        buttons: ['OK']
+      });
 
-    console.log('[TEST ALERT] kreiran:', a);
+      console.log('[TEST ALERT] kreiran:', a);
 
-    await a.present();
-    console.log('[TEST ALERT] present pozvan');
-  } catch (err) {
-    console.error('[TEST ALERT] GREŠKA:', err);
+      await a.present();
+      console.log('[TEST ALERT] present pozvan');
+    } catch (err) {
+      console.error('[TEST ALERT] GREŠKA:', err);
+    }
   }
-}
 
 }
