@@ -3,15 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import {
   IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonLabel, IonInput, IonButton,
-  IonList, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder
+  IonList, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder, IonAlert
 } from '@ionic/angular/standalone';
+
 import { HttpClient } from '@angular/common/http';
+import { AlertController } from '@ionic/angular';
 
 import { Exercise } from '../services/models';
-import { AlertController } from '@ionic/angular';
 import { LocalDataService } from '../services/local-data.service';
-import { IonicModule } from '@ionic/angular';
-
 
 @Component({
   selector: 'app-tab2',
@@ -22,12 +21,11 @@ import { IonicModule } from '@ionic/angular';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    IonicModule,
 
     IonContent, IonHeader, IonToolbar, IonTitle,
     IonItem, IonLabel, IonInput, IonButton,
     IonList, IonSearchbar, IonSpinner,
-    IonReorderGroup, IonReorder
+    IonReorderGroup, IonReorder, IonAlert
   ]
 })
 export class Tab2Page implements OnInit {
@@ -80,7 +78,7 @@ export class Tab2Page implements OnInit {
   }
 
 
-  // LOAD
+  // LOAD USER EXERCISES
   async loadExercises() {
     const user = await this.localData.getUser();
     if (!user) return;
@@ -95,7 +93,7 @@ export class Tab2Page implements OnInit {
   }
 
 
-  // EXERCISE SEARCH
+  // SEARCH
   onSearch(ev: any) {
     this.searchQuery = ev.target.value?.toLowerCase() ?? '';
     this.filterList();
@@ -109,7 +107,7 @@ export class Tab2Page implements OnInit {
   }
 
 
-  // ADD/REMOVE EXERCISE IN WORKOUT
+  // WORKOUT EXERCISE MANIPULATION
   addExercise(ex: Exercise) {
     this.editableExercises.push(ex);
     this.filterList();
@@ -227,7 +225,7 @@ export class Tab2Page implements OnInit {
   }
 
 
-  // ALERTS
+  // ALERT
   async showAlert(msg: string) {
     const a = await this.alertCtrl.create({
       message: msg,
