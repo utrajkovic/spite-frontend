@@ -231,4 +231,23 @@ export class Tab2Page implements OnInit {
     a.present();
   }
 
+  async testAlert() {
+  console.log('[TEST ALERT] kliknuto');
+
+  try {
+    const a = await this.alertCtrl.create({
+      header: 'TEST',
+      message: 'Radi li alert?',
+      buttons: ['OK']
+    });
+
+    console.log('[TEST ALERT] kreiran:', a);
+
+    await a.present();
+    console.log('[TEST ALERT] present pozvan');
+  } catch (err) {
+    console.error('[TEST ALERT] GREŠKA:', err);
+  }
+}
+
 }

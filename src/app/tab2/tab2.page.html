@@ -1,6 +1,10 @@
 <ion-content [fullscreen]="true">
 
   <!-- TOP TABS -->
+  <ion-button expand="block" color="warning" (click)="testAlert()">
+    TEST ALERT
+  </ion-button>
+
   <div class="top-tabs">
     <button (click)="tab = 'exercise'" [class.active]="tab === 'exercise'">
       Add Exercise
@@ -8,6 +12,7 @@
     <button (click)="tab = 'workout'" [class.active]="tab === 'workout'">
       Add Workout
     </button>
+
   </div>
 
   <!-- ADD EXERCISE -->
@@ -97,11 +102,7 @@
 
     <h3>Add Exercise</h3>
 
-    <ion-searchbar
-      [(ngModel)]="searchQuery"
-      (ionInput)="onSearch($event)"
-      placeholder="Search..."
-      animated="true">
+    <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="onSearch($event)" placeholder="Search..." animated="true">
     </ion-searchbar>
 
     <ion-list>
