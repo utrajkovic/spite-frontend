@@ -71,10 +71,10 @@ export class Tab2Page implements OnInit {
 
   }
 
-  async ngOnInit() {
-    await this.loadExercises();
-    this.filterList();
-  }
+  // async ngOnInit() {
+  //   await this.loadExercises();
+  //   this.filterList();
+  // }
 
   // -------------------------
   // LOAD ALL USER EXERCISES
