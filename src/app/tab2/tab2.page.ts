@@ -22,31 +22,30 @@ import { LocalDataService } from '../services/local-data.service';
     FormsModule,
     ReactiveFormsModule,
 
-    IonContent, 
-    IonHeader, 
-    IonToolbar, 
+    IonContent,
+    IonHeader,
+    IonToolbar,
     IonTitle,
-    IonItem, 
-    IonLabel, 
-    IonInput, 
+    IonItem,
+    IonLabel,
+    IonInput,
     IonButton,
-    IonList, 
-    IonSearchbar, 
+    IonList,
+    IonSearchbar,
     IonSpinner,
-    IonReorderGroup, 
-    IonReorder, 
+    IonReorderGroup,
+    IonReorder,
     IonAlert
   ]
 })
+
 export class Tab2Page implements OnInit {
 
   tab: 'exercise' | 'workout' = 'exercise';
 
-  // FORMS
   exerciseForm: FormGroup;
   workoutForm: FormGroup;
 
-  // STATE
   selectedVideo: File | null = null;
   allExercises: Exercise[] = [];
   editableExercises: Exercise[] = [];
@@ -87,8 +86,6 @@ export class Tab2Page implements OnInit {
     this.filterList();
   }
 
-
-  // LOAD USER EXERCISES
   async loadExercises() {
     const user = await this.localData.getUser();
     if (!user) return;
@@ -102,8 +99,6 @@ export class Tab2Page implements OnInit {
     }
   }
 
-
-  // SEARCH
   onSearch(ev: any) {
     this.searchQuery = ev.target.value?.toLowerCase() ?? '';
     this.filterList();
@@ -116,8 +111,6 @@ export class Tab2Page implements OnInit {
     );
   }
 
-
-  // WORKOUT EXERCISE MANIPULATION
   addExercise(ex: Exercise) {
     this.editableExercises.push(ex);
     this.filterList();
@@ -136,16 +129,27 @@ export class Tab2Page implements OnInit {
     ev.detail.complete();
   }
 
-
-  // VIDEO SELECT
   onVideoSelected(ev: any) {
     this.selectedVideo = ev.target.files?.[0] ?? null;
   }
 
-
-  // SAVE EXERCISE
   async saveExercise() {
     if (this.isSavingExercise) return;
+
+    const value = this.exerciseForm.value;
+
+    if (!value.name || value.name.trim().length < 1) {
+      return this.showAlert("Exercise must have a name.");
+    }
+
+    if (!value.description || value.description.trim().length < 1) {
+      return this.showAlert("Description cannot be empty.");
+    }
+
+    if (!value.sets || !value.reps) {
+      return this.showAlert("Sets and reps must be provided.");
+    }
+
     this.isSavingExercise = true;
 
     const user = await this.localData.getUser();
@@ -154,7 +158,7 @@ export class Tab2Page implements OnInit {
       return this.showAlert('User error');
     }
 
-    const ex = this.exerciseForm.value;
+    const ex = value;
     ex.userId = user.id;
 
     if (this.selectedVideo) {
@@ -170,7 +174,7 @@ export class Tab2Page implements OnInit {
 
       } catch {
         this.isSavingExercise = false;
-        return this.showAlert('Upload failed!');
+        return this.showAlert('Video upload failed.');
       }
     }
 
@@ -195,17 +199,20 @@ export class Tab2Page implements OnInit {
     this.filterList();
   }
 
-
-  // SAVE WORKOUT
   async saveNewWorkout() {
     if (this.isSavingWorkout) return;
-    this.isSavingWorkout = true;
 
     const value = this.workoutForm.value;
-    if (!value.title) {
-      this.isSavingWorkout = false;
-      return this.showAlert('Workout must have a title');
+
+    if (!value.title || value.title.trim().length === 0) {
+      return this.showAlert("Workout must have a title.");
     }
+
+    if (this.editableExercises.length === 0) {
+      return this.showAlert("Workout must have at least 1 exercise.");
+    }
+
+    this.isSavingWorkout = true;
 
     const user = await this.localData.getUser();
     if (!user) {
@@ -221,8 +228,8 @@ export class Tab2Page implements OnInit {
 
     try {
       await this.http.post(`${this.backendUrl}/api/workouts`, body).toPromise();
-
       this.showAlert('Workout created!');
+
       this.workoutForm.reset();
       this.editableExercises = [];
       this.filterList();
@@ -234,8 +241,6 @@ export class Tab2Page implements OnInit {
     this.isSavingWorkout = false;
   }
 
-
-  // ALERT
   async showAlert(msg: string) {
     const a = await this.alertCtrl.create({
       message: msg,
@@ -243,24 +248,5 @@ export class Tab2Page implements OnInit {
       cssClass: 'custom-alert'
     });
     a.present();
-  }
-
-  async testAlert() {
-    console.log('[TEST ALERT] kliknuto');
-
-    try {
-      const a = await this.alertCtrl.create({
-        header: 'TEST',
-        message: 'Radi li alert?',
-        buttons: ['OK']
-      });
-
-      console.log('[TEST ALERT] kreiran:', a);
-      await a.present();
-      console.log('[TEST ALERT] present pozvan');
-
-    } catch (err) {
-      console.error('[TEST ALERT] GREŠKA:', err);
-    }
   }
 }

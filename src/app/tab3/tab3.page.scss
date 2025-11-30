@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
 
+/* ------------------------------------------------------
+   GLOBAL TAB3 STIL
+------------------------------------------------------ */
+
 ion-content {
   --background: radial-gradient(circle at top, #00111a 0%, #000 100%);
   --padding-top: 72px;
@@ -104,23 +108,6 @@ ion-button[color="warning"]:hover {
   box-shadow: 0 0 12px rgba(255, 80, 80, 0.5);
 }
 
-.exercise-preview-alert {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  color: #ccefff;
-  min-height: 200px;
-}
-
-.exercise-preview-alert video {
-  width: 100%;
-  max-height: 260px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 0 6px rgba(0, 255, 255, 0.25);
-}
-
 .separator {
   width: 70%;
   height: 1px;
@@ -156,24 +143,152 @@ ion-button[color="warning"]:hover {
   }
 }
 
-@media (max-width: 600px) {
-  .section-box {
-    padding: 12px;
+/* ------------------------------------------------------
+   MODAL – CENTRIRANI GLASS/NEON ALERT
+------------------------------------------------------ */
+
+/* Tamni blur backdrop */
+.exercise-modal::part(backdrop) {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+/* Glavni modal (glassmorphism + neon) */
+.exercise-modal::part(content) {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+
+  width: 90%;
+  max-width: 340px;
+
+  background: transparent !important;
+  border-radius: 18px;
+
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+
+  border: 1px solid rgba(0, 255, 255, 0.45);
+  box-shadow: 0 0 22px rgba(0, 255, 255, 0.3),
+    0 0 8px rgba(0, 255, 255, 0.15) inset;
+
+  padding: 20px;
+
+  animation: slideUpModal 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Animacija modala */
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 18px));
   }
 
-  ion-label h3 {
-    font-size: 0.95rem;
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Sadržaj modala */
+.alert-box {
+  text-align: center;
+  color: #dfffff;
+}
+
+.preview-video {
+  width: 100%;
+  max-height: 220px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #00f7ff;
+  margin-bottom: 12px;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+.description {
+  color: #b8ffff;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+//Workout modal
+/* ------------------------------------------------------
+   WORKOUT MODAL – GLASS NEON STIL (ISTI KAO EXERCISE)
+------------------------------------------------------ */
+
+.workout-modal::part(backdrop) {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.workout-modal::part(content) {
+  animation: slideUpModal 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+
+  width: 90%;
+  max-width: 340px;
+
+  background: rgba(0, 40, 60, 0.35);
+  border-radius: 18px;
+
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+
+  border: 1px solid rgba(0, 255, 255, 0.45);
+  box-shadow: 0 0 22px rgba(0, 255, 255, 0.3),
+    0 0 8px rgba(0, 255, 255, 0.15) inset;
+
+  padding: 20px;
+
+  animation: fadeInModal 0.25s ease forwards;
+}
+
+.exercise-list {
+  margin: 10px 0 20px;
+  text-align: left;
+  color: #dfffff;
+}
+
+.exercise-title {
+  text-align: center;
+  color: #00f7ff;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.exercise-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.exercise-list li {
+  margin-bottom: 4px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+}
+
+/* ------------------------------------------------------
+   ANIMACIJA – SLIDE UP ZA MODALE
+------------------------------------------------------ */
+@keyframes slideUpModal {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-40%)) scale(0.95);
   }
 
-  ion-label p {
-    font-size: 0.8rem;
-  }
-
-  ion-button {
-    font-size: 0.9rem;
-  }
-
-  .exercise-preview-alert video {
-    max-height: 200px;
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
@@ -11,6 +11,8 @@ import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../services/local-data.service';
 import { HttpClient } from '@angular/common/http';
+import { IonModal } from '@ionic/angular/standalone';
+
 
 @Component({
   selector: 'app-tab3',
@@ -24,7 +26,8 @@ import { HttpClient } from '@angular/common/http';
     IonItem,
     IonLabel,
     IonButton,
-    IonSpinner
+    IonSpinner,
+    IonModal
   ]
 })
 export class Tab3Page implements OnInit {
@@ -46,6 +49,15 @@ export class Tab3Page implements OnInit {
     private loadingCtrl: LoadingController,
     private http: HttpClient
   ) { }
+
+  @ViewChild('exerciseModal', { static: true }) exerciseModal: any;
+  @ViewChild('contentRef', { static: true }) contentRef!: any;
+  previewExercise: Exercise | null = null;
+
+  previewWorkout: any = null;
+  previewWorkoutExercises: string[] = [];
+  @ViewChild('workoutModal') workoutModal!: IonModal;
+
 
   ngOnInit() {
     this.loadData();
@@ -214,36 +226,27 @@ export class Tab3Page implements OnInit {
   }
 
 
+async showWorkoutDetails(workout: any) {
+  this.previewWorkout = workout;
 
-  async showWorkoutDetails(workout: any) {
-    const exerciseNames = workout.exercises
-      ? workout.exercises.map((e: any) => e.name).join('<br>')
-      : (workout.exerciseIds
-        ?.map((id: string) => this.exercises.find(e => e.id === id)?.name || 'Unknown')
-        .join('<br>') || 'No exercises listed.');
-
-    const alert = await this.alertCtrl.create({
-      header: workout.title,
-      message: '',
-      buttons: [{ text: 'Close', role: 'cancel', cssClass: 'alert-confirm' }],
-      cssClass: 'custom-alert workout-preview-modal allow-html'
-    });
-
-    await alert.present();
-
-    const messageEl = document.querySelector('ion-alert .alert-message');
-    if (!messageEl) return;
-
-    messageEl.innerHTML = `
-      <div class="workout-details-alert">
-        <p><strong>Category:</strong> ${workout.subtitle || '—'}</p>
-        <p><strong>Description:</strong> ${workout.content || '—'}</p>
-        <hr>
-        <h4>Exercises:</h4>
-        <p>${exerciseNames || 'No exercises listed.'}</p>
-      </div>
-    `;
+  if (workout.exercises) {
+    this.previewWorkoutExercises = workout.exercises.map((e: any) => e.name);
+  } 
+  else if (workout.exerciseIds) {
+    this.previewWorkoutExercises = workout.exerciseIds
+      .map((id: string) => this.exercises.find(e => e.id === id)?.name || 'Unknown');
+  } 
+  else {
+    this.previewWorkoutExercises = [];
   }
+
+  await this.workoutModal.present();
+}
+
+closeWorkoutModal() {
+  this.workoutModal.dismiss();
+}
+
 
   async logout() {
     const alert = await this.alertCtrl.create({
@@ -274,4 +277,12 @@ export class Tab3Page implements OnInit {
     });
     await alert.present();
   }
+  openExercisePreview(ex: Exercise) {
+    this.previewExercise = ex;
+    this.exerciseModal.present();
+  }
+  closeExerciseModal() {
+    this.exerciseModal.dismiss();
+  }
+
 }

@@ -1,11 +1,11 @@
-<ion-content [fullscreen]="true" class="ion-padding content-container">
+<ion-content #contentRef [fullscreen]="true" class="ion-padding content-container">
 
   <section class="section-box">
     <h2>My Exercises</h2>
 
     <ion-list lines="none">
       <ion-item *ngFor="let exercise of exercises" class="item-card" button detail="false"
-        (click)="showExercisePreview(exercise)">
+        (click)="openExercisePreview(exercise)">
         <ion-label>
           <h3>{{ exercise.name }}</h3>
           <p>{{ exercise.description || 'Bez opisa' }}</p>
@@ -80,3 +80,55 @@
   </ion-button>
 
 </ion-content>
+
+<ion-modal #exerciseModal class="exercise-modal" [presentingElement]="null">
+  <ng-template>
+    <div class="alert-box">
+
+      <h2 class="title">{{ previewExercise?.name }}</h2>
+
+      <video *ngIf="previewExercise?.videoUrl" [src]="previewExercise?.videoUrl" autoplay loop [muted]="true"
+        playsinline class="preview-video">
+      </video>
+
+      <p class="description">
+        {{ previewExercise?.description || 'No description' }}
+      </p>
+
+      <ion-button color="primary" expand="block" (click)="closeExerciseModal()">
+        Close
+      </ion-button>
+
+    </div>
+  </ng-template>
+</ion-modal>
+<ion-modal #workoutModal class="workout-modal" [initialBreakpoint]="0.5" [breakpoints]="[0, 0.5]">
+  <ng-template>
+    <div class="alert-box">
+
+      <h2 class="title">{{ previewWorkout?.title }}</h2>
+
+      <p class="description">
+        <strong>Category:</strong> {{ previewWorkout?.subtitle || '—' }}
+      </p>
+
+      <p class="description">
+        <strong>Description:</strong> {{ previewWorkout?.content || '—' }}
+      </p>
+
+      <div class="exercise-list" *ngIf="previewWorkoutExercises?.length">
+        <h3 class="exercise-title">Exercises</h3>
+        <ul>
+          <li *ngFor="let ex of previewWorkoutExercises">
+            {{ ex }}
+          </li>
+        </ul>
+      </div>
+
+      <ion-button color="primary" expand="block" (click)="closeWorkoutModal()">
+        Close
+      </ion-button>
+
+    </div>
+  </ng-template>
+</ion-modal>

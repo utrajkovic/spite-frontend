@@ -137,7 +137,7 @@ export class WorkoutPage implements OnInit {
         this.isVideoLoading = false;
       }, 800);
     } else {
-      this.showAlert('✅ Training completed!');
+      this.showAlert('Training completed!');
       this.router.navigate(['/tabs/tab1']);
     }
   }

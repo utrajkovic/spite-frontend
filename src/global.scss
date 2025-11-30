@@ -1,81 +1,110 @@
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
-/* Core CSS required for Ionic components to work properly */
+/* Core CSS required for Ionic components */
 @import "@ionic/angular/css/core.css";
 
-/* Basic CSS for apps built with Ionic */
+/* Basic CSS */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils that can be commented out */
+/* Optional utilities */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+/* Dark mode */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
+/* ------------------------------------------------------
+   🌐 GLOBAL CYBERPUNK ALERT (NEW PRO VERSION)
+------------------------------------------------------- */
+
 ion-alert.custom-alert {
-  --background: rgba(0, 40, 60, 0.25) !important;
-  --backdrop-opacity: 0.3;
-  --color: #00f7ff;
+  --background: rgba(0, 28, 40, 0.32) !important;
+  --backdrop-opacity: 0.45;
   --border-radius: 18px;
-  --box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-  backdrop-filter: blur(12px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+  --box-shadow: 0 0 25px rgba(0, 255, 255, 0.45);
+  --width: 94%;
+  --max-width: 380px;
+  --color: #aefcff !important;
+
   border: 1px solid rgba(0, 255, 255, 0.25);
-  font-family: 'Tilt Neon', sans-serif;
-  text-align: center;
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+
+  font-family: 'Orbitron', sans-serif !important;
+  letter-spacing: 0.4px;
 }
 
-ion-alert.custom-alert::part(header),
+/* Header */
+ion-alert.custom-alert::part(header) {
+  color: #00f7ff !important;
+  font-size: 20px !important;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+  margin-bottom: 6px;
+}
+
+/* Message */
 ion-alert.custom-alert::part(message) {
-  color: #aefcff;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+  color: #cfffff !important;
+  font-size: 15px !important;
+  line-height: 1.4em;
+  opacity: 0.9;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
 }
 
+/* Buttons */
 ion-alert.custom-alert::part(button) {
-  border-radius: 10px;
-  font-weight: 600;
+  color: #00eaff !important;
+  font-size: 14px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.25s ease;
+  letter-spacing: 0.7px;
+  background: rgba(0, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 14px;
+  transition: 0.22s ease;
+
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
 }
 
-ion-alert.custom-alert::part(button)[aria-label="Otkaži"] {
-  color: #aefcff;
-}
-
-ion-alert.custom-alert::part(button)[aria-label="Obriši"] {
-  color: #ff4d4d;
-  text-shadow: 0 0 10px rgba(255, 100, 100, 0.6);
-}
-
+/* Hover */
 ion-alert.custom-alert::part(button):hover {
   filter: brightness(1.2);
-  transform: scale(1.03);
+  transform: scale(1.04);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
+
+/* Delete/Logout special color */
+ion-alert.custom-alert::part(button)[aria-label="Delete"],
+ion-alert.custom-alert::part(button)[aria-label="Obriši"],
+ion-alert.custom-alert::part(button)[aria-label="Logout"] {
+  color: #ff4d4d !important;
+  text-shadow: 0 0 10px rgba(255, 80, 80, 0.6);
+}
+
+/* Always above everything */
+ion-alert,
+ion-alert::part(content),
+.alert-wrapper,
+.alert-container,
+.alert-overlay {
+  z-index: 999999 !important;
+  position: fixed !important;
+}
+
+/* ------------------------------------------------------
+   TOAST – CENTER SCREEN NEON STYLE
+------------------------------------------------------- */
 
 ion-toast.custom-toast {
   position: fixed !important;
@@ -87,7 +116,6 @@ ion-toast.custom-toast {
   --background: transparent !important;
   --border-radius: 0;
   --box-shadow: none;
-  border: none;
   backdrop-filter: none !important;
 
   opacity: 1 !important;
@@ -102,8 +130,6 @@ ion-toast.custom-toast::part(container) {
   padding: 14px 22px;
   box-shadow: 0 0 14px rgba(0, 255, 255, 0.4);
   backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
-  max-width: 320px;
 }
 
 ion-toast.custom-toast::part(message) {
@@ -127,15 +153,18 @@ ion-toast.error-toast::part(message) {
   text-shadow: 0 0 8px rgba(255, 80, 80, 0.6);
 }
 
+/* ------------------------------------------------------
+   EXERCISE PREVIEW ALERT (video)
+------------------------------------------------------- */
+
 ion-alert.exercise-preview-modal {
   --background: rgba(0, 40, 60, 0.25);
   --backdrop-opacity: 0.3;
   --border-radius: 18px;
   --box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-  backdrop-filter: blur(12px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
-  border: 1px solid rgba(0, 255, 255, 0.25);
-  font-family: 'Tilt Neon', sans-serif;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  font-family: 'Orbitron', sans-serif;
 }
 
 .exercise-preview-alert {
@@ -156,135 +185,46 @@ ion-alert.exercise-preview-modal {
 .exercise-preview-alert p {
   font-size: 15px;
   color: #aefcff;
-  text-align: center;
-  margin: 0;
   opacity: 0.9;
 }
 
-ion-alert.exercise-preview-modal::part(button) {
-  color: #00f7ff;
-  font-weight: 600;
-  text-transform: uppercase;
-  border-radius: 10px;
-  letter-spacing: 0.5px;
-}
-
-.item-card {
-  --background: rgba(0, 0, 0, 0.35);
-  border-radius: 14px;
-  border: 1px solid rgba(0, 255, 255, 0.25);
-  margin-bottom: 12px;
-  transition: all 0.25s ease;
-  box-shadow: 0 2px 10px rgba(0, 255, 255, 0.1);
-}
-
-.item-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 16px rgba(0, 255, 255, 0.4);
-  background: rgba(0, 255, 255, 0.05);
-}
-
-ion-item .delete-btn {
-  --border-radius: 10px;
-  --padding-start: 8px;
-  --padding-end: 8px;
-  --border-color: rgba(255, 77, 77, 0.6);
-  color: #ff4d4d;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-ion-item .delete-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 8px rgba(255, 80, 80, 0.4);
-}
-
-ion-alert.exercise-preview-modal.allow-html::part(message) {
-  white-space: normal;
-}
-
-.exercise-preview-alert {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.exercise-preview-alert video {
-  width: 100%;
-  max-height: 40vh;
-  border-radius: 14px;
-  margin: 10px 0;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-  object-fit: contain;
-}
-
-.exercise-preview-alert p {
-  font-size: 15px;
-  color: #aefcff;
-  text-align: center;
-  margin: 0;
-  opacity: 0.9;
-}
-
-/* 🧊 Spite video alert modal */
+/* Scrollable message area */
 ion-alert.exercise-preview-modal::part(message) {
   max-height: 80vh;
-  /* alert sada zauzima max 80% visine ekrana */
   overflow-y: auto;
-  /* ako je sadržaj duži — scroll */
-  padding-bottom: 0 !important;
 }
 
-/* Unutrašnji kontejner */
-.exercise-preview-alert {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-height: 100%;
-  overflow: hidden;
+/* ------------------------------------------------------
+   WORKOUT PREVIEW STYLING
+------------------------------------------------------- */
+
+.workout-details-alert {
+  color: #e0ffff;
+  font-family: 'Orbitron', sans-serif;
+  line-height: 1.4em;
 }
 
-/* 🎬 Video – lepo se uklapa i ne izlazi iz modala */
-.exercise-preview-alert video {
-  width: 100%;
-  max-width: 90vw;
-  /* prilagođava širinu ekrana telefona */
-  max-height: 40vh;
-  /* ograniči visinu da ne prelazi pola ekrana */
-  border-radius: 14px;
-  margin: 8px 0 10px;
-  object-fit: contain;
-  /* zadrži proporcije */
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-  background: rgba(0, 255, 255, 0.05);
-  border: 1px solid rgba(0, 255, 255, 0.2);
+.workout-details-alert h4 {
+  color: #00ffaa;
+  text-shadow: 0 0 6px rgba(0, 255, 170, 0.4);
 }
 
-/* 📝 Opis ispod videa */
-.exercise-preview-alert p {
-  font-size: 15px;
-  color: #aefcff;
-  text-align: center;
-  margin: 0;
+.workout-details-alert p {
+  font-size: 14px;
   opacity: 0.9;
-  padding: 4px 8px;
-  line-height: 1.3em;
 }
 
-@media (max-width: 600px) {
-  ion-alert.exercise-preview-modal::part(message) {
-    max-height: 105vh;
-  }
-
-  .exercise-preview-alert video {
-    max-height: 27vh;
-    max-width: 35vw;
-  }
-
-  .exercise-preview-alert p {
-    font-size: 14px;
-  }
+ion-alert.workout-preview-modal {
+  --background: rgba(0, 40, 60, 0.25);
+  --backdrop-opacity: 0.3;
+  --border-radius: 18px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 255, 0.25);
 }
+
+/* ------------------------------------------------------
+   LOADING OVERLAY
+------------------------------------------------------- */
 
 ion-loading.custom-loading {
   --background: rgba(0, 40, 60, 0.25);
@@ -292,108 +232,40 @@ ion-loading.custom-loading {
   --color: #00f7ff;
   --border-radius: 16px;
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(0, 255, 255, 0.25);
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
+}
+ion-alert.custom-alert::part(message),
+ion-alert.custom-alert::part(header) {
+  color: #00f7ff !important;
+  font-size: 16px;
+  font-weight: 500;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
 }
 
-/* 🌌 Workout details alert styling (global) */
-ion-alert.workout-preview-modal.allow-html::part(message) {
-  white-space: normal;
-  overflow-y: auto;
-  max-height: 80vh;
-  padding-bottom: 0;
-}
-
-/* Glavni kontejner */
-.workout-details-alert {
-  color: #e0ffff;
-  font-family: 'Orbitron', sans-serif;
-  line-height: 1.4em;
-  padding: 6px 4px;
-}
-
-/* Naslov */
-.workout-details-alert h3 {
-  color: #00ffff;
-  font-size: 18px;
-  text-align: center;
-  margin-bottom: 8px;
+ion-alert.custom-alert::part(button) {
+  color: #00eaff !important;
   text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+  font-weight: 600;
 }
 
-/* Podnaslov (Exercises) */
-.workout-details-alert h4 {
-  margin-top: 10px;
-  color: #00ffaa;
-  text-shadow: 0 0 6px rgba(0, 255, 170, 0.4);
+ion-alert.custom-alert,
+ion-alert.custom-alert::part(content),
+ion-alert.custom-alert::part(message),
+ion-alert.custom-alert .alert-message,
+ion-alert.custom-alert .alert-message span,
+ion-alert.custom-alert .alert-message * {
+  --ion-text-color: #00f7ff !important;
+  color: #00f7ff !important;
+  fill: #00f7ff !important;
+  stroke: #00f7ff !important;
+  opacity: 1 !important;
+}
+ion-alert::part(message),
+ion-alert [class*="alert-message"],
+ion-alert [class*="sc-ion-alert"],
+ion-alert [part="message"] {
+  color: #ffffff !important;
 }
 
-/* Paragrafi */
-.workout-details-alert p {
-  font-size: 14px;
-  margin: 4px 0;
-  opacity: 0.9;
-  text-align: left;
-}
 
-/* Separator linija */
-.workout-details-alert hr {
-  border: 0;
-  height: 1px;
-  background: rgba(0, 255, 255, 0.2);
-  margin: 10px 0;
-}
 
-ion-alert.workout-preview-modal {
-  --background: rgba(0, 40, 60, 0.25);
-  --backdrop-opacity: 0.3;
-  --border-radius: 18px;
-  --box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-  backdrop-filter: blur(12px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
-  border: 1px solid rgba(0, 255, 255, 0.25);
-  font-family: 'Orbitron', sans-serif;
-}
-
-/* 🔄 Animacije za glatki prelaz između vežbi */
-.fade-in {
-  animation: fadeIn 0.4s ease forwards;
-}
-
-.fade-out {
-  animation: fadeOut 0.2s ease forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  to {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-}
-
-ion-alert,
-ion-alert::part(content),
-.alert-wrapper,
-.alert-container,
-.alert-overlay {
-  z-index: 999999 !important;
-  position: fixed !important;
-}
