@@ -17,10 +17,12 @@ ion-content {
 
 .chat-input {
     flex: 1;
-    --background: rgba(0, 255, 255, 0.08);
+    --background: radial-gradient(circle at top, #00111a00 0%, #00000000 100%);
     --color: #e0ffff;
-    border-radius: 12px;
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    border-radius: 18px;
     padding: 6px 10px;
+    text-align: center;
 }
 
 .start-btn {
@@ -40,7 +42,7 @@ ion-content {
 .chat-item {
     margin-bottom: 10px;
     padding: 12px;
-    background: rgba(0, 40, 60, 0.15);
+    background: rgba(0, 40, 60, 0);
     border-radius: 14px;
     display: flex;
     align-items: center;
@@ -50,8 +52,9 @@ ion-content {
 }
 
 .chat-item:hover {
-    background: rgba(0, 40, 60, 0.25);
-    transform: scale(1.02);
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    border-radius: 18px;
+    transform: scale(1.0);
     border-color: rgba(0, 255, 255, 0.4);
 }
 
@@ -60,7 +63,7 @@ ion-content {
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: #00f7ff33;
+    background: #00f7ff2e;
     color: #00f7ff;
     display: flex;
     justify-content: center;

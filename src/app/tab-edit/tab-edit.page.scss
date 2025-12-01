@@ -1,182 +1,185 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Tilt+Neon&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;800&display=swap');
 
 ion-content {
-    --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
-    color: #e0ffff;
-    font-family: 'Tilt Neon', cursive;
-    padding: 24px 16px;
-
-    backdrop-filter: blur(10px) saturate(150%);
-    -webkit-backdrop-filter: blur(10px) saturate(150%);
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --padding-top: 24px;
+  padding: 20px;
+  color: #cfffff;
+  font-family: 'Orbitron', sans-serif;
 }
 
+/* ============================= */
 /* HEADER */
+/* ============================= */
 ion-toolbar {
-    --background: rgba(0, 30, 40, 0.45);
-    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+  --background: rgba(0, 30, 40, 0.45);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
 }
 
 ion-title {
-    font-family: 'Orbitron', sans-serif;
-    color: #00f7ff;
-    letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  color: #00f7ff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.45);
 }
 
-/* INPUT POLJA */
+/* ============================= */
+/* FORM INPUTS */
+/* ============================= */
 ion-item {
-    --background: rgba(0, 40, 60, 0.25);
-    --color: #aefcff;
-    border: 1px solid rgba(0, 255, 255, 0.22);
-    border-radius: 14px;
-    margin-bottom: 14px;
-    transition: all .25s ease;
-    backdrop-filter: blur(12px) saturate(140%);
-}
-
-ion-item:hover {
-    border-color: rgba(0, 255, 255, 0.5);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+  --background: rgba(0, 40, 60, 0.25);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 255, 0.18);
+  margin-bottom: 12px;
 }
 
 ion-label {
-    font-family: 'Orbitron', sans-serif;
-    color: #00f7ff;
-    font-size: 14px;
-    text-shadow: 0 0 12px rgba(0, 255, 255, 0.35);
+  color: #00f7ff;
 }
 
 ion-input {
-    --color: #e0ffff;
-    font-size: 15px;
+  color: #e9ffff;
 }
 
-/* SECTION TITLES */
+/* SECTION TITLE */
 h3 {
-    margin-top: 22px;
-    margin-bottom: 12px;
-    color: #00f7ff;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 15px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+  margin-top: 22px;
+  margin-bottom: 14px;
+  color: #00f7ff;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* LISTE */
-ion-list {
-    background: rgba(0, 40, 60, 0.25);
-    border: 1px solid rgba(0, 255, 255, 0.22);
-    border-radius: 16px;
-    padding: 8px 12px;
-    box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
-    backdrop-filter: blur(10px) saturate(150%);
-    animation: fadeIn .4s ease;
+/* ============================= */
+/* REORDER LIST ROW */
+/* ============================= */
+.workout-compact-row {
+  display: flex;
+  align-items: center;
+  --background: radial-gradient(circle at top, #00111a 0%, #000 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 255, 0.18);
+  margin-bottom: 10px;
+  gap: 10px;
 }
 
-/* EXERCISE ITEMS IN REORDER */
-ion-reorder-group ion-item {
-    margin-bottom: 10px;
-    --background: rgba(0, 45, 70, 0.28);
+/* LEFT: Title */
+.workout-title-section {
+  flex: 1 1 25%;
+  min-width: 60px;
+  display: flex;
+  align-items: center;
 }
 
-ion-reorder {
-    color: #00f7ff;
-    font-size: 24px;
+.ex-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #00f7ff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* ADD/REMOVE BUTTONS */
-ion-button {
-    --background: linear-gradient(90deg, #00f7ff, #00aaff);
-    --color: #000;
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 600;
-    border-radius: 12px;
-    text-transform: uppercase;
+.superset-tag {
+  color: #8efcff;
+  font-size: 11px;
+  margin-left: 6px;
+}
+
+/* ============================= */
+/* MIDDLE: INPUTS */
+/* ============================= */
+.workout-inputs-section {
+  flex: 2 1 50%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+  padding-bottom: 8px;
+  padding-top: 8px;
+}
+
+.cfg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.cfg.small ion-input,
+.cfg.superset ion-select {
+  --background: rgba(0, 40, 60, 0.55);
+  height: 38px;
+  min-height: 38px;
+  width: 62px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 13px;
+  --padding-start: 0;
+  --padding-end: 0;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+}
+
+.cfg label {
+  font-size: 10px;
+  color: #8efcff;
+  margin-bottom: 3px;
+  letter-spacing: .4px;
+  white-space: nowrap;
+}
+
+.cfg.superset ion-select {
+  width: 90px;
+  max-width: 110px;
+  --padding-start: 6px;
+  --padding-end: 6px;
+}
+
+/* Glow on focus */
+ion-input.input-focus,
+ion-select.select-expanded {
+  --background: rgba(0, 55, 75, 0.8) !important;
+  border: 1px solid rgba(0, 255, 255, 0.6) !important;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.45) !important;
+}
+
+/* Desktop hover */
+@media (hover: hover) {
+  .cfg.small ion-input:hover,
+  .cfg.superset ion-select:hover {
+    border-color: rgba(0, 255, 255, 0.45);
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
-    transition: all .25s ease;
+  }
 }
 
-ion-button:hover {
-    box-shadow: 0 0 16px rgba(0, 255, 255, 0.45);
-    transform: translateY(-2px);
+/* ============================= */
+/* RIGHT: DELETE BUTTON */
+/* ============================= */
+.workout-actions-section {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-end;
 }
 
-/* DELETE BUTTON */
-ion-button[color="danger"] {
-    --background: rgba(255, 0, 0, 0.18);
-    --color: #ff4d4d;
-    --border-color: rgba(255, 80, 80, 0.4);
-    border: 1px solid rgba(255, 80, 80, 0.4);
-    box-shadow: 0 0 10px rgba(255, 80, 80, 0.25);
+.delete-btn {
+  color: #ff4d4d !important;
 }
 
-ion-button[color="danger"]:hover {
-    box-shadow: 0 0 16px rgba(255, 80, 80, 0.45);
+.delete-btn i {
+  font-size: 20px;
 }
 
-/* SAVE MAIN BUTTON */
-ion-button[color="success"] {
-    margin-top: 20px;
-    --background: linear-gradient(90deg, #00ffbf, #00dba0);
-    --color: #002b25;
-    font-weight: 700;
-}
-
-/* Fade-in efekt */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@media (max-width: 600px) {
-    ion-button {
-        font-size: 14px;
-    }
-}
-
-.search-box {
-    --background: rgba(0, 40, 60, 0.25);
-    border: 1px solid rgba(0, 255, 255, 0.25);
-    border-radius: 12px;
-    margin-bottom: 14px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    ion-input {
-        --color: #aefcff;
-        font-family: 'Tilt Neon', cursive;
-        letter-spacing: 0.5px;
-    }
-
-    &:hover {
-        border-color: rgba(0, 255, 255, 0.5);
-        box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
-    }
-}
-
+/* SEARCH LIST */
 ion-searchbar {
-    --background: rgba(0, 40, 60, 0.35);
-    --border-radius: 12px;
-    --color: #c7faff;
-    --placeholder-color: #8ee7ff;
-    --icon-color: #00f7ff;
-
-    margin: 12px 0 20px 0;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
-    backdrop-filter: blur(8px) saturate(130%);
-    -webkit-backdrop-filter: blur(8px) saturate(130%);
+  --background: rgba(0, 40, 60, 0.35);
+  --border-radius: 12px;
+  --color: #dff;
+  --placeholder-color: #88eaff;
+  margin: 12px 0 20px 0;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
 }
-
-ion-searchbar:hover {
-    box-shadow: 0 0 14px rgba(0, 255, 255, 0.3);
+.list-style{
+      background-color: rgba(0, 40, 60, 0.35);
 }

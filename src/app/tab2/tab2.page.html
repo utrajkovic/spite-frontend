@@ -26,26 +26,6 @@
         <ion-input formControlName="description"></ion-input>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Sets</ion-label>
-        <ion-input type="number" formControlName="sets"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Repetitions</ion-label>
-        <ion-input type="number" formControlName="reps"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Rest Between Sets</ion-label>
-        <ion-input type="number" formControlName="restBetweenSets"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Rest After Exercise</ion-label>
-        <ion-input type="number" formControlName="restAfterExercise"></ion-input>
-      </ion-item>
-
       <div class="video-upload">
         <label for="videoInput">Choose Video</label>
         <input id="videoInput" type="file" accept="video/*" (change)="onVideoSelected($event)" />
@@ -82,27 +62,76 @@
         <ion-input formControlName="content"></ion-input>
       </ion-item>
     </form>
-
     <h3>Exercises in Workout</h3>
 
     <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
-      <ion-item *ngFor="let ex of editableExercises; let i = index">
-        <ion-reorder slot="start"></ion-reorder>
-        <ion-label>{{ ex.name }}</ion-label>
 
-        <ion-button fill="outline" color="danger" (click)="removeExercise(i)">
-          Remove
-        </ion-button>
+      <ion-item lines="none" *ngFor="let ex of editableExercises; let i = index" class="workout-compact-row">
+
+        <ion-reorder slot="start"></ion-reorder>
+
+        <!-- SEKCIJA 1: NASLOV (1/3) -->
+        <div class="workout-title-section">
+          <div class="ex-title">
+            {{ ex.name }}
+            <span *ngIf="workoutItems[i].supersetExerciseId" class="superset-tag">
+              → {{ getExerciseNameById(workoutItems[i].supersetExerciseId) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- SEKCIJA 2: INPUT POLJA (1/3) -->
+        <div class="workout-inputs-section">
+          <div class="cfg small">
+            <label><i class="fa-solid fa-repeat"></i>   Sets</label>
+            <ion-input type="number" [(ngModel)]="workoutItems[i].sets"></ion-input>
+          </div>
+
+          <div class="cfg small">
+            <label><i class="fa-solid fa-repeat"></i>Reps</label>
+            <ion-input type="number" [(ngModel)]="workoutItems[i].reps"></ion-input>
+          </div>
+
+          <div class="cfg small">
+            <label><i class="fa-solid fa-stopwatch"></i>   sets</label>
+            <ion-input type="number" [(ngModel)]="workoutItems[i].restBetweenSets"></ion-input>
+          </div>
+
+          <div class="cfg small">
+            <label><i class="fa-solid fa-stopwatch"></i>   exercises</label>
+            <ion-input type="number" [(ngModel)]="workoutItems[i].restAfterExercise"></ion-input>
+          </div>
+
+          <div class="cfg superset">
+            <label><i class="fa-solid fa-dumbbell"></i>   Superset</label>
+            <ion-select [(ngModel)]="workoutItems[i].supersetExerciseId" interface="popover">
+              <ion-select-option value="">None</ion-select-option>
+              <ion-select-option *ngFor="let opt of allExercises" [value]="opt.id">
+                {{ opt.name }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+        </div>
+
+        <!-- SEKCIJA 3: REMOVE BUTTON (1/3) -->
+        <div class="workout-actions-section">
+          <ion-button fill="clear" size="small" class="delete-btn" (click)="removeExercise(i)">
+            <i class="fa-solid fa-delete-left"></i>
+          </ion-button>
+        </div>
+
       </ion-item>
+
+
+
+
     </ion-reorder-group>
+
+
 
     <h3>Add Exercise</h3>
 
-    <ion-searchbar 
-      [value]="searchQuery"
-      (ionInput)="onSearch($event)"
-      placeholder="Search..."
-      animated="true">
+    <ion-searchbar [value]="searchQuery" (ionInput)="onSearch($event)" placeholder="Search..." animated="true">
     </ion-searchbar>
 
     <ion-list>

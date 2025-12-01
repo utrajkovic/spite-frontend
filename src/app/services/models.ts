@@ -1,26 +1,37 @@
-
 export interface Exercise {
   id?: string;
   name: string;
   description: string;
-  videoUrl?: string | null;  
-  localVideoPath?: string | null;  
-  localVideoSrc?: string;  
+  videoUrl?: string | null;
+  localVideoPath?: string | null;
+  localVideoSrc?: string;
+
+  sets?: number;
+  reps?: string;
+  restBetweenSets?: number;
+  restAfterExercise?: number;
+  userId?: string;
+}
+
+export interface WorkoutItem {
+  exerciseId: string;
   sets: number;
   reps: string;
   restBetweenSets: number;
   restAfterExercise: number;
-  userId?: string;         
+  supersetExerciseId?: string | null; 
 }
+
 
 export interface Workout {
   id?: string;
   title: string;
   subtitle: string;
   content: string;
-  exerciseIds: string[];
-  userId?: string;    
-  exercises?: Exercise[];   
+  userId?: string;
+  exerciseIds?: string[];
+  items: WorkoutItem[];
+  exercises?: Exercise[];
 }
 
 export interface User {
@@ -28,4 +39,3 @@ export interface User {
   username: string;
   password: string;
 }
-

@@ -9,11 +9,10 @@ ion-content {
   font-family: 'Orbitron', sans-serif;
 }
 
-/* TOP TABS */
 .top-tabs {
   display: flex;
   justify-content: space-between;
-  background: rgba(0, 40, 60, 0.35);
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   padding: 10px;
   border-radius: 14px;
   margin-bottom: 20px;
@@ -38,7 +37,6 @@ ion-content {
   }
 }
 
-/* TITLES */
 h2 {
   text-align: center;
   color: #00f7ff;
@@ -55,16 +53,14 @@ h3 {
   letter-spacing: 1px;
 }
 
-/* MAIN FORM BLOCK */
 .neon-form {
-  background: rgba(0, 30, 45, 0.4);
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   padding: 16px;
   border-radius: 16px;
   border: 1px solid rgba(0, 255, 255, 0.18);
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
 }
 
-/* INPUT POLJA */
 ion-item {
   --background: rgba(0, 40, 60, 0.25);
   border-radius: 12px;
@@ -85,13 +81,12 @@ ion-input {
   color: #dff;
 }
 
-/* VIDEO UPLOAD */
 .video-upload {
   margin-top: 12px;
   padding: 12px;
   border: 1px dashed rgba(0, 255, 255, 0.4);
   border-radius: 12px;
-  background: rgba(0, 255, 255, 0.05);
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   text-align: center;
 
   label {
@@ -106,15 +101,13 @@ ion-input {
   }
 }
 
-/* LISTA */
 ion-list {
-  background: rgba(0, 40, 60, 0.25);
+  background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   border-radius: 16px;
   padding: 6px;
   border: 1px solid rgba(0, 255, 255, 0.2);
 }
 
-/* BUTTONS */
 ion-button[color="tertiary"] {
   --background: linear-gradient(90deg, #0099ff, #00f7ff);
   --color: #000;
@@ -127,8 +120,313 @@ ion-button[color="success"] {
   border-radius: 12px;
 }
 
-/* SPINNER */
 ion-spinner {
   margin-right: 8px;
 }
 
+.workout-ex-item {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+}
+
+.workout-ex-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.workout-ex-header {
+  margin-bottom: 8px;
+}
+
+.workout-ex-header .ex-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #00f7ff;
+}
+
+.workout-ex-header .ex-desc {
+  font-size: 12px;
+  color: #aefcff;
+  opacity: 0.85;
+}
+
+.workout-config-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.cfg-field {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+
+  label {
+    margin-bottom: 2px;
+    color: #8efcff;
+  }
+
+  ion-input {
+    --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+    border-radius: 10px;
+    min-height: 32px;
+    padding-inline: 8px;
+  }
+}
+
+.cfg-field.superset-toggle {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  label {
+    margin: 0;
+  }
+}
+
+.workout-ex-item {
+  padding: 10px 12px !important;
+}
+
+.workout-ex-header .ex-name {
+  font-size: 13px;
+}
+
+.workout-ex-header .ex-desc {
+  font-size: 11px;
+}
+
+.workout-config-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cfg-field {
+  label {
+    font-size: 11px;
+  }
+
+  ion-input {
+    --padding-start: 6px;
+    --padding-end: 6px;
+    min-height: 28px !important;
+    font-size: 12px;
+  }
+}
+
+.cfg-field.superset-toggle {
+  margin-top: 4px;
+  padding: 6px 8px;
+  border: 1px solid rgba(0, 255, 255, 0.15);
+  border-radius: 12px;
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+
+  ion-toggle {
+    zoom: 0.9;
+  }
+}
+
+ion-item.workout-ex-item {
+  --inner-padding-end: 8px;
+}
+
+.workout-ex-header,
+.cfg-field label {
+  white-space: normal !important;
+}
+
+
+.workout-item-row {
+  padding: 0 !important;
+}
+
+.workout-ex-box {
+  width: 100%;
+  padding: 14px;
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  border-radius: 14px;
+  border: 1px solid rgba(0, 255, 255, 0.18);
+}
+
+.workout-ex-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.ex-title-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.ex-name {
+  color: #00f7ff;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.ex-superset {
+  color: #8efcff;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.delete-btn {
+  margin: 0;
+  padding: 4px;
+}
+
+.workout-config-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.cfg-field label {
+  color: #8efcff;
+  font-size: 11px;
+  margin-bottom: 3px;
+}
+
+.cfg-field ion-input,
+.cfg-field ion-select {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  border-radius: 10px;
+  font-size: 13px;
+  padding-left: 6px;
+}
+
+.workout-compact-row {
+  display: flex;
+  align-items: center;
+  // padding: 10px 8px !important;
+  --background: radial-gradient(circle at top, #00111a 0%, #000 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 255, 0.18);
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+/* ============ SECTION 1 – TITLE ============ */
+.workout-title-section {
+  flex: 1 1 25%;
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.ex-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #00f7ff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.superset-tag {
+  color: #8efcff;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+/* ============ SECTION 2 – INPUTS ============ */
+.workout-inputs-section {
+  flex: 2 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap:48px;
+  text-align: center;
+  padding-bottom: 8px;
+}
+
+/* ============ GLOBAL INPUT STYLE BEAUTIFIED ============ */
+.cfg.small ion-input,
+.cfg.superset ion-select {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  width: 62px;
+  border-radius: 10px;
+
+  /* TEXT */
+  font-size: 13px;
+  text-align: center;
+  --padding-start: 0;
+  --padding-end: 0;
+
+  /* VISUAL */
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.12);
+  transition: 0.25s ease;
+}
+
+/* SUPSET SELECT WIDTH */
+.cfg.superset ion-select {
+  width: 100%;
+  max-width: 100%;
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+/* LABELS */
+.cfg label {
+  font-size: 10px;
+  color: #8efcff;
+  margin-bottom: 2px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+/* ON FOCUS – CYBER GLOW */
+ion-input.input-focus,
+ion-select.select-expanded {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  border: 1px solid rgba(0, 255, 255, 0.6) !important;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.35) !important;
+  transform: scale(1.03);
+}
+
+/* SMOOTH HOVER (DESKTOP) */
+@media (hover: hover) {
+
+  .cfg.small ion-input:hover,
+  .cfg.superset ion-select:hover {
+    border: 1px solid rgba(0, 255, 255, 0.45);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+  }
+}
+
+
+/* ============ SECTION 3 – DELETE ============ */
+.workout-actions-section {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.delete-btn {
+  color: #ff4d4d !important;
+}
+
+.delete-btn i {
+  font-size: 20px;
+}
+ion-searchbar {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --border-radius: 12px;
+  --color: #dff;
+  --placeholder-color: #88eaff;
+  margin: 12px 0 20px 0;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+}

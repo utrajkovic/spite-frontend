@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonCard,
-  IonCardContent, IonIcon, IonProgressBar, IonButtons, IonSpinner
+  IonContent, IonButton, IonCard, IonCardContent,
+  IonSpinner, IonProgressBar, IonIcon
 } from '@ionic/angular/standalone';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService } from '../services/backend.service';
-import { Workout, Exercise } from '../services/models';
+import { Workout, WorkoutItem, Exercise } from '../services/models';
 import { AlertController } from '@ionic/angular';
 
 @Component({
@@ -15,27 +16,39 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./workout.page.scss'],
   standalone: true,
   imports: [
-    IonSpinner, IonProgressBar, IonIcon, CommonModule, IonContent, IonButton, IonCard, IonCardContent
-  ],
+    CommonModule,
+    IonContent,
+    IonButton,
+    IonCard,
+    IonCardContent,
+    IonSpinner,
+    IonProgressBar,
+    IonIcon
+  ]
 })
 export class WorkoutPage implements OnInit {
-  workout!: Workout;
-  exercises: Exercise[] = [];
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
-  currentExerciseIndex = 0;
-  currentSet = 1;
-  isResting = false;
-  restTimeLeft = 0;
-  timer: any = null;
-  started = false;
-  circumference = 2 * Math.PI * 45;
-  totalRestTime = 1;
-  restCallback?: Function;
+  workout!: Workout;
+  items: WorkoutItem[] = [];
+  exercises: Exercise[] = [];
+
   loading = true;
-  private alertShown = false;
+
+  currentIndex = 0;  // index u items
+  currentSet = 1;    // 1..sets
+
+  // da li trenutno gledamo SUPERSET vežbu za ovaj item
+  showingSuperset = false;
+
+  isResting = false;
+  restLeft = 0;
+  totalRest = 0;
+  timer: any;
+
+  started = false;
   isVideoLoading = false;
 
+  circleLength = 2 * Math.PI * 45;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,129 +59,229 @@ export class WorkoutPage implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
-    this.loading = true;
 
     this.backend.getWorkoutById(id).subscribe({
       next: (workout) => {
         this.workout = workout;
+        this.items = workout.items ?? [];
+        this.exercises = workout.exercises ?? [];
 
-        this.backend.getAllExercises().subscribe({
-          next: (allExercises) => {
-            this.exercises = workout.exerciseIds
-              .map(id => allExercises.find(e => e.id === id))
-              .filter((e): e is Exercise => !!e);
-
-            console.log('🔍 Vežbe:', this.exercises);
-            this.loading = false;
-
-            if (this.exercises.length === 0 && !this.alertShown) {
-              this.alertShown = true;
-              this.showNoExercisesAlert();
-            }
-          },
-          error: (err) => {
-            console.error('❌ Greška pri učitavanju vežbi:', err);
-            this.loading = false;
-          }
-        });
-      },
-      error: (err) => {
-        console.error('❌ Greška pri učitavanju treninga:', err);
         this.loading = false;
+
+        if (this.items.length === 0) {
+          this.showAlert('No exercises in workout.');
+          this.router.navigate(['/tabs/tab1']);
+        }
+      },
+      error: () => {
+        this.loading = false;
+        this.showAlert('Error loading workout.');
       }
     });
   }
 
-  startWorkout() {
-    this.started = true;
-    this.currentExerciseIndex = 0;
-    this.currentSet = 1;
-    this.isResting = false;
+  // ==========================
+  // GETTERS
+  // ==========================
+
+  get currentExerciseIndex() {
+    // samo radi progress bara (1..items.length)
+    return this.currentIndex;
   }
 
-  completeSet() {
-    const exercise = this.exercises[this.currentExerciseIndex];
+  get restTimeLeft() {
+    return this.restLeft;
+  }
 
-    if (this.currentSet < exercise.sets) {
-      this.startRest(exercise.restBetweenSets, () => this.currentSet++);
+  get totalRestTime() {
+    return this.totalRest;
+  }
+
+  get circumference() {
+    return this.circleLength;
+  }
+
+  get currentItem(): WorkoutItem {
+    return this.items[this.currentIndex];
+  }
+
+  get hasSupersetForCurrent(): boolean {
+    return !!this.currentItem?.supersetExerciseId;
+  }
+
+  // helper: nađi vežbu po id-ju
+  private getExerciseById(id: string | undefined | null): Exercise | undefined {
+    if (!id) return undefined;
+    return this.exercises.find(e => e.id === id);
+  }
+
+  // Naziv superset vežbe za prikaz u UI
+  get supersetExerciseName(): string | null {
+    if (!this.currentItem?.supersetExerciseId) return null;
+    const ex = this.getExerciseById(this.currentItem.supersetExerciseId);
+    return ex?.name ?? null;
+  }
+
+  // koja vežba se trenutno prikazuje (main ili superset)
+  get currentExercise(): Exercise | undefined {
+    if (!this.showingSuperset || !this.currentItem.supersetExerciseId) {
+      return this.getExerciseById(this.currentItem.exerciseId);
+    }
+    return this.getExerciseById(this.currentItem.supersetExerciseId);
+  }
+
+  // sledeći item & vežba (za “Next exercise” preview)
+  get nextItem(): WorkoutItem | null {
+    if (this.currentIndex < this.items.length - 1) {
+      return this.items[this.currentIndex + 1];
+    }
+    return null;
+  }
+
+  get nextMainExercise(): Exercise | null {
+    const ni = this.nextItem;
+    if (!ni) return null;
+    return this.getExerciseById(ni.exerciseId) ?? null;
+  }
+
+  // ==========================
+  // START
+  // ==========================
+
+  startWorkout() {
+    this.started = true;
+    this.currentIndex = 0;
+    this.currentSet = 1;
+    this.showingSuperset = false;
+  }
+
+  // ==========================
+  // MAIN LOGIKA: COMPLETE SET
+  // ==========================
+
+  completeSet() {
+    const item = this.currentItem;
+    const hasSuperset = !!item.supersetExerciseId;
+
+    // ------------------------------
+    // 1) NEMA SUPERSETA → kao ranije
+    // ------------------------------
+    if (!hasSuperset) {
+      if (this.currentSet < item.sets) {
+        // mala pauza između SERIJA
+        this.startRest(item.restBetweenSets, () => {
+          this.currentSet++;
+        });
+      } else {
+        // završene sve serije → VELIKA pauza → sledeći item
+        this.startRest(item.restAfterExercise, () => {
+          this.currentSet = 1;
+          this.showingSuperset = false;
+          this.goToNextItem();
+        });
+      }
+      return;
+    }
+
+    // ------------------------------
+    // 2) IMA SUPERSET
+    // ------------------------------
+
+    // Ako trenutno gledamo GLAVNU vežbu → odmah prebaci na superset (bez pauze)
+    if (!this.showingSuperset) {
+      this.showSuperset();
+      return;
+    }
+
+    // Ako smo OVDE, znači: trenutno smo na SUPERSET vežbi
+    // Sad odlučujemo da li ima još setova ili je kraj glavne vežbe
+
+    if (this.currentSet < item.sets) {
+      // još setova glavne → posle superseta ide mala pauza,
+      // pa se vraćamo na GLAVNU vežbu sa sledećim setom
+      this.startRest(item.restBetweenSets, () => {
+        this.currentSet++;
+        this.showingSuperset = false; // vrati se na main
+      });
     } else {
-      this.startRest(exercise.restAfterExercise, () => this.nextExercise());
+      // NEMA više setova → ovo je bio poslednji superset u poslednjoj seriji
+      // posle ovoga ide VELIKA pauza, pa sledeći item
+      this.startRest(item.restAfterExercise, () => {
+        this.currentSet = 1;
+        this.showingSuperset = false;
+        this.goToNextItem();
+      });
     }
   }
 
+  // prikaži superset vežbu (bez pauze)
+  private showSuperset() {
+    this.showingSuperset = true;
+    this.isVideoLoading = true;
+
+    setTimeout(() => {
+      this.isVideoLoading = false;
+    }, 500);
+  }
+
+  // prelazak na sledeći WorkoutItem
+  private goToNextItem() {
+    if (this.currentIndex < this.items.length - 1) {
+      this.isVideoLoading = true;
+      setTimeout(() => {
+        this.currentIndex++;
+        this.currentSet = 1;
+        this.showingSuperset = false;
+        this.isVideoLoading = false;
+      }, 700);
+    } else {
+      this.showAlert('Workout completed!');
+      this.router.navigate(['/tabs/tab1']);
+    }
+  }
+
+  // ==========================
+  // REST TIMER
+  // ==========================
+  private pendingRestCallback: Function = () => { };
+
   startRest(seconds: number, callback: Function) {
+    this.pendingRestCallback = callback;
     this.isResting = true;
-    this.restTimeLeft = seconds;
-    this.totalRestTime = seconds;
-    this.restCallback = callback;
+    this.restLeft = seconds;
+    this.totalRest = seconds;
 
     clearInterval(this.timer);
     this.timer = setInterval(() => {
-      this.restTimeLeft--;
-      if (this.restTimeLeft <= 0) {
-        this.stopRest();
+      this.restLeft--;
+      if (this.restLeft <= 0) {
+        this.stopRest(callback);
       }
     }, 1000);
   }
 
   skipRest() {
-    clearInterval(this.timer);
-    this.stopRest();
+    this.stopRest(this.pendingRestCallback);
   }
 
-  private stopRest() {
+
+  private stopRest(callback: Function) {
     clearInterval(this.timer);
     this.isResting = false;
-    this.restTimeLeft = 0;
-
-    if (this.restCallback) {
-      this.restCallback();
-      this.restCallback = undefined;
-    }
+    this.restLeft = 0;
+    callback();
   }
 
-  nextExercise() {
-    if (this.currentExerciseIndex < this.exercises.length - 1) {
-      this.isVideoLoading = true;
+  // ==========================
+  // ALERT
+  // ==========================
 
-      setTimeout(() => {
-        this.currentExerciseIndex++;
-        this.currentSet = 1;
-        this.isVideoLoading = false;
-      }, 800);
-    } else {
-      this.showAlert('Training completed!');
-      this.router.navigate(['/tabs/tab1']);
-    }
-  }
-
-
-  goHome() {
-    this.router.navigate(['/tabs/tab1']);
-  }
-
-  async showAlert(message: string) {
-    const alert = await this.alertCtrl.create({
-      header: '',
-      message,
+  async showAlert(msg: string) {
+    const a = await this.alertCtrl.create({
+      message: msg,
       buttons: ['OK'],
       cssClass: 'custom-alert'
     });
-    await alert.present();
-  }
-
-  async showNoExercisesAlert() {
-    const alert = await this.alertCtrl.create({
-      header: 'No Exercises Found',
-      message: 'Returning to workout list...',
-      buttons: [{
-        text: 'OK',
-        handler: () => {
-          this.router.navigate(['/tabs/tab1']);
-        }
-      }],
-      cssClass: 'custom-alert'
-    });
-    await alert.present();
+    await a.present();
   }
 }

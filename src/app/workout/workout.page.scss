@@ -33,7 +33,7 @@ ion-content {
 .exercise-card {
   width: 100%;
   border-radius: 18px;
-  background: rgba(0, 40, 60, 0.25);
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   border: 1px solid rgba(0, 255, 255, 0.25);
   box-shadow:
     0 0 15px rgba(0, 255, 255, 0.25),
@@ -89,10 +89,8 @@ ion-content {
 .video-placeholder {
   width: 100%;
   max-height: 35vh;
-  border-radius: 14px;
   margin: 10px 0;
-  background: rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0);
 }
 .placeholder-icon {
   font-size: 64px;
@@ -116,7 +114,7 @@ ion-content {
   padding: 12px;
   border: none;
   border-radius: 0;
-  background: transparent;
+  --background: radial-gradient(circle at top, #1a000000 0%rgba(0, 0, 0, 0)00 100%);
 }
 
 .rest-title {
@@ -182,7 +180,7 @@ ion-content {
 .next-exercise-card {
   width: 100%;
   border-radius: 18px;
-  background: rgba(0, 40, 60, 0.25);
+  --background: radial-gradient(circle at top, #00111a00 0%rgba(0, 0, 0, 0)00 100%);
   border: 1px solid rgba(0, 255, 255, 0.25);
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
   color: #d8ffff;
@@ -247,11 +245,10 @@ ion-content {
   padding: 1.5rem;
   box-sizing: border-box;
 
-  background: rgba(0, 255, 255, 0.05);
+  background: rgba(0, 255, 255, 0);
   border-radius: 16px;
   backdrop-filter: blur(6px);
-  border: 1px solid rgba(0, 255, 255, 0.08);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0);
   animation: fadeIn 0.4s ease;
 }
 

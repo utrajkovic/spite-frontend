@@ -10,7 +10,7 @@ ion-content {
 
 /* 🧭 Header */
 ion-toolbar {
-  --background: rgba(0, 20, 30, 0.75);
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(0, 255, 255, 0.2);
@@ -34,7 +34,7 @@ ion-back-button {
 
 /* 🔹 Sekcije */
 .section-box {
-  background: rgba(0, 40, 60, 0.25);
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   border: 1px solid rgba(0, 255, 255, 0.25);
   border-radius: 18px;
   padding: 14px;
@@ -56,12 +56,13 @@ ion-list-header {
   margin-bottom: 10px;
 }
 
-/* 🧩 Svaka stavka */
 .item-card {
-  background: rgba(0, 60, 90, 0.25);
-  border-radius: 12px;
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   margin-bottom: 10px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  border-radius: 8px;
+
 }
 
 .item-card:hover {
@@ -109,11 +110,13 @@ ion-button:hover {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
 ion-list {
   --background: transparent !important;
   background: transparent !important;

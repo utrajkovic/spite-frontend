@@ -34,7 +34,7 @@ ion-content {
 
 /* 🎛 FILTER BOX */
 .filter-box {
-  --background: rgba(0,40,60,0.25);
+  --background: rgba(0, 40, 60, 0);
   --color: #00f7ff;
   border-radius: 14px;
 
@@ -54,7 +54,7 @@ ion-content {
 
 /* 🧱 USER CARD */
 ion-card {
-  background: rgba(0, 40, 60, 0.25);
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   border: 1px solid rgba(0,255,255,0.25);
   border-radius: 16px;
 

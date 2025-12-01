@@ -10,11 +10,21 @@
 
   <div class="exercise-card">
 
+    <!-- BROJAČ -->
     <div class="counter-box">
-      Exercise {{ currentIndex + 1 }} / {{ workout.exercises.length }}
+      Step {{ currentIndex + 1 }} / {{ previewList.length }}
     </div>
-    <h3>Exercise {{ currentIndex + 1 }}</h3>
 
+    <!-- NASLOV (MAIN / SUPERSET) -->
+    <h3 *ngIf="!isSupersetNow">
+      Exercise {{ currentMainIndex }}
+    </h3>
+
+    <h3 *ngIf="isSupersetNow">
+      Exercise {{ currentMainIndex }} — Superset
+    </h3>
+
+    <!-- VIDEO -->
     <div class="video-container">
       <video *ngIf="currentExercise?.videoUrl" [src]="currentExercise.videoUrl" autoplay loop [muted]="true" playsinline
         class="exercise-video">
@@ -25,18 +35,22 @@
       </div>
     </div>
 
-    <h2>{{ currentExercise?.name }}</h2>
+    <!-- IME I OPIS -->
+    <h2 *ngIf="!isSupersetNow">{{ currentExercise?.name }}</h2>
+
+    <h2 *ngIf="isSupersetNow">Superset: {{ currentExercise?.name }}</h2>
+
     <p>{{ currentExercise?.description || 'No description available.' }}</p>
 
   </div>
 
+  <!-- NAVIGACIJA -->
   <div class="nav-buttons">
     <ion-button fill="outline" (click)="prevExercise()" [disabled]="currentIndex === 0">
       Previous
     </ion-button>
 
-    <ion-button fill="outline" (click)="nextExercise()"
-      [disabled]="!workout || currentIndex === workout.exercises.length - 1">
+    <ion-button fill="outline" (click)="nextExercise()" [disabled]="currentIndex === previewList.length - 1">
       Next
     </ion-button>
   </div>

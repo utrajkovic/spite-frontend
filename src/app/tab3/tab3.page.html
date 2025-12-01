@@ -4,11 +4,10 @@
     <h2>My Exercises</h2>
 
     <ion-list lines="none">
-      <ion-item *ngFor="let exercise of exercises" class="item-card" button detail="false"
+      <ion-item *ngFor="let exercise of exercises" class="item-card" 
         (click)="openExercisePreview(exercise)">
         <ion-label>
           <h3>{{ exercise.name }}</h3>
-          <p>{{ exercise.description || 'Bez opisa' }}</p>
         </ion-label>
 
         <ion-button color="danger" fill="outline" slot="end"
@@ -30,7 +29,7 @@
   <section class="section-box">
     <h2>My Trainings</h2>
     <ion-list>
-      <ion-item *ngFor="let workout of workouts" class="item-card" button detail="false"
+      <ion-item *ngFor="let workout of workouts" class="item-card" 
         (click)="showWorkoutDetails(workout)">
         <ion-label>
           <h3>{{ workout.title }}</h3>

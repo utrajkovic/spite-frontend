@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import {
-  IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonLabel, IonInput, IonButton,
-  IonList, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder, IonAlert
-} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonLabel, IonInput, IonButton, IonList, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder, IonAlert, IonSelect, IonSelectOption, IonIcon } from '@ionic/angular/standalone';
 
 import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 
-import { Exercise } from '../services/models';
+import { Exercise, WorkoutItem } from '../services/models';
 import { LocalDataService } from '../services/local-data.service';
 
 @Component({
@@ -18,27 +15,15 @@ import { LocalDataService } from '../services/local-data.service';
   styleUrls: ['./tab2.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-
-    IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonButton,
-    IonList,
-    IonSearchbar,
-    IonSpinner,
-    IonReorderGroup,
-    IonReorder,
-    IonAlert
+    CommonModule, FormsModule, ReactiveFormsModule,
+    IonContent, IonHeader, IonToolbar, IonTitle,
+    IonItem, IonLabel, IonInput, IonButton,
+    IonList, IonSearchbar, IonSpinner,
+    IonReorderGroup, IonReorder, IonAlert,
+    IonSelect, IonSelectOption,
+    IonIcon
   ]
 })
-
 export class Tab2Page implements OnInit {
 
   tab: 'exercise' | 'workout' = 'exercise';
@@ -52,6 +37,8 @@ export class Tab2Page implements OnInit {
   filteredExercises: Exercise[] = [];
   searchQuery = '';
 
+  workoutItems: WorkoutItem[] = [];
+
   isSavingExercise = false;
   isSavingWorkout = false;
 
@@ -63,14 +50,9 @@ export class Tab2Page implements OnInit {
     private localData: LocalDataService,
     private alertCtrl: AlertController
   ) {
-
     this.exerciseForm = this.fb.group({
       name: [''],
       description: [''],
-      sets: [3],
-      reps: ['10'],
-      restBetweenSets: [60],
-      restAfterExercise: [180],
       videoUrl: ['']
     });
 
@@ -98,6 +80,13 @@ export class Tab2Page implements OnInit {
       this.allExercises = [];
     }
   }
+  
+  getExerciseNameById(id: string | null | undefined): string {
+    if (!id) return 'None';
+    const ex = this.allExercises.find(e => e.id === id);
+    return ex?.name ?? 'Unknown';
+  }
+
 
   onSearch(ev: any) {
     this.searchQuery = ev.target.value?.toLowerCase() ?? '';
@@ -113,19 +102,33 @@ export class Tab2Page implements OnInit {
 
   addExercise(ex: Exercise) {
     this.editableExercises.push(ex);
-    this.filterList();
+
+    this.workoutItems.push({
+      exerciseId: ex.id!,
+      sets: 3,
+      reps: '10',
+      restBetweenSets: 60,
+      restAfterExercise: 120,
+      supersetExerciseId: ""
+    });
   }
 
   removeExercise(i: number) {
     this.editableExercises.splice(i, 1);
+    this.workoutItems.splice(i, 1);
     this.filterList();
   }
 
   handleReorder(ev: any) {
     const from = ev.detail.from;
     const to = ev.detail.to;
-    const moved = this.editableExercises.splice(from, 1)[0];
-    this.editableExercises.splice(to, 0, moved);
+
+    const ex = this.editableExercises.splice(from, 1)[0];
+    this.editableExercises.splice(to, 0, ex);
+
+    const item = this.workoutItems.splice(from, 1)[0];
+    this.workoutItems.splice(to, 0, item);
+
     ev.detail.complete();
   }
 
@@ -138,28 +141,19 @@ export class Tab2Page implements OnInit {
 
     const value = this.exerciseForm.value;
 
-    if (!value.name || value.name.trim().length < 1) {
-      return this.showAlert("Exercise must have a name.");
-    }
-
-    if (!value.description || value.description.trim().length < 1) {
-      return this.showAlert("Description cannot be empty.");
-    }
-
-    if (!value.sets || !value.reps) {
-      return this.showAlert("Sets and reps must be provided.");
-    }
+    if (!value.name?.trim()) return this.showAlert('Exercise must have a name.');
+    if (!value.description?.trim()) return this.showAlert('Description required.');
 
     this.isSavingExercise = true;
 
     const user = await this.localData.getUser();
-    if (!user) {
-      this.isSavingExercise = false;
-      return this.showAlert('User error');
-    }
+    if (!user) return this.showAlert('User error');
 
-    const ex = value;
-    ex.userId = user.id;
+    const ex: any = {
+      name: value.name.trim(),
+      description: value.description.trim(),
+      userId: user.id
+    };
 
     if (this.selectedVideo) {
       try {
@@ -168,10 +162,8 @@ export class Tab2Page implements OnInit {
 
         ex.videoUrl = await this.http.post(
           `${this.backendUrl}/api/exercises/upload`,
-          form,
-          { responseType: 'text' }
-        ).toPromise() ?? '';
-
+          form, { responseType: 'text' }
+        ).toPromise();
       } catch {
         this.isSavingExercise = false;
         return this.showAlert('Video upload failed.');
@@ -185,13 +177,7 @@ export class Tab2Page implements OnInit {
       this.showAlert('Error adding exercise.');
     }
 
-    this.exerciseForm.reset({
-      sets: 3,
-      reps: '10',
-      restBetweenSets: 60,
-      restAfterExercise: 180
-    });
-
+    this.exerciseForm.reset();
     this.selectedVideo = null;
     this.isSavingExercise = false;
 
@@ -204,26 +190,28 @@ export class Tab2Page implements OnInit {
 
     const value = this.workoutForm.value;
 
-    if (!value.title || value.title.trim().length === 0) {
-      return this.showAlert("Workout must have a title.");
-    }
-
-    if (this.editableExercises.length === 0) {
-      return this.showAlert("Workout must have at least 1 exercise.");
-    }
+    if (!value.title?.trim()) return this.showAlert('Workout must have a title.');
+    if (this.editableExercises.length === 0) return this.showAlert('Workout needs exercises.');
 
     this.isSavingWorkout = true;
 
     const user = await this.localData.getUser();
-    if (!user) {
-      this.isSavingWorkout = false;
-      return;
-    }
+    if (!user) return;
 
     const body = {
-      ...value,
-      exerciseIds: this.editableExercises.map(ex => ex.id!),
-      userId: user.id
+      title: value.title.trim(),
+      subtitle: value.subtitle?.trim() || '',
+      content: value.content?.trim() || '',
+      userId: user.id,
+      items: this.workoutItems.map(it => ({
+        exerciseId: it.exerciseId,
+        sets: it.sets,
+        reps: it.reps,
+        restBetweenSets: it.restBetweenSets,
+        restAfterExercise: it.restAfterExercise,
+        supersetExerciseId: it.supersetExerciseId || null
+      })),
+      exerciseIds: this.workoutItems.map(it => it.exerciseId)
     };
 
     try {
@@ -232,10 +220,11 @@ export class Tab2Page implements OnInit {
 
       this.workoutForm.reset();
       this.editableExercises = [];
+      this.workoutItems = [];
       this.filterList();
 
     } catch {
-      this.showAlert('Failed to create workout');
+      this.showAlert('Failed to create workout.');
     }
 
     this.isSavingWorkout = false;

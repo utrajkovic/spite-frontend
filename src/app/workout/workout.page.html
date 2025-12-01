@@ -1,29 +1,44 @@
 <ion-content fullscreen>
+  <!-- LOADING -->
   <ion-spinner *ngIf="loading" name="crescent" class="spinner-center"></ion-spinner>
 
   <div *ngIf="!loading" class="content-wrapper">
     <div class="card-wrapper">
 
-      <ion-card *ngIf="started && exercises.length > 0" class="exercise-card">
+      <!-- CURRENT EXERCISE CARD -->
+      <ion-card *ngIf="started && items.length > 0" class="exercise-card">
 
-        <ion-progress-bar [value]="(currentExerciseIndex + 1) / exercises.length" class="progress-bar neon-progress">
+        <!-- PROGRESS PO ITEM-ima -->
+        <ion-progress-bar [value]="(currentExerciseIndex + 1) / items.length" class="progress-bar neon-progress">
         </ion-progress-bar>
 
         <ion-card-content>
-          <h2 class="exercise-name">{{ exercises[currentExerciseIndex]?.name }}</h2>
-          <p class="exercise-desc">{{ exercises[currentExerciseIndex]?.description }}</p>
 
+          <!-- NAZIV I OPIS TRENUTNE VEŽBE (main ili superset) -->
+          <h2 class="exercise-name">
+            {{ currentExercise?.name }}
+          </h2>
+
+          <p class="exercise-desc">
+            {{ currentExercise?.description }}
+          </p>
+
+          <!-- VIDEO BLOK -->
           <div class="video-container" *ngIf="!isResting">
-            <video *ngIf="exercises[currentExerciseIndex]?.videoUrl" [src]="exercises[currentExerciseIndex]?.videoUrl"
-              autoplay loop [muted]="true" playsinline class="exercise-video fade-in" >
+
+            <!-- Video ako postoji -->
+            <video *ngIf="currentExercise?.videoUrl" [src]="currentExercise?.videoUrl" autoplay loop [muted]="true"
+              playsinline class="exercise-video fade-in">
             </video>
 
+            <!-- Loading overlay pri prelazu -->
             <div *ngIf="isVideoLoading" class="video-loading-overlay fade-in">
               <ion-spinner name="crescent"></ion-spinner>
               <p>Loading next exercise...</p>
             </div>
 
-            <div *ngIf="!exercises[currentExerciseIndex]?.videoUrl" class="video-placeholder fade-in">
+            <!-- Placeholder ako nema video -->
+            <div *ngIf="!currentExercise?.videoUrl" class="video-placeholder fade-in">
               <div class="placeholder-content">
                 <ion-icon name="videocam-off-outline" class="placeholder-icon"></ion-icon>
                 <p class="placeholder-text">No video available</p>
@@ -31,17 +46,33 @@
             </div>
           </div>
 
+          <!-- INFO O SERIJI / REPS -->
           <div class="exercise-info" *ngIf="!isResting">
-            <p><ion-icon name="repeat-outline"></ion-icon> Serija:
-              <strong>{{ currentSet }}/{{ exercises[currentExerciseIndex]?.sets }}</strong>
+            <p>
+              <ion-icon name="repeat-outline"></ion-icon>
+              Set:
+              <strong>{{ currentSet }}/{{ currentItem?.sets }}</strong>
             </p>
-            <p><ion-icon name="barbell-outline"></ion-icon> Ponavljanja:
-              <strong>{{ exercises[currentExerciseIndex]?.reps }}</strong>
+            <p>
+              <ion-icon name="barbell-outline"></ion-icon>
+              Reps:
+              <strong>{{ currentItem?.reps }}</strong>
             </p>
+
+            <!-- indikator da ova vežba ima superset -->
+            <p *ngIf="hasSupersetForCurrent && !showingSuperset">
+              <ion-icon name="swap-horizontal-outline"></ion-icon>
+              Superset: <strong>{{ supersetExerciseName }}</strong>
+            </p>
+
           </div>
 
+          <!-- REST EKRAN -->
           <div *ngIf="isResting" class="rest-container">
-            <h3 class="rest-title">Rest: {{ restTimeLeft }}s</h3>
+            <h3 class="rest-title">
+              Rest: {{ restTimeLeft }}s
+            </h3>
+
             <div class="rest-timer">
               <svg class="circle-timer" viewBox="0 0 100 100">
                 <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
@@ -51,8 +82,10 @@
               </svg>
             </div>
           </div>
+
         </ion-card-content>
 
+        <!-- DUGMAD -->
         <div class="card-actions">
           <ion-button *ngIf="isResting" expand="block" fill="outline" color="medium" (click)="skipRest()">
             Skip Rest
@@ -62,29 +95,36 @@
             Done
           </ion-button>
         </div>
+
       </ion-card>
 
-      <div *ngIf="started && currentExerciseIndex < exercises.length - 1" class="next-exercise">
-        <p>Next exercise: <strong>{{ exercises[currentExerciseIndex + 1]?.name }}</strong></p>
+      <!-- NEXT EXERCISE TEKST -->
+      <div *ngIf="started && nextMainExercise" class="next-exercise">
+        <p>
+          Next exercise:
+          <strong>{{ nextMainExercise?.name }}</strong>
+        </p>
       </div>
 
-      <ion-card *ngIf="isResting && currentExerciseIndex < exercises.length - 1" class="next-exercise-card">
+      <!-- NEXT VIDEO PREVIEW WHILE RESTING -->
+      <ion-card *ngIf="isResting && nextMainExercise" class="next-exercise-card">
         <ion-card-content>
           <div class="video-container">
-            <video *ngIf="exercises[currentExerciseIndex + 1]?.videoUrl"
-              [src]="exercises[currentExerciseIndex + 1]?.videoUrl" autoplay loop [muted]="true" playsinline
-              class="exercise-video">
+            <video *ngIf="nextMainExercise?.videoUrl" [src]="nextMainExercise?.videoUrl" autoplay loop [muted]="true"
+              playsinline class="exercise-video">
             </video>
           </div>
         </ion-card-content>
       </ion-card>
 
+      <!-- START BUTTON -->
       <ion-button expand="block" color="primary" class="start-btn" (click)="startWorkout()"
-        *ngIf="!started && !loading && exercises.length > 0">
+        *ngIf="!started && !loading && items.length > 0">
         Start Workout
       </ion-button>
 
-      <div *ngIf="!loading && exercises.length === 0" class="no-exercises"></div>
+      <div *ngIf="!loading && items.length === 0" class="no-exercises">
+      </div>
     </div>
   </div>
 </ion-content>

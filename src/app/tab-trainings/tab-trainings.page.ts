@@ -18,7 +18,13 @@ import { Exercise, Workout } from '../services/models';
 })
 export class TabTrainingsPage implements OnInit {
 
-  workout: (Workout & { exercises: Exercise[] }) | null = null;
+  workout: Workout | null = null;
+  previewList: {
+    isSuperset: boolean,
+    mainIndex: number,
+    exercise: Exercise
+  }[] = [];
+
   currentIndex = 0;
 
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
@@ -32,7 +38,6 @@ export class TabTrainingsPage implements OnInit {
     const nav = this.router.getCurrentNavigation();
     const w = nav?.extras.state?.['workout'];
 
-    // Ako se uđe direktno bez state-a, vrati korisnika na listu
     if (!w || !w.id) {
       this.router.navigateByUrl('/tabs/tab1');
       return;
@@ -42,9 +47,8 @@ export class TabTrainingsPage implements OnInit {
   }
 
   async loadWorkout(id: string) {
-    // povuci svež workout sa backenda
     const fresh = await this.http
-      .get<Workout & { exercises?: Exercise[]; exerciseIds?: string[] }>(
+      .get<Workout & { exercises?: Exercise[]; items?: any[]; exerciseIds?: string[] }>(
         `${this.backendUrl}/api/workouts/${id}`
       )
       .toPromise();
@@ -52,40 +56,62 @@ export class TabTrainingsPage implements OnInit {
     if (!fresh) return;
 
     const rawExercises = fresh.exercises ?? [];
-    const rawIds = fresh.exerciseIds ?? [];
+    const rawItems = fresh.items ?? [];
 
-    const map = new Map(rawExercises.map((e: any) => [e.id, e]));
+    const exMap = new Map(rawExercises.map((e) => [e.id, e]));
 
-    const orderedExercises: Exercise[] = rawIds
-      .map((exId: string) => map.get(exId))
-      .filter((e: Exercise | undefined): e is Exercise => !!e);
+    this.previewList = [];
 
-    this.workout = {
-      ...fresh,
-      exercises: orderedExercises
-    };
+    rawItems.forEach((item: any, index: number) => {
+      const main = exMap.get(item.exerciseId);
+      if (main) {
+        this.previewList.push({
+          isSuperset: false,
+          mainIndex: index + 1,
+          exercise: main
+        });
+      }
 
+      if (item.supersetExerciseId) {
+        const sup = exMap.get(item.supersetExerciseId);
+        if (sup) {
+          this.previewList.push({
+            isSuperset: true,
+            mainIndex: index + 1,
+            exercise: sup
+          });
+        }
+      }
+    });
+
+    this.workout = fresh;
     this.currentIndex = 0;
   }
 
+  // CURRENT EXERCISE
   get currentExercise(): Exercise | null {
-    return this.workout?.exercises?.[this.currentIndex] ?? null;
+    return this.previewList[this.currentIndex]?.exercise ?? null;
   }
 
+  get isSupersetNow(): boolean {
+    return this.previewList[this.currentIndex]?.isSuperset ?? false;
+  }
+
+  get currentMainIndex(): number {
+    return this.previewList[this.currentIndex]?.mainIndex ?? 0;
+  }
+
+  // NAV
   goBack() {
     this.router.navigateByUrl('/tabs/tab1');
   }
 
   prevExercise() {
-    if (!this.workout) return;
-    if (this.currentIndex > 0) {
-      this.currentIndex--;
-    }
+    if (this.currentIndex > 0) this.currentIndex--;
   }
 
   nextExercise() {
-    if (!this.workout) return;
-    if (this.currentIndex < this.workout.exercises.length - 1) {
+    if (this.currentIndex < this.previewList.length - 1) {
       this.currentIndex++;
     }
   }
