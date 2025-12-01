@@ -430,3 +430,47 @@ ion-searchbar {
   margin: 12px 0 20px 0;
   box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
 }
+/* ---- MOBILE SIMPLE MODE ---- */
+@media (max-width: 480px) {
+
+  /* sakrij desktop inputs */
+  .workout-inputs-section {
+    display: none !important;
+  }
+
+  /* mobile compact row visible */
+  .mobile-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 14px 10px;
+    border-radius: 12px;
+    background: rgba(0, 20, 30, 0);
+  }
+
+  .mobile-title {
+    font-size: 15px;
+    color: #00f7ff;
+    font-weight: 600;
+    max-width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-superset {
+    color: #8efcff;
+    font-size: 12px;
+    margin-left: 6px;
+  }
+}
+
+/* ---- DESKTOP MODE ---- */
+@media (min-width: 481px) {
+  .mobile-row {
+    display: none !important;
+  }
+}
+
+

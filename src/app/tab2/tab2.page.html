@@ -80,10 +80,18 @@
           </div>
         </div>
 
-        <!-- SEKCIJA 2: INPUT POLJA (1/3) -->
+        <!-- MOBILE SIMPLE VIEW -->
+        <div class="mobile-row" (click)="openExerciseModal(i)">
+          <div class="mobile-title">
+            <span *ngIf="workoutItems[i].supersetExerciseId" class="mobile-superset">
+              → {{ getExerciseNameById(workoutItems[i].supersetExerciseId) }}
+            </span>
+          </div>
+
+        </div>
         <div class="workout-inputs-section">
           <div class="cfg small">
-            <label><i class="fa-solid fa-repeat"></i>   Sets</label>
+            <label><i class="fa-solid fa-repeat"></i> Sets</label>
             <ion-input type="number" [(ngModel)]="workoutItems[i].sets"></ion-input>
           </div>
 
@@ -93,27 +101,27 @@
           </div>
 
           <div class="cfg small">
-            <label><i class="fa-solid fa-stopwatch"></i>   sets</label>
+            <label><i class="fa-solid fa-stopwatch"></i> sets</label>
             <ion-input type="number" [(ngModel)]="workoutItems[i].restBetweenSets"></ion-input>
           </div>
 
           <div class="cfg small">
-            <label><i class="fa-solid fa-stopwatch"></i>   exercises</label>
+            <label><i class="fa-solid fa-stopwatch"></i> exercises</label>
             <ion-input type="number" [(ngModel)]="workoutItems[i].restAfterExercise"></ion-input>
           </div>
 
-          <div class="cfg superset">
-            <label><i class="fa-solid fa-dumbbell"></i>   Superset</label>
-            <ion-select [(ngModel)]="workoutItems[i].supersetExerciseId" interface="popover">
-              <ion-select-option value="">None</ion-select-option>
-              <ion-select-option *ngFor="let opt of allExercises" [value]="opt.id">
-                {{ opt.name }}
-              </ion-select-option>
-            </ion-select>
+          <div class="superset-row">
+            <div class="cfg superset">
+              <label><i class="fa-solid fa-dumbbell"></i> Superset</label>
+              <ion-select [(ngModel)]="workoutItems[i].supersetExerciseId" interface="popover">
+                <ion-select-option value="">None</ion-select-option>
+                <ion-select-option *ngFor="let opt of allExercises" [value]="opt.id">
+                  {{ opt.name }}
+                </ion-select-option>
+              </ion-select>
+            </div>
           </div>
         </div>
-
-        <!-- SEKCIJA 3: REMOVE BUTTON (1/3) -->
         <div class="workout-actions-section">
           <ion-button fill="clear" size="small" class="delete-btn" (click)="removeExercise(i)">
             <i class="fa-solid fa-delete-left"></i>

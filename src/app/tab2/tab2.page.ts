@@ -8,6 +8,9 @@ import { AlertController } from '@ionic/angular';
 
 import { Exercise, WorkoutItem } from '../services/models';
 import { LocalDataService } from '../services/local-data.service';
+import { ModalController } from '@ionic/angular';
+import { ExerciseSettingsModalComponent } from '../exercise-settings-modal/exercise-settings-modal.component';
+
 
 @Component({
   selector: 'app-tab2',
@@ -21,8 +24,9 @@ import { LocalDataService } from '../services/local-data.service';
     IonList, IonSearchbar, IonSpinner,
     IonReorderGroup, IonReorder, IonAlert,
     IonSelect, IonSelectOption,
-    IonIcon
-  ]
+    IonIcon,ExerciseSettingsModalComponent
+  ],
+  providers: [ModalController]
 })
 export class Tab2Page implements OnInit {
 
@@ -48,7 +52,8 @@ export class Tab2Page implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private localData: LocalDataService,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private modalCtrl: ModalController
   ) {
     this.exerciseForm = this.fb.group({
       name: [''],
@@ -80,7 +85,7 @@ export class Tab2Page implements OnInit {
       this.allExercises = [];
     }
   }
-  
+
   getExerciseNameById(id: string | null | undefined): string {
     if (!id) return 'None';
     const ex = this.allExercises.find(e => e.id === id);
@@ -238,4 +243,24 @@ export class Tab2Page implements OnInit {
     });
     a.present();
   }
+
+  async openExerciseModal(i: number) {
+    const modal = await this.modalCtrl.create({
+      component: ExerciseSettingsModalComponent,
+      componentProps: {
+        item: this.workoutItems[i],
+        exercise: this.editableExercises[i]
+      },
+      cssClass: 'exercise-modal'
+    });
+
+    await modal.present();
+
+    const result = await modal.onDidDismiss();
+
+    if (result.data) {
+      this.workoutItems[i] = result.data;
+    }
+  }
+
 }
