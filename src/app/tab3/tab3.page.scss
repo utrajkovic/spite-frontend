@@ -12,11 +12,12 @@ ion-content {
   color: #e0ffff;
 }
 
+/* Veći razmak između celih sekcija */
 .section-box {
-  --background: radial-gradient(circle at top, #00111a00 0%rgba(0, 0, 0, 0)00 100%);
   border-radius: 18px;
   padding: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
+  /* VEĆI RAZMAK IZMEĐU KARTICA */
   backdrop-filter: blur(10px) saturate(140%);
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.05);
   animation: fadeIn 0.4s ease;
@@ -37,28 +38,28 @@ ion-content {
 }
 
 ion-list {
-  background: radial-gradient(circle at top, #00111a00 0%, #00000000 100%);
+  background: transparent;
   border-radius: 14px;
   padding: 4px;
 }
 
-ion-item {
-  --inner-border-width: 0;
-  --background: #00111a00;
-  border: 1px solid rgba(0, 255, 255, 0.08);
-  transition: box-shadow 0.25s ease;
-}
-
-
-
-
 .item-card {
-    --background: radial-gradient(circle at top, #00111a00 0%rgba(0, 0, 0, 0)00 100%);
   border-radius: 12px;
   padding: 10px;
-  border: 1px solid rgba(0, 255, 255, 0.229);
+  margin-bottom: 14px;
+  --background: radial-gradient(circle at top, #00111a00 0%, #00000000 100%);
+  border: 1px solid rgba(0, 255, 255, 0.19);
   transition: box-shadow 0.25s ease;
 }
+/* Uklanja *sve* Ionic default bordere u item-card */
+ion-item.item-card::part(native) {
+  --inner-border-width: 0 !important;
+  --border-color: transparent !important;
+  border-width: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 
 .item-card:hover {
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
@@ -85,30 +86,11 @@ ion-label p {
   justify-content: center;
 }
 
-.delete-btn ion-spinner,
-.edit-btn ion-spinner {
-  width: 20px;
-  height: 20px;
-}
-
-ion-button[color="danger"],
-ion-button[color="warning"] {
-  --border-radius: 12px;
-  font-size: 0.9rem;
-  --background: radial-gradient(circle at top, #00111a00 0%rgba(0, 0, 0, 0)00 100%);
-  transition: box-shadow 0.3s ease;
-}
-
-ion-button[color="danger"]:hover,
-ion-button[color="warning"]:hover {
-  transform: scale(1.2);
-}
-
 .separator {
   width: 70%;
   height: 1px;
   background: linear-gradient(90deg, transparent, #00f7ff, transparent);
-  margin: 28px auto;
+  margin: 28px auto 40px auto;
   opacity: 0.8;
   border-radius: 10px;
 }
@@ -140,122 +122,83 @@ ion-button[color="warning"]:hover {
 }
 
 /* ------------------------------------------------------
-   MODAL – CENTRIRANI GLASS/NEON ALERT
+   MODAL – GLASS CARD (ZA OBA MODALA)
 ------------------------------------------------------ */
 
-/* Tamni blur backdrop */
-.exercise-modal::part(backdrop) {
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(6px);
-}
-
-/* Glavni modal (glassmorphism + neon) */
-.exercise-modal::part(content) {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-
-  width: 90%;
-  max-width: 340px;
-
-  background: transparent !important;
-  border-radius: 18px;
-
-  backdrop-filter: blur(22px) saturate(180%);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-
-  border: 1px solid rgba(0, 255, 255, 0.45);
-  box-shadow: 0 0 22px rgba(0, 255, 255, 0.3),
-    0 0 8px rgba(0, 255, 255, 0.15) inset;
-
-  padding: 20px;
-
-  animation: slideUpModal 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Animacija modala */
-@keyframes fadeInModal {
-  from {
-    opacity: 0;
-    transform: translate(-50%, calc(-50% + 18px));
-  }
-
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
-}
-
-/* Sadržaj modala */
-.alert-box {
-  text-align: center;
-  color: #dfffff;
-}
-
-.preview-video {
-  width: 100%;
-  max-height: 220px;
-  border-radius: 12px;
-  margin-bottom: 12px;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
-}
-
-.title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #00f7ff;
-  margin-bottom: 12px;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-}
-
-.description {
-  color: #b8ffff;
-  font-size: 14px;
-  margin-bottom: 16px;
-}
-
-//Workout modal
-/* ------------------------------------------------------
-   WORKOUT MODAL – GLASS NEON STIL (ISTI KAO EXERCISE)
------------------------------------------------------- */
-
+/* BACKDROP */
+.exercise-modal::part(backdrop),
 .workout-modal::part(backdrop) {
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(6px);
 }
 
+/* GLAVNO TELO MODALA (FLOATING CARD) */
+.exercise-modal::part(content),
 .workout-modal::part(content) {
-  animation: slideUpModal 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
 
   width: 90%;
-  max-width: 340px;
+  max-width: 360px;
+  max-height: 80vh;
+  /* FIX ZA DUGME CLOSE */
+  overflow: hidden;
+  /* Sprečava content spill */
 
-  background: rgba(0, 40, 60, 0.35);
+  display: flex;
+  flex-direction: column;
+
+  background: rgba(0, 40, 60, 0.25);
   border-radius: 18px;
 
   backdrop-filter: blur(22px) saturate(180%);
   -webkit-backdrop-filter: blur(22px) saturate(180%);
 
   border: 1px solid rgba(0, 255, 255, 0.45);
-  box-shadow: 0 0 22px rgba(0, 255, 255, 0.3),
-    0 0 8px rgba(0, 255, 255, 0.15) inset;
+  box-shadow:
+    0 0 22px rgba(0, 255, 255, 0.3),
+    inset 0 0 8px rgba(0, 255, 255, 0.12);
 
+  padding: 0;
+  /* sada ćemo ručno rasporediti padding ispod */
+  animation: slideUpModal 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* UNUTRAŠNJI SCROLL ZONE */
+.alert-box {
   padding: 20px;
-
-  animation: fadeInModal 0.25s ease forwards;
+  overflow-y: auto;
+  /* omogućava scroll unutar sadržaja */
+  flex: 1;
 }
 
-.exercise-list {
-  margin: 10px 0 20px;
-  text-align: left;
-  color: #dfffff;
+/* NASLOVI I TEKST */
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #00f7ff;
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
+.description {
+  color: #b8ffff;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+/* EXERCISE VIDEO PREVIEW */
+.preview-video {
+  width: 100%;
+  max-height: 240px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 0 14px rgba(0, 255, 255, 0.25);
+}
+
+/* LISTA VEŽBI UNUTAR WORKOUT MODALA */
 .exercise-title {
   text-align: center;
   color: #00f7ff;
@@ -266,21 +209,22 @@ ion-button[color="warning"]:hover {
 .exercise-list ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .exercise-list li {
-  margin-bottom: 4px;
-  padding: 4px 0;
+  margin-bottom: 6px;
+  padding: 6px 0;
   border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+  color: #dfffff;
+  text-shadow: 0 0 4px rgba(0, 255, 255, 0.15);
 }
 
-/* ------------------------------------------------------
-   ANIMACIJA – SLIDE UP ZA MODALE
------------------------------------------------------- */
+/* ANIMACIJA */
 @keyframes slideUpModal {
   from {
     opacity: 0;
-    transform: translate(-50%, calc(-40%)) scale(0.95);
+    transform: translate(-50%, -40%) scale(0.95);
   }
 
   to {

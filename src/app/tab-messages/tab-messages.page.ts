@@ -65,10 +65,15 @@ export class TabMessagesPage {
       this.unsubscribe();
     }
   }
+  hasUnread(username: string) {
+    return this.chat.unreadMap[username] === true;
+  }
 
   openChat(username: string) {
+    this.chat.markAsRead(username);
     this.router.navigate(['/chat', username]);
   }
+
 
   async startNewChat() {
     this.newChatUsername = this.newChatUsername.trim();

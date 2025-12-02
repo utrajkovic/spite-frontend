@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;800&display=swap');
+
+/* ============ MODAL BACKGROUND ============ */
+:host {
+    font-family: 'Orbitron', sans-serif;
+}
+
+ion-content {
+    --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+    padding: 20px;
+    color: #dff;
+}
+
+/* HEADER */
+ion-toolbar {
+    --background: rgba(0, 30, 40, 0.45);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.18);
+    backdrop-filter: blur(14px);
+}
+
+ion-title {
+    color: #00f7ff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+    letter-spacing: 1px;
+}
+
+/* TITLE INSIDE CONTENT */
+h2 {
+    text-align: center;
+    margin: 16px 0 20px 0;
+    color: #00f7ff;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* ============ FORM ITEMS ============ */
+ion-item {
+    --background: rgba(0, 40, 60, 0.35);
+    margin-bottom: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 255, 255, 0.18);
+    backdrop-filter: blur(6px);
+    transition: 0.2s ease-in-out;
+}
+
+ion-item:hover {
+    border-color: rgba(0, 255, 255, 0.35);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+}
+
+ion-label {
+    color: #8efcff;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+ion-input,
+ion-select {
+    --color: #eaffff;
+    font-size: 15px;
+}
+
+/* INPUT FOCUS GLOW */
+ion-input.input-focus,
+ion-select.select-expanded {
+    --background: rgba(0, 55, 75, 0.6);
+    border: 1px solid rgba(0, 255, 255, 0.55) !important;
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.3) !important;
+    transform: scale(1.03);
+}
+
+
+/* ============ SAVE BUTTON ============ */
+ion-button[color="success"] {
+    --background: linear-gradient(90deg, #00ffbf, #00dba0);
+    --color: #002b25;
+    border-radius: 14px;
+    font-size: 16px;
+    margin-top: 20px;
+    height: 48px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 10px rgba(0, 255, 200, 0.35);
+    transition: 0.25s ease;
+}
+
+ion-button[color="success"]:hover {
+    transform: scale(1.04);
+    box-shadow: 0 0 14px rgba(0, 255, 200, 0.5);
+}
+
+/* CLOSE BUTTON */
+ion-button {
+    --color: #ff0000;
+}
+
+
+/* SMALLER MODAL ON DESKTOP */
+@media (min-width: 600px) {
+    ion-content {
+        padding: 30px 40px;
+    }
+}
+
+.ex-title-display {
+    font-size: 22px;
+    text-align: center;
+    color: #00f7ff;
+    text-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+ion-header ion-button i {
+    font-size: 18px;
+    color: #00f7ffb1;
+}

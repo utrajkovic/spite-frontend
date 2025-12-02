@@ -5,7 +5,7 @@ import {
   IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner
 } from '@ionic/angular/standalone';
 import { BackendService } from '../services/backend.service';
-import { Exercise, Workout } from '../services/models';
+import { Exercise, Workout, WorkoutItem } from '../services/models';
 import { AlertController, ToastController, LoadingController } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
@@ -226,26 +226,34 @@ export class Tab3Page implements OnInit {
   }
 
 
-async showWorkoutDetails(workout: any) {
-  this.previewWorkout = workout;
+  async showWorkoutDetails(workout: any) {
+    this.previewWorkout = workout;
 
-  if (workout.exercises) {
-    this.previewWorkoutExercises = workout.exercises.map((e: any) => e.name);
-  } 
-  else if (workout.exerciseIds) {
-    this.previewWorkoutExercises = workout.exerciseIds
-      .map((id: string) => this.exercises.find(e => e.id === id)?.name || 'Unknown');
-  } 
-  else {
-    this.previewWorkoutExercises = [];
+    const items: WorkoutItem[] = workout.items || [];
+    const allExercises = workout.exercises || this.exercises || [];
+
+    const map = new Map<string, Exercise>(
+      allExercises.map((e: Exercise) => [e.id!, e])
+    );
+
+    this.previewWorkoutExercises = items.map((it: any) => {
+      const main = map.get(it.exerciseId)?.name || 'Unknown';
+
+      if (it.supersetExerciseId) {
+        const superset = map.get(it.supersetExerciseId)?.name || 'Unknown';
+        return `${main}  →  ${superset}  (Superset)`;
+      }
+
+      return main;
+    });
+
+    await this.workoutModal.present();
   }
 
-  await this.workoutModal.present();
-}
 
-closeWorkoutModal() {
-  this.workoutModal.dismiss();
-}
+  closeWorkoutModal() {
+    this.workoutModal.dismiss();
+  }
 
 
   async logout() {

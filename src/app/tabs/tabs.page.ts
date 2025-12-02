@@ -3,6 +3,7 @@ import { Component, EnvironmentInjector, inject } from '@angular/core';
 import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonHeader, IonTitle, IonToolbar, IonRouterOutlet, IonContent, IonApp } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { triangle, ellipse, square } from 'ionicons/icons';
+import { ChatService } from '../services/chat.service';
 
 @Component({
   selector: 'app-tabs',
@@ -19,9 +20,11 @@ import { triangle, ellipse, square } from 'ionicons/icons';
 export class TabsPage {
   public environmentInjector = inject(EnvironmentInjector);
   role: string | null = null;
+  hasUnreadMessages = false;
+  unsubscribeUnread: any = null;
 
 
-  constructor() {
+  constructor(private chat: ChatService) {
     addIcons({ triangle, ellipse, square });
   }
 
@@ -30,9 +33,24 @@ export class TabsPage {
     if (user) {
       const parsed = JSON.parse(user);
       this.role = parsed.role;
-    } else {
-      this.role = null;
+      const myUsername = parsed.username;
+
+      if (this.unsubscribeUnread) {
+        this.unsubscribeUnread();
+      }
+
+      this.unsubscribeUnread = this.chat.listenUnread(myUsername, (hasUnread) => {
+        this.hasUnreadMessages = hasUnread;
+      });
     }
   }
+
+  ionViewWillLeave() {
+    if (this.unsubscribeUnread) {
+      this.unsubscribeUnread();
+    }
+  }
+
+
 
 }

@@ -246,6 +246,7 @@ export class WorkoutPage implements OnInit {
   private pendingRestCallback: Function = () => { };
 
   startRest(seconds: number, callback: Function) {
+    this.showingSuperset = false;
     this.pendingRestCallback = callback;
     this.isResting = true;
     this.restLeft = seconds;
@@ -261,6 +262,7 @@ export class WorkoutPage implements OnInit {
   }
 
   skipRest() {
+    this.showingSuperset = false;
     this.stopRest(this.pendingRestCallback);
   }
 

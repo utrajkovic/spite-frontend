@@ -12,6 +12,8 @@ import { AlertController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Exercise, Workout, WorkoutItem } from '../services/models';
 import { LocalDataService } from '../services/local-data.service';
+import { ExerciseSettingsModalComponent } from '../exercise-settings-modal/exercise-settings-modal.component';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   standalone: true,
@@ -36,8 +38,11 @@ import { LocalDataService } from '../services/local-data.service';
     IonButtons,
     IonSpinner,
     IonSelect,
-    IonSelectOption
-  ]
+    IonSelectOption,
+    ExerciseSettingsModalComponent
+  ],
+  providers: [ModalController]
+
 })
 export class TabEditPage implements OnInit {
 
@@ -61,7 +66,8 @@ export class TabEditPage implements OnInit {
     private http: HttpClient,
     private alertCtrl: AlertController,
     public router: Router,
-    private localData: LocalDataService
+    private localData: LocalDataService,
+    private modalCtrl: ModalController
   ) { }
 
   async ngOnInit() {
@@ -96,24 +102,20 @@ export class TabEditPage implements OnInit {
 
     this.workout = w;
 
-    const rawExercises = w.exercises ?? [];
-    const rawIds = w.exerciseIds ?? [];
+    const map = new Map((w.exercises ?? []).map(e => [e.id, e]));
 
-    const map = new Map(rawExercises.map(e => [e.id, e]));
+    this.editableExercises = w.items!.map(item => map.get(item.exerciseId)!);
 
-    this.editableExercises = rawIds
-      .map(id => map.get(id))
-      .filter((e): e is Exercise => !!e);
-
-    this.workoutItems = (w.items ?? []).map(it => ({
+    this.workoutItems = w.items!.map(it => ({
       exerciseId: it.exerciseId,
-      sets: it.sets ?? 0,
-      reps: it.reps ?? '0',
-      restBetweenSets: it.restBetweenSets ?? 0,
-      restAfterExercise: it.restAfterExercise ?? 0,
+      sets: it.sets,
+      reps: it.reps,
+      restBetweenSets: it.restBetweenSets,
+      restAfterExercise: it.restAfterExercise,
       supersetExerciseId: it.supersetExerciseId ?? ''
     }));
   }
+
 
 
   async loadAllUserExercises() {
@@ -135,11 +137,13 @@ export class TabEditPage implements OnInit {
   }
 
   filterList() {
+    const q = this.searchQuery.toLowerCase();
+
     this.filteredExercises = this.allExercises.filter(ex =>
-      ex.name.toLowerCase().includes(this.searchQuery) &&
-      !this.editableExercises.some(e => e.id === ex.id)
+      ex.name.toLowerCase().includes(q)
     );
   }
+
 
   handleReorder(ev: any) {
     const from = ev.detail.from;
@@ -152,6 +156,7 @@ export class TabEditPage implements OnInit {
     this.workoutItems.splice(to, 0, item);
 
     ev.detail.complete();
+    this.editableExercises = [...this.editableExercises];
   }
 
   addExercise(ex: Exercise) {
@@ -215,4 +220,23 @@ export class TabEditPage implements OnInit {
       this.isSaving = false;
     }
   }
+  async openExerciseModal(i: number) {
+    const modal = await this.modalCtrl.create({
+      component: ExerciseSettingsModalComponent,
+      componentProps: {
+        item: this.workoutItems[i],
+        exercise: this.editableExercises[i]
+      },
+      cssClass: 'exercise-modal'
+    });
+
+    await modal.present();
+
+    const result = await modal.onDidDismiss();
+
+    if (result.data) {
+      this.workoutItems[i] = result.data;
+    }
+  }
+
 }

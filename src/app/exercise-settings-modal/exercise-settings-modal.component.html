@@ -2,33 +2,35 @@
   <ion-toolbar>
     <ion-title>Exercise Settings</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="close()">Close</ion-button>
+      <ion-button (click)="close()" class="close-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-  <h2>{{ exercise.name }}</h2>
+  <h2 class="ex-title-display">{{ exercise.name }}</h2>
 
   <ion-item>
     <ion-label position="stacked">Sets</ion-label>
-    <ion-input type="number" [(ngModel)]="item.sets"></ion-input>
+    <ion-input inputmode="numeric" type="tel" pattern="[0-9]*" [(ngModel)]="item.sets"></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label position="stacked">Reps</ion-label>
-    <ion-input [(ngModel)]="item.reps"></ion-input>
+    <ion-input inputmode="numeric" type="tel" pattern="[0-9]*" [(ngModel)]="item.reps"></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label position="stacked">Rest Between Sets</ion-label>
-    <ion-input type="number" [(ngModel)]="item.restBetweenSets"></ion-input>
+    <ion-input inputmode="numeric" type="tel" pattern="[0-9]*" [(ngModel)]="item.restBetweenSets"></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label position="stacked">Rest After Exercise</ion-label>
-    <ion-input type="number" [(ngModel)]="item.restAfterExercise"></ion-input>
+    <ion-input inputmode="numeric" type="tel" pattern="[0-9]*" [(ngModel)]="item.restAfterExercise"></ion-input>
   </ion-item>
 
   <ion-item>
@@ -44,4 +46,3 @@
   <ion-button expand="block" color="success" (click)="save()">Save</ion-button>
 
 </ion-content>
-

@@ -6,8 +6,7 @@
     <div class="card-wrapper">
 
       <!-- CURRENT EXERCISE CARD -->
-      <ion-card *ngIf="started && items.length > 0" class="exercise-card">
-
+      <ion-card *ngIf="started && items.length > 0" class="exercise-card" [class.superset-active]="showingSuperset">
         <!-- PROGRESS PO ITEM-ima -->
         <ion-progress-bar [value]="(currentExerciseIndex + 1) / items.length" class="progress-bar neon-progress">
         </ion-progress-bar>
@@ -15,6 +14,9 @@
         <ion-card-content>
 
           <!-- NAZIV I OPIS TRENUTNE VEŽBE (main ili superset) -->
+          <div *ngIf="showingSuperset" class="superset-badge">
+            SUPERSET
+          </div>
           <h2 class="exercise-name">
             {{ currentExercise?.name }}
           </h2>

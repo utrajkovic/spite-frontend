@@ -103,3 +103,27 @@ ion-item.chat-item {
 .chat-card:hover {
     transform: scale(1.02);
 }
+
+.avatar-wrapper {
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    color: white;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 6px red;
+}
+ion-item.chat-item {
+  --inner-border-width: 0 !important;
+}

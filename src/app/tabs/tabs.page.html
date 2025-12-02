@@ -34,11 +34,33 @@
       <i class="fa-solid fa-gear"></i>
       <ion-label>Manage</ion-label>
     </ion-tab-button>
-    
+
     <ion-tab-button tab="tab-messages" href="/tabs/tab-messages">
-      <i class="fa-solid fa-message"></i>
+      <div style="position: relative">
+        <i class="fa-solid fa-message"></i>
+
+        <span *ngIf="hasUnreadMessages" style="
+            position:absolute;
+            top:-6px;
+            right:-10px;
+            background:red;
+            color:white;
+            border-radius:50%;
+            width:16px;
+            height:16px;
+            font-size:11px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            box-shadow:0 0 8px red;
+          ">
+          !
+        </span>
+      </div>
+
       <ion-label>Messages</ion-label>
     </ion-tab-button>
+
 
   </ion-tab-bar>
 </ion-tabs>

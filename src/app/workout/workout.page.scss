@@ -23,10 +23,10 @@ ion-content {
 .neon-progress {
   margin: 0px 0 0px;
   height: 2px;
-  --progress-background: rgba(68, 96, 96, 0.25);
+  --progress-background: rgb(0, 255, 255);
   --progress-bar-background: linear-gradient(90deg, #00f7ff, #00ffaa);
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 10px rgb(0, 255, 255);
 }
 
 /* Kartica (stakleni efekat u Spite tonu) */
@@ -54,9 +54,17 @@ ion-content {
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Naziv i opis */
@@ -84,6 +92,7 @@ ion-content {
   justify-content: center;
   align-items: center;
 }
+
 .exercise-video,
 
 .video-placeholder {
@@ -92,6 +101,7 @@ ion-content {
   margin: 10px 0;
   background: rgba(0, 0, 0, 0);
 }
+
 .placeholder-icon {
   font-size: 64px;
   color: #00f7ff88;
@@ -109,7 +119,6 @@ ion-content {
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
 }
 
-/* Odmor */
 .rest-container {
   padding: 12px;
   border: none;
@@ -172,6 +181,7 @@ ion-content {
   font-size: 15px;
   color: #aefcff;
 }
+
 .next-exercise strong {
   color: #00f7ff;
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
@@ -232,13 +242,15 @@ ion-content {
   background: rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
+
 .rest-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  min-height: 40vh; /* fleksibilno, a ne preveliko */
+  min-height: 40vh;
+  /* fleksibilno, a ne preveliko */
   max-height: 70vh;
   width: 100%;
 
@@ -273,8 +285,9 @@ ion-content {
 .circle-progress {
   transition: stroke-dashoffset 1s linear;
 }
+
 .video-loading-overlay {
-  position: absolute; 
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -296,4 +309,38 @@ ion-content {
   width: 48px;
   height: 48px;
   margin-bottom: 12px;
+}
+
+/* ========================= */
+/* SUPERSET BADGE            */
+/* ========================= */
+.superset-badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: rgba(255, 240, 0, 0.15);
+  border: 1px solid rgba(255, 230, 0, 0.6);
+  color: #ffe600;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px rgba(255, 230, 0, 0.65);
+  box-shadow: 0 0 12px rgba(255, 230, 0, 0.35);
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.4s ease;
+  z-index: 5;
+}
+
+
+.exercise-card.superset-active {
+  border: 1px solid rgba(255, 220, 0, 0.45) !important;
+  box-shadow:
+    0 0 18px rgba(255, 230, 0, 0.35),
+    inset 0 0 18px rgba(255, 230, 0, 0.1) !important;
+
+  --background: radial-gradient(circle at top,
+      rgba(255, 220, 0, 0.08) 0%,
+      rgba(0, 0, 0, 0.95) 100%) !important;
 }

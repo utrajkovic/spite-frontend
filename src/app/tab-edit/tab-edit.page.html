@@ -31,76 +31,78 @@
     <!-- REORDER GROUP -->
     <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
 
-      <ion-item
-        *ngFor="let ex of editableExercises; let i = index"
-        class="workout-compact-row"
-        lines="none">
+      <ion-item *ngFor="let ex of editableExercises; let i = index" class="workout-compact-row" lines="none">
 
         <ion-reorder slot="start"></ion-reorder>
 
-        <!-- TITLE -->
-        <div class="workout-title-section">
-          <div class="ex-title">
-            {{ ex.name }}
-            <span *ngIf="workoutItems[i].supersetExerciseId" class="superset-tag">
-              → {{ getExerciseNameById(workoutItems[i].supersetExerciseId) }}
-            </span>
+        <div class="row-wrapper">
+          <div class="workout-title-section">
+            <div class="ex-title">
+              {{ ex.name }}
+              <span *ngIf="workoutItems[i].supersetExerciseId" class="superset-tag">
+                → {{ getExerciseNameById(workoutItems[i].supersetExerciseId) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="mobile-row" (click)="openExerciseModal(i)">
+            <div class="mobile-title">
+              <span *ngIf="workoutItems[i].supersetExerciseId" class="mobile-superset">
+                → {{ getExerciseNameById(workoutItems[i].supersetExerciseId) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="workout-inputs-section">
+
+            <div class="cfg small">
+              <label><i class="fa-solid fa-repeat"></i> Sets</label>
+              <ion-input inputmode="numeric" type="tel" pattern="[0-9]*" [(ngModel)]="workoutItems[i].sets"></ion-input>
+            </div>
+
+            <div class="cfg small">
+              <label><i class="fa-solid fa-repeat"></i>Reps</label>
+              <ion-input inputmode="numeric" type="tel" pattern="[0-9]*" [(ngModel)]="workoutItems[i].reps"></ion-input>
+            </div>
+
+            <div class="cfg small">
+              <label><i class="fa-solid fa-stopwatch"></i> sets</label>
+              <ion-input inputmode="numeric" type="tel" pattern="[0-9]*"
+                [(ngModel)]="workoutItems[i].restBetweenSets"></ion-input>
+            </div>
+
+            <div class="cfg small">
+              <label><i class="fa-solid fa-stopwatch"></i> exercises</label>
+              <ion-input inputmode="numeric" type="tel" pattern="[0-9]*"
+                [(ngModel)]="workoutItems[i].restAfterExercise"></ion-input>
+            </div>
+
+            <div class="cfg superset">
+              <label><i class="fa-solid fa-dumbbell"></i> Superset</label>
+              <ion-select [(ngModel)]="workoutItems[i].supersetExerciseId" interface="popover">
+                <ion-select-option value="">None</ion-select-option>
+                <ion-select-option *ngFor="let opt of allExercises" [value]="opt.id">
+                  {{ opt.name }}
+                </ion-select-option>
+              </ion-select>
+            </div>
+
+          </div>
+
+          <!-- DELETE BTN -->
+          <div class="workout-actions-section">
+            <ion-button fill="clear" size="small" class="delete-btn" (click)="removeExercise(i)">
+              <i class="fa-solid fa-delete-left"></i>
+            </ion-button>
           </div>
         </div>
-
-        <!-- INPUTS -->
-        <div class="workout-inputs-section">
-          
-          <div class="cfg small">
-            <label><i class="fa-solid fa-repeat"></i>   Sets</label>
-            <ion-input type="number" [(ngModel)]="workoutItems[i].sets"></ion-input>
-          </div>
-
-          <div class="cfg small">
-            <label><i class="fa-solid fa-repeat"></i>Reps</label>
-            <ion-input type="number" [(ngModel)]="workoutItems[i].reps"></ion-input>
-          </div>
-
-          <div class="cfg small">
-            <label><i class="fa-solid fa-stopwatch"></i>   sets</label>
-            <ion-input type="number" [(ngModel)]="workoutItems[i].restBetweenSets"></ion-input>
-          </div>
-
-          <div class="cfg small">
-            <label><i class="fa-solid fa-stopwatch"></i>   exercises</label>
-            <ion-input type="number" [(ngModel)]="workoutItems[i].restAfterExercise"></ion-input>
-          </div>
-
-          <div class="cfg superset">
-            <label><i class="fa-solid fa-dumbbell"></i>   Superset</label>
-            <ion-select [(ngModel)]="workoutItems[i].supersetExerciseId" interface="popover">
-              <ion-select-option value="">None</ion-select-option>
-              <ion-select-option *ngFor="let opt of allExercises" [value]="opt.id">
-                {{ opt.name }}
-              </ion-select-option>
-            </ion-select>
-          </div>
-
-        </div>
-
-        <!-- DELETE BTN -->
-        <div class="workout-actions-section">
-          <ion-button fill="clear" size="small" class="delete-btn" (click)="removeExercise(i)">
-            <i class="fa-solid fa-delete-left"></i>
-          </ion-button>
-        </div>
-
       </ion-item>
 
     </ion-reorder-group>
 
     <h3>Add Exercise</h3>
 
-    <ion-searchbar
-      [(ngModel)]="searchQuery"
-      (ionInput)="onSearch($event)"
-      placeholder="Search..."
-      animated="true">
+    <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="onSearch($event)" placeholder="Search..." animated="true">
     </ion-searchbar>
 
     <ion-list class="list-style">

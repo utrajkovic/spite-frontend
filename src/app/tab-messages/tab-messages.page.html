@@ -12,8 +12,10 @@
 
     <ion-item *ngFor="let user of conversations" button class="chat-item" (click)="openChat(user)">
       <div class="chat-card">
-        <div class="avatar">
-          {{ user[0] | uppercase }}
+        <div class="avatar-wrapper">
+          <div class="avatar">{{ user[0] | uppercase }}</div>
+
+          <div *ngIf="hasUnread(user)" class="badge">!</div>
         </div>
 
         <ion-label class="username">

@@ -43,15 +43,21 @@ export class ChatPage implements OnInit {
 
     this.other = this.route.snapshot.paramMap.get('username')!;
 
+    await this.chat.markMessagesAsRead(this.me, this.other);
+
     this.chat.listenToChat(this.me, this.other, (msgs: any[]) => {
       this.messages = msgs;
+
       setTimeout(() => {
         const el = document.getElementById('chat-bottom');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     });
   }
-  
+
+
+
+
   goBack() {
     this.location.back();
   }

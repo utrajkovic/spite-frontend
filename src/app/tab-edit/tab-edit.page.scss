@@ -31,6 +31,7 @@ ion-item {
   border-radius: 12px;
   border: 1px solid rgba(0, 255, 255, 0.18);
   margin-bottom: 12px;
+  color: #00f7ff;
 }
 
 ion-label {
@@ -147,6 +148,7 @@ ion-select.select-expanded {
 
 /* Desktop hover */
 @media (hover: hover) {
+
   .cfg.small ion-input:hover,
   .cfg.superset ion-select:hover {
     border-color: rgba(0, 255, 255, 0.45);
@@ -180,6 +182,62 @@ ion-searchbar {
   margin: 12px 0 20px 0;
   box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
 }
-.list-style{
-      background-color: rgba(0, 40, 60, 0.35);
+
+.list-style {
+  background-color: rgba(0, 40, 60, 0);
+}
+
+
+@media (max-width: 480px) {
+
+  /* sakrij desktop inputs */
+  .workout-inputs-section {
+    display: none !important;
+  }
+
+  /* mobile compact row visible */
+  .mobile-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 14px 10px;
+    border-radius: 12px;
+    background: rgba(0, 20, 30, 0);
+  }
+
+  .mobile-title {
+    font-size: 15px;
+    color: #00f7ff;
+    font-weight: 600;
+    max-width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-superset {
+    color: #8efcff;
+    font-size: 12px;
+    margin-left: 6px;
+  }
+}
+
+/* ---- DESKTOP MODE ---- */
+@media (min-width: 481px) {
+  .mobile-row {
+    display: none !important;
+  }
+}
+
+ion-item {
+  --inner-border-width: 0;
+}
+
+.row-wrapper {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }

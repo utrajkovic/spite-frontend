@@ -131,3 +131,14 @@ ion-router-outlet {
     font-size: 18px;
   }
 }
+ion-tab-button.tab-selected {
+  background: rgba(0, 255, 255, 0.12);  
+  border-radius: 12px;
+  transition: 0.25s ease-in-out;
+}
+
+ion-tab-button.tab-selected ion-label,
+ion-tab-button.tab-selected i {
+  color: #00ffff !important;   
+  text-shadow: 0 0 8px #00ffff;
+}
