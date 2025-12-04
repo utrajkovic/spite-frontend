@@ -3,6 +3,8 @@ import { ModalController } from '@ionic/angular';
 import { IonButton } from "@ionic/angular/standalone";
 import { CommonModule, NgForOf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
+
 
 
 
@@ -15,7 +17,7 @@ import { FormsModule } from '@angular/forms';
         IonButton,
         CommonModule,
         FormsModule,
-        NgForOf
+        NgForOf,
     ],
 })
 export class WorkoutFeedbackModal {
@@ -23,7 +25,10 @@ export class WorkoutFeedbackModal {
     @Input() exercises!: any[];
     feedback: any[] = [];
 
-    constructor(private modalCtrl: ModalController) { }
+    constructor(
+        private alertCtrl: AlertController,
+        private modalCtrl: ModalController
+    ) { }
 
     ngOnInit() {
         this.feedback = this.exercises.map(ex => ({
@@ -31,8 +36,8 @@ export class WorkoutFeedbackModal {
             exerciseName: ex.name,
             sets: ex.sets,
             reps: ex.reps,
-            doneSets: 0,
-            doneReps: 0,
+            doneSets: ex.sets,
+            doneReps: ex.reps,
             maxKg: null,
             intensity: 'normal'
         }));
@@ -44,5 +49,15 @@ export class WorkoutFeedbackModal {
 
     finish() {
         this.modalCtrl.dismiss(this.feedback);
+        this.showAlert('Feedback saved');
+    }
+
+    async showAlert(msg: string) {
+        const a = await this.alertCtrl.create({
+            message: msg,
+            buttons: ['OK'],
+            cssClass: 'custom-alert'
+        });
+        await a.present();
     }
 }

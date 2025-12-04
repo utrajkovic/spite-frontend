@@ -98,3 +98,101 @@
   margin-top: 20px;
   font-size: 16px;
 }
+.feedback-modal {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+/* ========= MOBILE ONLY ========= */
+@media (max-width: 600px) {
+
+  .table-header {
+    display: none !important;
+  }
+
+  .mobile-row {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 16px;
+    background: rgba(0, 25, 35, 0.35);
+    border: 1px solid rgba(0,255,255,0.18);
+    border-radius: 14px;
+    text-align: center; /* 🔥 centrirano sve */
+  }
+
+  /* LINE 1 — name + expected */
+  .line-1 {
+    width: 100%;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    gap: 2px;
+  }
+
+  .ex-name {
+    color: #00f7ff;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .ex-expected {
+    color: #aefcff;
+    font-size: 14px;
+  }
+
+  /* LINE 2 — done + kg */
+  .line-2 {
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* jedno ispod drugog */
+    gap: 6px;
+    align-items: center;
+  }
+
+  .done-box,
+  .kg-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .mini-input {
+    width: 50px;
+    padding: 6px;
+    background: rgba(0, 40, 60, 0.45);
+    border: 1px solid rgba(0,255,255,0.25);
+    border-radius: 6px;
+    color: #e0ffff;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  /* LINE 3 — difficulty */
+  .mobile-difficulty {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+
+  /* 🔥 Each difficulty pill same width */
+  .mobile-difficulty .pill {
+    flex: 1;               /* sve iste širine */
+    text-align: center;
+    padding: 8px 0;
+    border-radius: 10px;
+    font-size: 13px;
+    background: rgba(0,40,60,0.4);
+  }
+
+  .pill.active {
+    background: #00f7ff !important;
+    color: #000;
+    box-shadow: 0 0 12px #00f7ff;
+    font-weight: 700;
+  }
+}
+
+
+
