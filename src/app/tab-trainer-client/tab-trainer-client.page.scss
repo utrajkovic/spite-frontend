@@ -1,19 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Tilt+Neon&display=swap');
 
-/* 🌌 Pozadina */
 ion-content {
   --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
   font-family: 'Tilt Neon', cursive;
   color: #e0ffff;
-  padding: 20px 16px;
+  padding: 24px 16px 32px;
 }
 
-/* 🧭 Header */
+ion-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+}
+
 ion-toolbar {
   --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.25);
+  padding-bottom: 6px;
 }
 
 ion-title {
@@ -24,74 +29,96 @@ ion-title {
   text-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
 }
 
-/* 🔙 Back dugme */
 ion-back-button {
   color: #00f7ff;
   --icon-font-size: 22px;
-  text-transform: uppercase;
-  font-weight: 500;
 }
 
-/* 🔹 Sekcije */
+ion-segment {
+  margin: 8px 12px 12px;
+  --background: rgba(0, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
+}
+
+ion-segment-button {
+  --color: #aefcff;
+  --color-checked: #00111a;
+  --indicator-color: #00f7ff;
+  font-family: 'Orbitron';
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+ion-segment-button::part(indicator) {
+  border-radius: 10px;
+  background: linear-gradient(90deg, #00f7ff, #0088ff);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+}
+
 .section-box {
-  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
-  border: 1px solid rgba(0, 255, 255, 0.25);
+  margin-top: 12px;
+  margin-bottom: 28px;
+  padding: 16px;
   border-radius: 18px;
-  padding: 14px;
-  margin-bottom: 24px;
-  box-shadow: 0 0 14px rgba(0, 255, 255, 0.08);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  background: rgba(0, 25, 35, 0.45);
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  box-shadow: 0 0 16px rgba(0, 255, 255, 0.08);
   animation: fadeIn 0.4s ease;
 }
 
-/* 🧱 Naslov sekcije */
 ion-list-header {
+  margin-bottom: 10px;
   font-family: 'Orbitron', sans-serif;
   color: #00f7ff;
   font-size: 15px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
-  margin-bottom: 10px;
+}
+
+ion-list,
+ion-item {
+  --background: transparent !important;
+  background: transparent !important;
+  --ion-item-background: transparent !important;
+  box-shadow: none !important;
 }
 
 .item-card {
-  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
-  margin-bottom: 10px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  margin-bottom: 12px;
+  padding: 6px 0;
+  border-radius: 10px;
   border: 1px solid rgba(0, 255, 255, 0.25);
-  border-radius: 8px;
-
+  background: rgba(0, 40, 60, 0.25);
+  transition: 0.25s ease;
 }
 
 .item-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+  box-shadow: 0 0 16px rgba(0, 255, 255, 0.3);
 }
 
-/* 🏷️ Labela */
 ion-label h3 {
-  font-family: 'Orbitron', sans-serif;
+  font-family: 'Orbitron';
   font-size: 16px;
   color: #00f7ff;
-  margin-bottom: 4px;
 }
 
 ion-label p {
-  font-size: 14px;
   color: #aefcff;
   opacity: 0.85;
+  font-size: 14px;
 }
 
-/* 🔘 Dugmad */
 ion-button {
   --background: linear-gradient(90deg, #00f7ff, #00aaff);
   --color: #000;
-  font-family: 'Orbitron', sans-serif;
-  border-radius: 10px;
+  font-family: 'Orbitron';
+  border-radius: 12px;
   font-weight: 600;
-  transition: all 0.25s ease;
+  transition: 0.25s ease;
 }
 
 ion-button[color="danger"] {
@@ -104,7 +131,6 @@ ion-button:hover {
   box-shadow: 0 0 14px rgba(0, 255, 255, 0.4);
 }
 
-/* 💫 Animacija ulaska */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -117,15 +143,58 @@ ion-button:hover {
   }
 }
 
-ion-list {
-  --background: transparent !important;
-  background: transparent !important;
-  box-shadow: none !important;
+
+.fb-card {
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  background: rgba(0, 40, 60, 0.25);
+  transition: 0.25s ease;
 }
 
-ion-item {
-  --background: transparent !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  --ion-item-background: transparent !important;
+.fb-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 14px rgba(0, 255, 255, 0.35);
+}
+
+.fb-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+
+.fb-header h3 {
+  font-family: 'Orbitron';
+  font-size: 15px;
+  margin: 0;
+  color: #00f7ff;
+}
+
+.workout-name {
+  margin-top: 2px;
+  font-size: 14px;
+  color: #aefcff;
+  opacity: 0.9;
+}
+
+.fb-meta {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.meta-pill {
+  padding: 3px 10px;
+  font-size: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  color: #aefcff;
+  background: rgba(0, 255, 255, 0.05);
+}
+
+.time-pill {
+  color: #00f7ff;
+  border-color: rgba(0, 255, 255, 0.4);
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
 }

@@ -1,0 +1,57 @@
+<div class="feedback-modal">
+
+    <h2 class="title">Workout Feedback</h2>
+
+    <!-- HEADER -->
+    <div class="table-header">
+        <div class="col ex">Exercise</div>
+        <div class="col sr">Sets × Reps</div>
+        <div class="col done">Done</div>
+        <div class="col rate">Difficulty</div>
+    </div>
+
+    <!-- ROWS -->
+    <div class="table-row" *ngFor="let f of feedback; let i = index">
+
+        <!-- EXERCISE NAME -->
+        <div class="col ex">{{ f.exerciseName }}</div>
+
+        <!-- SETS × REPS -->
+        <div class="col sr">
+            {{ f.sets }} × {{ f.reps }}
+        </div>
+
+        <!-- DONE SETS × DONE REPS -->
+        <div class="col done">
+            <input type="number" [(ngModel)]="f.doneSets" class="small-input" placeholder="0">
+            <span class="x">×</span>
+            <input type="number" [(ngModel)]="f.doneReps" class="small-input" placeholder="0">
+        </div>
+
+        <div class="col kg">
+            <input type="number" [(ngModel)]="f.maxKg" class="small-input" placeholder="kg">
+        </div>
+
+        <div class="col rate">
+            <div class="difficulty">
+                <button class="pill" [class.active]="f.intensity === 'easy'" (click)="setIntensity(i, 'easy')">
+                    Easy
+                </button>
+
+                <button class="pill" [class.active]="f.intensity === 'normal'" (click)="setIntensity(i, 'normal')">
+                    Normal
+                </button>
+
+                <button class="pill" [class.active]="f.intensity === 'hard'" (click)="setIntensity(i, 'hard')">
+                    Hard
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <ion-button expand="block" color="success" class="send-btn" (click)="finish()">
+        Send Feedback
+    </ion-button>
+
+</div>

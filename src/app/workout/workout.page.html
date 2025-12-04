@@ -42,7 +42,6 @@
             <!-- Placeholder ako nema video -->
             <div *ngIf="!currentExercise?.videoUrl" class="video-placeholder fade-in">
               <div class="placeholder-content">
-                <ion-icon name="videocam-off-outline" class="placeholder-icon"></ion-icon>
                 <p class="placeholder-text">No video available</p>
               </div>
             </div>
@@ -51,19 +50,16 @@
           <!-- INFO O SERIJI / REPS -->
           <div class="exercise-info" *ngIf="!isResting">
             <p>
-              <ion-icon name="repeat-outline"></ion-icon>
               Set:
               <strong>{{ currentSet }}/{{ currentItem?.sets }}</strong>
             </p>
             <p>
-              <ion-icon name="barbell-outline"></ion-icon>
               Reps:
               <strong>{{ currentItem?.reps }}</strong>
             </p>
 
             <!-- indikator da ova vežba ima superset -->
             <p *ngIf="hasSupersetForCurrent && !showingSuperset">
-              <ion-icon name="swap-horizontal-outline"></ion-icon>
               Superset: <strong>{{ supersetExerciseName }}</strong>
             </p>
 

@@ -1,0 +1,44 @@
+<div class="feedback-modal">
+
+  <h2 class="title">Workout Feedback</h2>
+
+  <!-- HEADER -->
+  <div class="table-header">
+    <div class="col ex">Exercise</div>
+    <div class="col sr">Sets × Reps</div>
+    <div class="col done">Done</div>
+    <div class="col rate">Difficulty</div>
+  </div>
+
+  <!-- ROWS -->
+  <div class="table-row" *ngFor="let ex of feedback.exercises">
+
+    <!-- NAME -->
+    <div class="col ex">{{ ex.exerciseName }}</div>
+
+    <!-- EXPECTED -->
+    <div class="col sr">{{ ex.sets }} × {{ ex.reps }}</div>
+
+    <!-- DONE -->
+    <div class="col done">
+      {{ ex.doneSets }} × {{ ex.doneReps }}
+      <span *ngIf="ex.maxKg"> • {{ ex.maxKg }}kg</span>
+    </div>
+
+    <!-- INTENSITY -->
+    <div class="col rate">
+      <span class="pill" 
+            [class.easy]="ex.intensity === 'easy'"
+            [class.normal]="ex.intensity === 'normal'"
+            [class.hard]="ex.intensity === 'hard'">
+        {{ ex.intensity | titlecase }}
+      </span>
+    </div>
+
+  </div>
+
+  <ion-button expand="block" color="primary" (click)="dismiss()">
+    Close
+  </ion-button>
+
+</div>

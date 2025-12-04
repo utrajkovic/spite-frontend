@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Workout, Exercise } from './models';
+import { Workout, Exercise, WorkoutFeedback } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -79,6 +79,10 @@ export class BackendService {
       `${this.API_URL}/admin/users/${username}?adminUsername=${this.adminUsername}`,
       { responseType: 'text' }
     );
+  }
+  
+  sendWorkoutFeedback(data: WorkoutFeedback): Observable<any> {
+    return this.http.post(`${this.API_URL}/feedback`, data);
   }
 
 

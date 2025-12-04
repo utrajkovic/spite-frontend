@@ -1,55 +1,103 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/tab-trainer" text="Back"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Client: {{ clientUsername }}</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true" class="ion-padding">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/tabs/tab-trainer"></ion-back-button>
+      </ion-buttons>
 
-  <section class="section-box">
-    <ion-list lines="none">
-      <ion-list-header>
-        <ion-label>My trainings</ion-label>
-      </ion-list-header>
+      <ion-title>Client: {{ clientUsername }}</ion-title>
+    </ion-toolbar>
 
-      <ion-item *ngIf="trainerWorkouts.length === 0">
-        <ion-label>No created trainings</ion-label>
-      </ion-item>
+    <ion-toolbar>
+      <ion-segment [(ngModel)]="segment">
+        <ion-segment-button value="assign">
+          <ion-label>Assign</ion-label>
+        </ion-segment-button>
 
-      <ion-item *ngFor="let w of trainerWorkouts" class="item-card">
-        <ion-label>
-          <h3>{{ w.title }}</h3>
-        </ion-label>
-        <ion-button slot="end" size="small" (click)="assignWorkout(w.id)">
-          Assign
-        </ion-button>
-      </ion-item>
-    </ion-list>
-  </section>
+        <ion-segment-button value="info">
+          <ion-label>Client Info</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+  </ion-header>
 
-  <section class="section-box">
-    <ion-list lines="none">
-      <ion-list-header>
-        <ion-label>Client trainings</ion-label>
-      </ion-list-header>
+  <ng-container *ngIf="segment === 'assign'">
 
-      <ion-item *ngIf="clientWorkouts.length === 0">
-        <ion-label>No assigned workouts</ion-label>
-      </ion-item>
+    <section class="section-box">
+      <ion-list lines="none">
+        <ion-list-header>
+          <ion-label>My trainings</ion-label>
+        </ion-list-header>
 
-      <ion-item *ngFor="let w of clientWorkouts" class="item-card">
-        <ion-label>
-          <h3>{{ w.title }}</h3>
-          <p>{{ w.subtitle || 'No category' }}</p>
-        </ion-label>
-        <ion-button color="danger" slot="end" size="small" (click)="unassignWorkout(w.id)">
-          Remove
-        </ion-button>
-      </ion-item>
-    </ion-list>
-  </section>
+        <ion-item *ngIf="trainerWorkouts.length === 0">
+          <ion-label>No created trainings</ion-label>
+        </ion-item>
 
+        <ion-item *ngFor="let w of trainerWorkouts" class="item-card">
+          <ion-label>
+            <h3>{{ w.title }}</h3>
+          </ion-label>
+          <ion-button slot="end" size="small" (click)="assignWorkout(w.id)">
+            Assign
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </section>
+
+    <section class="section-box">
+      <ion-list lines="none">
+        <ion-list-header>
+          <ion-label>Client trainings</ion-label>
+        </ion-list-header>
+
+        <ion-item *ngIf="clientWorkouts.length === 0">
+          <ion-label>No assigned workouts</ion-label>
+        </ion-item>
+
+        <ion-item *ngFor="let w of clientWorkouts" class="item-card">
+          <ion-label>
+            <h3>{{ w.title }}</h3>
+            <p>{{ w.subtitle || 'No category' }}</p>
+          </ion-label>
+          <ion-button color="danger" slot="end" size="small" (click)="unassignWorkout(w.id)">
+            Remove
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </section>
+
+  </ng-container>
+  <ng-container *ngIf="segment === 'info'">
+
+    <section class="section-box">
+      <ion-list lines="none">
+        <ion-list-header>
+          <ion-label>Workout History</ion-label>
+        </ion-list-header>
+
+        <ion-item *ngIf="feedbackList.length === 0">
+          <ion-label>No feedback yet</ion-label>
+        </ion-item>
+
+        <ion-item *ngFor="let fb of feedbackList" detail (click)="openFeedback(fb)" class="fb-card">
+          <ion-label>
+            <div class="fb-header">
+              <h3>{{ getWorkoutName(fb.workoutId) }}</h3>
+              <span class="workout-name">{{ fb.timestamp | date:'short' }}</span>
+            </div>
+            <div class="fb-meta">
+              <span class="meta-pill">
+                {{ fb.exercises.length }} exercises
+              </span>
+              <span class="meta-pill time-pill">
+                Feedback
+              </span>
+            </div>
+          </ion-label>
+        </ion-item>
+
+      </ion-list>
+    </section>
+
+  </ng-container>
 </ion-content>

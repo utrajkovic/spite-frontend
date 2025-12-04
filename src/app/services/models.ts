@@ -19,7 +19,7 @@ export interface WorkoutItem {
   reps: string;
   restBetweenSets: number;
   restAfterExercise: number;
-  supersetExerciseId?: string | null; 
+  supersetExerciseId?: string | null;
 }
 
 
@@ -39,3 +39,23 @@ export interface User {
   username: string;
   password: string;
 }
+export interface ExerciseFeedback {
+  exerciseId: string;
+  exerciseName: string;
+  sets: number;
+  reps: string;
+  doneSets: number;
+  doneReps: number;
+  maxKg: number | null;
+  intensity: 'easy' | 'normal' | 'hard';
+}
+
+
+export interface WorkoutFeedback {
+  workoutId: string;
+  userId: string;
+  timestamp: number;
+  exercises: ExerciseFeedback[];
+}
+
+

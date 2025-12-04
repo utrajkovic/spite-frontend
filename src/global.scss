@@ -266,6 +266,36 @@ ion-alert [class*="sc-ion-alert"],
 ion-alert [part="message"] {
   color: #ffffff !important;
 }
+ion-modal::part(content) {
+  --background: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+ion-modal::part(backdrop) {
+  background: transparent !important;
+  --backdrop-opacity: 0 !important;
+}
+
+ion-modal::part(wrapper), 
+ion-modal .modal-wrapper {
+  background: transparent !important;
+  --background: transparent !important;
+}
+/* TARGETUJEMO SAMO OVAJ MODAL */
+ion-modal.feedback-transparent::part(backdrop) {
+  background: transparent !important;
+  --backdrop-opacity: 0 !important;
+}
+
+ion-modal.feedback-transparent::part(content),
+ion-modal.feedback-transparent::part(wrapper) {
+  background: rgba(0, 20, 30, 0.20) !important; 
+  backdrop-filter: blur(12px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
+  border-radius: 20px;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
+}
 
 
 
