@@ -11,6 +11,7 @@ import { Workout } from '../services/models';
 import { Preferences } from '@capacitor/preferences';
 import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
+import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
 
 @Component({
   selector: 'app-tab1',
@@ -20,8 +21,9 @@ import { AlertController } from '@ionic/angular';
   imports: [
     CommonModule,
     IonButton, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader,
-    IonCard, IonContent, RouterLink, IonSpinner
-  ],
+    IonCard, IonContent, RouterLink, IonSpinner,
+    PageLoadingOverlayComponent
+],
 })
 export class Tab1Page {
   workouts: Workout[] = [];

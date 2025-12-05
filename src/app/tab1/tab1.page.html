@@ -1,6 +1,6 @@
 <ion-content [fullscreen]="true" class="ion-padding">
 
-  <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+<page-loading-overlay [active]="loading" message="Loading workouts..."></page-loading-overlay>
 
   <ion-card *ngFor="let workout of workouts">
     <ion-card-header>

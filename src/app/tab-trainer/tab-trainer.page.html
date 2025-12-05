@@ -1,4 +1,6 @@
 <ion-content>
+  <page-loading-overlay [active]="isLoading" message="Loading..."></page-loading-overlay>
+
   <div class="content-wrapper">
     <ion-item>
       <ion-label position="stacked">Client username</ion-label>
@@ -12,8 +14,15 @@
         <ion-label>Clients</ion-label>
       </ion-list-header>
 
-      <ion-item *ngFor="let c of clients" routerLink="/trainer-client/{{ c.clientUsername }}">
-        <ion-label>{{ c.clientUsername }}</ion-label>
+      <ion-item *ngFor="let c of clients">
+        <ion-label (click)="goToClient(c.clientUsername)">
+          {{ c.clientUsername }}
+        </ion-label>
+
+        <ion-button slot="end" color="danger" fill="outline"
+          (click)="confirmRemoveClient(c.clientUsername); $event.stopPropagation();">
+          <i class="fa-solid fa-delete-left"></i>
+        </ion-button>
       </ion-item>
     </ion-list>
   </div>

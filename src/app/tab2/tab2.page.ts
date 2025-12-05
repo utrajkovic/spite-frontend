@@ -10,6 +10,7 @@ import { Exercise, WorkoutItem } from '../services/models';
 import { LocalDataService } from '../services/local-data.service';
 import { ModalController } from '@ionic/angular';
 import { ExerciseSettingsModalComponent } from '../exercise-settings-modal/exercise-settings-modal.component';
+import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
 
 
 @Component({
@@ -24,8 +25,9 @@ import { ExerciseSettingsModalComponent } from '../exercise-settings-modal/exerc
     IonList, IonSearchbar, IonSpinner,
     IonReorderGroup, IonReorder, IonAlert,
     IonSelect, IonSelectOption,
-    IonIcon,ExerciseSettingsModalComponent
-  ],
+    IonIcon, ExerciseSettingsModalComponent,
+    PageLoadingOverlayComponent
+],
   providers: [ModalController]
 })
 export class Tab2Page implements OnInit {

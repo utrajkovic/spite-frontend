@@ -14,6 +14,10 @@
           <ion-label>Assign</ion-label>
         </ion-segment-button>
 
+        <ion-segment-button value="records">
+          <ion-label>Records</ion-label>
+        </ion-segment-button>
+
         <ion-segment-button value="info">
           <ion-label>Client Info</ion-label>
         </ion-segment-button>
@@ -99,5 +103,9 @@
       </ion-list>
     </section>
 
+  </ng-container>
+
+  <ng-container *ngIf="segment === 'records'">
+      
   </ng-container>
 </ion-content>

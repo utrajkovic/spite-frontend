@@ -1,5 +1,8 @@
 <ion-content [fullscreen]="true">
-  <!-- TOP TABS -->
+
+  <page-loading-overlay [active]="isSavingExercise || isSavingWorkout" message="Please wait...">
+  </page-loading-overlay>
+
   <div class="top-tabs">
     <button (click)="tab = 'exercise'" [class.active]="tab === 'exercise'">
       Add Exercise

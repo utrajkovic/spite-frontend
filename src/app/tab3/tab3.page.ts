@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
 import { LocalDataService } from '../services/local-data.service';
 import { HttpClient } from '@angular/common/http';
 import { IonModal } from '@ionic/angular/standalone';
+import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
+import { forkJoin } from 'rxjs';
 
 
 @Component({
@@ -27,7 +29,8 @@ import { IonModal } from '@ionic/angular/standalone';
     IonLabel,
     IonButton,
     IonSpinner,
-    IonModal
+    IonModal,
+    PageLoadingOverlayComponent
   ]
 })
 export class Tab3Page implements OnInit {
@@ -36,6 +39,7 @@ export class Tab3Page implements OnInit {
   assignedWorkouts: Workout[] = []; // 🟢 novi deo
   loading: HTMLIonLoadingElement | null = null;
   isDeleting: string | null = null;
+  isLoading = false;
 
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
@@ -69,47 +73,37 @@ export class Tab3Page implements OnInit {
   }
 
   async loadData() {
+    this.isLoading = true;
+
     const user = await Preferences.get({ key: 'user' });
     const currentUser = user.value ? JSON.parse(user.value) : null;
 
     if (!currentUser) {
       console.warn('⚠️ Nema ulogovanog korisnika!');
+      this.isLoading = false;
       return;
     }
 
-    console.log('👤 Ulogovan korisnik:', currentUser);
+    const exercises$ = this.backend.getExercisesByUser(currentUser.id);
+    const workouts$ = this.backend.getWorkoutsByUser(currentUser.id);
+    const assigned$ = this.http.get<Workout[]>(`${this.backendUrl}/api/trainer/client-workouts-full/${currentUser.username}`);
 
-    // 🔹 Vežbe
-    this.backend.getExercisesByUser(currentUser.id).subscribe({
-      next: (res) => {
-        console.log('📦 Vežbe sa servera:', res);
+    forkJoin([exercises$, workouts$, assigned$]).subscribe({
+      next: ([exercises, workouts, assigned]) => {
         this.zone.run(() => {
-          this.exercises = res;
+          this.exercises = exercises;
+          this.workouts = workouts;
+          this.assignedWorkouts = assigned;
+          this.isLoading = false;
         });
       },
-      error: (err) => console.error('Greška pri učitavanju vežbi:', err)
-    });
-
-    this.backend.getWorkoutsByUser(currentUser.id).subscribe({
-      next: (res) => {
-        console.log('📦 Moji treninzi:', res);
-        this.zone.run(() => {
-          this.workouts = res;
-        });
-      },
-      error: (err) => console.error('Greška pri učitavanju treninga:', err)
-    });
-
-    this.http.get<Workout[]>(`${this.backendUrl}/api/trainer/client-workouts-full/${currentUser.username}`).subscribe({
-      next: (res) => {
-        console.log('🎯 Dodeljeni treninzi od trenera:', res);
-        this.zone.run(() => {
-          this.assignedWorkouts = res;
-        });
-      },
-      error: (err) => console.error('Greška pri učitavanju dodeljenih treninga:', err)
+      error: (err) => {
+        console.error('❌ Greška pri učitavanju:', err);
+        this.isLoading = false;
+      }
     });
   }
+
 
 
   async deleteExercise(id: string) {
