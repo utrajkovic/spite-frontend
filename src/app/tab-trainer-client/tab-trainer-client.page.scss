@@ -47,7 +47,8 @@ ion-segment-button {
   --color-checked: #00111a;
   --indicator-color: #00f7ff;
   font-family: 'Orbitron';
-  font-size: 13px;
+  font-size: 10px;
+  font-weight: bold;
   letter-spacing: 1px;
 }
 
@@ -197,4 +198,26 @@ ion-button:hover {
   color: #00f7ff;
   border-color: rgba(0, 255, 255, 0.4);
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
+}
+
+ion-segment {
+  --background: rgba(0, 255, 255, 0.10);
+
+  ion-segment-button {
+    --color: #aaa;
+    border-radius: 10px;
+    margin: 4px 6px;
+    padding: 6px 10px;
+    transition: 0.25s ease-in-out;
+
+    /* normal state */
+    background: rgba(0, 30, 40, 0.616);
+  }
+
+  /* ACTIVE (osvetljen) */
+  ion-segment-button.segment-button-checked {
+    background: rgba(0, 255, 255, 0.25);
+    box-shadow: 0 0 10px #00faff, 0 0 20px #00faff55;
+    transform: translateY(-1px);
+  }
 }

@@ -10,16 +10,16 @@
 
     <ion-toolbar>
       <ion-segment [(ngModel)]="segment">
-        <ion-segment-button value="assign">
+        <ion-segment-button value="assign" >
           <ion-label>Assign</ion-label>
         </ion-segment-button>
 
-        <ion-segment-button value="records">
-          <ion-label>Records</ion-label>
+        <ion-segment-button value="logs">
+          <ion-label>Logs</ion-label>
         </ion-segment-button>
 
         <ion-segment-button value="info">
-          <ion-label>Client Info</ion-label>
+          <ion-label>Info</ion-label>
         </ion-segment-button>
       </ion-segment>
     </ion-toolbar>
@@ -105,7 +105,7 @@
 
   </ng-container>
 
-  <ng-container *ngIf="segment === 'records'">
+  <ng-container *ngIf="segment === 'logs'">
       
   </ng-container>
 </ion-content>

@@ -30,7 +30,7 @@ export class TabTrainerPage {
   clients: { clientUsername: string }[] = [];
 
   baseUrl = 'https://spite-backend-v2.onrender.com/api/trainer';
-  isLoading = false;  // 🔥 custom overlay flag
+  isLoading = false;
 
   constructor(
     private http: HttpClient,

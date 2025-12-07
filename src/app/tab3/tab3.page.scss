@@ -168,9 +168,9 @@ ion-label p {
 
 /* UNUTRAŠNJI SCROLL ZONE */
 .alert-box {
+  text-align: center;
   padding: 20px;
   overflow-y: auto;
-  /* omogućava scroll unutar sadržaja */
   flex: 1;
 }
 
@@ -181,6 +181,7 @@ ion-label p {
   color: #00f7ff;
   margin-bottom: 12px;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  padding-bottom: 20px;
 }
 
 .description {

@@ -203,11 +203,18 @@ export class Tab3Page implements OnInit {
 
       videoEl.onloadeddata = () => {
         messageEl.innerHTML = `
-        <div class="exercise-preview-alert">
-          <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls></video>
-          <p>${exercise.description || 'No description available.'}</p>
-        </div>
-      `;
+          <div class="exercise-modal-wrapper">
+
+            <h2 class="ex-modal-title">${exercise.name}</h2>
+
+            <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls class="ex-modal-video"></video>
+
+            <p class="ex-modal-description">
+              ${exercise.description || 'No description available.'}
+            </p>
+
+          </div>
+        `;
       };
     } catch (err) {
       console.error('Error loading video:', err);
