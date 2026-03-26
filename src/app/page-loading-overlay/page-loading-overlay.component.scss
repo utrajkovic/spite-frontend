@@ -23,16 +23,16 @@
 .spinner {
   width: 45px;
   height: 45px;
-  border: 4px solid rgba(0,255,255,0.25);
-  border-top-color: #00f7ff;
+  border: 4px solid var(--border-cyan);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   margin: 0 auto 12px;
   animation: spin 0.8s linear infinite;
 }
 
 .msg {
-  font-family: 'Orbitron', sans-serif;
-  color: #aefcff;
+  font-family: var(--font-display);
+  color: var(--color-text-muted);
   font-size: 14px;
 }
 

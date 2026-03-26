@@ -19,14 +19,14 @@ ion-content {
   align-items: center;
 }
 
-/* Progress bar */
+/* Neon progress bar */
 .neon-progress {
   margin: 0px 0 0px;
   height: 2px;
-  --progress-background: rgb(0, 255, 255);
-  --progress-bar-background: linear-gradient(90deg, #00f7ff, #00ffaa);
+  --progress-background: rgba(0, 255, 255, 0.2);
+  --progress-bar-background: linear-gradient(90deg, var(--color-primary), #00ffaa);
   border-radius: 10px;
-  box-shadow: 0 0 10px rgb(0, 255, 255);
+  box-shadow: 0 0 10px var(--color-primary);
 }
 
 /* Kartica (stakleni efekat u Spite tonu) */
@@ -72,14 +72,14 @@ ion-content {
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 6px;
-  color: #00f7ff;
+  color: var(--color-primary);
   text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
 }
 
 .exercise-desc {
   font-size: 15px;
   font-style: italic;
-  color: #aefcff;
+  color: var(--color-text-muted);
   margin-bottom: 12px;
   opacity: 0.9;
 }
@@ -104,14 +104,14 @@ ion-content {
 
 .placeholder-icon {
   font-size: 64px;
-  color: #00f7ff88;
+  color: rgba(0, 247, 255, 0.53);
 }
 
 /* Info */
 .exercise-info p {
   font-size: 15px;
   margin: 6px 0;
-  color: #e0ffff;
+  color: var(--color-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,7 +129,7 @@ ion-content {
 .rest-title {
   font-size: 18px;
   font-weight: bold;
-  color: #00f7ff;
+  color: var(--color-primary);
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
@@ -161,7 +161,7 @@ ion-content {
   margin-top: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  --background: linear-gradient(90deg, #00f7ff, #00aaff);
+  --background: linear-gradient(90deg, var(--color-primary), #00aaff);
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
 }
 
@@ -179,11 +179,11 @@ ion-content {
   margin-top: 12px;
   text-align: center;
   font-size: 15px;
-  color: #aefcff;
+  color: var(--color-text-muted);
 }
 
 .next-exercise strong {
-  color: #00f7ff;
+  color: var(--color-primary);
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
 }
 
@@ -214,7 +214,7 @@ ion-content {
 
 .circle-progress {
   fill: none;
-  stroke: #00f7ff;
+  stroke: var(--color-primary);
   stroke-width: 8;
   stroke-linecap: round;
   transition: stroke-dashoffset 1s linear;
@@ -267,7 +267,7 @@ ion-content {
 .rest-title {
   font-size: clamp(1.4rem, 3vw, 2rem);
   font-weight: 600;
-  color: #00ffff;
+  color: var(--color-primary);
   margin-bottom: 12px;
   text-align: center;
 }
@@ -297,8 +297,8 @@ ion-content {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #e0ffff;
-  font-family: 'Orbitron', sans-serif;
+  color: var(--color-text);
+  font-family: var(--font-display);
   z-index: 10;
   border-radius: 16px;
   animation: fadeIn 0.3s ease;

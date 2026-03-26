@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
 
 ion-tabs {
   background: transparent !important;
@@ -30,10 +29,10 @@ ion-toolbar {
   text-align: center;
   width: 100%;
   font-family: 'Monoton', cursive;
-  color: #00f7ff;
+  color: var(--color-primary);
   font-size: clamp(22px, 5vw, 28px);
   letter-spacing: 3px;
-  text-shadow: 0 0 8px #00f7ff;
+  text-shadow: 0 0 8px var(--color-primary);
   margin: 0 auto;
   position: relative;
 }
@@ -82,15 +81,15 @@ ion-toolbar {
 
 /* Dugmad u meniju */
 ion-tab-button {
-  color: #aefcff;
-  --color-selected: #00f7ff;
-  font-family: 'Orbitron', cursive;
+  color: var(--color-text-muted);
+  --color-selected: var(--color-primary);
+  font-family: var(--font-display);
   transition: transform 0.25s ease, color 0.25s ease;
 }
 
 ion-tab-button.ion-selected {
   transform: translateY(-2px);
-  color: #00f7ff;
+  color: var(--color-primary);
 }
 
 ion-tab-button:active {
@@ -106,7 +105,7 @@ ion-tab-bar i {
 }
 
 ion-tab-button.ion-selected i {
-  color: #00f7ff;
+  color: var(--color-primary);
   transform: scale(1.15);
 }
 
@@ -132,13 +131,39 @@ ion-router-outlet {
   }
 }
 ion-tab-button.tab-selected {
-  background: rgba(0, 255, 255, 0.12);  
+  background: rgba(0, 255, 255, 0.12);
   border-radius: 12px;
   transition: 0.25s ease-in-out;
 }
 
 ion-tab-button.tab-selected ion-label,
 ion-tab-button.tab-selected i {
-  color: #00ffff !important;   
-  text-shadow: 0 0 8px #00ffff;
+  color: var(--color-primary) !important;
+  text-shadow: 0 0 8px var(--color-primary);
+}
+
+/* Unread badge */
+.msg-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unread-badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: var(--color-danger);
+  color: white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 8px var(--color-danger);
+  font-family: var(--font-display);
+  font-weight: 700;
 }

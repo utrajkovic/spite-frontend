@@ -3,6 +3,39 @@
  * ----------------------------------------------------------------------------
  */
 
+/* ============================================================
+   SPITE – DESIGN TOKENS
+   Sve boje i fontovi na jednom mestu.
+   Koristi ove varijable svuda umesto hardkodovanih vrednosti.
+   ============================================================ */
+:root {
+  /* Primarne boje */
+  --color-primary:      #00f7ff;   /* cyan – naslovi, ikonice, akcenti */
+  --color-primary-dim:  #8efcff;   /* svetliji cyan – labele, sekundarni tekst */
+  --color-text:         #e0ffff;   /* beli tekst sa cyan nijansama */
+  --color-text-muted:   #aefcff;   /* muted tekst, opisi */
+  --color-danger:       #ff4d4d;   /* crvena – brisanje, greška */
+  --color-success:      #00ffaa;   /* zelena – uspeh */
+  --color-warning:      #ffe600;   /* žuta – superset */
+
+  /* Pozadine */
+  --bg-page:            radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --bg-card:            rgba(0, 40, 60, 0.25);
+  --bg-card-hover:      rgba(0, 40, 60, 0.45);
+  --bg-input:           rgba(0, 40, 60, 0.35);
+
+  /* Borderi */
+  --border-cyan:        rgba(0, 255, 255, 0.25);
+  --border-cyan-hover:  rgba(0, 255, 255, 0.5);
+
+  /* Fontovi */
+  --font-display:       'Orbitron', sans-serif;
+  --font-body:          'Tilt Neon', cursive;
+
+  /* Padding top (zbog globalnog headera) */
+  --header-offset:      72px;
+}
+
 /* Core CSS required for Ionic components */
 @import "@ionic/angular/css/core.css";
 
@@ -23,7 +56,7 @@
 @import '@ionic/angular/css/palettes/dark.system.css';
 
 /* ------------------------------------------------------
-   🌐 GLOBAL CYBERPUNK ALERT (NEW PRO VERSION)
+   🌐 GLOBAL CYBERPUNK ALERT
 ------------------------------------------------------- */
 
 ion-alert.custom-alert {
@@ -33,37 +66,33 @@ ion-alert.custom-alert {
   --box-shadow: 0 0 25px rgba(0, 255, 255, 0.45);
   --width: 94%;
   --max-width: 380px;
-  --color: #aefcff !important;
+  --color: var(--color-text-muted) !important;
 
-  border: 1px solid rgba(0, 255, 255, 0.25);
+  border: 1px solid var(--border-cyan);
   backdrop-filter: blur(14px) saturate(180%);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
 
-  font-family: 'Orbitron', sans-serif !important;
+  font-family: var(--font-display) !important;
   letter-spacing: 0.4px;
 }
 
-/* Header */
 ion-alert.custom-alert::part(header) {
-  color: #00f7ff !important;
+  color: var(--color-primary) !important;
   font-size: 20px !important;
   font-weight: 700;
   text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
   margin-bottom: 6px;
 }
 
-/* Message */
 ion-alert.custom-alert::part(message) {
-  color: #cfffff !important;
+  color: var(--color-text) !important;
   font-size: 15px !important;
-  line-height: 1.4em;
-  opacity: 0.9;
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+  line-height: 1.5em;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
 }
 
-/* Buttons */
 ion-alert.custom-alert::part(button) {
-  color: #00eaff !important;
+  color: var(--color-primary) !important;
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
@@ -72,27 +101,16 @@ ion-alert.custom-alert::part(button) {
   border-radius: 10px;
   padding: 8px 14px;
   transition: 0.22s ease;
-
   backdrop-filter: blur(6px) saturate(140%);
   -webkit-backdrop-filter: blur(6px) saturate(140%);
 }
 
-/* Hover */
 ion-alert.custom-alert::part(button):hover {
   filter: brightness(1.2);
   transform: scale(1.04);
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
-/* Delete/Logout special color */
-ion-alert.custom-alert::part(button)[aria-label="Delete"],
-ion-alert.custom-alert::part(button)[aria-label="Obriši"],
-ion-alert.custom-alert::part(button)[aria-label="Logout"] {
-  color: #ff4d4d !important;
-  text-shadow: 0 0 10px rgba(255, 80, 80, 0.6);
-}
-
-/* Always above everything */
 ion-alert,
 ion-alert::part(content),
 .alert-wrapper,
@@ -103,7 +121,7 @@ ion-alert::part(content),
 }
 
 /* ------------------------------------------------------
-   TOAST – CENTER SCREEN NEON STYLE
+   TOAST
 ------------------------------------------------------- */
 
 ion-toast.custom-toast {
@@ -112,20 +130,18 @@ ion-toast.custom-toast {
   left: 50% !important;
   transform: translate(-50%, -50%);
   z-index: 9999;
-
   --background: transparent !important;
   --border-radius: 0;
   --box-shadow: none;
   backdrop-filter: none !important;
-
   opacity: 1 !important;
 }
 
 ion-toast.custom-toast::part(container) {
   all: unset;
   display: block;
-  background: rgba(0, 40, 60, 0.45);
-  border: 1px solid rgba(0, 255, 255, 0.25);
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-cyan);
   border-radius: 16px;
   padding: 14px 22px;
   box-shadow: 0 0 14px rgba(0, 255, 255, 0.4);
@@ -136,7 +152,7 @@ ion-toast.custom-toast::part(message) {
   all: unset;
   display: block;
   text-align: center;
-  color: #00f7ff;
+  color: var(--color-primary);
   font-size: 17px;
   font-weight: 600;
   letter-spacing: 0.4px;
@@ -144,12 +160,12 @@ ion-toast.custom-toast::part(message) {
 }
 
 ion-toast.success-toast::part(message) {
-  color: #00ffaa;
+  color: var(--color-success);
   text-shadow: 0 0 8px rgba(0, 255, 170, 0.6);
 }
 
 ion-toast.error-toast::part(message) {
-  color: #ff4d4d;
+  color: var(--color-danger);
   text-shadow: 0 0 8px rgba(255, 80, 80, 0.6);
 }
 
@@ -158,13 +174,13 @@ ion-toast.error-toast::part(message) {
 ------------------------------------------------------- */
 
 ion-alert.exercise-preview-modal {
-  --background: rgba(0, 40, 60, 0.25);
+  --background: var(--bg-card);
   --backdrop-opacity: 0.3;
   --border-radius: 18px;
   --box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-display);
 }
 
 .exercise-preview-alert {
@@ -182,13 +198,35 @@ ion-alert.exercise-preview-modal {
   object-fit: contain;
 }
 
-.exercise-preview-alert p {
-  font-size: 15px;
-  color: #aefcff;
-  opacity: 0.9;
+.exercise-preview-alert h3 {
+  font-family: var(--font-display);
+  color: var(--color-primary);
+  font-size: 16px;
+  margin: 8px 0 4px;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
 }
 
-/* Scrollable message area */
+.exercise-preview-alert p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin: 0;
+}
+
+.exercise-preview-alert .index-indicator {
+  font-size: 13px;
+  color: var(--color-primary-dim);
+  opacity: 0.8;
+  margin: 6px 0;
+}
+
+.exercise-preview-alert .nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
 ion-alert.exercise-preview-modal::part(message) {
   max-height: 80vh;
   overflow-y: auto;
@@ -199,27 +237,27 @@ ion-alert.exercise-preview-modal::part(message) {
 ------------------------------------------------------- */
 
 .workout-details-alert {
-  color: #e0ffff;
-  font-family: 'Orbitron', sans-serif;
-  line-height: 1.4em;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  line-height: 1.5em;
 }
 
 .workout-details-alert h4 {
-  color: #00ffaa;
+  color: var(--color-success);
   text-shadow: 0 0 6px rgba(0, 255, 170, 0.4);
 }
 
 .workout-details-alert p {
   font-size: 14px;
-  opacity: 0.9;
+  color: var(--color-text-muted);
 }
 
 ion-alert.workout-preview-modal {
-  --background: rgba(0, 40, 60, 0.25);
+  --background: var(--bg-card);
   --backdrop-opacity: 0.3;
   --border-radius: 18px;
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 255, 255, 0.25);
+  border: 1px solid var(--border-cyan);
 }
 
 /* ------------------------------------------------------
@@ -227,45 +265,18 @@ ion-alert.workout-preview-modal {
 ------------------------------------------------------- */
 
 ion-loading.custom-loading {
-  --background: rgba(0, 40, 60, 0.25);
-  --spinner-color: #00f7ff;
-  --color: #00f7ff;
+  --background: var(--bg-card);
+  --spinner-color: var(--color-primary);
+  --color: var(--color-primary);
   --border-radius: 16px;
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(0, 255, 255, 0.25);
-}
-ion-alert.custom-alert::part(message),
-ion-alert.custom-alert::part(header) {
-  color: #00f7ff !important;
-  font-size: 16px;
-  font-weight: 500;
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
+  border: 1px solid var(--border-cyan);
 }
 
-ion-alert.custom-alert::part(button) {
-  color: #00eaff !important;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-  font-weight: 600;
-}
+/* ------------------------------------------------------
+   MODAL – TRANSPARENT FEEDBACK
+------------------------------------------------------- */
 
-ion-alert.custom-alert,
-ion-alert.custom-alert::part(content),
-ion-alert.custom-alert::part(message),
-ion-alert.custom-alert .alert-message,
-ion-alert.custom-alert .alert-message span,
-ion-alert.custom-alert .alert-message * {
-  --ion-text-color: #00f7ff !important;
-  color: #00f7ff !important;
-  fill: #00f7ff !important;
-  stroke: #00f7ff !important;
-  opacity: 1 !important;
-}
-ion-alert::part(message),
-ion-alert [class*="alert-message"],
-ion-alert [class*="sc-ion-alert"],
-ion-alert [part="message"] {
-  color: #ffffff !important;
-}
 ion-modal::part(content) {
   --background: transparent !important;
   background: transparent !important;
@@ -277,12 +288,12 @@ ion-modal::part(backdrop) {
   --backdrop-opacity: 0 !important;
 }
 
-ion-modal::part(wrapper), 
+ion-modal::part(wrapper),
 ion-modal .modal-wrapper {
   background: transparent !important;
   --background: transparent !important;
 }
-/* TARGETUJEMO SAMO OVAJ MODAL */
+
 ion-modal.feedback-transparent::part(backdrop) {
   background: transparent !important;
   --backdrop-opacity: 0 !important;
@@ -290,12 +301,81 @@ ion-modal.feedback-transparent::part(backdrop) {
 
 ion-modal.feedback-transparent::part(content),
 ion-modal.feedback-transparent::part(wrapper) {
-  background: rgba(0, 20, 30, 0.20) !important; 
+  background: rgba(0, 20, 30, 0.20) !important;
   backdrop-filter: blur(12px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
   border-radius: 20px;
   box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
 }
 
+/* ------------------------------------------------------
+   GLOBAL SPINNER COLOR
+------------------------------------------------------- */
+
+ion-spinner {
+  color: var(--color-primary);
+}
 
 
+
+
+/* ------------------------------------------------------
+   GLOBAL TYPOGRAPHY CONSISTENCY
+------------------------------------------------------- */
+
+h2, h3 {
+  font-family: var(--font-display);
+  color: var(--color-primary);
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+  margin-bottom: 16px;
+}
+
+h3 {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* ------------------------------------------------------
+   GLOBAL ION-LABEL CONSISTENCY
+------------------------------------------------------- */
+
+ion-label {
+  color: var(--color-primary) !important;
+  font-family: var(--font-display) !important;
+}
+
+ion-list-header ion-label {
+  font-size: 15px !important;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+/* ------------------------------------------------------
+   GLOBAL ION-ITEM BORDER RESET
+------------------------------------------------------- */
+
+ion-item::part(native) {
+  --inner-border-width: 0 !important;
+  border-bottom: none !important;
+}
+
+/* ------------------------------------------------------
+   GLOBAL ION-BUTTON FONT
+------------------------------------------------------- */
+
+ion-button {
+  font-family: var(--font-display) !important;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}

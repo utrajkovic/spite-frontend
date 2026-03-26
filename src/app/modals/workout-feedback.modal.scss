@@ -4,20 +4,21 @@
   -webkit-backdrop-filter: blur(14px) saturate(160%);
   padding: 20px;
   border-radius: 18px;
-  border: 1px solid rgba(0, 255, 255, 0.25);
-  font-family: 'Orbitron', sans-serif;
-  color: #e0ffff;
+  border: 1px solid var(--border-cyan);
+  font-family: var(--font-display);
+  color: var(--color-text);
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .title {
   text-align: center;
   font-size: 22px;
   margin-bottom: 16px;
-  color: #00f7ff;
-  text-shadow: 0 0 8px #00f7ff;
+  color: var(--color-primary);
+  text-shadow: 0 0 8px var(--color-primary);
 }
 
-/* GRID STRUCTURE — sada 5 kolona */
 .table-header,
 .table-row {
   display: grid;
@@ -29,13 +30,13 @@
 
 .table-header {
   font-weight: bold;
-  color: #00e6ff;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  color: var(--color-primary);
+  border-bottom: 1px solid var(--border-cyan);
 }
 
 .col {
   display: flex;
-  justify-content: center !important;
+  justify-content: center;
   align-items: center;
   text-align: center;
 }
@@ -46,30 +47,27 @@
   font-weight: 600;
 }
 
-/* ROW BORDER */
 .table-row {
   border-bottom: 1px solid rgba(0, 255, 255, 0.07);
 }
 
-/* INPUTS */
 .small-input {
   width: 45px;
   padding: 4px;
-  background: rgba(0, 40, 60, 0.35);
-  border: 1px solid rgba(0, 255, 255, 0.25);
+  background: var(--bg-input);
+  border: 1px solid var(--border-cyan);
   border-radius: 6px;
-  color: #e0ffff;
+  color: var(--color-text);
   text-align: center;
-  font-family: 'Orbitron';
+  font-family: var(--font-display);
   font-size: 12px;
 }
 
 .x {
   margin: 0 4px;
-  color: #00c8ff;
+  color: var(--color-primary);
 }
 
-/* DIFFICULTY */
 .difficulty {
   display: flex;
   gap: 6px;
@@ -79,29 +77,26 @@
 .pill {
   padding: 4px 10px;
   border-radius: 12px;
-  border: 1px solid rgba(0, 255, 255, 0.25);
-  background: rgba(0, 40, 60, 0.3);
-  color: #e0ffff;
+  border: 1px solid var(--border-cyan);
+  background: var(--bg-input);
+  color: var(--color-text);
   font-size: 12px;
   transition: 0.2s ease;
+  cursor: pointer;
 }
 
 .pill.active {
-  background: #00f7ff;
+  background: var(--color-primary);
   color: #000;
   font-weight: bold;
-  box-shadow: 0 0 10px #00f7ff;
+  box-shadow: 0 0 10px var(--color-primary);
 }
 
-/* SEND BUTTON */
 .send-btn {
   margin-top: 20px;
   font-size: 16px;
 }
-.feedback-modal {
-  max-height: 80vh;
-  overflow-y: auto;
-}
+
 /* ========= MOBILE ONLY ========= */
 @media (max-width: 600px) {
 
@@ -116,36 +111,34 @@
     margin-bottom: 16px;
     padding: 16px;
     background: rgba(0, 25, 35, 0.35);
-    border: 1px solid rgba(0,255,255,0.18);
+    border: 1px solid var(--border-cyan);
     border-radius: 14px;
-    text-align: center; /* 🔥 centrirano sve */
+    text-align: center;
   }
 
-  /* LINE 1 — name + expected */
   .line-1 {
     width: 100%;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     align-items: center;
     gap: 2px;
   }
 
   .ex-name {
-    color: #00f7ff;
+    color: var(--color-primary);
     font-size: 16px;
     font-weight: 600;
   }
 
   .ex-expected {
-    color: #aefcff;
+    color: var(--color-text-muted);
     font-size: 14px;
   }
 
-  /* LINE 2 — done + kg */
   .line-2 {
     width: 100%;
     display: flex;
-    flex-direction: column; /* jedno ispod drugog */
+    flex-direction: column;
     gap: 6px;
     align-items: center;
   }
@@ -161,38 +154,32 @@
   .mini-input {
     width: 50px;
     padding: 6px;
-    background: rgba(0, 40, 60, 0.45);
-    border: 1px solid rgba(0,255,255,0.25);
+    background: var(--bg-input);
+    border: 1px solid var(--border-cyan);
     border-radius: 6px;
-    color: #e0ffff;
+    color: var(--color-text);
     text-align: center;
     font-size: 14px;
   }
 
-  /* LINE 3 — difficulty */
   .mobile-difficulty {
     width: 100%;
     display: flex;
     gap: 8px;
   }
 
-  /* 🔥 Each difficulty pill same width */
   .mobile-difficulty .pill {
-    flex: 1;               /* sve iste širine */
+    flex: 1;
     text-align: center;
     padding: 8px 0;
     border-radius: 10px;
     font-size: 13px;
-    background: rgba(0,40,60,0.4);
   }
 
   .pill.active {
-    background: #00f7ff !important;
+    background: var(--color-primary) !important;
     color: #000;
-    box-shadow: 0 0 12px #00f7ff;
+    box-shadow: 0 0 12px var(--color-primary);
     font-weight: 700;
   }
 }
-
-
-

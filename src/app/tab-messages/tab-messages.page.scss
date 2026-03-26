@@ -1,8 +1,8 @@
 ion-content {
-    --background: radial-gradient(circle at top, #00111a 0%, #000 100%);
-    font-family: 'Orbitron', sans-serif;
-    color: #e0ffff;
-    --padding-top: 72px;
+    --background: var(--bg-page);
+    font-family: var(--font-display);
+    color: var(--color-text);
+    --padding-top: var(--header-offset);
     padding: 16px;
 }
 
@@ -17,9 +17,9 @@ ion-content {
 
 .chat-input {
     flex: 1;
-    --background: radial-gradient(circle at top, #00111a00 0%, #00000000 100%);
-    --color: #e0ffff;
-    border: 1px solid rgba(0, 255, 255, 0.25);
+    --background: transparent;
+    --color: var(--color-text);
+    border: 1px solid var(--border-cyan);
     border-radius: 18px;
     padding: 6px 10px;
     text-align: center;
@@ -27,7 +27,7 @@ ion-content {
 
 .start-btn {
     --background: rgba(0, 255, 255, 0.20);
-    --color: #00f7ff;
+    --color: var(--color-primary);
     border-radius: 12px;
     font-size: 14px;
     letter-spacing: 1px;
@@ -63,14 +63,14 @@ ion-content {
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: #00f7ff2e;
-    color: #00f7ff;
+    background: rgba(0, 247, 255, 0.18);
+    color: var(--color-primary);
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 700;
     font-size: 18px;
-    border: 1px solid #00f7ff66;
+    border: 1px solid rgba(0, 247, 255, 0.4);
     text-transform: uppercase;
 }
 
@@ -78,7 +78,7 @@ ion-content {
 .username {
     font-size: 16px;
     font-weight: 600;
-    color: #e0ffff;
+    color: var(--color-text);
     letter-spacing: 0.5px;
 }
 

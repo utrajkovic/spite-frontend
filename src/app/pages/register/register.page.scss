@@ -1,10 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
-
-
 ion-content {
-  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
-  font-family: 'Tilt Neon', cursive;
-  color: #fff;
+  --background: var(--bg-page);
+  font-family: var(--font-body);
+  color: var(--color-text);
   padding: 24px;
   text-align: center;
 }
@@ -15,17 +12,17 @@ ion-content {
 }
 
 .app-title h1 {
-  font-family: 'Orbitron';
+  font-family: var(--font-display);
   font-size: 48px;
   font-weight: bold;
-  color: #00ffff;
+  color: var(--color-primary);
   text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
 }
 
 .app-title p {
   font-size: 14px;
-  color: #00bfff;
-  opacity: 0.9;
+  color: var(--color-primary);
+  opacity: 0.8;
 }
 
 .flicker h1 {
@@ -33,29 +30,19 @@ ion-content {
 }
 
 @keyframes flicker {
-
-  0%,
-  18%,
-  22%,
-  25%,
-  53%,
-  57%,
-  100% {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
     opacity: 1;
-    text-shadow: #00ffff, 0 0 10px #00ffff, 0 0 20px #0077ff;
+    text-shadow: 0 0 10px var(--color-primary), 0 0 20px #0077ff;
   }
-
-  20%,
-  24%,
-  55% {
+  20%, 24%, 55% {
     opacity: 0.6;
     text-shadow: none;
   }
 }
 
 form {
-  background: rgba(0, 40, 60, 0.25);
-  border: 1px solid rgba(0, 255, 255, 0.25);
+  background: var(--bg-card);
+  border: 1px solid var(--border-cyan);
   border-radius: 18px;
   padding: 30px 24px;
   backdrop-filter: blur(10px) saturate(140%);
@@ -71,21 +58,21 @@ ion-item {
 }
 
 ion-label {
-  color: #00ffff;
+  color: var(--color-primary) !important;
   font-weight: 500;
   font-size: 15px;
   margin-bottom: 6px;
 }
 
 ion-input {
-  color: #fff;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  color: var(--color-text) !important;
+  border-bottom: 1px solid var(--border-cyan);
   padding-bottom: 6px;
 }
 
 ion-button[type="submit"] {
   --border-radius: 12px;
-  --background: linear-gradient(90deg, #00ffff 0%, #0077ff 100%);
+  --background: linear-gradient(90deg, var(--color-primary) 0%, #0077ff 100%);
   --color: #000;
   font-weight: bold;
   letter-spacing: 0.5px;
@@ -99,12 +86,12 @@ ion-button[type="submit"] {
 
 .register-section p {
   font-size: 14px;
-  color: #aaa;
+  color: var(--color-text-muted);
   margin-bottom: 4px;
 }
 
 .register-section ion-button {
-  --color: #00ffff;
+  --color: var(--color-primary);
   font-weight: 500;
 }
 
@@ -112,22 +99,10 @@ ion-button[type="submit"] {
   margin-top: 40px;
   padding: 0 12px;
   font-size: 13px;
-  color: #8fdfff;
+  color: var(--color-text-muted);
   opacity: 0.85;
   line-height: 1.5;
   text-align: center;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .spinner-container {
@@ -135,8 +110,8 @@ ion-button[type="submit"] {
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
-  color: #00ffff;
-  font-family: 'Tilt Neon', cursive;
+  color: var(--color-primary);
+  font-family: var(--font-body);
 
   ion-spinner {
     margin-bottom: 8px;
@@ -148,8 +123,9 @@ ion-button[type="submit"] {
   font-size: 13px;
   margin: -8px 0 16px 8px;
   line-height: 1.4;
-  color: #888;
-  font-family: 'Tilt Neon', cursive;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  opacity: 0.7;
 }
 
 .password-rules p {
@@ -157,20 +133,12 @@ ion-button[type="submit"] {
 }
 
 .password-rules p.valid {
-  color: #00ffff;
+  color: var(--color-primary);
+  opacity: 1;
   text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
 }
 
-.spinner-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  color: #00ffff;
-  font-family: 'Tilt Neon', cursive;
-
-  ion-spinner {
-    margin-bottom: 8px;
-    transform: scale(1.3);
-  }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }

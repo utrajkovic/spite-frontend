@@ -53,6 +53,7 @@ export interface ExerciseFeedback {
 
 export interface WorkoutFeedback {
   workoutId: string;
+  workoutTitle?: string; // snapshot – ostaje čitljiv i posle brisanja treninga
   userId: string;
   timestamp: number;
   exercises: ExerciseFeedback[];

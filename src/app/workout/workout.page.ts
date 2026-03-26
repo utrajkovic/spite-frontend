@@ -43,7 +43,6 @@ export class WorkoutPage implements OnInit {
   currentIndex = 0;  // index u items
   currentSet = 1;    // 1..sets
 
-  // da li trenutno gledamo SUPERSET vežbu za ovaj item
   showingSuperset = false;
 
   isResting = false;
@@ -87,12 +86,7 @@ export class WorkoutPage implements OnInit {
     });
   }
 
-  // ==========================
-  // GETTERS
-  // ==========================
-
   get currentExerciseIndex() {
-    // samo radi progress bara (1..items.length)
     return this.currentIndex;
   }
 
@@ -116,20 +110,17 @@ export class WorkoutPage implements OnInit {
     return !!this.currentItem?.supersetExerciseId;
   }
 
-  // helper: nađi vežbu po id-ju
   private getExerciseById(id: string | undefined | null): Exercise | undefined {
     if (!id) return undefined;
     return this.exercises.find(e => e.id === id);
   }
 
-  // Naziv superset vežbe za prikaz u UI
   get supersetExerciseName(): string | null {
     if (!this.currentItem?.supersetExerciseId) return null;
     const ex = this.getExerciseById(this.currentItem.supersetExerciseId);
     return ex?.name ?? null;
   }
 
-  // koja vežba se trenutno prikazuje (main ili superset)
   get currentExercise(): Exercise | undefined {
     if (!this.showingSuperset || !this.currentItem.supersetExerciseId) {
       return this.getExerciseById(this.currentItem.exerciseId);
@@ -137,7 +128,6 @@ export class WorkoutPage implements OnInit {
     return this.getExerciseById(this.currentItem.supersetExerciseId);
   }
 
-  // sledeći item & vežba (za “Next exercise” preview)
   get nextItem(): WorkoutItem | null {
     if (this.currentIndex < this.items.length - 1) {
       return this.items[this.currentIndex + 1];
@@ -170,17 +160,12 @@ export class WorkoutPage implements OnInit {
     const item = this.currentItem;
     const hasSuperset = !!item.supersetExerciseId;
 
-    // ------------------------------
-    // 1) NEMA SUPERSETA → kao ranije
-    // ------------------------------
     if (!hasSuperset) {
       if (this.currentSet < item.sets) {
-        // mala pauza između SERIJA
         this.startRest(item.restBetweenSets, () => {
           this.currentSet++;
         });
       } else {
-        // završene sve serije → VELIKA pauza → sledeći item
         this.startRest(item.restAfterExercise, () => {
           this.currentSet = 1;
           this.showingSuperset = false;
@@ -190,25 +175,16 @@ export class WorkoutPage implements OnInit {
       return;
     }
 
-    // ------------------------------
-    // 2) IMA SUPERSET
-    // ------------------------------
-
-    // Ako trenutno gledamo GLAVNU vežbu → odmah prebaci na superset (bez pauze)
     if (!this.showingSuperset) {
       this.showSuperset();
       return;
     }
 
-    // Ako smo OVDE, znači: trenutno smo na SUPERSET vežbi
-    // Sad odlučujemo da li ima još setova ili je kraj glavne vežbe
-
     if (this.currentSet < item.sets) {
-      // još setova glavne → posle superseta ide mala pauza,
-      // pa se vraćamo na GLAVNU vežbu sa sledećim setom
+
       this.startRest(item.restBetweenSets, () => {
         this.currentSet++;
-        this.showingSuperset = false; // vrati se na main
+        this.showingSuperset = false; 
       });
     } else {
 
@@ -220,7 +196,6 @@ export class WorkoutPage implements OnInit {
     }
   }
 
-  // prikaži superset vežbu (bez pauze)
   private showSuperset() {
     this.showingSuperset = true;
     this.isVideoLoading = true;
@@ -271,6 +246,7 @@ export class WorkoutPage implements OnInit {
 
         this.backend.sendWorkoutFeedback({
           workoutId: this.workout.id!,
+          workoutTitle: this.workout.title,
           userId: userId,
           timestamp: Date.now(),
           exercises: feedback

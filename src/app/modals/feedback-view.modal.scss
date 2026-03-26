@@ -1,77 +1,78 @@
 .feedback-modal {
-    background: rgba(0, 25, 35, 0.35);
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    padding: 20px;
-    border-radius: 18px;
-    border: 1px solid rgba(0, 255, 255, 0.25);
-    font-family: 'Orbitron', sans-serif;
-    color: #e0ffff;
+  background: rgba(0, 25, 35, 0.35);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  padding: 20px;
+  border-radius: 18px;
+  border: 1px solid var(--border-cyan);
+  font-family: var(--font-display);
+  color: var(--color-text);
+  margin: auto;
+  max-width: 500px;
 }
 
 .title {
-    text-align: center;
-    font-size: 22px;
-    margin-bottom: 16px;
-    color: #00f7ff;
-    text-shadow: 0 0 8px #00f7ff;
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 16px;
+  color: var(--color-primary);
+  text-shadow: 0 0 8px var(--color-primary);
 }
 
-/* GRID STRUCTURE — identično originalu */
 .table-header,
 .table-row {
-    display: grid;
-    grid-template-columns: 1.5fr 1.5fr 1.5fr 1.5fr;
-    align-items: center;
-    padding: 10px 0;
-    text-align: center;
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 1.5fr 1.5fr;
+  align-items: center;
+  padding: 10px 0;
+  text-align: center;
 }
 
 .table-header {
-    font-weight: bold;
-    color: #00e6ff;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  font-weight: bold;
+  color: var(--color-primary);
+  border-bottom: 1px solid var(--border-cyan);
 }
 
 .col {
-    display: flex;
-    justify-content: center !important;
-    align-items: center;
-    text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .col.ex {
-    justify-content: flex-start !important;
-    padding-left: 6px;
-    font-weight: 600;
+  justify-content: flex-start !important;
+  padding-left: 6px;
+  font-weight: 600;
 }
 
 .table-row {
-    font-size: 12px;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.07);
+  font-size: 12px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.07);
 }
 
-/* PILL COLORS */
 .pill {
-    padding: 4px 8px;
-    border-radius: 12px;
-    background: rgba(0, 255, 255, 0.1);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid var(--border-cyan);
+  font-size: 10px;
+  color: var(--color-text-muted);
 }
 
 .pill.easy {
-    color: #00ff9d;
+  color: var(--color-success);
 }
 
 .pill.normal {
-    color: #00e6ff;
+  color: var(--color-primary);
 }
 
 .pill.hard {
-    color: #ff4c4c;
+  color: var(--color-danger);
 }
-/* UKLANJA kompletan default screen Ionic modal-a */
+
 :host {
   --width: auto !important;
   --height: auto !important;
@@ -84,24 +85,16 @@
   align-items: center;
 }
 
-/* Uklanja background iza modal contenta */
 ion-modal::part(content) {
   --background: transparent !important;
   padding: 0 !important;
   box-shadow: none !important;
 }
 
-/* Uklanja page wrapper */
 ion-modal > .ion-page {
   background: transparent !important;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0 !important;
-}
-
-/* Kartica izgleda NORMALNO (tvoj modal) */
-.feedback-modal {
-  margin: auto;
-  max-width: 500px;
 }

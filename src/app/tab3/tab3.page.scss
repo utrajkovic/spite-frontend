@@ -1,15 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
 
 /* ------------------------------------------------------
    GLOBAL TAB3 STIL
 ------------------------------------------------------ */
 
 ion-content {
-  --background: radial-gradient(circle at top, #00111a 0%, #000 100%);
-  --padding-top: 72px;
+  --background: var(--bg-page);
+  --padding-top: var(--header-offset);
   padding: 16px;
-  font-family: 'Orbitron', sans-serif;
-  color: #e0ffff;
+  font-family: var(--font-display);
+  color: var(--color-text);
 }
 
 /* Veći razmak između celih sekcija */
@@ -31,7 +30,7 @@ ion-content {
 .section-box h2 {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #00f7ff;
+  color: var(--color-primary);
   text-align: center;
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
   margin-bottom: 14px;
@@ -66,13 +65,13 @@ ion-item.item-card::part(native) {
 }
 
 ion-label h3 {
-  color: #00f7ff;
+  color: var(--color-primary);
   font-weight: 600;
   font-size: 1rem;
 }
 
 ion-label p {
-  color: #aefcff;
+  color: var(--color-text-muted);
   opacity: 0.85;
   font-size: 0.85rem;
 }
@@ -89,7 +88,7 @@ ion-label p {
 .separator {
   width: 70%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #00f7ff, transparent);
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
   margin: 28px auto 40px auto;
   opacity: 0.8;
   border-radius: 10px;
@@ -97,8 +96,8 @@ ion-label p {
 
 .logout-btn {
   margin-top: 20px;
-  font-family: 'Orbitron', sans-serif;
-  --background: linear-gradient(90deg, #00ffff, #00ccff);
+  font-family: var(--font-display);
+  --background: linear-gradient(90deg, var(--color-primary), #00ccff);
   --color: #000;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -178,14 +177,14 @@ ion-label p {
 .title {
   font-size: 20px;
   font-weight: 700;
-  color: #00f7ff;
+  color: var(--color-primary);
   margin-bottom: 12px;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
   padding-bottom: 20px;
 }
 
 .description {
-  color: #b8ffff;
+  color: var(--color-text-muted);
   font-size: 14px;
   margin-bottom: 14px;
 }
@@ -202,7 +201,7 @@ ion-label p {
 /* LISTA VEŽBI UNUTAR WORKOUT MODALA */
 .exercise-title {
   text-align: center;
-  color: #00f7ff;
+  color: var(--color-primary);
   margin-bottom: 8px;
   font-weight: 600;
 }
@@ -216,8 +215,8 @@ ion-label p {
 .exercise-list li {
   margin-bottom: 6px;
   padding: 6px 0;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
-  color: #dfffff;
+  border-bottom: 1px solid var(--border-cyan);
+  color: var(--color-text);
   text-shadow: 0 0 4px rgba(0, 255, 255, 0.15);
 }
 

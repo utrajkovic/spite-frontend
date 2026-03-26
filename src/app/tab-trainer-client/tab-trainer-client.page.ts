@@ -177,9 +177,12 @@ export class TabTrainerClientPage implements OnInit {
     await modal.present();
   }
 
-  getWorkoutName(id: string): string {
-    const w = this.clientWorkouts.find(x => x.id === id);
-    return w ? w.title : 'Unknown workout';
+  getWorkoutName(fb: any): string {
+    // Koristi snapshot title koji je sačuvan u trenutku slanja feedbacka
+    if (fb.workoutTitle) return fb.workoutTitle;
+    // Fallback: pokušaj da nađeš u listi klijentovih treninga
+    const w = this.clientWorkouts.find((x: any) => x.id === fb.workoutId);
+    return w ? w.title : 'Deleted workout';
   }
 
 }

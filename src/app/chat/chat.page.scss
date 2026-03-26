@@ -3,7 +3,7 @@ ion-content {
 }
 
 .chat-page {
-  --background: radial-gradient(circle at top, #00111a 0%, #000 100%);
+  --background: var(--bg-page);
 }
 .chat-header {
   text-align: center;
@@ -18,7 +18,7 @@ ion-content {
   z-index: 20;
   background: rgba(0, 17, 26, 0.214);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 247, 255, 0.15);
+  border-bottom: 1px solid var(--border-cyan);
 }
 
 .chat-scroll-area {
@@ -60,38 +60,40 @@ ion-content {
 }
 
 .msg.me .bubble {
-  background: #00f7ff;
+  background: var(--color-primary);
   color: #000;
 }
 
 .back-btn {
-  --color: #00f7ff;
+  --color: var(--color-primary);
   font-size: 20px;
   margin-right: 10px;
 }
 .chat-username {
   font-size: 18px;
   font-weight: 600;
-  color: #00f7ff;
+  color: var(--color-primary);
   letter-spacing: 0.5px;
 }
 
 .input-row {
   display: flex;
   padding: 8px;
-  background: #08004200;
-  border-top: 2px solid rgba(0, 247, 255, 0.25);
+  background: transparent;
+  border-top: 2px solid var(--border-cyan);
 }
 
 ion-input {
   flex: 1;
   margin-right: 8px;
-  background: #08004200;
-  color: #fff;
+  background: transparent;
+  color: var(--color-text);
   border-radius: 10px;
   padding-left: 8px;
 }
 
 ion-button {
+  --background: var(--color-primary);
+  --color: #000;
   border-radius: 12px;
 }

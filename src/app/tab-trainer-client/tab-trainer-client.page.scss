@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Tilt+Neon&display=swap');
 
 ion-content {
-  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
-  font-family: 'Tilt Neon', cursive;
-  color: #e0ffff;
+  --background: var(--bg-page);
+  --padding-top: 0;
+  font-family: var(--font-body);
+  color: var(--color-text);
   padding: 24px 16px 32px;
 }
 
@@ -16,21 +16,21 @@ ion-header {
 }
 
 ion-toolbar {
-  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
-  border-bottom: 1px solid rgba(0, 255, 255, 0.25);
+  --background: var(--bg-page);
+  border-bottom: 1px solid var(--border-cyan);
   padding-bottom: 6px;
 }
 
 ion-title {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-display);
   font-size: 18px;
   letter-spacing: 1px;
-  color: #00f7ff;
+  color: var(--color-primary);
   text-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
 }
 
 ion-back-button {
-  color: #00f7ff;
+  color: var(--color-primary);
   --icon-font-size: 22px;
 }
 
@@ -43,10 +43,10 @@ ion-segment {
 }
 
 ion-segment-button {
-  --color: #aefcff;
+  --color: var(--color-text-muted);
   --color-checked: #00111a;
-  --indicator-color: #00f7ff;
-  font-family: 'Orbitron';
+  --indicator-color: var(--color-primary);
+  font-family: var(--font-display);
   font-size: 10px;
   font-weight: bold;
   letter-spacing: 1px;
@@ -54,7 +54,7 @@ ion-segment-button {
 
 ion-segment-button::part(indicator) {
   border-radius: 10px;
-  background: linear-gradient(90deg, #00f7ff, #0088ff);
+  background: linear-gradient(90deg, var(--color-primary), #0088ff);
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
 }
 
@@ -73,8 +73,8 @@ ion-segment-button::part(indicator) {
 
 ion-list-header {
   margin-bottom: 10px;
-  font-family: 'Orbitron', sans-serif;
-  color: #00f7ff;
+  font-family: var(--font-display);
+  color: var(--color-primary);
   font-size: 15px;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
 }
@@ -102,21 +102,21 @@ ion-item {
 }
 
 ion-label h3 {
-  font-family: 'Orbitron';
+  font-family: var(--font-display);
   font-size: 16px;
-  color: #00f7ff;
+  color: var(--color-primary);
 }
 
 ion-label p {
-  color: #aefcff;
+  color: var(--color-text-muted);
   opacity: 0.85;
   font-size: 14px;
 }
 
 ion-button {
-  --background: linear-gradient(90deg, #00f7ff, #00aaff);
+  --background: linear-gradient(90deg, var(--color-primary), #00aaff);
   --color: #000;
-  font-family: 'Orbitron';
+  font-family: var(--font-display);
   border-radius: 12px;
   font-weight: 600;
   transition: 0.25s ease;
@@ -166,16 +166,16 @@ ion-button:hover {
 }
 
 .fb-header h3 {
-  font-family: 'Orbitron';
+  font-family: var(--font-display);
   font-size: 15px;
   margin: 0;
-  color: #00f7ff;
+  color: var(--color-primary);
 }
 
 .workout-name {
   margin-top: 2px;
   font-size: 14px;
-  color: #aefcff;
+  color: var(--color-text-muted);
   opacity: 0.9;
 }
 
@@ -189,14 +189,14 @@ ion-button:hover {
   padding: 3px 10px;
   font-size: 12px;
   border-radius: 10px;
-  border: 1px solid rgba(0, 255, 255, 0.25);
-  color: #aefcff;
+  border: 1px solid var(--border-cyan);
+  color: var(--color-text-muted);
   background: rgba(0, 255, 255, 0.05);
 }
 
 .time-pill {
-  color: #00f7ff;
-  border-color: rgba(0, 255, 255, 0.4);
+  color: var(--color-primary);
+  border-color: var(--border-cyan-hover);
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
 }
 
@@ -204,20 +204,17 @@ ion-segment {
   --background: rgba(0, 255, 255, 0.10);
 
   ion-segment-button {
-    --color: #aaa;
+    --color: var(--color-text-muted);
     border-radius: 10px;
     margin: 4px 6px;
     padding: 6px 10px;
     transition: 0.25s ease-in-out;
-
-    /* normal state */
-    background: rgba(0, 30, 40, 0.616);
+    background: rgba(0, 30, 40, 0.6);
   }
 
-  /* ACTIVE (osvetljen) */
   ion-segment-button.segment-button-checked {
     background: rgba(0, 255, 255, 0.25);
-    box-shadow: 0 0 10px #00faff, 0 0 20px #00faff55;
+    box-shadow: 0 0 10px var(--color-primary), 0 0 20px rgba(0, 247, 255, 0.33);
     transform: translateY(-1px);
   }
 }

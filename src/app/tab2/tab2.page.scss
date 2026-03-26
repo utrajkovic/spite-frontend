@@ -1,12 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;800&display=swap');
 
 ion-content {
-  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
-  --padding-top: 72px;
+  --background: var(--bg-page);
+  --padding-top: var(--header-offset);
 
   padding: 20px;
-  color: #cfffff;
-  font-family: 'Orbitron', sans-serif;
+  color: var(--color-text);
+  font-family: var(--font-display);
 }
 
 .top-tabs {
@@ -22,7 +21,7 @@ ion-content {
     flex: 1;
     background: transparent;
     border: none;
-    color: #8efcff;
+    color: var(--color-primary-dim);
     font-size: 15px;
     padding: 10px 0;
     letter-spacing: 1px;
@@ -32,14 +31,14 @@ ion-content {
 
   button.active {
     background: rgba(0, 255, 255, 0.15);
-    color: #00f7ff;
+    color: var(--color-primary);
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
   }
 }
 
 h2 {
   text-align: center;
-  color: #00f7ff;
+  color: var(--color-primary);
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 16px;
@@ -47,7 +46,7 @@ h2 {
 
 h3 {
   margin-top: 20px;
-  color: #00f7ff;
+  color: var(--color-primary);
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -74,11 +73,11 @@ ion-item:hover {
 }
 
 ion-label {
-  color: #00f7ff;
+  color: var(--color-primary);
 }
 
 ion-input {
-  color: #dff;
+  color: var(--color-text);
 }
 
 .video-upload {
@@ -90,7 +89,7 @@ ion-input {
   text-align: center;
 
   label {
-    color: #00f7ff;
+    color: var(--color-primary);
     font-size: 14px;
   }
 
@@ -109,7 +108,7 @@ ion-list {
 }
 
 ion-button[color="tertiary"] {
-  --background: linear-gradient(90deg, #0099ff, #00f7ff);
+  --background: linear-gradient(90deg, #0099ff, var(--color-primary));
   --color: #000;
   border-radius: 12px;
 }
@@ -144,12 +143,12 @@ ion-spinner {
 .workout-ex-header .ex-name {
   font-size: 14px;
   font-weight: 600;
-  color: #00f7ff;
+  color: var(--color-primary);
 }
 
 .workout-ex-header .ex-desc {
   font-size: 12px;
-  color: #aefcff;
+  color: var(--color-text-muted);
   opacity: 0.85;
 }
 
@@ -167,7 +166,7 @@ ion-spinner {
 
   label {
     margin-bottom: 2px;
-    color: #8efcff;
+    color: var(--color-primary-dim);
   }
 
   ion-input {
@@ -267,14 +266,14 @@ ion-item.workout-ex-item {
 }
 
 .ex-name {
-  color: #00f7ff;
+  color: var(--color-primary);
   font-size: 15px;
   font-weight: 700;
   margin-bottom: 2px;
 }
 
 .ex-superset {
-  color: #8efcff;
+  color: var(--color-primary-dim);
   font-size: 12px;
   opacity: 0.9;
 }
@@ -291,7 +290,7 @@ ion-item.workout-ex-item {
 }
 
 .cfg-field label {
-  color: #8efcff;
+  color: var(--color-primary-dim);
   font-size: 11px;
   margin-bottom: 3px;
 }
@@ -327,13 +326,13 @@ ion-item.workout-ex-item {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #00f7ff;
+  color: var(--color-primary);
   font-size: 16px;
   font-weight: 600;
 }
 
 .superset-tag {
-  color: #8efcff;
+  color: var(--color-primary-dim);
   font-size: 11px;
   margin-left: 4px;
 }
@@ -382,7 +381,7 @@ ion-item.workout-ex-item {
 /* LABELS */
 .cfg label {
   font-size: 10px;
-  color: #8efcff;
+  color: var(--color-primary-dim);
   margin-bottom: 2px;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -416,17 +415,17 @@ ion-select.select-expanded {
 }
 
 .delete-btn {
-  color: #ff4d4d !important;
+  color: var(--color-danger) !important;
 }
 
 .delete-btn i {
   font-size: 20px;
 }
 ion-searchbar {
-  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --background: var(--bg-input);
   --border-radius: 12px;
-  --color: #dff;
-  --placeholder-color: #88eaff;
+  --color: var(--color-text);
+  --placeholder-color: var(--color-primary-dim);
   margin: 12px 0 20px 0;
   box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
 }
@@ -451,7 +450,7 @@ ion-searchbar {
 
   .mobile-title {
     font-size: 15px;
-    color: #00f7ff;
+    color: var(--color-primary);
     font-weight: 600;
     max-width: 80%;
     white-space: nowrap;
@@ -460,7 +459,7 @@ ion-searchbar {
   }
 
   .mobile-superset {
-    color: #8efcff;
+    color: var(--color-primary-dim);
     font-size: 12px;
     margin-left: 6px;
   }

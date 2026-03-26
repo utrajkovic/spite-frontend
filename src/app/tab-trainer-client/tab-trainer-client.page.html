@@ -86,7 +86,7 @@
         <ion-item *ngFor="let fb of feedbackList" detail (click)="openFeedback(fb)" class="fb-card">
           <ion-label>
             <div class="fb-header">
-              <h3>{{ getWorkoutName(fb.workoutId) }}</h3>
+              <h3>{{ getWorkoutName(fb) }}</h3>
               <span class="workout-name">{{ fb.timestamp | date:'short' }}</span>
             </div>
             <div class="fb-meta">
