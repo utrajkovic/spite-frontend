@@ -1,16 +1,7 @@
 <div class="trim-modal">
 
-  <!-- Processing overlay -->
-  <div class="processing-overlay" *ngIf="isProcessing">
-    <ion-spinner name="crescent"></ion-spinner>
-    <p>{{ processingMsg }}</p>
-    <div class="recording-progress">
-      <div class="recording-fill" [style.width.%]="recordingProgress"></div>
-    </div>
-  </div>
-
   <h2 class="title">Trim Video</h2>
-  <p class="subtitle">Select up to 5 seconds to keep</p>
+  <p class="subtitle">Preview and confirm your selection (max 5s)</p>
 
   <!-- Video preview -->
   <div class="video-wrapper">
@@ -84,9 +75,9 @@
   <div class="action-row">
     <ion-button fill="outline" class="cancel-btn" (click)="cancel()">Cancel</ion-button>
     <ion-button fill="outline" class="skip-btn" (click)="skipTrim()">Skip Trim</ion-button>
-    <ion-button class="trim-btn" (click)="trimAndReturn()" [disabled]="isProcessing || selectionTooLong">
-      <i class="fa-solid fa-scissors" slot="start"></i>
-      Trim & Use
+    <ion-button class="trim-btn" (click)="trimAndReturn()" [disabled]="selectionTooLong">
+      <i class="fa-solid fa-check" slot="start"></i>
+      Use This Clip
     </ion-button>
   </div>
 

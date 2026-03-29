@@ -136,32 +136,10 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
   get dimLeftWidthPct():  number  { return this.duration > 0 ? (this.startTime / this.duration) * 100 : 0; }
   get dimRightWidthPct(): number  { return this.duration > 0 ? ((this.duration - this.endTime) / this.duration) * 100 : 0; }
 
-  // Blob slice — radi na svim uređajima, bez FFmpeg, bez MediaRecorder
-  async trimAndReturn() {
-    this.isProcessing     = true;
-    this.processingMsg    = 'Trimming...';
-    this.recordingProgress = 0;
-
-    try {
-      const mimeType  = this.file.type || 'video/mp4';
-      const startByte = Math.floor((this.startTime / this.duration) * this.file.size);
-      const endByte   = Math.floor((this.endTime   / this.duration) * this.file.size);
-
-      this.recordingProgress = 60;
-      const sliced      = this.file.slice(startByte, endByte, mimeType);
-      const ext         = mimeType.split('/')[1] || 'mp4';
-      const trimmedFile = new File([sliced], `trimmed.${ext}`, { type: mimeType });
-
-      this.recordingProgress = 100;
-      this.processingMsg     = 'Done!';
-      await new Promise(r => setTimeout(r, 300));
-      this.modalCtrl.dismiss(trimmedFile);
-
-    } catch (e) {
-      console.error('Trim error:', e);
-      this.isProcessing  = false;
-      this.processingMsg = '';
-    }
+  // Vraća originalni fajl — trim modal služi samo za preview/selekciju
+  // Veličina se proverava u tab2.page.ts pre uploada
+  trimAndReturn() {
+    this.modalCtrl.dismiss(this.file);
   }
 
   skipTrim() { this.modalCtrl.dismiss(this.file); }
