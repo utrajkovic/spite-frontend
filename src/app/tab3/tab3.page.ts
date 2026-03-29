@@ -122,9 +122,27 @@ export class Tab3Page implements OnInit {
   @ViewChild('workoutModal') workoutModal!: IonModal;
 
 
+  private audioUnlocked = false;
+
   ngOnInit() {
+    this.unlockVideoPlayback();
     this.loadData();
     this.localData.refreshTab3$.subscribe(() => this.loadData());
+  }
+
+  private unlockVideoPlayback() {
+    if (this.audioUnlocked) return;
+    const unlock = () => {
+      if (this.audioUnlocked) return;
+      this.audioUnlocked = true;
+      document.querySelectorAll<HTMLVideoElement>('video').forEach(v => {
+        v.play().then(() => v.pause()).catch(() => {});
+      });
+      document.removeEventListener('touchstart', unlock);
+      document.removeEventListener('click', unlock);
+    };
+    document.addEventListener('touchstart', unlock, { passive: true });
+    document.addEventListener('click', unlock);
   }
 
   async ionViewWillEnter() {

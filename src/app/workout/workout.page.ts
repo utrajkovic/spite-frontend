@@ -55,6 +55,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
   circleLength = 2 * Math.PI * 45;
 
   private pendingRestCallback: Function = () => {};
+  private audioUnlocked = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -68,6 +69,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.unlockVideoPlayback();
     const id = this.route.snapshot.paramMap.get('id')!;
     const saved = this.workoutState.load();
 
@@ -107,6 +109,22 @@ export class WorkoutPage implements OnInit, OnDestroy {
     }
   }
 
+  // Otključava video autoplay u PWA standalone modu (iOS home screen)
+  private unlockVideoPlayback() {
+    if (this.audioUnlocked) return;
+    const unlock = () => {
+      if (this.audioUnlocked) return;
+      this.audioUnlocked = true;
+      document.querySelectorAll<HTMLVideoElement>('video').forEach(v => {
+        v.play().then(() => v.pause()).catch(() => {});
+      });
+      document.removeEventListener('touchstart', unlock);
+      document.removeEventListener('click', unlock);
+    };
+    document.addEventListener('touchstart', unlock, { passive: true });
+    document.addEventListener('click', unlock);
+  }
+
   // Poziva se iz (loadedmetadata) — radi na mobilnom jer je video učitan nakon korisničke akcije
   onVideoLoaded(event: Event): void {
     const video = event.target as HTMLVideoElement;
@@ -118,7 +136,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
     setTimeout(() => {
       const videos = document.querySelectorAll<HTMLVideoElement>('video.ex-video');
       videos.forEach(v => v.play().catch(() => {}));
-    }, 350);
+    }, 500);
   }
 
   private async offerResume(saved: ActiveWorkoutState) {
