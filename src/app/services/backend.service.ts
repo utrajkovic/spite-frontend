@@ -85,7 +85,25 @@ export class BackendService {
     return this.http.post(`${this.API_URL}/feedback`, data);
   }
 
-  updateWorkoutNote(workoutId: string, clientUsername: string, note: string): Observable<string> {
+  // Share system
+  sendShareInvite(fromUsername: string, toUsername: string, type: 'exercise' | 'workout', itemIds: string[]): Observable<string> {
+    return this.http.post(`${this.API_URL}/share/send`,
+      { fromUsername, toUsername, type, itemIds },
+      { responseType: 'text' }
+    );
+  }
+
+  getPendingShares(username: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/share/pending/${username}`);
+  }
+
+  acceptShare(inviteId: string): Observable<string> {
+    return this.http.post(`${this.API_URL}/share/${inviteId}/accept`, {}, { responseType: 'text' });
+  }
+
+  declineShare(inviteId: string): Observable<string> {
+    return this.http.post(`${this.API_URL}/share/${inviteId}/decline`, {}, { responseType: 'text' });
+  }
     return this.http.put(
       `${this.API_URL}/workouts/assign/note?workoutId=${workoutId}&clientUsername=${clientUsername}&note=${encodeURIComponent(note)}`,
       {},

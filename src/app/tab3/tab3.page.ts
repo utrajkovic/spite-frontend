@@ -1,5 +1,6 @@
 import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
   IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner, IonSearchbar
@@ -23,10 +24,8 @@ import { forkJoin } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     IonContent,
-    IonList,
-    IonItem,
-    IonLabel,
     IonButton,
     IonSpinner,
     IonModal,
@@ -45,6 +44,56 @@ export class Tab3Page implements OnInit {
   loading: HTMLIonLoadingElement | null = null;
   isDeleting: string | null = null;
   isLoading = false;
+
+  // Share selection
+  shareMode: 'none' | 'exercise' | 'workout' = 'none';
+  selectedIds = new Set<string>();
+  shareUsername: string = '';
+  isSharing: boolean = false;
+  async startShare(mode: 'exercise' | 'workout') {
+    this.shareMode = mode;
+    this.selectedIds.clear();
+    this.shareUsername = '';
+  }
+  cancelShare() {
+    this.shareMode = 'none';
+    this.selectedIds.clear();
+    this.shareUsername = '';
+  }
+  toggleSelect(id: string) {
+    if (this.selectedIds.has(id)) this.selectedIds.delete(id);
+    else this.selectedIds.add(id);
+  }
+  async confirmShare() {
+    if (!this.shareUsername.trim() || this.selectedIds.size === 0) {
+      this.showAlert('Enter username and select at least one item.');
+      return;
+    }
+    this.isSharing = true;
+    const user = await Preferences.get({ key: 'user' });
+    const currentUser = user.value ? JSON.parse(user.value) : null;
+    if (!currentUser) {
+      this.isSharing = false;
+      this.showAlert('Not logged in.');
+      return;
+    }
+    this.backend.sendShareInvite(
+      currentUser.username,
+      this.shareUsername.trim(),
+      this.shareMode,
+      Array.from(this.selectedIds)
+    ).subscribe({
+      next: () => {
+        this.isSharing = false;
+        this.showAlert('Invite sent!');
+        this.cancelShare();
+      },
+      error: (err) => {
+        this.isSharing = false;
+        this.showAlert('Error sending invite: ' + (err?.error || ''));
+      }
+    });
+  }
 
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
 
@@ -311,11 +360,12 @@ export class Tab3Page implements OnInit {
 
   get visibleExercises(): Exercise[] {
     const list = this.filteredExercises;
+    if (this.shareMode === 'exercise') return list;
     return this.exercisesExpanded ? list : list.slice(0, 5);
   }
 
   get hasMoreExercises(): boolean {
-    return this.filteredExercises.length > 5 && !this.exercisesExpanded;
+    return this.filteredExercises.length > 5 && !this.exercisesExpanded && this.shareMode !== 'exercise';
   }
 
 }

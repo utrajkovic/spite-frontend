@@ -1,3 +1,45 @@
+// Share selection styles
+.share-btn {
+  --color: var(--color-primary);
+  font-size: 13px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.share-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+}
+.share-input {
+  flex: 1;
+  border: 1px solid var(--border-cyan);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+  background: rgba(0,255,255,0.04);
+  color: var(--color-text);
+}
+.checkmark {
+  color: var(--color-primary);
+  font-size: 18px;
+  margin-left: 8px;
+}
+.selectable {
+  cursor: pointer;
+  border-style: dashed;
+  border-width: 2px;
+  border-color: var(--border-cyan);
+  background: rgba(0,255,255,0.04);
+}
+.selected {
+  background: linear-gradient(90deg, #00fff7 0%, #0077ff 100%, #00fff7 100%);
+  color: #000;
+  border-color: #00fff7;
+  box-shadow: 0 0 8px #00fff744;
+}
 ion-content {
   --background: var(--bg-page);
   --padding-top: var(--header-offset);
