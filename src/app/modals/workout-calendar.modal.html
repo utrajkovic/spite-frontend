@@ -1,0 +1,55 @@
+<div class="cal-modal">
+
+  <div class="cal-header">
+    <button class="nav-btn" (click)="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
+    <span class="month-label">{{ monthNames[currentMonth] }} {{ currentYear }}</span>
+    <button class="nav-btn" (click)="nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
+    <button class="close-btn" (click)="dismiss()"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <!-- Day names -->
+  <div class="day-names">
+    <span *ngFor="let d of dayNames">{{ d }}</span>
+  </div>
+
+  <!-- Calendar grid -->
+  <div class="cal-grid">
+    <ng-container *ngFor="let week of weeks">
+      <div *ngFor="let day of week" class="cal-cell"
+        [class.has-workout]="hasWorkout(day)"
+        [class.today]="isToday(day)"
+        [class.selected]="isSelected(day)"
+        [class.empty]="!day"
+        (click)="selectDay(day)">
+        <span *ngIf="day">{{ getDayNumber(day) }}</span>
+        <div class="dot" *ngIf="hasWorkout(day)"></div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Selected day detail -->
+  <div class="day-detail" *ngIf="selectedDay && selectedFeedbacks.length">
+    <p class="detail-date">{{ formatSelectedDate() }}</p>
+
+    <div class="fb-card" *ngFor="let fb of selectedFeedbacks">
+      <div class="fb-top">
+        <span class="fb-title">{{ fb.workoutTitle || 'Workout' }}</span>
+        <span class="intensity-badge" [class.easy]="avgIntensity(fb)==='Easy'"
+          [class.normal]="avgIntensity(fb)==='Normal'"
+          [class.hard]="avgIntensity(fb)==='Hard'">
+          {{ avgIntensity(fb) }}
+        </span>
+      </div>
+      <div class="fb-exercises">
+        <span *ngFor="let ex of fb.exercises" class="ex-chip">
+          {{ ex.exerciseName }}
+          <span *ngIf="ex.maxKg"> · {{ ex.maxKg }}kg</span>
+          <span *ngIf="!ex.maxKg"> · {{ ex.doneReps }}×</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <p class="hint" *ngIf="!selectedDay">Tap a highlighted day to see workout details</p>
+
+</div>

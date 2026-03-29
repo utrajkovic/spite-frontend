@@ -83,37 +83,15 @@
 
   </ng-container>
   <ng-container *ngIf="segment === 'info'">
-
     <section class="section-box">
-      <ion-list lines="none">
-        <ion-list-header>
-          <ion-label>Workout History</ion-label>
-        </ion-list-header>
-
-        <ion-item *ngIf="feedbackList.length === 0">
-          <ion-label>No feedback yet</ion-label>
-        </ion-item>
-
-        <ion-item *ngFor="let fb of feedbackList" detail (click)="openFeedback(fb)" class="fb-card">
-          <ion-label>
-            <div class="fb-header">
-              <h3>{{ getWorkoutName(fb) }}</h3>
-              <span class="workout-name">{{ fb.timestamp | date:'short' }}</span>
-            </div>
-            <div class="fb-meta">
-              <span class="meta-pill">
-                {{ fb.exercises.length }} exercises
-              </span>
-              <span class="meta-pill time-pill">
-                Feedback
-              </span>
-            </div>
-          </ion-label>
-        </ion-item>
-
-      </ion-list>
+      <div class="info-actions">
+        <div class="action-btn" (click)="openCalendar()">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Workout Calendar</span>
+          <i class="fa-solid fa-chevron-right arrow"></i>
+        </div>
+      </div>
     </section>
-
   </ng-container>
 
   <ng-container *ngIf="segment === 'logs'">

@@ -461,3 +461,26 @@ ion-segment {
   --color: #ffc800;
   font-size: 16px;
 }
+
+.info-actions { display: flex; flex-direction: column; gap: 8px; }
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid var(--border-cyan);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    border-color: var(--border-cyan-hover);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.1);
+  }
+
+  i:first-child { font-size: 16px; color: var(--color-primary); width: 20px; text-align: center; }
+  span { flex: 1; font-family: var(--font-display); font-size: 14px; color: var(--color-primary); }
+  .arrow { font-size: 12px; color: var(--color-primary); opacity: 0.3; }
+}

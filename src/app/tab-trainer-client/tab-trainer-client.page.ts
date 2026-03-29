@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { FeedbackViewModal } from '../modals/feedback-view.modal';
 import { PRDetailModal } from '../modals/pr-detail.modal';
+import { WorkoutCalendarModal } from '../modals/workout-calendar.modal';
 import { StatsService, WorkoutStats } from '../services/stats.service';
 import { PRService, ExercisePR } from '../services/pr.service';
 import { Chart, registerables } from 'chart.js';
@@ -309,6 +310,15 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
       component: PRDetailModal,
       componentProps: { pr },
       cssClass: 'pr-modal-wrapper'
+    });
+    await modal.present();
+  }
+
+  async openCalendar() {
+    const modal = await this.modalCtrl.create({
+      component: WorkoutCalendarModal,
+      componentProps: { feedbacks: this.feedbackList },
+      cssClass: 'calendar-wrapper'
     });
     await modal.present();
   }

@@ -5,93 +5,38 @@
   <!-- User info -->
   <ion-card class="profile-card" *ngIf="user">
     <ion-card-header>
-      <div class="avatar">
-        <i class="fa-solid fa-user-circle"></i>
-      </div>
+      <div class="avatar"><i class="fa-solid fa-user-circle"></i></div>
       <ion-card-title>{{ user.username }}</ion-card-title>
       <p class="role-badge">{{ user.role }}</p>
     </ion-card-header>
   </ion-card>
 
-  <!-- Theme picker -->
-  <ion-card class="theme-card">
-    <ion-card-header>
-      <ion-card-title><i class="fa-solid fa-palette"></i> Theme</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <div class="theme-options">
-
-        <button class="theme-btn cyberpunk-btn"
-          [class.active]="themeService.currentTheme === 'cyberpunk'"
-          (click)="setTheme('cyberpunk')">
-          <span class="theme-preview cyberpunk-preview"></span>
-          <span class="theme-name">Cyberpunk</span>
-          <i class="fa-solid fa-check check-icon" *ngIf="themeService.currentTheme === 'cyberpunk'"></i>
-        </button>
-
-        <button class="theme-btn dark-btn"
-          [class.active]="themeService.currentTheme === 'dark'"
-          (click)="setTheme('dark')">
-          <span class="theme-preview dark-preview"></span>
-          <span class="theme-name">Dark</span>
-          <i class="fa-solid fa-check check-icon" *ngIf="themeService.currentTheme === 'dark'"></i>
-        </button>
-
-        <button class="theme-btn light-btn"
-          [class.active]="themeService.currentTheme === 'light'"
-          (click)="setTheme('light')">
-          <span class="theme-preview light-preview"></span>
-          <span class="theme-name">Light</span>
-          <i class="fa-solid fa-check check-icon" *ngIf="themeService.currentTheme === 'light'"></i>
-        </button>
-
-      </div>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- Install app -->
-  <ion-card class="install-card" *ngIf="!isInstalled && (installPrompt || isIos)">
+  <!-- Pending invites -->
+  <ion-card *ngIf="pendingInvites.length > 0" class="invite-card">
     <ion-card-header>
       <ion-card-title>
-        <i class="fa-solid fa-mobile-screen"></i> Install App
+        Invites <ion-badge color="warning">{{ pendingInvites.length }}</ion-badge>
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p class="install-desc">Add Spite to your home screen for a better experience.</p>
-      <ion-button expand="block" (click)="installApp()" *ngIf="installPrompt">
-        <i class="fa-solid fa-download" slot="start"></i>
-        Add to Home Screen
-      </ion-button>
-      <ion-button expand="block" fill="outline" (click)="showIosInstallGuide()" *ngIf="isIos && !installPrompt">
-        <i class="fa-brands fa-apple" slot="start"></i>
-        How to install on iOS
-      </ion-button>
+      <ion-list lines="none">
+        <ion-item *ngFor="let invite of pendingInvites" class="invite-item">
+          <ion-label>
+            <h3>Trainer: <strong>{{ invite.trainerUsername }}</strong></h3>
+          </ion-label>
+          <ion-button slot="end" size="small" color="success" (click)="acceptInvite(invite)">Accept</ion-button>
+          <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineInvite(invite)">Decline</ion-button>
+        </ion-item>
+      </ion-list>
     </ion-card-content>
   </ion-card>
 
-  <!-- Notifications -->
-  <ion-card class="notif-card" *ngIf="notificationsSupported && !notificationsEnabled">
-    <ion-card-header>
-      <ion-card-title>
-        <i class="fa-solid fa-bell"></i> Notifications
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p class="install-desc">Enable notifications to get alerts for new workouts, trainer invites and messages.</p>
-      <ion-button expand="block" (click)="enableNotifications()">
-        <i class="fa-solid fa-bell" slot="start"></i>
-        Enable Notifications
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
   <!-- Stats -->
   <ion-card class="stats-card" *ngIf="stats && stats.totalWorkouts > 0">
     <ion-card-header>
       <ion-card-title><i class="fa-solid fa-chart-bar"></i> Progress</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-
-      <!-- Summary pills -->
       <div class="stats-row">
         <div class="stat-pill">
           <span class="stat-val">{{ stats.totalWorkouts }}</span>
@@ -103,21 +48,17 @@
         </div>
         <div class="stat-pill">
           <span class="stat-val">{{ stats.streak }}</span>
-          <span class="stat-label">Day streak</span>
+          <span class="stat-label">Streak</span>
         </div>
         <div class="stat-pill">
           <span class="stat-val">{{ stats.avgIntensity }}</span>
           <span class="stat-label">Avg intensity</span>
         </div>
       </div>
-
-      <!-- Weekly chart -->
       <p class="chart-label">Workouts per week (last 7 weeks)</p>
       <div class="chart-wrapper">
         <canvas #chartCanvas></canvas>
       </div>
-
-      <!-- Top exercises -->
       <div *ngIf="stats.topExercises.length > 0">
         <p class="chart-label">Most trained exercises</p>
         <div class="top-ex-list">
@@ -128,85 +69,75 @@
           </div>
         </div>
       </div>
-
     </ion-card-content>
   </ion-card>
 
-  <!-- Pending invites -->
-  <ion-card *ngIf="pendingInvites.length > 0" class="invite-card">
+  <!-- Quick actions -->
+  <div class="quick-actions" *ngIf="stats && stats.totalWorkouts > 0">
+    <button class="action-btn" (click)="openCalendar()">
+      <i class="fa-solid fa-calendar-days"></i>
+      <span>Workout Calendar</span>
+      <i class="fa-solid fa-chevron-right arrow"></i>
+    </button>
+    <button class="action-btn" (click)="openPRList()" *ngIf="prs.length > 0">
+      <i class="fa-solid fa-trophy"></i>
+      <span>Personal Records <span class="badge-count">{{ prs.length }}</span></span>
+      <i class="fa-solid fa-chevron-right arrow"></i>
+    </button>
+  </div>
+
+  <!-- Install app -->
+  <ion-card class="install-card" *ngIf="!isInstalled && (installPrompt || isIos)">
     <ion-card-header>
-      <ion-card-title>
-        Pozivnice <ion-badge color="warning">{{ pendingInvites.length }}</ion-badge>
-      </ion-card-title>
+      <ion-card-title><i class="fa-solid fa-mobile-screen"></i> Install App</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list lines="none">
-        <ion-item *ngFor="let invite of pendingInvites" class="invite-item">
-          <ion-label>
-            <h3>Trener: <strong>{{ invite.trainerUsername }}</strong></h3>
-          </ion-label>
-          <ion-button slot="end" size="small" color="success" (click)="acceptInvite(invite)">
-            Prihvati
-          </ion-button>
-          <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineInvite(invite)">
-            Odbij
-          </ion-button>
-        </ion-item>
-      </ion-list>
+      <p class="install-desc">Add Spite to your home screen for a better experience.</p>
+      <ion-button expand="block" (click)="installApp()" *ngIf="installPrompt">
+        <i class="fa-solid fa-download" slot="start"></i> Add to Home Screen
+      </ion-button>
+      <ion-button expand="block" fill="outline" (click)="showIosInstallGuide()" *ngIf="isIos && !installPrompt">
+        <i class="fa-brands fa-apple" slot="start"></i> How to install on iOS
+      </ion-button>
     </ion-card-content>
   </ion-card>
 
-  <!-- Personal Records -->
-  <ion-card class="pr-card-section" *ngIf="prs.length > 0">
+  <!-- Notifications -->
+  <ion-card class="notif-card" *ngIf="notificationsSupported && !notificationsEnabled">
     <ion-card-header>
-      <ion-card-title><i class="fa-solid fa-trophy"></i> Personal Records</ion-card-title>
+      <ion-card-title><i class="fa-solid fa-bell"></i> Notifications</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <div class="pr-item" *ngFor="let pr of prs" (click)="openPR(pr)">
-        <div class="pr-left">
-          <div class="pr-icon-wrap"><i class="fa-solid fa-dumbbell"></i></div>
-          <div class="pr-info">
-            <span class="pr-name">{{ pr.exerciseName }}</span>
-            <span class="pr-sessions">{{ pr.history.length }} sessions</span>
-          </div>
-        </div>
-        <div class="pr-right">
-          <span class="pr-val">{{ pr.currentRecord }}{{ pr.unit }}</span>
-          <i class="fa-solid trend-icon"
-            [class.fa-arrow-trend-up]="pr.trend === 'up'"
-            [class.fa-arrow-trend-down]="pr.trend === 'down'"
-            [class.fa-minus]="pr.trend === 'same'"
-            [class.trend-up]="pr.trend === 'up'"
-            [class.trend-down]="pr.trend === 'down'"
-            [class.trend-same]="pr.trend === 'same'">
-          </i>
-        </div>
+      <p class="install-desc">Enable notifications for new workouts, invites and messages.</p>
+      <ion-button expand="block" (click)="enableNotifications()">
+        <i class="fa-solid fa-bell" slot="start"></i> Enable Notifications
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Theme picker - na kraju -->
+  <ion-card class="theme-card">
+    <ion-card-header>
+      <ion-card-title><i class="fa-solid fa-palette"></i> Theme</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="theme-options">
+        <button class="theme-btn" [class.active]="themeService.currentTheme === 'cyberpunk'" (click)="setTheme('cyberpunk')">
+          <span class="theme-preview cyberpunk-preview"></span>
+          <span class="theme-name">Cyberpunk</span>
+          <i class="fa-solid fa-check check-icon" *ngIf="themeService.currentTheme === 'cyberpunk'"></i>
+        </button>
+        <button class="theme-btn" [class.active]="themeService.currentTheme === 'dark'" (click)="setTheme('dark')">
+          <span class="theme-preview dark-preview"></span>
+          <span class="theme-name">Dark</span>
+          <i class="fa-solid fa-check check-icon" *ngIf="themeService.currentTheme === 'dark'"></i>
+        </button>
+        <button class="theme-btn" [class.active]="themeService.currentTheme === 'light'" (click)="setTheme('light')">
+          <span class="theme-preview light-preview"></span>
+          <span class="theme-name">Light</span>
+          <i class="fa-solid fa-check check-icon" *ngIf="themeService.currentTheme === 'light'"></i>
+        </button>
       </div>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- Workout history -->
-  <ion-card class="history-card">
-    <ion-card-header>
-      <ion-card-title>Istorija treninga</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p *ngIf="!loading && feedbackHistory.length === 0" class="empty-text">
-        Još nema završenih treninga.
-      </p>
-
-      <ion-list lines="none">
-        <ion-item *ngFor="let fb of feedbackHistory" class="fb-item">
-          <ion-label>
-            <h3>{{ fb.workoutTitle || 'Trening' }}</h3>
-            <p class="fb-date">{{ formatDate(fb.timestamp) }}</p>
-            <div class="fb-meta">
-              <span class="meta-pill">{{ fb.exercises?.length || 0 }} vežbi</span>
-              <span class="meta-pill intensity-pill">{{ avgIntensity(fb) }}</span>
-            </div>
-          </ion-label>
-        </ion-item>
-      </ion-list>
     </ion-card-content>
   </ion-card>
 

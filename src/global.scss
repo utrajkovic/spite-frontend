@@ -533,3 +533,43 @@ ion-modal.pr-modal-wrapper::part(backdrop) {
   color: #a78bfa !important;
   text-shadow: 0 0 10px rgba(167, 139, 250, 0.4) !important;
 }
+
+/* PR List Modal */
+ion-modal.pr-list-wrapper::part(content) {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 92%;
+  max-width: 420px;
+  max-height: 85vh;
+  border-radius: 20px;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+ion-modal.pr-list-wrapper::part(backdrop) {
+  background: rgba(0,0,0,0.65) !important;
+  --backdrop-opacity: 0.65 !important;
+}
+
+/* Calendar Modal */
+ion-modal.calendar-wrapper::part(content) {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 94%;
+  max-width: 440px;
+  max-height: 90vh;
+  border-radius: 20px;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+ion-modal.calendar-wrapper::part(backdrop) {
+  background: rgba(0,0,0,0.65) !important;
+  --backdrop-opacity: 0.65 !important;
+}

@@ -15,6 +15,8 @@ import { NotificationService } from '../services/notification.service';
 import { StatsService, WorkoutStats } from '../services/stats.service';
 import { PRService, ExercisePR } from '../services/pr.service';
 import { PRDetailModal } from '../modals/pr-detail.modal';
+import { PRListModal } from '../modals/pr-list.modal';
+import { WorkoutCalendarModal } from '../modals/workout-calendar.modal';
 import { ModalController } from '@ionic/angular';
 import { ThemeService, Theme } from '../services/theme.service';
 import { Chart, registerables } from 'chart.js';
@@ -241,6 +243,24 @@ export class TabProfilePage implements OnInit, OnDestroy {
       component: PRDetailModal,
       componentProps: { pr },
       cssClass: 'pr-modal-wrapper'
+    });
+    await modal.present();
+  }
+
+  async openPRList() {
+    const modal = await this.modalCtrl.create({
+      component: PRListModal,
+      componentProps: { prs: this.prs },
+      cssClass: 'pr-list-wrapper'
+    });
+    await modal.present();
+  }
+
+  async openCalendar() {
+    const modal = await this.modalCtrl.create({
+      component: WorkoutCalendarModal,
+      componentProps: { feedbacks: this.feedbackHistory },
+      cssClass: 'calendar-wrapper'
     });
     await modal.present();
   }

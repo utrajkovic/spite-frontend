@@ -469,3 +469,64 @@ ion-card {
   font-size: 10px;
   color: var(--color-primary);
 }
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid var(--border-cyan);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  width: 100%;
+  text-align: left;
+
+  &:hover {
+    border-color: var(--border-cyan-hover);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+
+  i:first-child {
+    font-size: 16px;
+    color: var(--color-primary);
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arrow {
+    font-size: 12px;
+    color: var(--color-primary);
+    opacity: 0.3;
+    flex-shrink: 0;
+  }
+}
+
+.badge-count {
+  background: rgba(0, 255, 255, 0.12);
+  border: 1px solid var(--border-cyan);
+  border-radius: 20px;
+  padding: 1px 7px;
+  font-size: 11px;
+  opacity: 0.8;
+}
