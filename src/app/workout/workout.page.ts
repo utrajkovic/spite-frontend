@@ -1,18 +1,3 @@
-  constructor(
-    private route: ActivatedRoute,
-    private backend: BackendService,
-    private workoutState: WorkoutStateService,
-    private notificationService: NotificationService,
-    private restFeedback: RestFeedbackService,
-    private router: Router,
-    private alertCtrl: AlertController,
-    private modalCtrl: ModalController
-  ) {}
-
-  onVideoLoaded(event: Event): void {
-    const video = event.target as HTMLVideoElement;
-    video.play();
-  }
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -59,8 +44,8 @@ export class WorkoutPage implements OnInit, OnDestroy {
   totalRest = 0;
   timer: any;
 
-  private restStartedAt = 0;      // timestamp kad je odmor počeo
-  private restDuration = 0;       // ukupno trajanje odmora
+  private restStartedAt = 0;
+  private restDuration = 0;
   private restCallback: Function = () => {};
   private visibilityHandler: any = null;
 
@@ -82,10 +67,14 @@ export class WorkoutPage implements OnInit, OnDestroy {
     private modalCtrl: ModalController
   ) {}
 
+  onVideoLoaded(event: Event): void {
+    const video = event.target as HTMLVideoElement;
+    video.play();
+  }
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
 
-    // Provjeri da li postoji sačuvan state za ovaj workout
     const saved = this.workoutState.load();
 
     this.backend.getWorkoutById(id).subscribe({
@@ -101,13 +90,11 @@ export class WorkoutPage implements OnInit, OnDestroy {
           return;
         }
 
-        // Ako postoji sačuvan state za isti workout, ponudi nastavak
         if (saved && saved.workoutId === id) {
           this.offerResume(saved);
         }
       },
       error: () => {
-        // Offline: pokušaj da učitamo iz sačuvanog state-a
         if (saved && saved.workoutId === id) {
           this.restoreFromState(saved);
           this.loading = false;
@@ -151,7 +138,6 @@ export class WorkoutPage implements OnInit, OnDestroy {
   }
 
   private restoreFromState(saved: ActiveWorkoutState) {
-    // Ako smo učitali workout sa servera, koristimo te podatke ali vraćamo poziciju
     if (saved.exercises?.length && this.exercises.length === 0) {
       this.exercises = saved.exercises;
     }
@@ -177,10 +163,6 @@ export class WorkoutPage implements OnInit, OnDestroy {
       startedAt: Date.now()
     });
   }
-
-  // ==========================
-  // GETTERS
-  // ==========================
 
   get currentItem(): WorkoutItem {
     return this.items[this.currentIndex];
@@ -223,10 +205,6 @@ export class WorkoutPage implements OnInit, OnDestroy {
     return this.exercises.find(e => e.id === id);
   }
 
-  // ==========================
-  // START
-  // ==========================
-
   startWorkout() {
     this.started = true;
     this.currentIndex = 0;
@@ -234,10 +212,6 @@ export class WorkoutPage implements OnInit, OnDestroy {
     this.showingSuperset = false;
     this.persistState();
   }
-
-  // ==========================
-  // COMPLETE SET
-  // ==========================
 
   completeSet() {
     const item = this.currentItem;
@@ -300,10 +274,6 @@ export class WorkoutPage implements OnInit, OnDestroy {
     }
   }
 
-  // ==========================
-  // FINISH EARLY
-  // ==========================
-
   async finishEarly() {
     const alert = await this.alertCtrl.create({
       header: 'Finish workout?',
@@ -326,15 +296,10 @@ export class WorkoutPage implements OnInit, OnDestroy {
     return this.currentIndex;
   }
 
-  // ==========================
-  // FINISH WORKOUT
-  // ==========================
-
   private async finishWorkout(early = false) {
     this.workoutState.clear();
     this.notificationService.scheduleInactivityReminder(3).catch(() => {});
 
-    // Samo vežbe koje su ZAVRŠENE (currentIndex = broj završenih)
     const completedItems = early
       ? this.items.slice(0, this.currentIndex)
       : this.items;
@@ -385,10 +350,6 @@ export class WorkoutPage implements OnInit, OnDestroy {
     this.router.navigate(['/tabs/tab1']);
   }
 
-  // ==========================
-  // REST TIMER
-  // ==========================
-
   startRest(seconds: number, callback: Function) {
     this.showingSuperset = false;
     this.pendingRestCallback = callback;
@@ -401,7 +362,6 @@ export class WorkoutPage implements OnInit, OnDestroy {
 
     this.restFeedback.onRestStart();
 
-    // Registruj visibility handler - kad se app vrati iz pozadine
     if (this.visibilityHandler) {
       document.removeEventListener('visibilitychange', this.visibilityHandler);
     }
@@ -415,7 +375,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
     clearInterval(this.timer);
     this.timer = setInterval(() => {
       this.syncRestTimer();
-    }, 500); // češće tickovanje za tačnost
+    }, 500);
   }
 
   private syncRestTimer() {
@@ -426,7 +386,6 @@ export class WorkoutPage implements OnInit, OnDestroy {
     const prevLeft = this.restLeft;
     this.restLeft = Math.ceil(remaining);
 
-    // Countdown feedback samo kad pređemo celu sekundu
     if (Math.ceil(prevLeft) !== Math.ceil(remaining) && remaining > 0 && remaining <= 3) {
       this.restFeedback.onRestCountdown();
     }
