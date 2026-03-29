@@ -7,29 +7,35 @@
   </div>
 
   <h2 class="title">Trim Video</h2>
-  <p class="subtitle">Select the part you want to keep</p>
+  <p class="subtitle">Drag the selection bar to choose which part to keep</p>
 
   <!-- Video preview -->
   <div class="video-wrapper">
-    <video #videoEl [src]="videoUrl" playsinline [muted]="true" class="preview-video"></video>
+    <video #videoEl [src]="videoUrl" preload="metadata" playsinline [muted]="true" class="preview-video"></video>
   </div>
 
   <!-- Timeline bar -->
   <div class="timeline">
-    <div class="timeline-track">
+    <div class="timeline-track" #timelineTrack>
       <!-- Zatamnjeni deo pre selekcije -->
-      <div class="timeline-dim left"
-        [style.width.%]="(startTime / duration) * 100"></div>
-      <!-- Označeni (isečeni) deo -->
+      <div class="timeline-dim left" [style.width.%]="dimLeftWidthPct"></div>
+
+      <!-- Označeni deo — DRAGGABLE -->
       <div class="timeline-selection"
-        [style.left.%]="(startTime / duration) * 100"
-        [style.width.%]="((endTime - startTime) / duration) * 100">
+        [style.left.%]="selectionLeftPct"
+        [style.width.%]="selectionWidthPct"
+        (pointerdown)="onSelectionPointerDown($event)"
+        title="Drag to move selection">
         <span class="selection-label">{{ trimDuration }}s</span>
+        <!-- Handle ikone -->
+        <span class="drag-handle left-handle">⠿</span>
+        <span class="drag-handle right-handle">⠿</span>
       </div>
+
       <!-- Zatamnjeni deo posle selekcije -->
-      <div class="timeline-dim right"
-        [style.width.%]="((duration - endTime) / duration) * 100"></div>
+      <div class="timeline-dim right" [style.width.%]="dimRightWidthPct"></div>
     </div>
+
     <div class="timeline-ticks">
       <span>0:00</span>
       <span>{{ formatTime(duration / 2) }}</span>

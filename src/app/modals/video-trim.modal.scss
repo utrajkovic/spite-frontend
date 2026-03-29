@@ -69,12 +69,13 @@
 
 .timeline-track {
   position: relative;
-  height: 28px;
+  height: 36px;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border-cyan);
   overflow: hidden;
   display: flex;
+  touch-action: none; /* važno za pointer events na mobilnom */
 }
 
 .timeline-dim {
@@ -97,6 +98,14 @@
   align-items: center;
   justify-content: center;
   min-width: 2px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+
+  &:active {
+    cursor: grabbing;
+    background: rgba(0, 255, 255, 0.3);
+  }
 }
 
 .selection-label {
@@ -106,6 +115,20 @@
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.8);
   white-space: nowrap;
   pointer-events: none;
+}
+
+.drag-handle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--color-primary);
+  opacity: 0.7;
+  pointer-events: none;
+  letter-spacing: -2px;
+
+  &.left-handle { left: 2px; }
+  &.right-handle { right: 2px; }
 }
 
 .timeline-ticks {
@@ -129,7 +152,8 @@
   display: block;
 }
 
-.time-info {  display: flex;
+.time-info {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
