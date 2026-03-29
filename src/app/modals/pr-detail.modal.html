@@ -1,0 +1,33 @@
+<div class="pr-modal">
+
+  <div class="pr-header">
+    <h2 class="pr-title">{{ pr.exerciseName }}</h2>
+    <div class="pr-record">
+      <span class="record-val">{{ pr.currentRecord }}{{ pr.unit }}</span>
+      <span class="record-label">Personal Record</span>
+    </div>
+    <span class="trend-badge" [class.up]="pr.trend === 'up'" [class.down]="pr.trend === 'down'" [class.same]="pr.trend === 'same'">
+      <i class="fa-solid" [class.fa-arrow-trend-up]="pr.trend === 'up'" [class.fa-arrow-trend-down]="pr.trend === 'down'" [class.fa-minus]="pr.trend === 'same'"></i>
+      {{ pr.trend === 'up' ? 'Improving' : pr.trend === 'down' ? 'Declining' : 'Stable' }}
+    </span>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-wrapper">
+    <canvas #prChart></canvas>
+  </div>
+
+  <!-- History list -->
+  <p class="section-label">Session history</p>
+  <div class="history-list">
+    <div class="history-item" *ngFor="let h of pr.history.slice().reverse(); let i = index"
+      [class.is-pr]="h.value === pr.currentRecord">
+      <span class="h-date">{{ formatDate(h.date) }}</span>
+      <span class="h-val">{{ h.value }}{{ pr.unit }}</span>
+      <i class="fa-solid fa-trophy pr-icon" *ngIf="h.value === pr.currentRecord"></i>
+    </div>
+  </div>
+
+  <ion-button expand="block" (click)="dismiss()">Close</ion-button>
+
+</div>

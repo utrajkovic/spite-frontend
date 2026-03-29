@@ -110,7 +110,38 @@
   </ng-container>
 
   <ng-container *ngIf="segment === 'logs'">
-      
+
+    <section class="section-box" *ngIf="clientPRs.length === 0">
+      <p class="empty-stats">No exercise records yet. Client needs to complete workouts with kg/reps data.</p>
+    </section>
+
+    <section class="section-box" *ngIf="clientPRs.length > 0">
+      <p class="stats-section-label">Personal Records</p>
+
+      <div class="pr-card" *ngFor="let pr of clientPRs" (click)="openPR(pr)">
+        <div class="pr-left">
+          <div class="pr-icon-wrap">
+            <i class="fa-solid fa-dumbbell"></i>
+          </div>
+          <div class="pr-info">
+            <span class="pr-name">{{ pr.exerciseName }}</span>
+            <span class="pr-sessions">{{ pr.history.length }} sessions</span>
+          </div>
+        </div>
+        <div class="pr-right">
+          <span class="pr-val">{{ pr.currentRecord }}{{ pr.unit }}</span>
+          <i class="fa-solid trend-icon"
+            [class.fa-arrow-trend-up]="pr.trend === 'up'"
+            [class.fa-arrow-trend-down]="pr.trend === 'down'"
+            [class.fa-minus]="pr.trend === 'same'"
+            [class.trend-up]="pr.trend === 'up'"
+            [class.trend-down]="pr.trend === 'down'"
+            [class.trend-same]="pr.trend === 'same'">
+          </i>
+        </div>
+      </div>
+    </section>
+
   </ng-container>
 
   <ng-container *ngIf="segment === 'profile'">

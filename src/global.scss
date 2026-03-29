@@ -401,3 +401,23 @@ ion-modal.trim-modal-wrapper::part(backdrop) {
   background: rgba(0, 0, 0, 0.7) !important;
   --backdrop-opacity: 0.7 !important;
 }
+
+/* PR Detail Modal */
+ion-modal.pr-modal-wrapper::part(content) {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 92%;
+  max-width: 420px;
+  max-height: 88vh;
+  border-radius: 20px;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+ion-modal.pr-modal-wrapper::part(backdrop) {
+  background: rgba(0, 0, 0, 0.65) !important;
+  --backdrop-opacity: 0.65 !important;
+}

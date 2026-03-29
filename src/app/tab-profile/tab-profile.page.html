@@ -120,6 +120,35 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- Personal Records -->
+  <ion-card class="pr-card-section" *ngIf="prs.length > 0">
+    <ion-card-header>
+      <ion-card-title><i class="fa-solid fa-trophy"></i> Personal Records</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="pr-item" *ngFor="let pr of prs" (click)="openPR(pr)">
+        <div class="pr-left">
+          <div class="pr-icon-wrap"><i class="fa-solid fa-dumbbell"></i></div>
+          <div class="pr-info">
+            <span class="pr-name">{{ pr.exerciseName }}</span>
+            <span class="pr-sessions">{{ pr.history.length }} sessions</span>
+          </div>
+        </div>
+        <div class="pr-right">
+          <span class="pr-val">{{ pr.currentRecord }}{{ pr.unit }}</span>
+          <i class="fa-solid trend-icon"
+            [class.fa-arrow-trend-up]="pr.trend === 'up'"
+            [class.fa-arrow-trend-down]="pr.trend === 'down'"
+            [class.fa-minus]="pr.trend === 'same'"
+            [class.trend-up]="pr.trend === 'up'"
+            [class.trend-down]="pr.trend === 'down'"
+            [class.trend-same]="pr.trend === 'same'">
+          </i>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
   <!-- Workout history -->
   <ion-card class="history-card">
     <ion-card-header>

@@ -3,7 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { FeedbackViewModal } from '../modals/feedback-view.modal';
+import { PRDetailModal } from '../modals/pr-detail.modal';
 import { StatsService, WorkoutStats } from '../services/stats.service';
+import { PRService, ExercisePR } from '../services/pr.service';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -46,6 +48,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
   feedbackList: any[] = [];
   clientInfo: any = null;
   clientStats: WorkoutStats | null = null;
+  clientPRs: ExercisePR[] = [];
 
   private chart: Chart | null = null;
 
@@ -60,7 +63,8 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     private modalCtrl: ModalController,
-    private statsService: StatsService
+    private statsService: StatsService,
+    private prService: PRService
   ) { }
 
   ngOnInit() {
@@ -154,6 +158,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
         next: (res) => {
           this.feedbackList = res.sort((a, b) => b.timestamp - a.timestamp);
           this.clientStats = this.statsService.compute(res);
+          this.clientPRs = this.prService.compute(res);
         },
         error: () => console.warn('No feedback found for this client.')
       });
@@ -232,7 +237,15 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
       componentProps: { feedback: fb },
       cssClass: 'feedback-transparent'
     });
+    await modal.present();
+  }
 
+  async openPR(pr: ExercisePR) {
+    const modal = await this.modalCtrl.create({
+      component: PRDetailModal,
+      componentProps: { pr },
+      cssClass: 'pr-modal-wrapper'
+    });
     await modal.present();
   }
 

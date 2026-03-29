@@ -13,6 +13,9 @@ import { PageLoadingOverlayComponent } from '../page-loading-overlay/page-loadin
 import { BadgeService } from '../services/badge.service';
 import { NotificationService } from '../services/notification.service';
 import { StatsService, WorkoutStats } from '../services/stats.service';
+import { PRService, ExercisePR } from '../services/pr.service';
+import { PRDetailModal } from '../modals/pr-detail.modal';
+import { ModalController } from '@ionic/angular';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -39,6 +42,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
   pendingInvites: any[] = [];
   loading = true;
   stats: WorkoutStats | null = null;
+  prs: ExercisePR[] = [];
 
   installPrompt: any = null;
   isIos = false;
@@ -53,7 +57,9 @@ export class TabProfilePage implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private badgeService: BadgeService,
     private notificationService: NotificationService,
-    private statsService: StatsService
+    private statsService: StatsService,
+    private prService: PRService,
+    private modalCtrl: ModalController
   ) {
     window.addEventListener('beforeinstallprompt', (e: any) => {
       e.preventDefault();
@@ -91,6 +97,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
       next: (data) => {
         this.feedbackHistory = data.sort((a, b) => b.timestamp - a.timestamp);
         this.stats = this.statsService.compute(data);
+        this.prs = this.prService.compute(data);
         this.loading = false;
         setTimeout(() => this.renderChart(), 100);
       },
@@ -220,5 +227,14 @@ export class TabProfilePage implements OnInit, OnDestroy {
     await this.notificationService.init(this.user.username);
     this.notificationsEnabled = Notification.permission === 'granted';
     if (this.notificationsEnabled) this.showAlert('Notifikacije su uključene.');
+  }
+
+  async openPR(pr: ExercisePR) {
+    const modal = await this.modalCtrl.create({
+      component: PRDetailModal,
+      componentProps: { pr },
+      cssClass: 'pr-modal-wrapper'
+    });
+    await modal.present();
   }
 }

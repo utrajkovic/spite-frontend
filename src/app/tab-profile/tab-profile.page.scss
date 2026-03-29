@@ -292,3 +292,102 @@ ion-card {
   opacity: 0.5;
   flex-shrink: 0;
 }
+
+.pr-card-section {
+  ion-card-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    i { color: #ffc800; text-shadow: 0 0 8px rgba(255,200,0,0.5); }
+  }
+}
+
+.pr-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 12px;
+  background: rgba(0, 40, 60, 0.2);
+  border: 1px solid var(--border-cyan);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    border-color: var(--border-cyan-hover);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+}
+
+.pr-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.pr-icon-wrap {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: rgba(0, 255, 255, 0.08);
+  border: 1px solid var(--border-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.pr-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pr-name {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pr-sessions {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  opacity: 0.45;
+}
+
+.pr-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pr-val {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--color-primary);
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+.trend-icon {
+  font-size: 13px;
+
+  &.trend-up { color: var(--color-success); filter: drop-shadow(0 0 4px rgba(0,255,170,0.5)); }
+  &.trend-down { color: var(--color-danger); filter: drop-shadow(0 0 4px rgba(255,77,77,0.5)); }
+  &.trend-same { color: var(--color-primary); opacity: 0.3; }
+}
