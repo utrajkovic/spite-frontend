@@ -137,4 +137,7 @@ export class BackendService {
   declineInvite(inviteId: string): Observable<string> {
     return this.http.post(`${this.API_URL}/trainer/invite/${inviteId}/decline`, {}, { responseType: 'text' });
   }
+  clearFeedbackHistory(username: string): Observable<string> {
+    return this.http.delete(`${this.API_URL}/feedback/user/${username}`, { responseType: 'text' });
+  }
 }

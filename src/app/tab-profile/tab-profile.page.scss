@@ -530,3 +530,10 @@ ion-card {
   font-size: 11px;
   opacity: 0.8;
 }
+
+.danger-card {
+  border-color: rgba(255, 80, 80, 0.3);
+  box-shadow: 0 0 20px rgba(255, 80, 80, 0.08);
+  
+  ion-card-title { color: rgba(255, 80, 80, 0.8); font-size: 15px; }
+}

@@ -125,6 +125,20 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- Clear history -->
+  <ion-card class="danger-card">
+    <ion-card-header>
+      <ion-card-title><i class="fa-solid fa-trash-can"></i> Data</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="install-desc">Permanently delete your workout history and personal records.</p>
+      <ion-button expand="block" color="danger" fill="outline" (click)="clearHistory()">
+        <i class="fa-solid fa-trash-can" slot="start"></i>
+        Clear History & PRs
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
   <!-- Theme picker - na kraju -->
   <ion-card class="theme-card">
     <ion-card-header>

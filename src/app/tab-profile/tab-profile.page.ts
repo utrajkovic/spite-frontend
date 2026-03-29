@@ -288,4 +288,33 @@ export class TabProfilePage implements OnInit, OnDestroy {
     });
     await modal.present();
   }
+
+  async clearHistory() {
+    const alert = await this.alertCtrl.create({
+      header: 'Clear History',
+      message: 'This will permanently delete all your workout history and personal records. Are you sure?',
+      cssClass: 'custom-alert',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Clear',
+          cssClass: 'alert-button-danger',
+          handler: () => {
+            this.backend.clearFeedbackHistory(this.user.username).subscribe({
+              next: () => {
+                this.feedbackHistory = [];
+                this.stats = null;
+                this.prs = [];
+                this.chart?.destroy();
+                this.chart = null;
+                this.showAlert('Workout history and personal records cleared.');
+              },
+              error: () => this.showAlert('Error clearing history.')
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
 }
