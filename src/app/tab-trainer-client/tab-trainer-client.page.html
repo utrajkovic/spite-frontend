@@ -9,7 +9,7 @@
     </ion-toolbar>
 
     <ion-toolbar>
-      <ion-segment [(ngModel)]="segment">
+      <ion-segment [(ngModel)]="segment" (ionChange)="onSegmentChange()">
         <ion-segment-button value="assign" >
           <ion-label>Assign</ion-label>
         </ion-segment-button>
@@ -122,10 +122,55 @@
       </div>
     </section>
 
+    <!-- Stats summary -->
+    <section class="section-box" *ngIf="clientStats && clientStats.totalWorkouts > 0">
+      <p class="stats-section-label">Progress Overview</p>
+
+      <div class="stats-row">
+        <div class="stat-pill">
+          <span class="stat-val">{{ clientStats.totalWorkouts }}</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val">{{ clientStats.thisWeek }}</span>
+          <span class="stat-label">This week</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val">{{ clientStats.streak }}</span>
+          <span class="stat-label">Streak</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val">{{ clientStats.avgIntensity }}</span>
+          <span class="stat-label">Avg intensity</span>
+        </div>
+      </div>
+
+      <p class="chart-label">Workouts per week</p>
+      <div class="chart-wrapper">
+        <canvas #clientChartCanvas></canvas>
+      </div>
+
+      <div *ngIf="clientStats.topExercises.length > 0">
+        <p class="chart-label">Most trained</p>
+        <div class="top-ex-list">
+          <div class="top-ex-item" *ngFor="let ex of clientStats.topExercises; let i = index">
+            <span class="ex-rank">#{{ i + 1 }}</span>
+            <span class="ex-name">{{ ex.name }}</span>
+            <span class="ex-count">{{ ex.count }}×</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-box" *ngIf="!clientStats || clientStats.totalWorkouts === 0">
+      <p class="empty-stats">Client hasn't completed any workouts yet.</p>
+    </section>
+
+    <!-- Feedback history -->
     <section class="section-box">
       <ion-list lines="none">
         <ion-list-header>
-          <ion-label>Istorija treninga</ion-label>
+          <ion-label>Workout History</ion-label>
         </ion-list-header>
 
         <ion-item *ngIf="feedbackList.length === 0">

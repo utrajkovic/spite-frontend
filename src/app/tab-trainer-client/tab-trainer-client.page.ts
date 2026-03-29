@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { FeedbackViewModal } from '../modals/feedback-view.modal';
+import { StatsService, WorkoutStats } from '../services/stats.service';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonList, IonListHeader, IonButton, AlertController, LoadingController, IonBackButton, IonButtons, IonSegment, IonSegmentButton } from '@ionic/angular/standalone';
 
@@ -28,7 +32,9 @@ import { FormsModule } from '@angular/forms';
   providers: [ModalController]
 
 })
-export class TabTrainerClientPage implements OnInit {
+export class TabTrainerClientPage implements OnInit, OnDestroy {
+
+  @ViewChild('clientChartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
 
   clientUsername!: string;
   trainerUsername!: string;
@@ -36,33 +42,77 @@ export class TabTrainerClientPage implements OnInit {
   trainerWorkouts: any[] = [];
   clientWorkouts: any[] = [];
 
-  segment: string = 'assign';  
+  segment: string = 'assign';
   feedbackList: any[] = [];
   clientInfo: any = null;
+  clientStats: WorkoutStats | null = null;
+
+  private chart: Chart | null = null;
 
   baseUrl = 'https://spite-backend-v2.onrender.com/api/trainer';
   feedbackUrl = 'https://spite-backend-v2.onrender.com/api/feedback';
 
   loading: HTMLIonLoadingElement | null = null;
 
-
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private statsService: StatsService
   ) { }
 
   ngOnInit() {
     const user = localStorage.getItem('user');
-
-    if (user) {
-      this.trainerUsername = JSON.parse(user).username;
-    }
-
+    if (user) this.trainerUsername = JSON.parse(user).username;
     this.clientUsername = this.route.snapshot.paramMap.get('username')!;
     this.loadData();
+  }
+
+  ngOnDestroy() {
+    this.chart?.destroy();
+  }
+
+  onSegmentChange() {
+    if (this.segment === 'profile' && this.clientStats) {
+      setTimeout(() => this.renderChart(), 100);
+    }
+  }
+
+  private renderChart() {
+    if (!this.chartCanvas || !this.clientStats?.weeklyData.length) return;
+    this.chart?.destroy();
+
+    const labels = this.clientStats.weeklyData.map(w => w.label);
+    const counts = this.clientStats.weeklyData.map(w => w.count);
+
+    this.chart = new Chart(this.chartCanvas.nativeElement, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data: counts,
+          backgroundColor: counts.map(c =>
+            c === 0 ? 'rgba(0,255,255,0.05)' : 'rgba(0,255,255,0.25)'
+          ),
+          borderColor: counts.map(c =>
+            c === 0 ? 'rgba(0,255,255,0.1)' : 'rgba(0,255,255,0.8)'
+          ),
+          borderWidth: 1,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(0,255,255,0.05)' }, ticks: { color: 'rgba(0,247,255,0.5)', font: { size: 11 } } },
+          y: { grid: { color: 'rgba(0,255,255,0.05)' }, ticks: { color: 'rgba(0,247,255,0.5)', font: { size: 11 }, stepSize: 1 }, beginAtZero: true }
+        }
+      }
+    });
   }
 
   async loadData() {
@@ -103,10 +153,9 @@ export class TabTrainerClientPage implements OnInit {
       .subscribe({
         next: (res) => {
           this.feedbackList = res.sort((a, b) => b.timestamp - a.timestamp);
+          this.clientStats = this.statsService.compute(res);
         },
-        error: () => {
-          console.warn('No feedback found for this client.');
-        }
+        error: () => console.warn('No feedback found for this client.')
       });
   }
 
