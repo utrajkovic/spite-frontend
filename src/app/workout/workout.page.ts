@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent, IonButton, IonCard, IonCardContent,
@@ -7,11 +7,11 @@ import {
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService } from '../services/backend.service';
+import { WorkoutStateService, ActiveWorkoutState } from '../services/workout-state.service';
+import { NotificationService } from '../services/notification.service';
 import { Workout, WorkoutItem, Exercise } from '../services/models';
-import { AlertController } from '@ionic/angular';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { WorkoutFeedbackModal } from '../modals/workout-feedback.modal';
-
 
 @Component({
   selector: 'app-workout',
@@ -20,19 +20,13 @@ import { WorkoutFeedbackModal } from '../modals/workout-feedback.modal';
   standalone: true,
   imports: [
     CommonModule,
-    IonContent,
-    IonButton,
-    IonCard,
-    IonCardContent,
-    IonSpinner,
-    IonProgressBar,
-    IonIcon,
+    IonContent, IonButton, IonCard, IonCardContent,
+    IonSpinner, IonProgressBar, IonIcon,
     WorkoutFeedbackModal
   ],
   providers: [ModalController]
-
 })
-export class WorkoutPage implements OnInit {
+export class WorkoutPage implements OnInit, OnDestroy {
 
   workout!: Workout;
   items: WorkoutItem[] = [];
@@ -40,9 +34,8 @@ export class WorkoutPage implements OnInit {
 
   loading = true;
 
-  currentIndex = 0;  // index u items
-  currentSet = 1;    // 1..sets
-
+  currentIndex = 0;
+  currentSet = 1;
   showingSuperset = false;
 
   isResting = false;
@@ -55,52 +48,116 @@ export class WorkoutPage implements OnInit {
 
   circleLength = 2 * Math.PI * 45;
 
+  private pendingRestCallback: Function = () => {};
+
   constructor(
     private route: ActivatedRoute,
     private backend: BackendService,
+    private workoutState: WorkoutStateService,
+    private notificationService: NotificationService,
     private router: Router,
     private alertCtrl: AlertController,
     private modalCtrl: ModalController
-  ) { }
+  ) {}
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
+
+    // Provjeri da li postoji sačuvan state za ovaj workout
+    const saved = this.workoutState.load();
 
     this.backend.getWorkoutById(id).subscribe({
       next: (workout) => {
         this.workout = workout;
         this.items = workout.items ?? [];
         this.exercises = workout.exercises ?? [];
-
         this.loading = false;
 
         if (this.items.length === 0) {
           this.showAlert('No exercises in workout.');
           this.router.navigate(['/tabs/tab1']);
+          return;
+        }
+
+        // Ako postoji sačuvan state za isti workout, ponudi nastavak
+        if (saved && saved.workoutId === id) {
+          this.offerResume(saved);
         }
       },
       error: () => {
-        this.loading = false;
-        this.showAlert('Error loading workout.');
+        // Offline: pokušaj da učitamo iz sačuvanog state-a
+        if (saved && saved.workoutId === id) {
+          this.restoreFromState(saved);
+          this.loading = false;
+        } else {
+          this.loading = false;
+          this.showAlert('Error loading workout. Check your connection.');
+        }
       }
     });
   }
 
-  get currentExerciseIndex() {
-    return this.currentIndex;
+  ngOnDestroy() {
+    clearInterval(this.timer);
+    // Ako je trening počeo ali nije završen, state ostaje u localStorage
+    // Briše se samo kad se trening završi
   }
 
-  get restTimeLeft() {
-    return this.restLeft;
+  private async offerResume(saved: ActiveWorkoutState) {
+    const alert = await this.alertCtrl.create({
+      header: 'Resume workout?',
+      message: 'You have an unfinished workout. Do you want to continue where you left off?',
+      cssClass: 'custom-alert',
+      buttons: [
+        {
+          text: 'Start over',
+          role: 'cancel',
+          handler: () => {
+            this.workoutState.clear();
+          }
+        },
+        {
+          text: 'Continue',
+          handler: () => {
+            this.restoreFromState(saved);
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
-  get totalRestTime() {
-    return this.totalRest;
+  private restoreFromState(saved: ActiveWorkoutState) {
+    // Ako smo učitali workout sa servera, koristimo te podatke ali vraćamo poziciju
+    if (saved.exercises?.length && this.exercises.length === 0) {
+      this.exercises = saved.exercises;
+    }
+    if (saved.items?.length && this.items.length === 0) {
+      this.items = saved.items;
+    }
+    this.currentIndex = saved.currentIndex;
+    this.currentSet = saved.currentSet;
+    this.showingSuperset = saved.showingSuperset;
+    this.started = true;
   }
 
-  get circumference() {
-    return this.circleLength;
+  private persistState() {
+    if (!this.started || !this.workout) return;
+    this.workoutState.save({
+      workoutId: this.workout.id!,
+      workoutTitle: this.workout.title,
+      items: this.items,
+      exercises: this.exercises,
+      currentIndex: this.currentIndex,
+      currentSet: this.currentSet,
+      showingSuperset: this.showingSuperset,
+      startedAt: Date.now()
+    });
   }
+
+  // ==========================
+  // GETTERS
+  // ==========================
 
   get currentItem(): WorkoutItem {
     return this.items[this.currentIndex];
@@ -110,17 +167,6 @@ export class WorkoutPage implements OnInit {
     return !!this.currentItem?.supersetExerciseId;
   }
 
-  private getExerciseById(id: string | undefined | null): Exercise | undefined {
-    if (!id) return undefined;
-    return this.exercises.find(e => e.id === id);
-  }
-
-  get supersetExerciseName(): string | null {
-    if (!this.currentItem?.supersetExerciseId) return null;
-    const ex = this.getExerciseById(this.currentItem.supersetExerciseId);
-    return ex?.name ?? null;
-  }
-
   get currentExercise(): Exercise | undefined {
     if (!this.showingSuperset || !this.currentItem.supersetExerciseId) {
       return this.getExerciseById(this.currentItem.exerciseId);
@@ -128,17 +174,30 @@ export class WorkoutPage implements OnInit {
     return this.getExerciseById(this.currentItem.supersetExerciseId);
   }
 
+  get supersetExerciseName(): string | null {
+    if (!this.currentItem?.supersetExerciseId) return null;
+    return this.getExerciseById(this.currentItem.supersetExerciseId)?.name ?? null;
+  }
+
   get nextItem(): WorkoutItem | null {
-    if (this.currentIndex < this.items.length - 1) {
-      return this.items[this.currentIndex + 1];
-    }
-    return null;
+    return this.currentIndex < this.items.length - 1
+      ? this.items[this.currentIndex + 1]
+      : null;
   }
 
   get nextMainExercise(): Exercise | null {
     const ni = this.nextItem;
-    if (!ni) return null;
-    return this.getExerciseById(ni.exerciseId) ?? null;
+    return ni ? (this.getExerciseById(ni.exerciseId) ?? null) : null;
+  }
+
+  get circumference() { return this.circleLength; }
+  get currentExerciseIndex() { return this.currentIndex; }
+  get restTimeLeft() { return this.restLeft; }
+  get totalRestTime() { return this.totalRest; }
+
+  private getExerciseById(id: string | undefined | null): Exercise | undefined {
+    if (!id) return undefined;
+    return this.exercises.find(e => e.id === id);
   }
 
   // ==========================
@@ -150,10 +209,11 @@ export class WorkoutPage implements OnInit {
     this.currentIndex = 0;
     this.currentSet = 1;
     this.showingSuperset = false;
+    this.persistState();
   }
 
   // ==========================
-  // MAIN LOGIKA: COMPLETE SET
+  // COMPLETE SET
   // ==========================
 
   completeSet() {
@@ -164,6 +224,7 @@ export class WorkoutPage implements OnInit {
       if (this.currentSet < item.sets) {
         this.startRest(item.restBetweenSets, () => {
           this.currentSet++;
+          this.persistState();
         });
       } else {
         this.startRest(item.restAfterExercise, () => {
@@ -181,13 +242,12 @@ export class WorkoutPage implements OnInit {
     }
 
     if (this.currentSet < item.sets) {
-
       this.startRest(item.restBetweenSets, () => {
         this.currentSet++;
-        this.showingSuperset = false; 
+        this.showingSuperset = false;
+        this.persistState();
       });
     } else {
-
       this.startRest(item.restAfterExercise, () => {
         this.currentSet = 1;
         this.showingSuperset = false;
@@ -199,10 +259,7 @@ export class WorkoutPage implements OnInit {
   private showSuperset() {
     this.showingSuperset = true;
     this.isVideoLoading = true;
-
-    setTimeout(() => {
-      this.isVideoLoading = false;
-    }, 500);
+    setTimeout(() => { this.isVideoLoading = false; }, 500);
   }
 
   private async goToNextItem() {
@@ -213,54 +270,66 @@ export class WorkoutPage implements OnInit {
         this.currentSet = 1;
         this.showingSuperset = false;
         this.isVideoLoading = false;
+        this.persistState();
       }, 700);
     } else {
-      await this.showAlert('Workout completed!');
-      this.router.navigate(['/tabs/tab1']);
-
-      const exerciseList = this.items.map(item => {
-        const ex = this.exercises.find(e => e.id === item.exerciseId);
-        return {
-          exerciseId: item.exerciseId,
-          name: ex?.name ?? 'Exercise',
-          sets: item.sets,
-          reps: item.reps
-        };
-      });
-
-      const modal = await this.modalCtrl.create({
-        component: WorkoutFeedbackModal,
-        cssClass: 'feedback-transparent',
-        componentProps: {
-          exercises: exerciseList
-        }
-      });
-
-      await modal.present();
-
-      const result = await modal.onDidDismiss();
-      const feedback = result.data;
-
-      if (feedback) {
-        const userId = localStorage.getItem("username")!;
-
-        this.backend.sendWorkoutFeedback({
-          workoutId: this.workout.id!,
-          workoutTitle: this.workout.title,
-          userId: userId,
-          timestamp: Date.now(),
-          exercises: feedback
-        }).subscribe({
-          next: () => console.log("Feedback saved", feedback),
-          error: (err) => console.error("Error saving feedback", err)
-        });
-      }
-
+      await this.finishWorkout();
     }
   }
 
+  private async finishWorkout() {
+    // Čistimo state - trening je završen
+    this.workoutState.clear();
+    // Zakažemo inactivity reminder za 3 dana
+    this.notificationService.scheduleInactivityReminder(3).catch(() => {});
 
-  private pendingRestCallback: Function = () => { };
+    const exerciseList = this.items.map(item => {
+      const ex = this.exercises.find(e => e.id === item.exerciseId);
+      return {
+        exerciseId: item.exerciseId,
+        name: ex?.name ?? 'Exercise',
+        sets: item.sets,
+        reps: item.reps
+      };
+    });
+
+    // Otvaramo feedback modal PRE navigacije
+    const modal = await this.modalCtrl.create({
+      component: WorkoutFeedbackModal,
+      cssClass: 'feedback-transparent',
+      componentProps: { exercises: exerciseList }
+    });
+
+    await modal.present();
+    const result = await modal.onDidDismiss();
+    const feedback = result.data;
+
+    if (feedback) {
+      const userId = localStorage.getItem('username') ?? JSON.parse(localStorage.getItem('user') ?? '{}').username ?? '';
+      const feedbackPayload = {
+        workoutId: this.workout.id!,
+        workoutTitle: this.workout.title,
+        userId,
+        timestamp: Date.now(),
+        exercises: feedback
+      };
+
+      this.backend.sendWorkoutFeedback(feedbackPayload).subscribe({
+        next: () => console.log('Feedback saved'),
+        error: () => {
+          // Offline: sačuvaj lokalno, poslaćemo kad se veza vrati
+          this.workoutState.savePendingFeedback(feedbackPayload);
+          console.warn('Offline - feedback saved locally, will sync later');
+        }
+      });
+    }
+
+    this.router.navigate(['/tabs/tab1']);
+  }
+
+  // ==========================
+  // REST TIMER
+  // ==========================
 
   startRest(seconds: number, callback: Function) {
     this.showingSuperset = false;
@@ -283,14 +352,12 @@ export class WorkoutPage implements OnInit {
     this.stopRest(this.pendingRestCallback);
   }
 
-
   private stopRest(callback: Function) {
     clearInterval(this.timer);
     this.isResting = false;
     this.restLeft = 0;
     callback();
   }
-
 
   async showAlert(msg: string) {
     const a = await this.alertCtrl.create({

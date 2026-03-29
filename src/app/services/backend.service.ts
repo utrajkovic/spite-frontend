@@ -85,5 +85,28 @@ export class BackendService {
     return this.http.post(`${this.API_URL}/feedback`, data);
   }
 
+  getFeedbackForUser(username: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/feedback/user/${username}`);
+  }
 
+  // Trainer invite system
+  sendTrainerInvite(trainerUsername: string, clientUsername: string): Observable<string> {
+    return this.http.post(
+      `${this.API_URL}/trainer/invite?trainerUsername=${trainerUsername}&clientUsername=${clientUsername}`,
+      {},
+      { responseType: 'text' }
+    );
+  }
+
+  getPendingInvites(clientUsername: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/trainer/invites/${clientUsername}`);
+  }
+
+  acceptInvite(inviteId: string): Observable<string> {
+    return this.http.post(`${this.API_URL}/trainer/invite/${inviteId}/accept`, {}, { responseType: 'text' });
+  }
+
+  declineInvite(inviteId: string): Observable<string> {
+    return this.http.post(`${this.API_URL}/trainer/invite/${inviteId}/decline`, {}, { responseType: 'text' });
+  }
 }

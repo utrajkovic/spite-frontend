@@ -80,26 +80,21 @@ export class TabTrainerPage {
     this.isLoading = true;
 
     this.http.post(
-      `${this.baseUrl}/add-client?trainerUsername=${t}&clientUsername=${c}`,
+      `${this.baseUrl}/invite?trainerUsername=${t}&clientUsername=${c}`,
       {},
       { responseType: 'text' as 'json' }
     ).subscribe({
       next: () => {
         this.isLoading = false;
-
-        this.showAlert(`Klijent "${c}" uspešno dodat.`);
+        this.showAlert(`Pozivnica je poslata korisniku "${c}".`);
         this.clientUsername = '';
-
-        this.loadClients();  // odmah update UI
       },
       error: (err) => {
         this.isLoading = false;
-
         const msg =
           (typeof err?.error === 'string' && err.error) ||
           err?.error?.message ||
-          '❌ Greška pri dodavanju klijenta.';
-
+          '❌ Greška pri slanju pozivnice.';
         this.showAlert(msg);
       }
     });

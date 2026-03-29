@@ -1,0 +1,85 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <page-loading-overlay *ngIf="loading" [active]="loading" message="Loading profile..."></page-loading-overlay>
+
+  <!-- User info -->
+  <ion-card class="profile-card" *ngIf="user">
+    <ion-card-header>
+      <div class="avatar">
+        <i class="fa-solid fa-user-circle"></i>
+      </div>
+      <ion-card-title>{{ user.username }}</ion-card-title>
+      <p class="role-badge">{{ user.role }}</p>
+    </ion-card-header>
+  </ion-card>
+
+  <!-- Install app -->
+  <ion-card class="install-card" *ngIf="!isInstalled && (installPrompt || isIos)">
+    <ion-card-header>
+      <ion-card-title>
+        <i class="fa-solid fa-mobile-screen"></i> Install App
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="install-desc">Add Spite to your home screen for a better experience.</p>
+      <ion-button expand="block" (click)="installApp()" *ngIf="installPrompt">
+        <i class="fa-solid fa-download" slot="start"></i>
+        Add to Home Screen
+      </ion-button>
+      <ion-button expand="block" fill="outline" (click)="showIosInstallGuide()" *ngIf="isIos && !installPrompt">
+        <i class="fa-brands fa-apple" slot="start"></i>
+        How to install on iOS
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Pending invites -->
+  <ion-card *ngIf="pendingInvites.length > 0" class="invite-card">
+    <ion-card-header>
+      <ion-card-title>
+        Pozivnice <ion-badge color="warning">{{ pendingInvites.length }}</ion-badge>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item *ngFor="let invite of pendingInvites" class="invite-item">
+          <ion-label>
+            <h3>Trener: <strong>{{ invite.trainerUsername }}</strong></h3>
+          </ion-label>
+          <ion-button slot="end" size="small" color="success" (click)="acceptInvite(invite)">
+            Prihvati
+          </ion-button>
+          <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineInvite(invite)">
+            Odbij
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Workout history -->
+  <ion-card class="history-card">
+    <ion-card-header>
+      <ion-card-title>Istorija treninga</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p *ngIf="!loading && feedbackHistory.length === 0" class="empty-text">
+        Još nema završenih treninga.
+      </p>
+
+      <ion-list lines="none">
+        <ion-item *ngFor="let fb of feedbackHistory" class="fb-item">
+          <ion-label>
+            <h3>{{ fb.workoutTitle || 'Trening' }}</h3>
+            <p class="fb-date">{{ formatDate(fb.timestamp) }}</p>
+            <div class="fb-meta">
+              <span class="meta-pill">{{ fb.exercises?.length || 0 }} vežbi</span>
+              <span class="meta-pill intensity-pill">{{ avgIntensity(fb) }}</span>
+            </div>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

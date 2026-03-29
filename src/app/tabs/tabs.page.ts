@@ -4,6 +4,7 @@ import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonHeader, IonTitl
 import { addIcons } from 'ionicons';
 import { triangle, ellipse, square } from 'ionicons/icons';
 import { ChatService } from '../services/chat.service';
+import { BadgeService } from '../services/badge.service';
 
 @Component({
   selector: 'app-tabs',
@@ -21,10 +22,11 @@ export class TabsPage {
   public environmentInjector = inject(EnvironmentInjector);
   role: string | null = null;
   hasUnreadMessages = false;
+  hasProfileBadge = false;
+  hasWorkoutBadge = false;
   unsubscribeUnread: any = null;
 
-
-  constructor(private chat: ChatService) {
+  constructor(private chat: ChatService, public badge: BadgeService) {
     addIcons({ triangle, ellipse, square });
   }
 
@@ -35,22 +37,19 @@ export class TabsPage {
       this.role = parsed.role;
       const myUsername = parsed.username;
 
-      if (this.unsubscribeUnread) {
-        this.unsubscribeUnread();
-      }
+      if (this.unsubscribeUnread) this.unsubscribeUnread();
 
       this.unsubscribeUnread = this.chat.listenUnread(myUsername, (hasUnread) => {
         this.hasUnreadMessages = hasUnread;
       });
+
+      this.badge.start(myUsername);
+      this.badge.hasProfileBadge$.subscribe(v => this.hasProfileBadge = v);
+      this.badge.hasWorkoutBadge$.subscribe(v => this.hasWorkoutBadge = v);
     }
   }
 
   ionViewWillLeave() {
-    if (this.unsubscribeUnread) {
-      this.unsubscribeUnread();
-    }
+    if (this.unsubscribeUnread) this.unsubscribeUnread();
   }
-
-
-
 }

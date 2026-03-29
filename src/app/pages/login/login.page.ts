@@ -10,6 +10,7 @@ import {
 } from '@ionic/angular/standalone';
 import { BackendService } from 'src/app/services/backend.service';
 import { AlertController } from '@ionic/angular';
+import { NotificationService } from 'src/app/services/notification.service';
 
 
 
@@ -38,7 +39,8 @@ export class LoginPage {
     private http: HttpClient,
     private router: Router,
     private backendService: BackendService,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private notificationService: NotificationService
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -67,6 +69,8 @@ export class LoginPage {
       localStorage.setItem('user', JSON.stringify(user));
 
       this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true });
+      // Inicijalizuj notifikacije u pozadini
+      this.notificationService.init(user.username).catch(e => console.warn('Notifications init failed', e));
 
     } catch (error) {
       console.error('Login error:', error);

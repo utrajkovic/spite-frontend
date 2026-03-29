@@ -21,6 +21,10 @@
         <ion-segment-button value="info">
           <ion-label>Info</ion-label>
         </ion-segment-button>
+
+        <ion-segment-button value="profile">
+          <ion-label>Profile</ion-label>
+        </ion-segment-button>
       </ion-segment>
     </ion-toolbar>
   </ion-header>
@@ -107,5 +111,40 @@
 
   <ng-container *ngIf="segment === 'logs'">
       
+  </ng-container>
+
+  <ng-container *ngIf="segment === 'profile'">
+    <section class="section-box">
+      <div class="client-profile-header">
+        <i class="fa-solid fa-user-circle profile-avatar"></i>
+        <h2>{{ clientUsername }}</h2>
+        <p class="role-label" *ngIf="clientInfo">{{ clientInfo.role }}</p>
+      </div>
+    </section>
+
+    <section class="section-box">
+      <ion-list lines="none">
+        <ion-list-header>
+          <ion-label>Istorija treninga</ion-label>
+        </ion-list-header>
+
+        <ion-item *ngIf="feedbackList.length === 0">
+          <ion-label>Nema završenih treninga</ion-label>
+        </ion-item>
+
+        <ion-item *ngFor="let fb of feedbackList" detail (click)="openFeedback(fb)" class="fb-card">
+          <ion-label>
+            <div class="fb-header">
+              <h3>{{ getWorkoutName(fb) }}</h3>
+              <span class="workout-name">{{ formatDate(fb.timestamp) }}</span>
+            </div>
+            <div class="fb-meta">
+              <span class="meta-pill">{{ fb.exercises?.length || 0 }} vežbi</span>
+              <span class="meta-pill time-pill">{{ avgIntensity(fb) }}</span>
+            </div>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </section>
   </ng-container>
 </ion-content>

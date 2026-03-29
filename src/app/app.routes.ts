@@ -55,9 +55,14 @@ export const routes: Routes = [
           import('./tab-admin/tab-admin.page').then((m) => m.TabAdminPage),
       },
       {
-        path: 'tab-messages',   // <-- OVO JE NAŠ TAB
+        path: 'tab-messages',
         loadComponent: () =>
           import('./tab-messages/tab-messages.page').then(m => m.TabMessagesPage)
+      },
+      {
+        path: 'tab-profile',
+        loadComponent: () =>
+          import('./tab-profile/tab-profile.page').then(m => m.TabProfilePage)
       },
       {
         path: '',

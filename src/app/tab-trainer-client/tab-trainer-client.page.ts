@@ -37,7 +37,8 @@ export class TabTrainerClientPage implements OnInit {
   clientWorkouts: any[] = [];
 
   segment: string = 'assign';  
-  feedbackList: any[] = [];     
+  feedbackList: any[] = [];
+  clientInfo: any = null;
 
   baseUrl = 'https://spite-backend-v2.onrender.com/api/trainer';
   feedbackUrl = 'https://spite-backend-v2.onrender.com/api/feedback';
@@ -73,6 +74,7 @@ export class TabTrainerClientPage implements OnInit {
           this.trainerWorkouts = res;
           this.loadClientWorkouts();
           this.loadFeedback();
+          this.loadClientInfo();
         },
         error: async () => {
           await this.hideLoading();
@@ -100,11 +102,19 @@ export class TabTrainerClientPage implements OnInit {
     this.http.get<any[]>(`${this.feedbackUrl}/user/${this.clientUsername}`)
       .subscribe({
         next: (res) => {
-          this.feedbackList = res;
+          this.feedbackList = res.sort((a, b) => b.timestamp - a.timestamp);
         },
         error: () => {
           console.warn('No feedback found for this client.');
         }
+      });
+  }
+
+  loadClientInfo() {
+    this.http.get<any>(`https://spite-backend-v2.onrender.com/api/users/username/${this.clientUsername}`)
+      .subscribe({
+        next: (res) => { this.clientInfo = res; },
+        error: () => {}
       });
   }
 
@@ -178,11 +188,25 @@ export class TabTrainerClientPage implements OnInit {
   }
 
   getWorkoutName(fb: any): string {
-    // Koristi snapshot title koji je sačuvan u trenutku slanja feedbacka
     if (fb.workoutTitle) return fb.workoutTitle;
-    // Fallback: pokušaj da nađeš u listi klijentovih treninga
     const w = this.clientWorkouts.find((x: any) => x.id === fb.workoutId);
     return w ? w.title : 'Deleted workout';
+  }
+
+  formatDate(ts: number): string {
+    return new Date(ts).toLocaleDateString('sr-RS', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  avgIntensity(fb: any): string {
+    if (!fb.exercises?.length) return '-';
+    const map: any = { easy: 1, normal: 2, hard: 3 };
+    const avg = fb.exercises.reduce((s: number, e: any) => s + (map[e.intensity] || 2), 0) / fb.exercises.length;
+    if (avg < 1.5) return 'Easy';
+    if (avg < 2.5) return 'Normal';
+    return 'Hard';
   }
 
 }

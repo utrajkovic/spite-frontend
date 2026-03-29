@@ -12,6 +12,7 @@ import { Preferences } from '@capacitor/preferences';
 import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
+import { BadgeService } from '../services/badge.service';
 
 @Component({
   selector: 'app-tab1',
@@ -35,6 +36,7 @@ export class Tab1Page {
     private http: HttpClient,
     private alertCtrl: AlertController,
     private zone: NgZone,
+    private badgeService: BadgeService
   ) { }
 
   private initialized = false;
@@ -64,6 +66,9 @@ export class Tab1Page {
       .then(([mine, assigned]) => {
         this.workouts = [...(mine || []), ...(assigned || [])];
         this.loading = false;
+        // Označi sve workouts kao viđene - briše badge
+        const allIds = this.workouts.map(w => w.id).filter(Boolean) as string[];
+        this.badgeService.markWorkoutsSeen(allIds);
       })
       .catch((err) => {
         console.error('❌ Greška pri učitavanju treninga:', err);
