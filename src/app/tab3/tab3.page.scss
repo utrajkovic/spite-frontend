@@ -272,3 +272,38 @@ ion-button {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+.ex-search {
+  --background: rgba(0, 255, 255, 0.04);
+  --border-radius: 12px;
+  --color: var(--color-text);
+  --placeholder-color: rgba(0, 247, 255, 0.3);
+  --icon-color: var(--color-primary);
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.show-more-btn {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px dashed var(--border-cyan);
+  border-radius: 12px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 12px;
+  opacity: 0.6;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    border-color: var(--border-cyan-hover);
+    background: rgba(0, 255, 255, 0.04);
+  }
+}

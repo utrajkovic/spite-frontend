@@ -8,12 +8,19 @@
       <span class="count-badge">{{ exercises.length }}</span>
     </div>
 
-    <div class="empty-state" *ngIf="exercises.length === 0 && !isLoading">
+    <ion-searchbar
+      *ngIf="exercises.length > 5"
+      placeholder="Search exercises..."
+      (ionInput)="onExerciseSearch($event)"
+      class="ex-search">
+    </ion-searchbar>
+
+    <div class="empty-state" *ngIf="filteredExercises.length === 0 && !isLoading">
       <i class="fa-solid fa-dumbbell"></i>
-      <span>No exercises yet</span>
+      <span>{{ exerciseSearch ? 'No results' : 'No exercises yet' }}</span>
     </div>
 
-    <div class="list-item" *ngFor="let exercise of exercises" (click)="openExercisePreview(exercise)">
+    <div class="list-item" *ngFor="let exercise of visibleExercises" (click)="openExercisePreview(exercise)">
       <div class="item-left">
         <div class="item-icon"><i class="fa-solid fa-dumbbell"></i></div>
         <span class="item-name">{{ exercise.name }}</span>
@@ -25,6 +32,14 @@
         <i class="fa-solid fa-trash" *ngIf="isDeleting !== exercise.id"></i>
       </ion-button>
     </div>
+
+    <button class="show-more-btn" *ngIf="hasMoreExercises" (click)="exercisesExpanded = true">
+      Show all {{ filteredExercises.length }} exercises
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <button class="show-more-btn" *ngIf="exercisesExpanded && filteredExercises.length > 5" (click)="exercisesExpanded = false">
+      Show less <i class="fa-solid fa-chevron-up"></i>
+    </button>
   </section>
 
   <div class="divider"></div>

@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
-  IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner
+  IonList, IonItem, IonLabel, IonButton, IonIcon, IonSpinner, IonSearchbar
 } from '@ionic/angular/standalone';
 import { BackendService } from '../services/backend.service';
 import { Exercise, Workout, WorkoutItem } from '../services/models';
@@ -30,13 +30,18 @@ import { forkJoin } from 'rxjs';
     IonButton,
     IonSpinner,
     IonModal,
+    IonSearchbar,
     PageLoadingOverlayComponent
   ]
 })
 export class Tab3Page implements OnInit {
   exercises: Exercise[] = [];
+  filteredExercises: Exercise[] = [];
+  exerciseSearch = '';
+  exercisesExpanded = false;
+
   workouts: Workout[] = [];
-  assignedWorkouts: Workout[] = []; // 🟢 novi deo
+  assignedWorkouts: Workout[] = [];
   loading: HTMLIonLoadingElement | null = null;
   isDeleting: string | null = null;
   isLoading = false;
@@ -92,6 +97,7 @@ export class Tab3Page implements OnInit {
       next: ([exercises, workouts, assigned]) => {
         this.zone.run(() => {
           this.exercises = exercises;
+          this.filteredExercises = exercises;
           this.workouts = workouts;
           this.assignedWorkouts = assigned;
           this.isLoading = false;
@@ -290,8 +296,26 @@ export class Tab3Page implements OnInit {
     this.previewExercise = ex;
     this.exerciseModal.present();
   }
+
   closeExerciseModal() {
     this.exerciseModal.dismiss();
+  }
+
+  onExerciseSearch(ev: any) {
+    const q = ev.target.value?.toLowerCase() ?? '';
+    this.exerciseSearch = q;
+    this.filteredExercises = this.exercises.filter(e =>
+      e.name.toLowerCase().includes(q)
+    );
+  }
+
+  get visibleExercises(): Exercise[] {
+    const list = this.filteredExercises;
+    return this.exercisesExpanded ? list : list.slice(0, 5);
+  }
+
+  get hasMoreExercises(): boolean {
+    return this.filteredExercises.length > 5 && !this.exercisesExpanded;
   }
 
 }
