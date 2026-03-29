@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -12,6 +12,10 @@ import { Preferences } from '@capacitor/preferences';
 import { PageLoadingOverlayComponent } from '../page-loading-overlay/page-loading-overlay.component';
 import { BadgeService } from '../services/badge.service';
 import { NotificationService } from '../services/notification.service';
+import { StatsService, WorkoutStats } from '../services/stats.service';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-tab-profile',
@@ -26,37 +30,38 @@ import { NotificationService } from '../services/notification.service';
     PageLoadingOverlayComponent
   ]
 })
-export class TabProfilePage implements OnInit {
+export class TabProfilePage implements OnInit, OnDestroy {
+
+  @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
 
   user: any = null;
   feedbackHistory: any[] = [];
   pendingInvites: any[] = [];
   loading = true;
+  stats: WorkoutStats | null = null;
 
-  // PWA install
   installPrompt: any = null;
   isIos = false;
   isInstalled = false;
-
-  // Notifications
   notificationsEnabled = false;
   notificationsSupported = 'Notification' in window;
+
+  private chart: Chart | null = null;
 
   constructor(
     private backend: BackendService,
     private alertCtrl: AlertController,
     private badgeService: BadgeService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private statsService: StatsService
   ) {
     window.addEventListener('beforeinstallprompt', (e: any) => {
       e.preventDefault();
       this.installPrompt = e;
     });
-
     this.isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
     this.isInstalled = window.matchMedia('(display-mode: standalone)').matches
       || (navigator as any).standalone === true;
-
     if ('Notification' in window) {
       this.notificationsEnabled = Notification.permission === 'granted';
     }
@@ -65,17 +70,18 @@ export class TabProfilePage implements OnInit {
   async ngOnInit() {
     const stored = await Preferences.get({ key: 'user' });
     this.user = stored.value ? JSON.parse(stored.value) : null;
-    if (this.user) {
-      this.loadData();
-    }
+    if (this.user) this.loadData();
   }
 
   async ionViewWillEnter() {
     if (this.user) {
       this.loadData();
-      // Označi invites kao viđene - briše badge
       this.badgeService.markInvitesSeen(this.pendingInvites.map(i => i.id));
     }
+  }
+
+  ngOnDestroy() {
+    this.chart?.destroy();
   }
 
   loadData() {
@@ -84,7 +90,9 @@ export class TabProfilePage implements OnInit {
     this.backend.getFeedbackForUser(this.user.username).subscribe({
       next: (data) => {
         this.feedbackHistory = data.sort((a, b) => b.timestamp - a.timestamp);
+        this.stats = this.statsService.compute(data);
         this.loading = false;
+        setTimeout(() => this.renderChart(), 100);
       },
       error: () => { this.loading = false; }
     });
@@ -92,6 +100,61 @@ export class TabProfilePage implements OnInit {
     this.backend.getPendingInvites(this.user.username).subscribe({
       next: (data) => { this.pendingInvites = data; },
       error: () => {}
+    });
+  }
+
+  private renderChart() {
+    if (!this.chartCanvas || !this.stats?.weeklyData.length) return;
+
+    this.chart?.destroy();
+
+    const labels = this.stats.weeklyData.map(w => w.label);
+    const counts = this.stats.weeklyData.map(w => w.count);
+
+    this.chart = new Chart(this.chartCanvas.nativeElement, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Workouts',
+          data: counts,
+          backgroundColor: counts.map(c =>
+            c === 0 ? 'rgba(0,255,255,0.05)' : 'rgba(0,255,255,0.25)'
+          ),
+          borderColor: counts.map(c =>
+            c === 0 ? 'rgba(0,255,255,0.1)' : 'rgba(0,255,255,0.8)'
+          ),
+          borderWidth: 1,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ` ${ctx.raw} workout${(ctx.raw as number) !== 1 ? 's' : ''}`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(0,255,255,0.05)' },
+            ticks: { color: 'rgba(0,247,255,0.5)', font: { size: 11 } }
+          },
+          y: {
+            grid: { color: 'rgba(0,255,255,0.05)' },
+            ticks: {
+              color: 'rgba(0,247,255,0.5)',
+              font: { size: 11 },
+              stepSize: 1
+            },
+            beginAtZero: true
+          }
+        }
+      }
     });
   }
 
@@ -131,9 +194,7 @@ export class TabProfilePage implements OnInit {
   }
 
   async showAlert(msg: string) {
-    const a = await this.alertCtrl.create({
-      message: msg, buttons: ['OK'], cssClass: 'custom-alert'
-    });
+    const a = await this.alertCtrl.create({ message: msg, buttons: ['OK'], cssClass: 'custom-alert' });
     await a.present();
   }
 
@@ -141,10 +202,7 @@ export class TabProfilePage implements OnInit {
     if (this.installPrompt) {
       this.installPrompt.prompt();
       const { outcome } = await this.installPrompt.userChoice;
-      if (outcome === 'accepted') {
-        this.installPrompt = null;
-        this.isInstalled = true;
-      }
+      if (outcome === 'accepted') { this.installPrompt = null; this.isInstalled = true; }
     }
   }
 
@@ -152,8 +210,7 @@ export class TabProfilePage implements OnInit {
     const a = await this.alertCtrl.create({
       header: 'Add to Home Screen',
       message: `1. Tap the Share button <strong>⎙</strong> at the bottom of Safari<br><br>2. Scroll down and tap <strong>"Add to Home Screen"</strong><br><br>3. Tap <strong>Add</strong>`,
-      buttons: ['OK'],
-      cssClass: 'custom-alert'
+      buttons: ['OK'], cssClass: 'custom-alert'
     });
     await a.present();
   }
@@ -162,8 +219,6 @@ export class TabProfilePage implements OnInit {
     if (!this.user) return;
     await this.notificationService.init(this.user.username);
     this.notificationsEnabled = Notification.permission === 'granted';
-    if (this.notificationsEnabled) {
-      this.showAlert('Notifikacije su uključene.');
-    }
+    if (this.notificationsEnabled) this.showAlert('Notifikacije su uključene.');
   }
 }

@@ -48,6 +48,54 @@
       </ion-button>
     </ion-card-content>
   </ion-card>
+  <!-- Stats -->
+  <ion-card class="stats-card" *ngIf="stats && stats.totalWorkouts > 0">
+    <ion-card-header>
+      <ion-card-title><i class="fa-solid fa-chart-bar"></i> Progress</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+
+      <!-- Summary pills -->
+      <div class="stats-row">
+        <div class="stat-pill">
+          <span class="stat-val">{{ stats.totalWorkouts }}</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val">{{ stats.thisWeek }}</span>
+          <span class="stat-label">This week</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val">{{ stats.streak }}</span>
+          <span class="stat-label">Day streak</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val">{{ stats.avgIntensity }}</span>
+          <span class="stat-label">Avg intensity</span>
+        </div>
+      </div>
+
+      <!-- Weekly chart -->
+      <p class="chart-label">Workouts per week (last 7 weeks)</p>
+      <div class="chart-wrapper">
+        <canvas #chartCanvas></canvas>
+      </div>
+
+      <!-- Top exercises -->
+      <div *ngIf="stats.topExercises.length > 0">
+        <p class="chart-label">Most trained exercises</p>
+        <div class="top-ex-list">
+          <div class="top-ex-item" *ngFor="let ex of stats.topExercises; let i = index">
+            <span class="ex-rank">#{{ i + 1 }}</span>
+            <span class="ex-name">{{ ex.name }}</span>
+            <span class="ex-count">{{ ex.count }}×</span>
+          </div>
+        </div>
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+
   <!-- Pending invites -->
   <ion-card *ngIf="pendingInvites.length > 0" class="invite-card">
     <ion-card-header>
