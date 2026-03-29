@@ -17,12 +17,12 @@
 
       <div class="field">
         <label>Name</label>
-        <ion-input [formControl]="exerciseForm.controls['name']" placeholder="Exercise name"></ion-input>
+        <ion-input [formControl]="$any(exerciseForm.get('name'))" placeholder="Exercise name"></ion-input>
       </div>
 
       <div class="field">
         <label>Description</label>
-        <ion-input [formControl]="exerciseForm.controls['description']" placeholder="Brief description"></ion-input>
+        <ion-input [formControl]="$any(exerciseForm.get('description'))" placeholder="Brief description"></ion-input>
       </div>
 
       <div class="video-upload">
@@ -45,15 +45,15 @@
 
       <div class="field">
         <label>Title</label>
-        <ion-input [formControl]="workoutForm.controls['title']" placeholder="Workout title"></ion-input>
+        <ion-input [formControl]="$any(workoutForm.get('title'))" placeholder="Workout title"></ion-input>
       </div>
       <div class="field">
         <label>Category</label>
-        <ion-input [formControl]="workoutForm.controls['subtitle']" placeholder="e.g. Upper Body"></ion-input>
+        <ion-input [formControl]="$any(workoutForm.get('subtitle'))" placeholder="e.g. Upper Body"></ion-input>
       </div>
       <div class="field">
         <label>Description</label>
-        <ion-input [formControl]="workoutForm.controls['content']" placeholder="Optional description"></ion-input>
+        <ion-input [formControl]="$any(workoutForm.get('content'))" placeholder="Optional description"></ion-input>
       </div>
 
       <p class="section-label" *ngIf="editableExercises.length > 0">Exercises ({{ editableExercises.length }})</p>
