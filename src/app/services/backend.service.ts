@@ -104,6 +104,8 @@ export class BackendService {
   declineShare(inviteId: string): Observable<string> {
     return this.http.post(`${this.API_URL}/share/${inviteId}/decline`, {}, { responseType: 'text' });
   }
+
+  assignWorkoutNote(workoutId: string, clientUsername: string, note: string): Observable<string> {
     return this.http.put(
       `${this.API_URL}/workouts/assign/note?workoutId=${workoutId}&clientUsername=${clientUsername}&note=${encodeURIComponent(note)}`,
       {},
