@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService } from '../services/backend.service';
 import { WorkoutStateService, ActiveWorkoutState } from '../services/workout-state.service';
 import { NotificationService } from '../services/notification.service';
+import { RestFeedbackService } from '../services/rest-feedback.service';
 import { Workout, WorkoutItem, Exercise } from '../services/models';
 import { AlertController, ModalController } from '@ionic/angular';
 import { WorkoutFeedbackModal } from '../modals/workout-feedback.modal';
@@ -43,6 +44,11 @@ export class WorkoutPage implements OnInit, OnDestroy {
   totalRest = 0;
   timer: any;
 
+  private restStartedAt = 0;      // timestamp kad je odmor počeo
+  private restDuration = 0;       // ukupno trajanje odmora
+  private restCallback: Function = () => {};
+  private visibilityHandler: any = null;
+
   started = false;
   isVideoLoading = false;
 
@@ -55,6 +61,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
     private backend: BackendService,
     private workoutState: WorkoutStateService,
     private notificationService: NotificationService,
+    private restFeedback: RestFeedbackService,
     private router: Router,
     private alertCtrl: AlertController,
     private modalCtrl: ModalController
@@ -99,8 +106,9 @@ export class WorkoutPage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     clearInterval(this.timer);
-    // Ako je trening počeo ali nije završen, state ostaje u localStorage
-    // Briše se samo kad se trening završi
+    if (this.visibilityHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityHandler);
+    }
   }
 
   private async offerResume(saved: ActiveWorkoutState) {
@@ -334,17 +342,48 @@ export class WorkoutPage implements OnInit, OnDestroy {
   startRest(seconds: number, callback: Function) {
     this.showingSuperset = false;
     this.pendingRestCallback = callback;
+    this.restCallback = callback;
     this.isResting = true;
     this.restLeft = seconds;
     this.totalRest = seconds;
+    this.restDuration = seconds;
+    this.restStartedAt = Date.now();
+
+    this.restFeedback.onRestStart();
+
+    // Registruj visibility handler - kad se app vrati iz pozadine
+    if (this.visibilityHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityHandler);
+    }
+    this.visibilityHandler = () => {
+      if (!document.hidden && this.isResting) {
+        this.syncRestTimer();
+      }
+    };
+    document.addEventListener('visibilitychange', this.visibilityHandler);
 
     clearInterval(this.timer);
     this.timer = setInterval(() => {
-      this.restLeft--;
-      if (this.restLeft <= 0) {
-        this.stopRest(callback);
-      }
-    }, 1000);
+      this.syncRestTimer();
+    }, 500); // češće tickovanje za tačnost
+  }
+
+  private syncRestTimer() {
+    if (!this.isResting) return;
+
+    const elapsed = (Date.now() - this.restStartedAt) / 1000;
+    const remaining = Math.max(0, this.restDuration - elapsed);
+    const prevLeft = this.restLeft;
+    this.restLeft = Math.ceil(remaining);
+
+    // Countdown feedback samo kad pređemo celu sekundu
+    if (Math.ceil(prevLeft) !== Math.ceil(remaining) && remaining > 0 && remaining <= 3) {
+      this.restFeedback.onRestCountdown();
+    }
+
+    if (remaining <= 0) {
+      this.stopRest(this.restCallback);
+    }
   }
 
   skipRest() {
@@ -356,6 +395,13 @@ export class WorkoutPage implements OnInit, OnDestroy {
     clearInterval(this.timer);
     this.isResting = false;
     this.restLeft = 0;
+
+    if (this.visibilityHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityHandler);
+      this.visibilityHandler = null;
+    }
+
+    this.restFeedback.onRestEnd();
     callback();
   }
 
