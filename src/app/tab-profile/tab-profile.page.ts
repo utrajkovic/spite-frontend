@@ -44,6 +44,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
   user: any = null;
   feedbackHistory: any[] = [];
   pendingInvites: any[] = [];
+  pendingShares: any[] = [];
   loading = true;
   stats: WorkoutStats | null = null;
   prs: ExercisePR[] = [];
@@ -112,6 +113,29 @@ export class TabProfilePage implements OnInit, OnDestroy {
     this.backend.getPendingInvites(this.user.username).subscribe({
       next: (data) => { this.pendingInvites = data; },
       error: () => {}
+    });
+
+    this.backend.getPendingShares(this.user.username).subscribe({
+      next: (data) => { this.pendingShares = data; },
+      error: () => {}
+    });
+  }
+  async acceptShare(share: any) {
+    this.backend.acceptShare(share.id).subscribe({
+      next: () => {
+        this.pendingShares = this.pendingShares.filter(s => s.id !== share.id);
+        this.showAlert(`Prihvatio si deljenje od korisnika "${share.fromUsername}".`);
+      },
+      error: () => this.showAlert('Greška pri prihvatanju deljenja.')
+    });
+  }
+
+  async declineShare(share: any) {
+    this.backend.declineShare(share.id).subscribe({
+      next: () => {
+        this.pendingShares = this.pendingShares.filter(s => s.id !== share.id);
+      },
+      error: () => this.showAlert('Greška pri odbijanju deljenja.')
     });
   }
 

@@ -60,8 +60,11 @@
         <video *ngIf="currentExercise?.videoUrl && !isVideoLoading"
           [src]="currentExercise?.videoUrl"
           autoplay loop [muted]="true" playsinline
-          class="ex-video fade-in">
-        </video>
+          class="ex-video fade-in"
+          style="background:#000;max-width:100vw;max-height:45vh;object-fit:contain;"
+          (loadedmetadata)="$event.target.play()"
+          controls
+        ></video>
 
         <div class="video-loading" *ngIf="isVideoLoading">
           <ion-spinner name="crescent"></ion-spinner>

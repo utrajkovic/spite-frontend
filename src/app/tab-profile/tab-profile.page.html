@@ -12,10 +12,11 @@
   </ion-card>
 
   <!-- Pending invites -->
-  <ion-card *ngIf="pendingInvites.length > 0" class="invite-card">
+  <ion-card *ngIf="pendingInvites.length > 0 || pendingShares.length > 0" class="invite-card">
     <ion-card-header>
       <ion-card-title>
-        Invites <ion-badge color="warning">{{ pendingInvites.length }}</ion-badge>
+        Invites
+        <ion-badge color="warning">{{ pendingInvites.length + pendingShares.length }}</ion-badge>
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -26,6 +27,15 @@
           </ion-label>
           <ion-button slot="end" size="small" color="success" (click)="acceptInvite(invite)">Accept</ion-button>
           <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineInvite(invite)">Decline</ion-button>
+        </ion-item>
+        <ion-item *ngFor="let share of pendingShares" class="invite-item">
+          <ion-label>
+            <h3>Share from: <strong>{{ share.fromUsername }}</strong></h3>
+            <p>Type: <strong>{{ share.type }}</strong></p>
+            <p *ngIf="share.itemNames && share.itemNames.length > 0">Items: <span *ngFor="let n of share.itemNames; let last = last">{{ n }}<span *ngIf="!last">, </span></span></p>
+          </ion-label>
+          <ion-button slot="end" size="small" color="success" (click)="acceptShare(share)">Accept</ion-button>
+          <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineShare(share)">Decline</ion-button>
         </ion-item>
       </ion-list>
     </ion-card-content>
