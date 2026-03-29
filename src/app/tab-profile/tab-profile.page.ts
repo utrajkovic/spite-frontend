@@ -11,6 +11,7 @@ import { BackendService } from '../services/backend.service';
 import { Preferences } from '@capacitor/preferences';
 import { PageLoadingOverlayComponent } from '../page-loading-overlay/page-loading-overlay.component';
 import { BadgeService } from '../services/badge.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-tab-profile',
@@ -37,23 +38,28 @@ export class TabProfilePage implements OnInit {
   isIos = false;
   isInstalled = false;
 
+  // Notifications
+  notificationsEnabled = false;
+  notificationsSupported = 'Notification' in window;
+
   constructor(
     private backend: BackendService,
     private alertCtrl: AlertController,
-    private badgeService: BadgeService
+    private badgeService: BadgeService,
+    private notificationService: NotificationService
   ) {
-    // Uhvati beforeinstallprompt (Android/Desktop Chrome)
     window.addEventListener('beforeinstallprompt', (e: any) => {
       e.preventDefault();
       this.installPrompt = e;
     });
 
-    // Detektuj iOS
     this.isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
-
-    // Detektuj da li je već instaliran (standalone mode)
     this.isInstalled = window.matchMedia('(display-mode: standalone)').matches
       || (navigator as any).standalone === true;
+
+    if ('Notification' in window) {
+      this.notificationsEnabled = Notification.permission === 'granted';
+    }
   }
 
   async ngOnInit() {
@@ -150,5 +156,14 @@ export class TabProfilePage implements OnInit {
       cssClass: 'custom-alert'
     });
     await a.present();
+  }
+
+  async enableNotifications() {
+    if (!this.user) return;
+    await this.notificationService.init(this.user.username);
+    this.notificationsEnabled = Notification.permission === 'granted';
+    if (this.notificationsEnabled) {
+      this.showAlert('Notifikacije su uključene.');
+    }
   }
 }

@@ -167,3 +167,25 @@ ion-card {
     --border-color: #00ff96;
   }
 }
+
+.notif-card {
+  border-color: rgba(0, 180, 255, 0.3);
+  box-shadow: 0 0 12px rgba(0, 180, 255, 0.1);
+
+  ion-card-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .install-desc {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-bottom: 14px;
+    opacity: 0.8;
+  }
+}

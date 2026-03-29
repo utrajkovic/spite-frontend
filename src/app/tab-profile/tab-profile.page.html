@@ -33,6 +33,21 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- Notifications -->
+  <ion-card class="notif-card" *ngIf="notificationsSupported && !notificationsEnabled">
+    <ion-card-header>
+      <ion-card-title>
+        <i class="fa-solid fa-bell"></i> Notifications
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="install-desc">Enable notifications to get alerts for new workouts, trainer invites and messages.</p>
+      <ion-button expand="block" (click)="enableNotifications()">
+        <i class="fa-solid fa-bell" slot="start"></i>
+        Enable Notifications
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
   <!-- Pending invites -->
   <ion-card *ngIf="pendingInvites.length > 0" class="invite-card">
     <ion-card-header>
