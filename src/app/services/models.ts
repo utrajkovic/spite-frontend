@@ -32,6 +32,7 @@ export interface Workout {
   exerciseIds?: string[];
   items: WorkoutItem[];
   exercises?: Exercise[];
+  note?: string;
 }
 
 export interface User {

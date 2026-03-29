@@ -445,3 +445,19 @@ ion-segment {
   &.trend-down { color: var(--color-danger); filter: drop-shadow(0 0 4px rgba(255,77,77,0.5)); }
   &.trend-same { color: var(--color-primary); opacity: 0.3; }
 }
+
+.workout-note {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: #ffc800 !important;
+  opacity: 0.8;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.note-btn {
+  --color: #ffc800;
+  font-size: 16px;
+}

@@ -85,6 +85,14 @@ export class BackendService {
     return this.http.post(`${this.API_URL}/feedback`, data);
   }
 
+  updateWorkoutNote(workoutId: string, clientUsername: string, note: string): Observable<string> {
+    return this.http.put(
+      `${this.API_URL}/workouts/assign/note?workoutId=${workoutId}&clientUsername=${clientUsername}&note=${encodeURIComponent(note)}`,
+      {},
+      { responseType: 'text' }
+    );
+  }
+
   getFeedbackForUser(username: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.API_URL}/feedback/user/${username}`);
   }

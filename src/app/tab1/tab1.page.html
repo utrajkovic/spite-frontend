@@ -24,6 +24,12 @@
     <ion-card-content>
       <p class="workout-desc" *ngIf="workout.content">{{ workout.content }}</p>
 
+      <!-- Napomena od trenera -->
+      <div class="trainer-note" *ngIf="workout.note">
+        <i class="fa-solid fa-note-sticky"></i>
+        <span>{{ workout.note }}</span>
+      </div>
+
       <div class="action-row">
         <ion-button size="small" fill="outline" [routerLink]="['/tab-trainings']" [state]="{ workout: workout }">
           <i class="fa-solid fa-eye" slot="start"></i>

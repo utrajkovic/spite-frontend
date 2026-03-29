@@ -31,7 +31,8 @@ Chart.register(...registerables);
     IonItem, IonLabel, IonButton, IonList, IonListHeader,
     IonBadge, IonSpinner,
     PageLoadingOverlayComponent
-  ]
+  ],
+  providers: [ModalController]
 })
 export class TabProfilePage implements OnInit, OnDestroy {
 

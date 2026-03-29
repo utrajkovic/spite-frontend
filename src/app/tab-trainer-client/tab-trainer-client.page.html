@@ -66,7 +66,14 @@
           <ion-label>
             <h3>{{ w.title }}</h3>
             <p>{{ w.subtitle || 'No category' }}</p>
+            <p class="workout-note" *ngIf="w.note">
+              <i class="fa-solid fa-note-sticky"></i> {{ w.note }}
+            </p>
           </ion-label>
+          <ion-button fill="clear" slot="end" size="small" class="note-btn"
+            (click)="editNote(w); $event.stopPropagation()">
+            <i class="fa-solid fa-note-sticky"></i>
+          </ion-button>
           <ion-button color="danger" slot="end" size="small" (click)="unassignWorkout(w.id)">
             Remove
           </ion-button>

@@ -178,12 +178,76 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
     this.http.post(url, {}, { responseType: 'text' as 'json' })
       .subscribe({
-        next: () => {
-          this.showAlert('Workout successfully assigned to client.');
+        next: async () => {
+          // Pitaj za napomenu nakon dodeljivanja
+          this.promptNote(workoutId);
           this.loadClientWorkouts();
         },
         error: () => this.showAlert('Error assigning workout.')
       });
+  }
+
+  async promptNote(workoutId: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Add a note',
+      message: 'Leave a note for your client (optional)',
+      cssClass: 'custom-alert',
+      inputs: [
+        {
+          name: 'note',
+          type: 'textarea',
+          placeholder: 'e.g. Focus on form, not weight...',
+          attributes: { rows: 3 }
+        }
+      ],
+      buttons: [
+        { text: 'Skip', role: 'cancel' },
+        {
+          text: 'Save',
+          handler: (data) => {
+            if (data.note?.trim()) {
+              this.saveNote(workoutId, data.note.trim());
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  saveNote(workoutId: string, note: string) {
+    this.http.put(
+      `https://spite-backend-v2.onrender.com/api/workouts/assign/note?workoutId=${workoutId}&clientUsername=${this.clientUsername}&note=${encodeURIComponent(note)}`,
+      {},
+      { responseType: 'text' as 'json' }
+    ).subscribe({ error: () => console.warn('Note save failed') });
+  }
+
+  async editNote(workout: any) {
+    const alert = await this.alertCtrl.create({
+      header: 'Edit note',
+      cssClass: 'custom-alert',
+      inputs: [
+        {
+          name: 'note',
+          type: 'textarea',
+          value: workout.note || '',
+          placeholder: 'Leave a note for your client...',
+          attributes: { rows: 3 }
+        }
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Save',
+          handler: (data) => {
+            this.saveNote(workout.id, data.note?.trim() || '');
+            workout.note = data.note?.trim() || '';
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
 
