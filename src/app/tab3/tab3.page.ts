@@ -77,10 +77,15 @@ export class Tab3Page implements OnInit {
       this.showAlert('Not logged in.');
       return;
     }
+    if (this.shareMode === 'none') {
+      this.isSharing = false;
+      this.showAlert('Select what you want to share.');
+      return;
+    }
     this.backend.sendShareInvite(
       currentUser.username,
       this.shareUsername.trim(),
-      this.shareMode,
+      this.shareMode as 'exercise' | 'workout',
       Array.from(this.selectedIds)
     ).subscribe({
       next: () => {
