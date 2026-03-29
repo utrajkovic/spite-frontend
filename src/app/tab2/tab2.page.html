@@ -30,14 +30,12 @@
         <input #videoInput type="file" accept="video/*" (change)="onVideoSelected($event)" style="display:none" />
         <button class="video-pick-btn" (click)="videoInput.click()">
           <i class="fa-solid fa-photo-film"></i>
-          {{ selectedVideo ? selectedVideo.name : 'Choose from Gallery / Camera' }}
+          {{ selectedVideo ? selectedVideo.name : 'Choose Video (max 10 MB)' }}
         </button>
-        <span class="video-hint" *ngIf="!selectedVideo">
-          Tip: Trim your video before selecting it using your phone's gallery app.
-        </span>
         <span class="video-selected" *ngIf="selectedVideo">
-          <i class="fa-solid fa-check"></i> {{ (selectedVideo.size / 1024 / 1024).toFixed(1) }} MB
-          <button class="remove-video-btn" (click)="selectedVideo = null">✕</button>
+          <i class="fa-solid fa-check"></i>
+          {{ (selectedVideo.size / 1024 / 1024).toFixed(1) }} MB
+          <button class="remove-video-btn" (click)="selectedVideo = null; videoInput.value = ''">✕</button>
         </span>
       </div>
 

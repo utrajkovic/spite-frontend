@@ -246,7 +246,6 @@ ion-reorder {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Video upload */
 .video-pick-btn {
   width: 100%;
   padding: 12px;
@@ -264,15 +263,6 @@ ion-reorder {
   justify-content: center;
   i { opacity: 0.7; }
   &:active { background: rgba(0, 255, 255, 0.12); }
-}
-
-.video-hint {
-  display: block;
-  font-size: 11px;
-  color: var(--color-text-muted);
-  opacity: 0.5;
-  margin-top: 4px;
-  text-align: center;
 }
 
 .video-selected {

@@ -11,7 +11,7 @@ import { LocalDataService } from '../services/local-data.service';
 import { ModalController } from '@ionic/angular';
 import { ExerciseSettingsModalComponent } from '../exercise-settings-modal/exercise-settings-modal.component';
 import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
-import { VideoTrimModal } from '../modals/video-trim.modal';
+
 
 
 @Component({
@@ -27,7 +27,7 @@ import { VideoTrimModal } from '../modals/video-trim.modal';
     IonReorderGroup, IonReorder, IonAlert,
     IonSelect, IonSelectOption,
     IonIcon, ExerciseSettingsModalComponent,
-    PageLoadingOverlayComponent, VideoTrimModal
+    PageLoadingOverlayComponent
   ],
   providers: [ModalController]
 })
@@ -143,24 +143,15 @@ export class Tab2Page implements OnInit {
   onVideoSelected(ev: any) {
     const file: File | null = ev.target.files?.[0] ?? null;
     if (!file) return;
-    this.openTrimModal(file);
-  }
 
-  async openTrimModal(file: File) {
-    const modal = await this.modalCtrl.create({
-      component: VideoTrimModal,
-      componentProps: { file },
-      cssClass: 'trim-modal-wrapper'
-    });
-
-    await modal.present();
-    const result = await modal.onDidDismiss();
-
-    if (result.data) {
-      // result.data je File - ili originalni (skip) ili isečeni (trim)
-      this.selectedVideo = result.data;
+    const fileMB = file.size / 1024 / 1024;
+    if (fileMB > 10) {
+      this.showAlert(`Video is too large (${fileMB.toFixed(1)} MB). Maximum allowed is 10 MB.`);
+      ev.target.value = '';
+      return;
     }
-    // null = cancel, selectedVideo ostaje null
+
+    this.selectedVideo = file;
   }
 
   async saveExercise() {
@@ -183,13 +174,6 @@ export class Tab2Page implements OnInit {
     };
 
     if (this.selectedVideo) {
-      const maxMB = 10;
-      const fileMB = this.selectedVideo.size / 1024 / 1024;
-      if (fileMB > maxMB) {
-        this.isSavingExercise = false;
-        return this.showAlert(`Video is too large (${fileMB.toFixed(1)} MB). Please trim it to under ${maxMB} MB before uploading.`);
-      }
-
       try {
         const form = new FormData();
         form.append('video', this.selectedVideo);
