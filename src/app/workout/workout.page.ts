@@ -1,3 +1,14 @@
+  constructor(
+    private route: ActivatedRoute,
+    private backend: BackendService,
+    private workoutState: WorkoutStateService,
+    private notificationService: NotificationService,
+    private restFeedback: RestFeedbackService,
+    private router: Router,
+    private alertCtrl: AlertController,
+    private modalCtrl: ModalController
+  ) {}
+
   onVideoLoaded(event: Event): void {
     const video = event.target as HTMLVideoElement;
     video.play();
