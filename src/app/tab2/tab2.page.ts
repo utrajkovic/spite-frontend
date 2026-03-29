@@ -14,7 +14,6 @@ import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loadin
 import { VideoTrimModal } from '../modals/video-trim.modal';
 
 
-
 @Component({
   selector: 'app-tab2',
   templateUrl: './tab2.page.html',
@@ -144,6 +143,15 @@ export class Tab2Page implements OnInit {
   onVideoSelected(ev: any) {
     const file: File | null = ev.target.files?.[0] ?? null;
     if (!file) return;
+
+    const maxMB = 10;
+    const fileMB = file.size / 1024 / 1024;
+    if (fileMB > maxMB) {
+      this.showAlert(`Video is too large (${fileMB.toFixed(1)} MB). Max allowed is ${maxMB} MB. Please select a shorter video.`);
+      ev.target.value = '';
+      return;
+    }
+
     this.openTrimModal(file);
   }
 
@@ -153,11 +161,15 @@ export class Tab2Page implements OnInit {
       componentProps: { file },
       cssClass: 'trim-modal-wrapper'
     });
+
     await modal.present();
     const result = await modal.onDidDismiss();
+
     if (result.data) {
+      // result.data je File - ili originalni (skip) ili isečeni (trim)
       this.selectedVideo = result.data;
     }
+    // null = cancel, selectedVideo ostaje null
   }
 
   async saveExercise() {

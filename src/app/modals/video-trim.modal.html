@@ -10,17 +10,35 @@
   </div>
 
   <h2 class="title">Trim Video</h2>
-  <p class="subtitle">Select up to 5 seconds to keep</p>
+  <p class="subtitle">Select up to 5s — estimated size must be under 10 MB</p>
 
   <!-- Video preview -->
   <div class="video-wrapper">
     <video #videoEl [src]="videoUrl" preload="metadata" playsinline [muted]="true" class="preview-video"></video>
   </div>
 
-  <!-- Max duration warning -->
-  <div class="max-warning" *ngIf="selectionTooLong">
+  <!-- Size info bar -->
+  <div class="size-bar">
+    <span class="size-item">
+      <i class="fa-solid fa-file-video"></i>
+      Original: {{ originalMB.toFixed(1) }} MB
+    </span>
+    <span class="size-item" [class.size-ok]="!trimTooBig" [class.size-bad]="trimTooBig">
+      <i class="fa-solid fa-scissors"></i>
+      Est. trim: ~{{ estimatedMBLabel }} MB
+    </span>
+  </div>
+
+  <!-- Warning: trim still too big -->
+  <div class="max-warning" *ngIf="trimTooBig">
     <i class="fa-solid fa-triangle-exclamation"></i>
-    Max 5 seconds allowed — adjust your selection
+    Estimated size is over 10 MB — select a shorter clip
+  </div>
+
+  <!-- Warning: skip blocked -->
+  <div class="max-warning" *ngIf="skipTooBig && !trimTooBig">
+    <i class="fa-solid fa-circle-info"></i>
+    Original is over 10 MB — you must trim before uploading
   </div>
 
   <!-- Timeline bar -->
@@ -30,7 +48,7 @@
       <div class="timeline-selection"
         [style.left.%]="selectionLeftPct"
         [style.width.%]="selectionWidthPct"
-        [class.over-limit]="selectionTooLong"
+        [class.over-limit]="selectionTooLong || trimTooBig"
         (pointerdown)="onSelectionPointerDown($event)">
         <span class="selection-label">{{ trimDuration }}s</span>
         <span class="drag-handle left-handle">⠿</span>
@@ -48,7 +66,7 @@
   <!-- Duration info -->
   <div class="time-info">
     <span class="time-badge">{{ formatTime(startTime) }}</span>
-    <span class="duration-label" [class.over-limit]="selectionTooLong">
+    <span class="duration-label" [class.over-limit]="selectionTooLong || trimTooBig">
       {{ trimDuration }}s / 5s max
     </span>
     <span class="time-badge">{{ formatTime(endTime) }}</span>
@@ -75,16 +93,20 @@
   </div>
 
   <!-- Preview button -->
-  <ion-button expand="block" fill="outline" class="preview-btn" (click)="previewTrim()" [disabled]="selectionTooLong">
+  <ion-button expand="block" fill="outline" class="preview-btn" (click)="previewTrim()">
     <i class="fa-solid fa-play" slot="start"></i>
     Preview Selection
   </ion-button>
 
   <!-- Actions -->
   <div class="action-row">
-    <ion-button fill="outline" class="cancel-btn" (click)="cancel()">Cancel</ion-button>
-    <ion-button fill="outline" class="skip-btn" (click)="skipTrim()">Skip Trim</ion-button>
-    <ion-button class="trim-btn" (click)="trimAndReturn()" [disabled]="isProcessing || selectionTooLong">
+    <ion-button fill="outline" class="cancel-btn" (click)="cancel()">
+      Cancel
+    </ion-button>
+    <ion-button fill="outline" class="skip-btn" (click)="skipTrim()" [disabled]="skipTooBig">
+      Skip Trim
+    </ion-button>
+    <ion-button class="trim-btn" (click)="trimAndReturn()" [disabled]="isProcessing || selectionTooLong || trimTooBig">
       <i class="fa-solid fa-scissors" slot="start"></i>
       Trim & Use
     </ion-button>
