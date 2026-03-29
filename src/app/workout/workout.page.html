@@ -62,7 +62,7 @@
           autoplay loop [muted]="true" playsinline
           class="ex-video fade-in"
           style="background:#000;max-width:100vw;max-height:45vh;object-fit:contain;"
-          (loadedmetadata)="$event.target.play()"
+          (loadedmetadata)="($event.target as HTMLVideoElement)?.play()"
           controls
         ></video>
 
