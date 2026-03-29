@@ -13,6 +13,42 @@
     </ion-card-header>
   </ion-card>
 
+  <!-- Theme picker -->
+  <ion-card class="theme-card">
+    <ion-card-header>
+      <ion-card-title><i class="fa-solid fa-palette"></i> Theme</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="theme-options">
+
+        <button class="theme-btn cyberpunk-btn"
+          [class.active]="themeService.currentTheme === 'cyberpunk'"
+          (click)="setTheme('cyberpunk')">
+          <span class="theme-preview cyberpunk-preview"></span>
+          <span class="theme-name">Cyberpunk</span>
+          <i class="fa-solid fa-check check-icon" *ngIf="themeService.currentTheme === 'cyberpunk'"></i>
+        </button>
+
+        <button class="theme-btn dark-btn"
+          [class.active]="themeService.currentTheme === 'dark'"
+          (click)="setTheme('dark')">
+          <span class="theme-preview dark-preview"></span>
+          <span class="theme-name">Dark</span>
+          <i class="fa-solid fa-check check-icon" *ngIf="themeService.currentTheme === 'dark'"></i>
+        </button>
+
+        <button class="theme-btn light-btn"
+          [class.active]="themeService.currentTheme === 'light'"
+          (click)="setTheme('light')">
+          <span class="theme-preview light-preview"></span>
+          <span class="theme-name">Light</span>
+          <i class="fa-solid fa-check check-icon" *ngIf="themeService.currentTheme === 'light'"></i>
+        </button>
+
+      </div>
+    </ion-card-content>
+  </ion-card>
+
   <!-- Install app -->
   <ion-card class="install-card" *ngIf="!isInstalled && (installPrompt || isIos)">
     <ion-card-header>

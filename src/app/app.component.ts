@@ -3,6 +3,7 @@ import { IonApp, IonRouterOutlet, IonAlert } from '@ionic/angular/standalone';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { WorkoutStateService } from './services/workout-state.service';
 import { BackendService } from './services/backend.service';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -12,11 +13,13 @@ import { BackendService } from './services/backend.service';
 export class AppComponent implements OnInit {
   constructor(
     private workoutState: WorkoutStateService,
-    private backend: BackendService
+    private backend: BackendService,
+    private themeService: ThemeService
   ) {
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setBackgroundColor({ color: '#00111a' });
     StatusBar.setStyle({ style: Style.Dark });
+    this.themeService.init();
   }
 
   ngOnInit() {

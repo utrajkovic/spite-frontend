@@ -421,3 +421,115 @@ ion-modal.pr-modal-wrapper::part(backdrop) {
   background: rgba(0, 0, 0, 0.65) !important;
   --backdrop-opacity: 0.65 !important;
 }
+
+/* ============================================================
+   THEMES
+   ============================================================ */
+
+/* CYBERPUNK (default - već definisan u :root) */
+[data-theme="cyberpunk"] {
+  --color-primary:      #00f7ff;
+  --color-primary-dim:  #8efcff;
+  --color-text:         #e0ffff;
+  --color-text-muted:   #aefcff;
+  --color-danger:       #ff4d4d;
+  --color-success:      #00ffaa;
+  --color-warning:      #ffe600;
+  --bg-page:            radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --bg-card:            rgba(0, 40, 60, 0.25);
+  --bg-card-hover:      rgba(0, 40, 60, 0.45);
+  --bg-input:           rgba(0, 40, 60, 0.35);
+  --border-cyan:        rgba(0, 255, 255, 0.25);
+  --border-cyan-hover:  rgba(0, 255, 255, 0.5);
+  --font-display:       'Orbitron', sans-serif;
+  --font-body:          'Tilt Neon', cursive;
+}
+
+/* DARK */
+[data-theme="dark"] {
+  --color-primary:      #a78bfa;
+  --color-primary-dim:  #c4b5fd;
+  --color-text:         #f1f0f5;
+  --color-text-muted:   #c4b5fd;
+  --color-danger:       #f87171;
+  --color-success:      #34d399;
+  --color-warning:      #fbbf24;
+  --bg-page:            linear-gradient(160deg, #0f0f1a 0%, #1a1a2e 100%);
+  --bg-card:            rgba(30, 30, 50, 0.6);
+  --bg-card-hover:      rgba(40, 40, 65, 0.8);
+  --bg-input:           rgba(30, 30, 50, 0.7);
+  --border-cyan:        rgba(167, 139, 250, 0.2);
+  --border-cyan-hover:  rgba(167, 139, 250, 0.45);
+  --font-display:       'Orbitron', sans-serif;
+  --font-body:          'Tilt Neon', cursive;
+}
+
+/* LIGHT */
+[data-theme="light"] {
+  --color-primary:      #6d28d9;
+  --color-primary-dim:  #7c3aed;
+  --color-text:         #1e1b4b;
+  --color-text-muted:   #4c1d95;
+  --color-danger:       #dc2626;
+  --color-success:      #059669;
+  --color-warning:      #d97706;
+  --bg-page:            linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%);
+  --bg-card:            rgba(255, 255, 255, 0.75);
+  --bg-card-hover:      rgba(255, 255, 255, 0.95);
+  --bg-input:           rgba(255, 255, 255, 0.8);
+  --border-cyan:        rgba(109, 40, 217, 0.2);
+  --border-cyan-hover:  rgba(109, 40, 217, 0.45);
+  --font-display:       'Orbitron', sans-serif;
+  --font-body:          'Tilt Neon', cursive;
+}
+
+/* Light theme overrides za Ionic komponente */
+[data-theme="light"] ion-content {
+  --background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%) !important;
+  color: #1e1b4b;
+}
+
+[data-theme="light"] ion-toolbar {
+  --background: rgba(245, 243, 255, 0.9) !important;
+}
+
+[data-theme="light"] .glass-tab-bar {
+  background: rgba(245, 243, 255, 0.92) !important;
+  --background: rgba(245, 243, 255, 0.92) !important;
+  border-top-color: rgba(109, 40, 217, 0.15) !important;
+}
+
+[data-theme="light"] ion-tab-button {
+  --color: rgba(109, 40, 217, 0.4);
+  --color-selected: #6d28d9;
+}
+
+[data-theme="light"] .workout-title {
+  color: #6d28d9 !important;
+  text-shadow: 0 0 10px rgba(109, 40, 217, 0.3) !important;
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] ion-content {
+  --background: linear-gradient(160deg, #0f0f1a 0%, #1a1a2e 100%) !important;
+}
+
+[data-theme="dark"] ion-toolbar {
+  --background: rgba(15, 15, 26, 0.9) !important;
+}
+
+[data-theme="dark"] .glass-tab-bar {
+  background: rgba(15, 15, 26, 0.92) !important;
+  --background: rgba(15, 15, 26, 0.92) !important;
+  border-top-color: rgba(167, 139, 250, 0.15) !important;
+}
+
+[data-theme="dark"] ion-tab-button {
+  --color: rgba(167, 139, 250, 0.35);
+  --color-selected: #a78bfa;
+}
+
+[data-theme="dark"] .workout-title {
+  color: #a78bfa !important;
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.4) !important;
+}

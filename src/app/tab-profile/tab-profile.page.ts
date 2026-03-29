@@ -16,6 +16,7 @@ import { StatsService, WorkoutStats } from '../services/stats.service';
 import { PRService, ExercisePR } from '../services/pr.service';
 import { PRDetailModal } from '../modals/pr-detail.modal';
 import { ModalController } from '@ionic/angular';
+import { ThemeService, Theme } from '../services/theme.service';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -60,7 +61,8 @@ export class TabProfilePage implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private statsService: StatsService,
     private prService: PRService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    public themeService: ThemeService
   ) {
     window.addEventListener('beforeinstallprompt', (e: any) => {
       e.preventDefault();
@@ -228,6 +230,10 @@ export class TabProfilePage implements OnInit, OnDestroy {
     await this.notificationService.init(this.user.username);
     this.notificationsEnabled = Notification.permission === 'granted';
     if (this.notificationsEnabled) this.showAlert('Notifikacije su uključene.');
+  }
+
+  setTheme(theme: Theme) {
+    this.themeService.apply(theme);
   }
 
   async openPR(pr: ExercisePR) {
