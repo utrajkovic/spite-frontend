@@ -1,11 +1,9 @@
 <div class="chat-header">
-  <ion-button class="back-btn" fill="clear" (click)="goBack()">
-    <i class="fa-regular fa-circle-left"></i>
-  </ion-button>
+  <button class="back-btn" (click)="goBack()">
+    <i class="fa-solid fa-chevron-left"></i>
+  </button>
 
-  <div class="chat-username">
-    {{ other }}
-  </div>
+  <div class="chat-username">{{ other }}</div>
 </div>
 
 <ion-content class="chat-page">
@@ -26,6 +24,8 @@
 
 </ion-content>
 <div class="input-row">
-  <ion-input [(ngModel)]="text" placeholder="Message..."></ion-input>
-  <ion-button (click)="send()">Send</ion-button>
+  <ion-input [(ngModel)]="text" placeholder="Message..." (keyup.enter)="send()"></ion-input>
+  <ion-button (click)="send()" class="send-btn">
+    <i class="fa-solid fa-paper-plane"></i>
+  </ion-button>
 </div>

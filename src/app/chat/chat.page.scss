@@ -23,9 +23,24 @@ ion-content {
 }
 
 .back-btn {
-  --color: var(--color-primary);
-  font-size: 22px;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
   flex-shrink: 0;
+  padding: 0;
+  transition: background 0.2s ease;
+
+  &:active {
+    background: rgba(0, 255, 255, 0.1);
+  }
 }
 
 .chat-username {
@@ -121,13 +136,15 @@ ion-input {
 }
 
 ion-button {
-  --background: linear-gradient(90deg, var(--color-primary), #0077ff);
-  --color: #000;
-  --border-radius: 12px;
-  width: 44px;
-  height: 44px;
+  --background: rgba(0, 255, 255, 0.12);
+  --color: var(--color-primary);
+  --border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
   flex-shrink: 0;
-  font-size: 16px;
+  font-size: 15px;
+  margin: 0;
 }
 
 @keyframes fadeIn {

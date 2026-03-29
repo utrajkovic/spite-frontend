@@ -14,6 +14,29 @@
     <video #videoEl [src]="videoUrl" playsinline [muted]="true" class="preview-video"></video>
   </div>
 
+  <!-- Timeline bar -->
+  <div class="timeline">
+    <div class="timeline-track">
+      <!-- Zatamnjeni deo pre selekcije -->
+      <div class="timeline-dim left"
+        [style.width.%]="(startTime / duration) * 100"></div>
+      <!-- Označeni (isečeni) deo -->
+      <div class="timeline-selection"
+        [style.left.%]="(startTime / duration) * 100"
+        [style.width.%]="((endTime - startTime) / duration) * 100">
+        <span class="selection-label">{{ trimDuration }}s</span>
+      </div>
+      <!-- Zatamnjeni deo posle selekcije -->
+      <div class="timeline-dim right"
+        [style.width.%]="((duration - endTime) / duration) * 100"></div>
+    </div>
+    <div class="timeline-ticks">
+      <span>0:00</span>
+      <span>{{ formatTime(duration / 2) }}</span>
+      <span>{{ formatTime(duration) }}</span>
+    </div>
+  </div>
+
   <!-- Duration info -->
   <div class="time-info">
     <span class="time-badge">{{ formatTime(startTime) }}</span>
