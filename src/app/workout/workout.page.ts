@@ -67,14 +67,8 @@ export class WorkoutPage implements OnInit, OnDestroy {
     private modalCtrl: ModalController
   ) {}
 
-  onVideoLoaded(event: Event): void {
-    const video = event.target as HTMLVideoElement;
-    video.play();
-  }
-
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
-
     const saved = this.workoutState.load();
 
     this.backend.getWorkoutById(id).subscribe({
@@ -113,6 +107,20 @@ export class WorkoutPage implements OnInit, OnDestroy {
     }
   }
 
+  // Poziva se iz (loadedmetadata) — radi na mobilnom jer je video učitan nakon korisničke akcije
+  onVideoLoaded(event: Event): void {
+    const video = event.target as HTMLVideoElement;
+    video.play().catch(() => {});
+  }
+
+  // Ručni play svih videa — poziva se posle Done / Skip Rest / prelaska na sledeću vežbu
+  private playCurrentVideo() {
+    setTimeout(() => {
+      const videos = document.querySelectorAll<HTMLVideoElement>('video.ex-video');
+      videos.forEach(v => v.play().catch(() => {}));
+    }, 350);
+  }
+
   private async offerResume(saved: ActiveWorkoutState) {
     const alert = await this.alertCtrl.create({
       header: 'Resume workout?',
@@ -122,15 +130,11 @@ export class WorkoutPage implements OnInit, OnDestroy {
         {
           text: 'Start over',
           role: 'cancel',
-          handler: () => {
-            this.workoutState.clear();
-          }
+          handler: () => { this.workoutState.clear(); }
         },
         {
           text: 'Continue',
-          handler: () => {
-            this.restoreFromState(saved);
-          }
+          handler: () => { this.restoreFromState(saved); }
         }
       ]
     });
@@ -163,6 +167,10 @@ export class WorkoutPage implements OnInit, OnDestroy {
       startedAt: Date.now()
     });
   }
+
+  // ==========================
+  // GETTERS
+  // ==========================
 
   get currentItem(): WorkoutItem {
     return this.items[this.currentIndex];
@@ -205,13 +213,22 @@ export class WorkoutPage implements OnInit, OnDestroy {
     return this.exercises.find(e => e.id === id);
   }
 
+  // ==========================
+  // START
+  // ==========================
+
   startWorkout() {
     this.started = true;
     this.currentIndex = 0;
     this.currentSet = 1;
     this.showingSuperset = false;
     this.persistState();
+    this.playCurrentVideo();
   }
+
+  // ==========================
+  // COMPLETE SET
+  // ==========================
 
   completeSet() {
     const item = this.currentItem;
@@ -222,6 +239,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
         this.startRest(item.restBetweenSets, () => {
           this.currentSet++;
           this.persistState();
+          this.playCurrentVideo();
         });
       } else {
         this.startRest(item.restAfterExercise, () => {
@@ -243,6 +261,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
         this.currentSet++;
         this.showingSuperset = false;
         this.persistState();
+        this.playCurrentVideo();
       });
     } else {
       this.startRest(item.restAfterExercise, () => {
@@ -256,7 +275,10 @@ export class WorkoutPage implements OnInit, OnDestroy {
   private showSuperset() {
     this.showingSuperset = true;
     this.isVideoLoading = true;
-    setTimeout(() => { this.isVideoLoading = false; }, 500);
+    setTimeout(() => {
+      this.isVideoLoading = false;
+      this.playCurrentVideo();
+    }, 500);
   }
 
   private async goToNextItem() {
@@ -268,11 +290,16 @@ export class WorkoutPage implements OnInit, OnDestroy {
         this.showingSuperset = false;
         this.isVideoLoading = false;
         this.persistState();
+        this.playCurrentVideo();
       }, 700);
     } else {
       await this.finishWorkout(false);
     }
   }
+
+  // ==========================
+  // FINISH EARLY
+  // ==========================
 
   async finishEarly() {
     const alert = await this.alertCtrl.create({
@@ -296,10 +323,46 @@ export class WorkoutPage implements OnInit, OnDestroy {
     return this.currentIndex;
   }
 
+  // ==========================
+  // FINISH WORKOUT
+  // ==========================
+
   private async finishWorkout(early = false) {
+    clearInterval(this.timer);
+    this.isResting = false;
     this.workoutState.clear();
     this.notificationService.scheduleInactivityReminder(3).catch(() => {});
 
+    // KORAK 1: Notifikacija "Trening završen"
+    const doneAlert = await this.alertCtrl.create({
+      header: '🎉 Workout Complete!',
+      message: early
+        ? `You finished ${this.completionPercent}% of the workout. Great effort!`
+        : 'Amazing job! You completed the full workout!',
+      cssClass: 'custom-alert',
+      buttons: [
+        {
+          text: 'Skip Feedback',
+          role: 'cancel',
+          cssClass: 'alert-button-skip',
+          handler: () => {
+            this.router.navigate(['/tabs/tab1']);
+          }
+        },
+        {
+          text: 'Leave Feedback',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            this.openFeedbackModal(early);
+          }
+        }
+      ]
+    });
+    await doneAlert.present();
+  }
+
+  // KORAK 2: Feedback modal (samo ako korisnik odabere)
+  private async openFeedbackModal(early = false) {
     const completedItems = early
       ? this.items.slice(0, this.currentIndex)
       : this.items;
@@ -341,14 +404,16 @@ export class WorkoutPage implements OnInit, OnDestroy {
 
       this.backend.sendWorkoutFeedback(feedbackPayload).subscribe({
         next: () => console.log('Feedback saved'),
-        error: () => {
-          this.workoutState.savePendingFeedback(feedbackPayload);
-        }
+        error: () => { this.workoutState.savePendingFeedback(feedbackPayload); }
       });
     }
 
     this.router.navigate(['/tabs/tab1']);
   }
+
+  // ==========================
+  // REST TIMER
+  // ==========================
 
   startRest(seconds: number, callback: Function) {
     this.showingSuperset = false;
@@ -398,6 +463,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
   skipRest() {
     this.showingSuperset = false;
     this.stopRest(this.pendingRestCallback);
+    this.playCurrentVideo();
   }
 
   private stopRest(callback: Function) {

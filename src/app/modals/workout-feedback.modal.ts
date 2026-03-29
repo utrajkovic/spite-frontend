@@ -5,9 +5,6 @@ import { CommonModule, NgForOf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 
-
-
-
 @Component({
     standalone: true,
     selector: 'workout-feedback-modal',
@@ -47,9 +44,15 @@ export class WorkoutFeedbackModal {
         this.feedback[index].intensity = val;
     }
 
+    // Šalje feedback i zatvara modal
     finish() {
         this.modalCtrl.dismiss(this.feedback);
-        this.showAlert('Feedback saved');
+        this.showAlert('Feedback saved! 💪');
+    }
+
+    // Zatvara modal bez slanja (data = null = nema feedbacka)
+    skip() {
+        this.modalCtrl.dismiss(null);
     }
 
     async showAlert(msg: string) {

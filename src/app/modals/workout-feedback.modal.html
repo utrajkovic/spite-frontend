@@ -1,6 +1,7 @@
 <div class="feedback-modal">
 
     <h2 class="title">Workout Feedback</h2>
+    <p class="subtitle">How did the workout go?</p>
 
     <div class="table-header">
         <div class="col ex">Exercise</div>
@@ -31,18 +32,19 @@
 
         <div class="difficulty mobile-difficulty">
             <button class="pill" [class.active]="f.intensity==='easy'" (click)="setIntensity(i,'easy')">Easy</button>
-
-            <button class="pill" [class.active]="f.intensity==='normal'"
-                (click)="setIntensity(i,'normal')">Normal</button>
-
+            <button class="pill" [class.active]="f.intensity==='normal'" (click)="setIntensity(i,'normal')">Normal</button>
             <button class="pill" [class.active]="f.intensity==='hard'" (click)="setIntensity(i,'hard')">Hard</button>
         </div>
 
     </div>
 
-
-    <ion-button expand="block" color="success" class="send-btn" (click)="finish()">
-        Send Feedback
-    </ion-button>
+    <div class="modal-actions">
+        <ion-button expand="block" fill="outline" color="medium" class="skip-btn" (click)="skip()">
+            Skip
+        </ion-button>
+        <ion-button expand="block" color="success" class="send-btn" (click)="finish()">
+            Send Feedback
+        </ion-button>
+    </div>
 
 </div>
