@@ -1,162 +1,95 @@
 <ion-content [fullscreen]="true">
+  <page-loading-overlay [active]="isSavingExercise || isSavingWorkout" message="Please wait..."></page-loading-overlay>
 
-  <page-loading-overlay [active]="isSavingExercise || isSavingWorkout" message="Please wait...">
-  </page-loading-overlay>
-
-  <div class="top-tabs">
-    <button (click)="tab = 'exercise'" [class.active]="tab === 'exercise'">
-      Add Exercise
+  <div class="tab-switcher">
+    <button class="tab-btn" [class.active]="tab === 'exercise'" (click)="tab = 'exercise'">
+      <i class="fa-solid fa-dumbbell"></i> Exercise
     </button>
-    <button (click)="tab = 'workout'" [class.active]="tab === 'workout'">
-      Add Workout
+    <button class="tab-btn" [class.active]="tab === 'workout'" (click)="tab = 'workout'">
+      <i class="fa-solid fa-fire"></i> Workout
     </button>
   </div>
 
   <!-- ADD EXERCISE -->
   <ng-container *ngIf="tab === 'exercise'">
+    <div class="form-section">
+      <p class="section-label">New Exercise</p>
 
-    <h2>Add New Exercise</h2>
-
-    <form [formGroup]="exerciseForm" class="neon-form">
-
-      <ion-item>
-        <ion-label position="stacked">Exercise Name</ion-label>
-        <ion-input formControlName="name"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Description</ion-label>
-        <ion-input formControlName="description"></ion-input>
-      </ion-item>
-
-      <div class="video-upload">
-        <label for="videoInput">Choose Video</label>
-        <input id="videoInput" type="file" accept="video/*" (change)="onVideoSelected($event)" />
+      <div class="field">
+        <label>Name</label>
+        <ion-input [formControl]="exerciseForm.controls['name']" placeholder="Exercise name"></ion-input>
       </div>
 
-      <ion-button expand="block" color="tertiary" (click)="saveExercise()">
-        <ion-spinner *ngIf="isSavingExercise" name="crescent"></ion-spinner>
-        <span *ngIf="!isSavingExercise">Add Exercise</span>
+      <div class="field">
+        <label>Description</label>
+        <ion-input [formControl]="exerciseForm.controls['description']" placeholder="Brief description"></ion-input>
+      </div>
+
+      <div class="video-upload">
+        <label><i class="fa-solid fa-video"></i> Video (optional)</label>
+        <input type="file" accept="video/*" (change)="onVideoSelected($event)" />
+      </div>
+
+      <ion-button expand="block" class="primary-btn" (click)="saveExercise()">
+        <ion-spinner *ngIf="isSavingExercise" name="crescent" slot="start"></ion-spinner>
+        <i class="fa-solid fa-plus" slot="start" *ngIf="!isSavingExercise"></i>
+        {{ isSavingExercise ? 'Saving...' : 'Add Exercise' }}
       </ion-button>
-
-    </form>
+    </div>
   </ng-container>
-
 
   <!-- ADD WORKOUT -->
   <ng-container *ngIf="tab === 'workout'">
+    <div class="form-section">
+      <p class="section-label">Workout Info</p>
 
-    <h2>Create Workout</h2>
+      <div class="field">
+        <label>Title</label>
+        <ion-input [formControl]="workoutForm.controls['title']" placeholder="Workout title"></ion-input>
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <ion-input [formControl]="workoutForm.controls['subtitle']" placeholder="e.g. Upper Body"></ion-input>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <ion-input [formControl]="workoutForm.controls['content']" placeholder="Optional description"></ion-input>
+      </div>
 
-    <form [formGroup]="workoutForm" class="neon-form">
+      <p class="section-label" *ngIf="editableExercises.length > 0">Exercises ({{ editableExercises.length }})</p>
 
-      <ion-item>
-        <ion-label position="stacked">Title</ion-label>
-        <ion-input formControlName="title"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Category</ion-label>
-        <ion-input formControlName="subtitle"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Description</ion-label>
-        <ion-input formControlName="content"></ion-input>
-      </ion-item>
-    </form>
-    <h3>Exercises in Workout</h3>
-
-    <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
-
-      <ion-item lines="none" *ngFor="let ex of editableExercises; let i = index" class="workout-compact-row">
-
-        <ion-reorder slot="start"></ion-reorder>
-
-        <!-- SEKCIJA 1: NASLOV (1/3) -->
-        <div class="workout-title-section">
-          <div class="ex-title">
+      <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
+        <ion-item lines="none" *ngFor="let ex of editableExercises; let i = index" class="exercise-row">
+          <ion-reorder slot="start"></ion-reorder>
+          <div class="ex-name" (click)="openExerciseModal(i)">
             {{ ex.name }}
-            <span *ngIf="workoutItems[i].supersetExerciseId" class="superset-tag">
+            <span class="ex-superset" *ngIf="workoutItems[i].supersetExerciseId">
               → {{ getExerciseNameById(workoutItems[i].supersetExerciseId) }}
             </span>
           </div>
-        </div>
-
-        <!-- MOBILE SIMPLE VIEW -->
-        <div class="mobile-row" (click)="openExerciseModal(i)">
-          <div class="mobile-title">
-            <span *ngIf="workoutItems[i].supersetExerciseId" class="mobile-superset">
-              → {{ getExerciseNameById(workoutItems[i].supersetExerciseId) }}
-            </span>
-          </div>
-
-        </div>
-        <div class="workout-inputs-section">
-          <div class="cfg small">
-            <label><i class="fa-solid fa-repeat"></i> Sets</label>
-            <ion-input type="number" [(ngModel)]="workoutItems[i].sets"></ion-input>
-          </div>
-
-          <div class="cfg small">
-            <label><i class="fa-solid fa-repeat"></i>Reps</label>
-            <ion-input type="number" [(ngModel)]="workoutItems[i].reps"></ion-input>
-          </div>
-
-          <div class="cfg small">
-            <label><i class="fa-solid fa-stopwatch"></i> sets</label>
-            <ion-input type="number" [(ngModel)]="workoutItems[i].restBetweenSets"></ion-input>
-          </div>
-
-          <div class="cfg small">
-            <label><i class="fa-solid fa-stopwatch"></i> exercises</label>
-            <ion-input type="number" [(ngModel)]="workoutItems[i].restAfterExercise"></ion-input>
-          </div>
-
-          <div class="superset-row">
-            <div class="cfg superset">
-              <label><i class="fa-solid fa-dumbbell"></i> Superset</label>
-              <ion-select [(ngModel)]="workoutItems[i].supersetExerciseId" interface="popover">
-                <ion-select-option value="">None</ion-select-option>
-                <ion-select-option *ngFor="let opt of allExercises" [value]="opt.id">
-                  {{ opt.name }}
-                </ion-select-option>
-              </ion-select>
-            </div>
-          </div>
-        </div>
-        <div class="workout-actions-section">
-          <ion-button fill="clear" size="small" class="delete-btn" (click)="removeExercise(i)">
-            <i class="fa-solid fa-delete-left"></i>
+          <ion-button fill="clear" class="delete-btn" slot="end" (click)="removeExercise(i)">
+            <i class="fa-solid fa-xmark"></i>
           </ion-button>
-        </div>
+        </ion-item>
+      </ion-reorder-group>
 
-      </ion-item>
+      <p class="section-label">Add Exercise</p>
 
+      <ion-searchbar [value]="searchQuery" (ionInput)="onSearch($event)" placeholder="Search exercises..."></ion-searchbar>
 
+      <div class="search-item" *ngFor="let ex of filteredExercises">
+        <span>{{ ex.name }}</span>
+        <ion-button fill="outline" class="add-btn" (click)="addExercise(ex)">
+          <i class="fa-solid fa-plus" slot="start"></i> Add
+        </ion-button>
+      </div>
 
-
-    </ion-reorder-group>
-
-
-
-    <h3>Add Exercise</h3>
-
-    <ion-searchbar [value]="searchQuery" (ionInput)="onSearch($event)" placeholder="Search..." animated="true">
-    </ion-searchbar>
-
-    <ion-list>
-      <ion-item *ngFor="let ex of filteredExercises">
-        <ion-label>{{ ex.name }}</ion-label>
-        <ion-button fill="outline" (click)="addExercise(ex)">Add</ion-button>
-      </ion-item>
-    </ion-list>
-
-    <ion-button expand="block" color="success" (click)="saveNewWorkout()" [disabled]="isSavingWorkout">
-      <ion-spinner *ngIf="isSavingWorkout" name="crescent"></ion-spinner>
-      <span *ngIf="!isSavingWorkout">Create Workout</span>
-    </ion-button>
-
+      <ion-button expand="block" class="success-btn" (click)="saveNewWorkout()" [disabled]="isSavingWorkout">
+        <ion-spinner *ngIf="isSavingWorkout" name="crescent" slot="start"></ion-spinner>
+        <i class="fa-solid fa-check" slot="start" *ngIf="!isSavingWorkout"></i>
+        {{ isSavingWorkout ? 'Creating...' : 'Create Workout' }}
+      </ion-button>
+    </div>
   </ng-container>
 
 </ion-content>

@@ -1,4 +1,3 @@
-
 ion-tabs {
   background: transparent !important;
   --background: transparent !important;
@@ -8,13 +7,12 @@ ion-content {
   --background: radial-gradient(circle at top, #00111a 0%, #000000 100%) !important;
 }
 
-/* 💎 Header */
 .main-header {
   background: transparent !important;
   backdrop-filter: blur(10px) saturate(140%);
   -webkit-backdrop-filter: blur(10px) saturate(140%);
-  border-bottom: 1px solid rgba(0, 255, 255, 0.25);
-  box-shadow: 0 3px 8px rgba(0, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow: 0 2px 12px rgba(0, 255, 255, 0.06);
   z-index: 10;
 }
 
@@ -30,140 +28,134 @@ ion-toolbar {
   width: 100%;
   font-family: 'Monoton', cursive;
   color: var(--color-primary);
-  font-size: clamp(22px, 5vw, 28px);
-  letter-spacing: 3px;
-  text-shadow: 0 0 8px var(--color-primary);
+  font-size: clamp(20px, 5vw, 26px);
+  letter-spacing: 4px;
+  text-shadow: 0 0 10px var(--color-primary), 0 0 30px rgba(0,255,255,0.3);
   margin: 0 auto;
-  position: relative;
 }
 
-
-/* ✨ Lagana flicker animacija */
 .flicker {
-  animation: flicker 2.2s infinite alternate;
+  animation: flicker 3s infinite alternate;
 }
 
 @keyframes flicker {
-
-  0%,
-  19%,
-  21%,
-  23%,
-  25%,
-  54%,
-  56%,
-  100% {
-    opacity: 0.85;
-  }
-
-  20%,
-  24%,
-  55% {
-    opacity: 1;
-    text-shadow: none;
-  }
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 0.9; }
+  20%, 24%, 55% { opacity: 1; text-shadow: none; }
 }
 
+/* ===================== TAB BAR ===================== */
 .glass-tab-bar {
   position: relative;
   bottom: 0;
   width: 100%;
-  background: transparent !important; /* bez boje */
+  background: transparent !important;
   --background: transparent !important;
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  border-top: 1px solid rgba(0, 255, 255, 0.25);
-  box-shadow: 0 -2px 8px rgba(0, 255, 255, 0.1);
-  height: 60px;
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-top: 1px solid rgba(0, 255, 255, 0.18);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  height: 62px;
   z-index: 10;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-
-/* Dugmad u meniju */
 ion-tab-button {
-  color: var(--color-text-muted);
+  --color: rgba(0, 247, 255, 0.35);
   --color-selected: var(--color-primary);
+  --padding-top: 8px;
+  --padding-bottom: 8px;
   font-family: var(--font-display);
-  transition: transform 0.25s ease, color 0.25s ease;
+  transition: all 0.25s ease;
+  position: relative;
 }
 
-ion-tab-button.ion-selected {
-  transform: translateY(-2px);
-  color: var(--color-primary);
-}
-
-ion-tab-button:active {
-  transform: scale(0.95);
-}
-
-/* Ikonice (Font Awesome) */
+/* Ikona */
 ion-tab-bar i {
-  font-size: 20px;
+  font-size: 22px;
   color: inherit;
-  margin-bottom: 3px;
-  transition: transform 0.25s ease, color 0.25s ease;
+  transition: all 0.25s ease;
+  display: block;
 }
 
 ion-tab-button.ion-selected i {
   color: var(--color-primary);
-  transform: scale(1.15);
+  filter: drop-shadow(0 0 6px var(--color-primary));
+  transform: translateY(-2px) scale(1.1);
 }
 
-/* 🧱 Fix: skrol i klik */
-ion-content,
-ion-router-outlet {
-  position: relative;
-  z-index: 0;
+/* Label - sakrivena po defaultu, vidljiva samo na aktivnom */
+ion-tab-button ion-label {
+  font-size: 9px !important;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  margin-top: 0;
 }
 
-/* 📱 Mobilna optimizacija */
-@media (max-width: 600px) {
-  .workout-title {
-    font-size: 22px;
-  }
-
-  ion-tab-bar {
-    height: 55px;
-  }
-
-  ion-tab-bar i {
-    font-size: 18px;
-  }
-}
-ion-tab-button.tab-selected {
-  background: rgba(0, 255, 255, 0.12);
-  border-radius: 12px;
-  transition: 0.25s ease-in-out;
+ion-tab-button.ion-selected ion-label {
+  opacity: 1;
+  max-height: 14px;
+  margin-top: 3px;
+  color: var(--color-primary);
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
 }
 
-ion-tab-button.tab-selected ion-label,
-ion-tab-button.tab-selected i {
-  color: var(--color-primary) !important;
-  text-shadow: 0 0 8px var(--color-primary);
+/* Aktivni tab - glow indikator */
+ion-tab-button.ion-selected::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 0 8px var(--color-primary);
 }
 
-/* Unread badge */
+ion-tab-button:active {
+  transform: scale(0.92);
+}
+
+/* Badge wrapper */
 .msg-icon-wrapper {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .unread-badge {
   position: absolute;
-  top: -6px;
-  right: -10px;
+  top: -5px;
+  right: -8px;
   background: var(--color-danger);
   color: white;
   border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  font-size: 11px;
+  width: 14px;
+  height: 14px;
+  font-size: 9px;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 8px var(--color-danger);
+  box-shadow: 0 0 6px var(--color-danger);
   font-family: var(--font-display);
   font-weight: 700;
+  border: 1px solid rgba(0,0,0,0.3);
+}
+
+ion-content,
+ion-router-outlet {
+  position: relative;
+  z-index: 0;
+}
+
+@media (max-width: 600px) {
+  .workout-title { font-size: 20px; }
+  .glass-tab-bar { height: 58px; }
+  ion-tab-bar i { font-size: 20px; }
 }

@@ -1,29 +1,39 @@
 <ion-content>
   <page-loading-overlay [active]="isLoading" message="Loading..."></page-loading-overlay>
 
-  <div class="content-wrapper">
-    <ion-item>
-      <ion-label position="stacked">Client username</ion-label>
-      <ion-input [(ngModel)]="clientUsername" placeholder=""></ion-input>
-    </ion-item>
+  <div class="trainer-wrapper">
 
-    <ion-button expand="block" (click)="addClient()">Add Client</ion-button>
-
-    <ion-list>
-      <ion-list-header>
-        <ion-label>Clients</ion-label>
-      </ion-list-header>
-
-      <ion-item *ngFor="let c of clients">
-        <ion-label (click)="goToClient(c.clientUsername)">
-          {{ c.clientUsername }}
-        </ion-label>
-
-        <ion-button slot="end" color="danger" fill="outline"
-          (click)="confirmRemoveClient(c.clientUsername); $event.stopPropagation();">
-          <i class="fa-solid fa-delete-left"></i>
+    <div class="invite-box">
+      <p class="section-label">Send Invite</p>
+      <div class="input-row">
+        <ion-input [(ngModel)]="clientUsername" placeholder="Client username" class="invite-input"></ion-input>
+        <ion-button (click)="addClient()" class="invite-btn">
+          <i class="fa-solid fa-paper-plane" slot="start"></i>
+          Send
         </ion-button>
-      </ion-item>
-    </ion-list>
+      </div>
+    </div>
+
+    <div class="clients-section">
+      <p class="section-label">My Clients <span class="count">{{ clients.length }}</span></p>
+
+      <div class="empty-state" *ngIf="clients.length === 0 && !isLoading">
+        <i class="fa-solid fa-users-slash"></i>
+        <span>No clients yet. Send an invite to get started.</span>
+      </div>
+
+      <div class="client-card" *ngFor="let c of clients" (click)="goToClient(c.clientUsername)">
+        <div class="client-avatar">{{ c.clientUsername[0] | uppercase }}</div>
+        <div class="client-info">
+          <span class="client-name">{{ c.clientUsername }}</span>
+          <span class="client-sub">Tap to manage</span>
+        </div>
+        <ion-button fill="clear" class="remove-btn"
+          (click)="confirmRemoveClient(c.clientUsername); $event.stopPropagation()">
+          <i class="fa-solid fa-user-minus"></i>
+        </ion-button>
+      </div>
+    </div>
+
   </div>
 </ion-content>

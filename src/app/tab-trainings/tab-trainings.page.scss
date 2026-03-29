@@ -2,100 +2,8 @@
   --background: var(--bg-page);
   font-family: var(--font-display);
   color: var(--color-text);
-  text-align: center;
 }
 
-/* Centriranje */
-.content-wrapper {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  min-height: calc(100vh - 60px);
-}
-
-.card-wrapper {
-  width: 100%;
-  max-width: 500px;
-}
-
-/* Neon progress bar */
-.neon-progress {
-  margin: 0 0 8px 0;
-  height: 3px;
-  --progress-background: rgba(0, 255, 255, 0.25);
-  --progress-bar-background: linear-gradient(90deg, var(--color-primary), #00ffaa);
-  border-radius: 10px;
-}
-
-/* CARD */
-.exercise-card {
-  width: 100%;
-  min-height: 75vh;
-  border-radius: 18px;
-  background: rgba(0, 40, 60, 0);
-  border: 1px solid rgba(0, 255, 255, 0.25);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  backdrop-filter: blur(14px) saturate(140%);
-}
-
-/* Video container */
-.video-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.exercise-video {
-  width: 100%;
-  max-height: 35vh;
-  object-fit: contain;
-  background: #00000000;
-
-}
-
-/* Text */
-.exercise-name {
-  font-size: 20px;
-  color: var(--color-primary);
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-  margin-bottom: 6px;
-}
-
-.exercise-desc {
-  font-size: 14px;
-  color: var(--color-text-muted);
-  opacity: 0.9;
-  margin-bottom: 10px;
-}
-
-/* Navigation buttons */
-.nav-buttons {
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-
-  ion-button {
-    width: 48%;
-    --border-radius: 12px;
-    --color: var(--color-primary);
-    --border-color: var(--color-primary);
-  }
-}
-
-/* Counter */
-.counter-box {
-  margin-top: 10px;
-  font-size: 14px;
-  color: var(--color-primary);
-}
-
-/* Back button */
 .back-btn {
   position: fixed;
   top: 12px;
@@ -103,4 +11,111 @@
   z-index: 999;
   --color: var(--color-primary);
   font-size: 24px;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.4));
+}
+
+.workout-header {
+  text-align: center;
+  padding: 16px 16px 0;
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--color-primary);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    margin: 0;
+  }
+}
+
+.exercise-card {
+  margin: 12px 16px;
+  border-radius: 20px;
+  background: rgba(0, 40, 60, 0.3);
+  border: 1px solid var(--border-cyan);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+  padding: 16px;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.counter-box {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--color-primary);
+  opacity: 0.5;
+  text-align: center;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+h3 {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--color-primary);
+  opacity: 0.5;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--color-primary);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  text-align: center;
+  margin: 8px 0 6px;
+}
+
+p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-align: center;
+  opacity: 0.7;
+  margin: 0 0 12px;
+}
+
+.video-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.exercise-video {
+  width: 100%;
+  max-height: 38vh;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.video-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+  color: var(--color-primary);
+  opacity: 0.3;
+  font-size: 14px;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 12px;
+  margin: 16px 16px 8px;
+
+  ion-button {
+    flex: 1;
+    --border-radius: 12px;
+    --color: var(--color-primary);
+    --border-color: var(--border-cyan);
+    font-family: var(--font-display);
+    font-size: 13px;
+  }
 }

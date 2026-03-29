@@ -1,34 +1,40 @@
 <ion-content [fullscreen]="true" class="ion-padding">
 
-<page-loading-overlay [active]="loading" message="Loading workouts..."></page-loading-overlay>
+  <page-loading-overlay [active]="loading" message="Loading workouts..."></page-loading-overlay>
 
-  <ion-card *ngFor="let workout of workouts">
+  <div class="empty-state" *ngIf="!loading && workouts.length === 0">
+    <i class="fa-solid fa-dumbbell empty-icon"></i>
+    <p>No workouts yet.</p>
+    <span>Ask your trainer to assign one, or create your own.</span>
+  </div>
+
+  <ion-card *ngFor="let workout of workouts" class="workout-card">
     <ion-card-header>
-      <div class="title-container">
-        <ion-card-title class="title-size">{{ workout.title }}</ion-card-title>
-        <ion-card-subtitle class="subtitle-size">{{ workout.subtitle }}</ion-card-subtitle>
+      <div class="card-top">
+        <div>
+          <ion-card-title>{{ workout.title }}</ion-card-title>
+          <ion-card-subtitle *ngIf="workout.subtitle">{{ workout.subtitle }}</ion-card-subtitle>
+        </div>
+        <span class="ex-count" *ngIf="workout.exercises?.length">
+          {{ workout.exercises!.length }} <i class="fa-solid fa-dumbbell"></i>
+        </span>
       </div>
     </ion-card-header>
 
     <ion-card-content>
-      <div class="content-container">
-        {{ workout.content }}
-      </div>
+      <p class="workout-desc" *ngIf="workout.content">{{ workout.content }}</p>
 
-      <div class="start-button-holder">
-        <ion-button size="small" fill="succsess" color="medium" [routerLink]="['/tab-trainings']"
-          [state]="{ workout: workout }">
+      <div class="action-row">
+        <ion-button size="small" fill="outline" [routerLink]="['/tab-trainings']" [state]="{ workout: workout }">
+          <i class="fa-solid fa-eye" slot="start"></i>
           Preview
         </ion-button>
-
-        <ion-button size="small" color="primary" [routerLink]="['/workout', workout.id]">
+        <ion-button size="small" [routerLink]="['/workout', workout.id]">
+          <i class="fa-solid fa-play" slot="start"></i>
           Start
         </ion-button>
       </div>
     </ion-card-content>
   </ion-card>
-
-  <p *ngIf="!loading && workouts.length === 0" class="empty-text">
-  </p>
 
 </ion-content>

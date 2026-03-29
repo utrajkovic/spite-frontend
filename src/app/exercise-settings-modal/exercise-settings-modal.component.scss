@@ -3,95 +3,67 @@
 }
 
 ion-content {
-  --background: var(--bg-page);
+  --background: rgba(0, 15, 25, 0.95);
   padding: 20px;
   color: var(--color-text);
 }
 
 ion-toolbar {
-  --background: rgba(0, 30, 40, 0.45);
+  --background: rgba(0, 20, 30, 0.95);
   border-bottom: 1px solid var(--border-cyan);
-  backdrop-filter: blur(14px);
 }
 
 ion-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--color-primary);
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+.ex-title-display {
+  font-family: var(--font-display);
+  font-size: 18px;
+  text-align: center;
   color: var(--color-primary);
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+  margin: 16px 0 20px;
   letter-spacing: 1px;
 }
 
-h2 {
-  text-align: center;
-  margin: 16px 0 20px 0;
-  color: var(--color-primary);
-  font-size: 20px;
-  font-weight: 700;
-}
-
 ion-item {
-  --background: var(--bg-input);
-  margin-bottom: 14px;
-  border-radius: 12px;
+  --background: rgba(0, 255, 255, 0.04);
   border: 1px solid var(--border-cyan);
-  backdrop-filter: blur(6px);
-  transition: 0.2s ease-in-out;
-}
-
-ion-item:hover {
-  border-color: var(--border-cyan-hover);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  --inner-border-width: 0;
 }
 
 ion-label {
-  color: var(--color-primary-dim);
-  font-size: 13px;
-  letter-spacing: 0.5px;
+  font-family: var(--font-display);
+  font-size: 11px !important;
+  color: var(--color-primary) !important;
+  opacity: 0.6;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-ion-input,
-ion-select {
+ion-input, ion-select {
   --color: var(--color-text);
   font-size: 15px;
 }
 
-ion-button[color="success"] {
-  --background: linear-gradient(90deg, #00ffbf, #00dba0);
-  --color: #002b25;
-  border-radius: 14px;
-  font-size: 16px;
-  margin-top: 20px;
-  height: 48px;
-  letter-spacing: 0.5px;
-  box-shadow: 0 0 10px rgba(0, 255, 200, 0.35);
-  transition: 0.25s ease;
-}
-
-ion-button[color="success"]:hover {
-  transform: scale(1.04);
-  box-shadow: 0 0 14px rgba(0, 255, 200, 0.5);
-}
-
 ion-button {
-  --color: var(--color-danger);
+  --background: linear-gradient(90deg, #00ffaa, #00cc88);
+  --color: #001a10;
+  --border-radius: 12px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-top: 8px;
 }
 
-@media (min-width: 600px) {
-  ion-content {
-    padding: 30px 40px;
-  }
-}
-
-.ex-title-display {
-  font-size: 22px;
-  text-align: center;
-  color: var(--color-primary);
-  text-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-}
-
-ion-header ion-button i {
+ion-header ion-button {
+  --background: transparent;
+  --color: var(--color-primary);
   font-size: 18px;
-  color: var(--color-primary);
-  opacity: 0.7;
 }

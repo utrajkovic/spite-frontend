@@ -11,6 +11,7 @@ import { LocalDataService } from '../services/local-data.service';
 import { ModalController } from '@ionic/angular';
 import { ExerciseSettingsModalComponent } from '../exercise-settings-modal/exercise-settings-modal.component';
 import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
+import { VideoTrimModal } from '../modals/video-trim.modal';
 
 
 @Component({
@@ -26,8 +27,8 @@ import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loadin
     IonReorderGroup, IonReorder, IonAlert,
     IonSelect, IonSelectOption,
     IonIcon, ExerciseSettingsModalComponent,
-    PageLoadingOverlayComponent
-],
+    PageLoadingOverlayComponent, VideoTrimModal
+  ],
   providers: [ModalController]
 })
 export class Tab2Page implements OnInit {
@@ -140,7 +141,26 @@ export class Tab2Page implements OnInit {
   }
 
   onVideoSelected(ev: any) {
-    this.selectedVideo = ev.target.files?.[0] ?? null;
+    const file: File | null = ev.target.files?.[0] ?? null;
+    if (!file) return;
+    this.openTrimModal(file);
+  }
+
+  async openTrimModal(file: File) {
+    const modal = await this.modalCtrl.create({
+      component: VideoTrimModal,
+      componentProps: { file },
+      cssClass: 'trim-modal-wrapper'
+    });
+
+    await modal.present();
+    const result = await modal.onDidDismiss();
+
+    if (result.data) {
+      // result.data je File - ili originalni (skip) ili isečeni (trim)
+      this.selectedVideo = result.data;
+    }
+    // null = cancel, selectedVideo ostaje null
   }
 
   async saveExercise() {

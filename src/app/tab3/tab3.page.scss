@@ -1,234 +1,274 @@
-
-/* ------------------------------------------------------
-   GLOBAL TAB3 STIL
------------------------------------------------------- */
-
 ion-content {
   --background: var(--bg-page);
   --padding-top: var(--header-offset);
-  padding: 16px;
   font-family: var(--font-display);
   color: var(--color-text);
 }
 
-/* Veći razmak između celih sekcija */
 .section-box {
-  border-radius: 18px;
   padding: 16px;
-  margin-bottom: 40px;
-  /* VEĆI RAZMAK IZMEĐU KARTICA */
-  backdrop-filter: blur(10px) saturate(140%);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.05);
-  animation: fadeIn 0.4s ease;
-  transition: box-shadow 0.3s ease;
+  animation: fadeIn 0.35s ease;
 }
 
-.section-box:hover {
-  box-shadow: 0 0 18px rgba(0, 255, 255, 0.25);
-}
-
-.section-box h2 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  text-align: center;
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 14px;
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--color-primary);
+    opacity: 0.6;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin: 0;
+    text-shadow: none;
+  }
 }
 
-ion-list {
-  background: transparent;
+.count-badge {
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid var(--border-cyan);
+  border-radius: 20px;
+  padding: 1px 8px;
+  font-size: 11px;
+  color: var(--color-primary);
+  opacity: 0.7;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 14px;
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid var(--border-cyan);
   border-radius: 14px;
-  padding: 4px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    border-color: var(--border-cyan-hover);
+    box-shadow: 0 0 14px rgba(0, 255, 255, 0.12);
+    transform: translateY(-1px);
+  }
 }
 
-.item-card {
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 14px;
-  --background: radial-gradient(circle at top, #00111a00 0%, #00000000 100%);
-  border: 1px solid rgba(0, 255, 255, 0.19);
-  transition: box-shadow 0.25s ease;
-}
-/* Uklanja *sve* Ionic default bordere u item-card */
-ion-item.item-card::part(native) {
-  --inner-border-width: 0 !important;
-  --border-color: transparent !important;
-  border-width: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
 }
 
-
-.item-card:hover {
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
-}
-
-ion-label h3 {
-  color: var(--color-primary);
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-ion-label p {
-  color: var(--color-text-muted);
-  opacity: 0.85;
-  font-size: 0.85rem;
-}
-
-.delete-btn,
-.edit-btn {
-  width: 40px;
-  height: 40px;
+.item-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(0, 255, 255, 0.08);
+  border: 1px solid var(--border-cyan);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-primary);
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
-.separator {
-  width: 70%;
+.trainer-icon {
+  background: rgba(0, 180, 255, 0.1);
+  border-color: rgba(0, 180, 255, 0.3);
+  color: #00b4ff;
+}
+
+.item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.item-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-sub {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  opacity: 0.55;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.edit-btn {
+  --color: rgba(255, 200, 0, 0.7);
+  font-size: 15px;
+}
+
+.danger-btn {
+  --color: var(--color-danger);
+  font-size: 15px;
+  opacity: 0.7;
+}
+
+.chevron {
+  color: var(--color-primary);
+  opacity: 0.25;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
-  margin: 28px auto 40px auto;
-  opacity: 0.8;
-  border-radius: 10px;
+  background: linear-gradient(90deg, transparent, var(--border-cyan), transparent);
+  margin: 4px 16px 4px;
+  opacity: 0.5;
 }
 
 .logout-btn {
-  margin-top: 20px;
+  margin: 16px;
+  --background: transparent;
+  --color: var(--color-danger);
+  --border-radius: 14px;
+  border: 1px solid rgba(255, 77, 77, 0.3);
   font-family: var(--font-display);
-  --background: linear-gradient(90deg, var(--color-primary), #00ccff);
-  --color: #000;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  transition: box-shadow 0.3s ease;
-}
+  font-size: 13px;
+  letter-spacing: 1px;
+  transition: all 0.25s ease;
 
-.logout-btn:hover {
-  box-shadow: 0 0 32px rgb(255, 0, 0);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  &:hover {
+    --background: rgba(255, 77, 77, 0.08);
+    border-color: rgba(255, 77, 77, 0.5);
   }
 }
 
-/* ------------------------------------------------------
-   MODAL – GLASS CARD (ZA OBA MODALA)
------------------------------------------------------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px;
+  opacity: 0.3;
+  text-align: center;
 
-/* BACKDROP */
-.exercise-modal::part(backdrop),
-.workout-modal::part(backdrop) {
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(6px);
+  i { font-size: 32px; color: var(--color-primary); }
+  span { font-family: var(--font-body); font-size: 13px; color: var(--color-text-muted); }
 }
 
-/* GLAVNO TELO MODALA (FLOATING CARD) */
+/* MODALS */
 .exercise-modal::part(content),
 .workout-modal::part(content) {
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
-
   width: 90%;
   max-width: 360px;
-  max-height: 80vh;
-  /* FIX ZA DUGME CLOSE */
+  max-height: 82vh;
+  border-radius: 20px;
+  background: rgba(0, 20, 30, 0.92) !important;
+  border: 1px solid var(--border-cyan);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   overflow: hidden;
-  /* Sprečava content spill */
+}
 
+.modal-box {
+  padding: 24px 20px;
+  overflow-y: auto;
+  max-height: 82vh;
   display: flex;
   flex-direction: column;
-
-  background: rgba(0, 40, 60, 0.25);
-  border-radius: 18px;
-
-  backdrop-filter: blur(22px) saturate(180%);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-
-  border: 1px solid rgba(0, 255, 255, 0.45);
-  box-shadow:
-    0 0 22px rgba(0, 255, 255, 0.3),
-    inset 0 0 8px rgba(0, 255, 255, 0.12);
-
-  padding: 0;
-  /* sada ćemo ručno rasporediti padding ispod */
-  animation: slideUpModal 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  gap: 12px;
 }
 
-/* UNUTRAŠNJI SCROLL ZONE */
-.alert-box {
-  text-align: center;
-  padding: 20px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-/* NASLOVI I TEKST */
-.title {
-  font-size: 20px;
-  font-weight: 700;
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 18px;
   color: var(--color-primary);
-  margin-bottom: 12px;
+  text-align: center;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-  padding-bottom: 20px;
-}
-
-.description {
-  color: var(--color-text-muted);
-  font-size: 14px;
-  margin-bottom: 14px;
-}
-
-/* EXERCISE VIDEO PREVIEW */
-.preview-video {
-  width: 100%;
-  max-height: 240px;
-  border-radius: 12px;
-  margin-bottom: 12px;
-  box-shadow: 0 0 14px rgba(0, 255, 255, 0.25);
-}
-
-/* LISTA VEŽBI UNUTAR WORKOUT MODALA */
-.exercise-title {
-  text-align: center;
-  color: var(--color-primary);
-  margin-bottom: 8px;
-  font-weight: 600;
-}
-
-.exercise-list ul {
-  list-style: none;
-  padding: 0;
   margin: 0;
 }
 
-.exercise-list li {
-  margin-bottom: 6px;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--border-cyan);
-  color: var(--color-text);
-  text-shadow: 0 0 4px rgba(0, 255, 255, 0.15);
+.modal-video {
+  width: 100%;
+  max-height: 220px;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 0 14px rgba(0, 255, 255, 0.2);
 }
 
-/* ANIMACIJA */
-@keyframes slideUpModal {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -40%) scale(0.95);
-  }
+.modal-desc {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-align: center;
+  opacity: 0.8;
+  margin: 0;
+}
 
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+.modal-meta {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+
+  i { color: var(--color-primary); opacity: 0.6; }
+}
+
+.list-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--color-primary);
+  opacity: 0.5;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 4px 0 8px;
+}
+
+.ex-pill {
+  padding: 8px 12px;
+  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid var(--border-cyan);
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+
+ion-button {
+  --background: linear-gradient(90deg, var(--color-primary), #0077ff);
+  --color: #000;
+  --border-radius: 12px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

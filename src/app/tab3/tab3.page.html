@@ -1,132 +1,128 @@
-<ion-content #contentRef [fullscreen]="true" class="ion-padding content-container">
-<page-loading-overlay [active]="isLoading" message="Loading..."></page-loading-overlay>
+<ion-content #contentRef [fullscreen]="true">
+  <page-loading-overlay [active]="isLoading" message="Loading..."></page-loading-overlay>
 
+  <!-- MY EXERCISES -->
   <section class="section-box">
-    <h2>My Exercises</h2>
+    <div class="section-header">
+      <h2>My Exercises</h2>
+      <span class="count-badge">{{ exercises.length }}</span>
+    </div>
 
-    <ion-list lines="none">
-      <ion-item *ngFor="let exercise of exercises" class="item-card" (click)="openExercisePreview(exercise)">
-        <ion-label>
-          <h3>{{ exercise.name }}</h3>
-        </ion-label>
+    <div class="empty-state" *ngIf="exercises.length === 0 && !isLoading">
+      <i class="fa-solid fa-dumbbell"></i>
+      <span>No exercises yet</span>
+    </div>
 
-        <ion-button color="danger" fill="outline" slot="end"
-          (click)="deleteExercise(exercise.id!); $event.stopPropagation();" class="delete-btn"
-          [disabled]="isDeleting === exercise.id">
-          <ion-spinner name="crescent" *ngIf="isDeleting === exercise.id"></ion-spinner>
-          <i class="fa-solid fa-trash" *ngIf="isDeleting !== exercise.id"></i>
-        </ion-button>
-      </ion-item>
-
-      <ion-item *ngIf="exercises.length === 0" class="item-card">
-        <ion-label>Empty</ion-label>
-      </ion-item>
-    </ion-list>
+    <div class="list-item" *ngFor="let exercise of exercises" (click)="openExercisePreview(exercise)">
+      <div class="item-left">
+        <div class="item-icon"><i class="fa-solid fa-dumbbell"></i></div>
+        <span class="item-name">{{ exercise.name }}</span>
+      </div>
+      <ion-button fill="clear" class="danger-btn"
+        (click)="deleteExercise(exercise.id!); $event.stopPropagation();"
+        [disabled]="isDeleting === exercise.id">
+        <ion-spinner name="crescent" *ngIf="isDeleting === exercise.id"></ion-spinner>
+        <i class="fa-solid fa-trash" *ngIf="isDeleting !== exercise.id"></i>
+      </ion-button>
+    </div>
   </section>
 
-  <div class="separator"></div>
+  <div class="divider"></div>
 
+  <!-- MY WORKOUTS -->
   <section class="section-box">
-    <h2>My Trainings</h2>
-    <ion-list>
-      <ion-item *ngFor="let workout of workouts" class="item-card" (click)="showWorkoutDetails(workout)">
-        <ion-label>
-          <h3>{{ workout.title }}</h3>
-          <p>{{ workout.subtitle || 'Bez kategorije' }}</p>
-        </ion-label>
+    <div class="section-header">
+      <h2>My Workouts</h2>
+      <span class="count-badge">{{ workouts.length }}</span>
+    </div>
 
-        <ion-button color="warning" fill="outline" slot="end"
-          (click)="openEditWorkout(workout); $event.stopPropagation();" class="edit-btn">
+    <div class="empty-state" *ngIf="workouts.length === 0 && !isLoading">
+      <i class="fa-solid fa-list-check"></i>
+      <span>No workouts yet</span>
+    </div>
+
+    <div class="list-item" *ngFor="let workout of workouts" (click)="showWorkoutDetails(workout)">
+      <div class="item-left">
+        <div class="item-icon"><i class="fa-solid fa-fire"></i></div>
+        <div class="item-text">
+          <span class="item-name">{{ workout.title }}</span>
+          <span class="item-sub" *ngIf="workout.subtitle">{{ workout.subtitle }}</span>
+        </div>
+      </div>
+      <div class="item-actions">
+        <ion-button fill="clear" class="edit-btn"
+          (click)="openEditWorkout(workout); $event.stopPropagation();">
           <i class="fa-solid fa-pen"></i>
         </ion-button>
-
-        <ion-button color="danger" fill="outline" slot="end"
-          (click)="deleteWorkout(workout.id!); $event.stopPropagation();" class="delete-btn"
+        <ion-button fill="clear" class="danger-btn"
+          (click)="deleteWorkout(workout.id!); $event.stopPropagation();"
           [disabled]="isDeleting === workout.id">
           <ion-spinner name="crescent" *ngIf="isDeleting === workout.id"></ion-spinner>
           <i class="fa-solid fa-trash" *ngIf="isDeleting !== workout.id"></i>
         </ion-button>
-      </ion-item>
-
-      <ion-item *ngIf="workouts.length === 0" class="item-card">
-        <ion-label>Empty</ion-label>
-      </ion-item>
-    </ion-list>
+      </div>
+    </div>
   </section>
 
-  <div class="separator"></div>
+  <div class="divider"></div>
 
-  <section class="section-box">
-    <h2>Assigned by Trainer</h2>
-    <ion-list>
-      <ion-item *ngFor="let w of assignedWorkouts" class="item-card" (click)="showWorkoutDetails(w)"
-        (click)="showWorkoutDetails(w)">
-        <ion-label>
-          <h3>{{ w.title }}</h3>
-          <p>{{ w.subtitle || 'Bez kategorije' }}</p>
-        </ion-label>
-      </ion-item>
+  <!-- ASSIGNED BY TRAINER -->
+  <section class="section-box" *ngIf="assignedWorkouts.length > 0">
+    <div class="section-header">
+      <h2>Assigned by Trainer</h2>
+      <span class="count-badge">{{ assignedWorkouts.length }}</span>
+    </div>
 
-      <ion-item *ngIf="assignedWorkouts.length === 0" class="item-card">
-        <ion-label>Empty</ion-label>
-      </ion-item>
-    </ion-list>
+    <div class="list-item" *ngFor="let w of assignedWorkouts" (click)="showWorkoutDetails(w)">
+      <div class="item-left">
+        <div class="item-icon trainer-icon"><i class="fa-solid fa-user-tie"></i></div>
+        <div class="item-text">
+          <span class="item-name">{{ w.title }}</span>
+          <span class="item-sub" *ngIf="w.subtitle">{{ w.subtitle }}</span>
+        </div>
+      </div>
+      <i class="fa-solid fa-chevron-right chevron"></i>
+    </div>
+
+    <div class="divider"></div>
   </section>
 
   <ion-button color="danger" expand="block" class="logout-btn" (click)="logout()">
+    <i class="fa-solid fa-right-from-bracket" slot="start"></i>
     Logout
   </ion-button>
 
 </ion-content>
 
+<!-- EXERCISE MODAL -->
 <ion-modal #exerciseModal class="exercise-modal" [presentingElement]="null">
   <ng-template>
-    <div class="alert-box">
-
-      <h2 class="title">{{ previewExercise?.name }}</h2>
-
-      <video *ngIf="previewExercise?.videoUrl" [src]="previewExercise?.videoUrl" autoplay loop [muted]="true"
-        playsinline class="preview-video">
-      </video>
-
-      <p class="description">
-        {{ previewExercise?.description || 'No description' }}
-      </p>
-
-      <ion-button color="primary" expand="block" (click)="closeExerciseModal()">
-        Close
-      </ion-button>
-
+    <div class="modal-box">
+      <h2 class="modal-title">{{ previewExercise?.name }}</h2>
+      <video *ngIf="previewExercise?.videoUrl" [src]="previewExercise?.videoUrl"
+        autoplay loop [muted]="true" playsinline class="modal-video"></video>
+      <p class="modal-desc">{{ previewExercise?.description || 'No description' }}</p>
+      <ion-button expand="block" (click)="closeExerciseModal()">Close</ion-button>
     </div>
   </ng-template>
 </ion-modal>
+
+<!-- WORKOUT MODAL -->
 <ion-modal #workoutModal class="workout-modal" [presentingElement]="null">
   <ng-template>
-    <div class="alert-box">
-
-      <h2 class="title">{{ previewWorkout?.title }}</h2>
-
-      <p class="description">
-        <strong>Category:</strong> {{ previewWorkout?.subtitle || '—' }}
+    <div class="modal-box">
+      <h2 class="modal-title">{{ previewWorkout?.title }}</h2>
+      <p class="modal-meta" *ngIf="previewWorkout?.subtitle">
+        <i class="fa-solid fa-tag"></i> {{ previewWorkout?.subtitle }}
       </p>
-
-      <p class="description">
-        <strong>Description:</strong> {{ previewWorkout?.content || '—' }}
+      <p class="modal-meta" *ngIf="previewWorkout?.content">
+        <i class="fa-solid fa-align-left"></i> {{ previewWorkout?.content }}
       </p>
-
       <div class="exercise-list" *ngIf="previewWorkoutExercises?.length">
-        <h3 class="exercise-title">Exercises</h3>
-        <ul>
-          <li *ngFor="let ex of previewWorkoutExercises">
-            {{ ex }}
-          </li>
-        </ul>
+        <p class="list-label">Exercises</p>
+        <div class="ex-pill" *ngFor="let ex of previewWorkoutExercises">{{ ex }}</div>
       </div>
-
-      <ion-button color="primary" expand="block" (click)="closeWorkoutModal()">
-        Close
-      </ion-button>
-
+      <ion-button expand="block" (click)="closeWorkoutModal()">Close</ion-button>
     </div>
   </ng-template>
 </ion-modal>

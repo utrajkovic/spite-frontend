@@ -1,111 +1,137 @@
-ion-content {
-  --background: var(--bg-page);
-  font-family: var(--font-body);
-  color: var(--color-text);
-  padding: 24px;
+.auth-page {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+}
+
+.auth-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px 24px;
+  box-sizing: border-box;
+}
+
+.brand {
   text-align: center;
+  margin-bottom: 40px;
+
+  h1 {
+    font-family: 'Monoton', cursive;
+    font-size: 52px;
+    color: var(--color-primary);
+    text-shadow: 0 0 20px var(--color-primary), 0 0 40px rgba(0,255,255,0.3);
+    margin: 0 0 8px;
+    letter-spacing: 6px;
+  }
+
+  p {
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--color-text-muted);
+    opacity: 0.6;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
 }
 
-.app-title {
-  margin-top: 40px;
-  margin-bottom: 30px;
-}
-
-.app-title h1 {
-  font-family: var(--font-display);
-  font-size: 48px;
-  font-weight: bold;
-  color: var(--color-primary);
-  text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
-}
-
-.app-title p {
-  font-size: 14px;
-  color: var(--color-primary);
-  opacity: 0.8;
-}
-
-.flicker h1 {
-  animation: flicker 1.5s infinite alternate;
+.flicker {
+  animation: flicker 3s infinite alternate;
 }
 
 @keyframes flicker {
-  0%, 18%, 22%, 25%, 53%, 57%, 100% {
-    opacity: 1;
-    text-shadow: 0 0 10px var(--color-primary), 0 0 20px #0077ff;
-  }
-  20%, 24%, 55% {
-    opacity: 0.6;
-    text-shadow: none;
-  }
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 0.9; }
+  20%, 24%, 55% { opacity: 1; }
 }
 
-form {
-  background: var(--bg-card);
+.auth-form {
+  width: 100%;
+  max-width: 360px;
+  background: rgba(0, 40, 60, 0.3);
   border: 1px solid var(--border-cyan);
-  border-radius: 18px;
-  padding: 30px 24px;
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
-  animation: fadeInUp 0.6s ease;
-  text-align: left;
+  border-radius: 20px;
+  padding: 28px 24px;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.08);
+  animation: fadeInUp 0.5s ease;
 }
 
-ion-item {
-  --background: transparent;
+.field {
   margin-bottom: 20px;
+
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 11px;
+    color: var(--color-primary);
+    opacity: 0.7;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  ion-input {
+    --background: rgba(0, 255, 255, 0.04);
+    --color: var(--color-text);
+    --placeholder-color: rgba(0, 247, 255, 0.3);
+    --padding-start: 14px;
+    --padding-end: 14px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    border: 1px solid var(--border-cyan);
+    border-radius: 12px;
+    font-size: 15px;
+    transition: border-color 0.2s ease;
+
+    &:focus-within {
+      border-color: var(--border-cyan-hover);
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
+    }
+  }
 }
 
-ion-label {
-  color: var(--color-primary) !important;
-  font-weight: 500;
-  font-size: 15px;
-  margin-bottom: 6px;
-}
-
-ion-input {
-  color: var(--color-text) !important;
-  border-bottom: 1px solid var(--border-cyan);
-  padding-bottom: 6px;
-}
-
-ion-button[type="submit"] {
-  --border-radius: 12px;
-  --background: linear-gradient(90deg, var(--color-primary) 0%, #0077ff 100%);
+.submit-btn {
+  --background: linear-gradient(90deg, var(--color-primary), #0077ff);
   --color: #000;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  margin-top: 10px;
-}
-
-.register-section {
-  text-align: center;
-  margin-top: 28px;
-}
-
-.register-section p {
+  --border-radius: 12px;
+  font-family: var(--font-display);
+  font-weight: 700;
   font-size: 14px;
-  color: var(--color-text-muted);
-  margin-bottom: 4px;
+  letter-spacing: 1px;
+  height: 48px;
+  margin-top: 8px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  transition: all 0.25s ease;
+
+  &:hover {
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+    transform: translateY(-1px);
+  }
 }
 
-.register-section ion-button {
-  --color: var(--color-primary);
-  font-weight: 500;
-}
+.auth-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 24px;
 
-.app-info {
-  margin-top: 40px;
-  padding: 0 12px;
-  font-size: 13px;
-  color: var(--color-text-muted);
-  opacity: 0.85;
-  line-height: 1.5;
-  text-align: center;
+  span {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--color-text-muted);
+    opacity: 0.6;
+  }
+
+  .link-btn {
+    --color: var(--color-primary);
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+  }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

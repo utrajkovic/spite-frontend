@@ -1,0 +1,64 @@
+<div class="trim-modal">
+
+  <!-- Processing overlay -->
+  <div class="processing-overlay" *ngIf="isProcessing">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>{{ processingMsg }}</p>
+  </div>
+
+  <h2 class="title">Trim Video</h2>
+  <p class="subtitle">Select the part you want to keep</p>
+
+  <!-- Video preview -->
+  <div class="video-wrapper">
+    <video #videoEl [src]="videoUrl" playsinline [muted]="true" class="preview-video"></video>
+  </div>
+
+  <!-- Duration info -->
+  <div class="time-info">
+    <span class="time-badge">{{ formatTime(startTime) }}</span>
+    <span class="duration-label">{{ trimDuration }}s selected</span>
+    <span class="time-badge">{{ formatTime(endTime) }}</span>
+  </div>
+
+  <!-- Start slider -->
+  <div class="slider-row">
+    <span class="slider-label">Start</span>
+    <input type="range" class="trim-slider"
+      [min]="0" [max]="duration" [step]="0.1"
+      [value]="startTime"
+      (input)="onStartChange(+$any($event.target).value)" />
+    <span class="slider-val">{{ formatTime(startTime) }}</span>
+  </div>
+
+  <!-- End slider -->
+  <div class="slider-row">
+    <span class="slider-label">End</span>
+    <input type="range" class="trim-slider"
+      [min]="0" [max]="duration" [step]="0.1"
+      [value]="endTime"
+      (input)="onEndChange(+$any($event.target).value)" />
+    <span class="slider-val">{{ formatTime(endTime) }}</span>
+  </div>
+
+  <!-- Preview button -->
+  <ion-button expand="block" fill="outline" class="preview-btn" (click)="previewTrim()">
+    <i class="fa-solid fa-play" slot="start"></i>
+    Preview Selection
+  </ion-button>
+
+  <!-- Actions -->
+  <div class="action-row">
+    <ion-button fill="outline" class="cancel-btn" (click)="cancel()">
+      Cancel
+    </ion-button>
+    <ion-button fill="outline" class="skip-btn" (click)="skipTrim()">
+      Skip Trim
+    </ion-button>
+    <ion-button class="trim-btn" (click)="trimAndReturn()" [disabled]="isProcessing">
+      <i class="fa-solid fa-scissors" slot="start"></i>
+      Trim & Use
+    </ion-button>
+  </div>
+
+</div>
