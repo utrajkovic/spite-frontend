@@ -1,3 +1,7 @@
+  onVideoLoaded(event: Event): void {
+    const video = event.target as HTMLVideoElement;
+    video.play();
+  }
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
