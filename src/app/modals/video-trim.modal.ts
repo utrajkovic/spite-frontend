@@ -4,8 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { IonButton, IonSpinner } from '@ionic/angular/standalone';
 
-const MAX_TRIM = 5;   // max sekundi selekcije
-const MAX_MB   = 10;  // max upload veličina
+const MAX_TRIM = 5;
 
 @Component({
   standalone: true,
@@ -17,16 +16,16 @@ const MAX_MB   = 10;  // max upload veličina
 export class VideoTrimModal implements AfterViewInit, OnDestroy {
 
   @Input() file!: File;
-  @ViewChild('videoEl')       videoRef!:        ElementRef<HTMLVideoElement>;
-  @ViewChild('timelineTrack') timelineTrackRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('videoEl')       videoRef!:         ElementRef<HTMLVideoElement>;
+  @ViewChild('timelineTrack') timelineTrackRef!:  ElementRef<HTMLDivElement>;
 
   videoUrl  = '';
   duration  = 0;
   startTime = 0;
   endTime   = 5;
 
-  isProcessing    = false;
-  processingMsg   = '';
+  isProcessing      = false;
+  processingMsg     = '';
   recordingProgress = 0;
 
   private isDraggingSelection = false;
@@ -43,8 +42,8 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
     video.preload = 'metadata';
     video.onloadedmetadata = () => {
       this.zone.run(() => {
-        this.duration = video.duration;
-        this.endTime  = Math.min(MAX_TRIM, this.duration);
+        this.duration  = video.duration;
+        this.endTime   = Math.min(MAX_TRIM, this.duration);
         this.startTime = 0;
       });
     };
@@ -55,34 +54,6 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
     if (this.videoUrl) URL.revokeObjectURL(this.videoUrl);
     if (this.seekTimeout) clearTimeout(this.seekTimeout);
   }
-
-  // ── FILE SIZE HELPERS ─────────────────────────────────────────
-
-  get originalMB(): number {
-    return this.file.size / 1024 / 1024;
-  }
-
-  /** Proporcionalna procena veličine isečenog dela */
-  get estimatedMB(): number {
-    if (this.duration === 0) return this.originalMB;
-    return this.originalMB * (this.trimDuration / this.duration);
-  }
-
-  get estimatedMBLabel(): string {
-    return this.estimatedMB.toFixed(1);
-  }
-
-  /** Trim & Use se blokira ako je procena > 10 MB */
-  get trimTooBig(): boolean {
-    return this.estimatedMB > MAX_MB;
-  }
-
-  /** Skip Trim se blokira ako je originalni fajl > 10 MB */
-  get skipTooBig(): boolean {
-    return this.originalMB > MAX_MB;
-  }
-
-  // ── SEEKING ───────────────────────────────────────────────────
 
   private seekTo(t: number) {
     const video = this.videoRef?.nativeElement;
@@ -95,8 +66,6 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
       else video.currentTime = clamped;
     }, 50);
   }
-
-  // ── SLIDERS ───────────────────────────────────────────────────
 
   onStartChange(val: number) {
     this.startTime = Math.min(val, this.endTime - 0.5);
@@ -111,8 +80,6 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
       this.startTime = Math.max(this.endTime - MAX_TRIM, 0);
     this.seekTo(this.startTime);
   }
-
-  // ── DRAGGABLE SELECTION ───────────────────────────────────────
 
   onSelectionPointerDown(event: PointerEvent) {
     event.preventDefault();
@@ -141,14 +108,12 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
     let newStart = this.dragStartStart + dTime;
     let newEnd   = newStart + selDuration;
 
-    if (newStart < 0)            { newStart = 0;               newEnd = selDuration; }
-    if (newEnd > this.duration)  { newEnd   = this.duration;   newStart = this.duration - selDuration; }
+    if (newStart < 0)           { newStart = 0;             newEnd = selDuration; }
+    if (newEnd > this.duration) { newEnd = this.duration;   newStart = this.duration - selDuration; }
 
     this.zone.run(() => { this.startTime = newStart; this.endTime = newEnd; });
     this.seekTo(newStart);
   }
-
-  // ── PREVIEW ───────────────────────────────────────────────────
 
   previewTrim() {
     const video = this.videoRef?.nativeElement;
@@ -164,39 +129,31 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
     video.addEventListener('timeupdate', stop);
   }
 
-  // ── GETTERS ───────────────────────────────────────────────────
-
-  get trimDuration(): number {
-    return Math.round((this.endTime - this.startTime) * 10) / 10;
-  }
-
+  get trimDuration():     number  { return Math.round((this.endTime - this.startTime) * 10) / 10; }
   get selectionTooLong(): boolean { return this.trimDuration > MAX_TRIM; }
-  get selectionLeftPct():  number  { return this.duration > 0 ? (this.startTime / this.duration) * 100 : 0; }
-  get selectionWidthPct(): number  { return this.duration > 0 ? ((this.endTime - this.startTime) / this.duration) * 100 : 0; }
-  get dimLeftWidthPct():   number  { return this.duration > 0 ? (this.startTime / this.duration) * 100 : 0; }
-  get dimRightWidthPct():  number  { return this.duration > 0 ? ((this.duration - this.endTime) / this.duration) * 100 : 0; }
+  get selectionLeftPct(): number  { return this.duration > 0 ? (this.startTime / this.duration) * 100 : 0; }
+  get selectionWidthPct():number  { return this.duration > 0 ? ((this.endTime - this.startTime) / this.duration) * 100 : 0; }
+  get dimLeftWidthPct():  number  { return this.duration > 0 ? (this.startTime / this.duration) * 100 : 0; }
+  get dimRightWidthPct(): number  { return this.duration > 0 ? ((this.duration - this.endTime) / this.duration) * 100 : 0; }
 
-  // ── TRIM — blob slice (radi na svim uređajima) ────────────────
-
+  // Blob slice — radi na svim uređajima, bez FFmpeg, bez MediaRecorder
   async trimAndReturn() {
     this.isProcessing     = true;
     this.processingMsg    = 'Trimming...';
     this.recordingProgress = 0;
 
     try {
-      const mimeType = this.file.type || 'video/mp4';
-      const totalBytes  = this.file.size;
-      const startByte   = Math.floor((this.startTime / this.duration) * totalBytes);
-      const endByte     = Math.floor((this.endTime   / this.duration) * totalBytes);
+      const mimeType  = this.file.type || 'video/mp4';
+      const startByte = Math.floor((this.startTime / this.duration) * this.file.size);
+      const endByte   = Math.floor((this.endTime   / this.duration) * this.file.size);
 
       this.recordingProgress = 60;
-      const slicedBlob   = this.file.slice(startByte, endByte, mimeType);
-      const ext          = mimeType.split('/')[1] || 'mp4';
-      const trimmedFile  = new File([slicedBlob], `trimmed.${ext}`, { type: mimeType });
+      const sliced      = this.file.slice(startByte, endByte, mimeType);
+      const ext         = mimeType.split('/')[1] || 'mp4';
+      const trimmedFile = new File([sliced], `trimmed.${ext}`, { type: mimeType });
 
       this.recordingProgress = 100;
       this.processingMsg     = 'Done!';
-
       await new Promise(r => setTimeout(r, 300));
       this.modalCtrl.dismiss(trimmedFile);
 

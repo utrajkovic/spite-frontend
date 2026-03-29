@@ -143,15 +143,6 @@ export class Tab2Page implements OnInit {
   onVideoSelected(ev: any) {
     const file: File | null = ev.target.files?.[0] ?? null;
     if (!file) return;
-
-    const maxMB = 10;
-    const fileMB = file.size / 1024 / 1024;
-    if (fileMB > maxMB) {
-      this.showAlert(`Video is too large (${fileMB.toFixed(1)} MB). Max allowed is ${maxMB} MB. Please select a shorter video.`);
-      ev.target.value = '';
-      return;
-    }
-
     this.openTrimModal(file);
   }
 
@@ -192,6 +183,13 @@ export class Tab2Page implements OnInit {
     };
 
     if (this.selectedVideo) {
+      const maxMB = 10;
+      const fileMB = this.selectedVideo.size / 1024 / 1024;
+      if (fileMB > maxMB) {
+        this.isSavingExercise = false;
+        return this.showAlert(`Video is too large (${fileMB.toFixed(1)} MB). Please trim it to under ${maxMB} MB before uploading.`);
+      }
+
       try {
         const form = new FormData();
         form.append('video', this.selectedVideo);
