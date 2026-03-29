@@ -267,7 +267,7 @@ export class Tab3Page implements OnInit {
 
             <h2 class="ex-modal-title">${exercise.name}</h2>
 
-            <video src="${exercise.videoUrl}" autoplay loop muted playsinline controls class="ex-modal-video"></video>
+            <video src="${exercise.videoUrl}" autoplay loop muted playsinline class="ex-modal-video"></video>
 
             <p class="ex-modal-description">
               ${exercise.description || 'No description available.'}

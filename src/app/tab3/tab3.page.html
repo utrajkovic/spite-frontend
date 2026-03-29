@@ -155,7 +155,7 @@
   <ng-template>
     <div class="modal-box">
       <h2 class="modal-title">{{ previewExercise?.name }}</h2>
-      <video *ngIf="previewExercise?.videoUrl" [src]="previewExercise?.videoUrl"
+      <video [src]="previewExercise?.videoUrl" [hidden]="!previewExercise?.videoUrl"
         autoplay loop [muted]="true" playsinline class="modal-video"></video>
       <p class="modal-desc">{{ previewExercise?.description || 'No description' }}</p>
       <ion-button expand="block" (click)="closeExerciseModal()">Close</ion-button>

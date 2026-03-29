@@ -57,7 +57,7 @@
 
       <!-- VIDEO -->
       <div class="video-zone">
-        <video *ngIf="currentExercise?.videoUrl && !isVideoLoading"
+        <video [hidden]="!currentExercise?.videoUrl || isVideoLoading"
           [src]="currentExercise?.videoUrl"
           autoplay loop [muted]="true" playsinline
           class="ex-video fade-in"
@@ -124,7 +124,7 @@
       <div class="next-preview" *ngIf="nextMainExercise">
         <p class="next-label">Up next</p>
         <div class="next-card">
-          <video *ngIf="nextMainExercise?.videoUrl"
+          <video [hidden]="!nextMainExercise?.videoUrl"
             [src]="nextMainExercise?.videoUrl"
             autoplay loop [muted]="true" playsinline
             class="next-video">
