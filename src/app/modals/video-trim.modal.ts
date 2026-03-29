@@ -2,16 +2,16 @@ import { Component, Input, OnDestroy, ViewChild, ElementRef, AfterViewInit, NgZo
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { IonButton, IonSpinner, IonRange } from '@ionic/angular/standalone';
-import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile, toBlobURL } from '@ffmpeg/util';
+import { IonButton, IonSpinner } from '@ionic/angular/standalone';
+
+const MAX_TRIM = 5; // max sekundi
 
 @Component({
   standalone: true,
   selector: 'video-trim-modal',
   templateUrl: './video-trim.modal.html',
   styleUrls: ['./video-trim.modal.scss'],
-  imports: [CommonModule, FormsModule, IonButton, IonSpinner, IonRange]
+  imports: [CommonModule, FormsModule, IonButton, IonSpinner]
 })
 export class VideoTrimModal implements AfterViewInit, OnDestroy {
 
@@ -22,46 +22,39 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
   videoUrl = '';
   duration = 0;
   startTime = 0;
-  endTime = 10;
+  endTime = 5;
 
   isProcessing = false;
-  isLoaded = false;
   processingMsg = '';
+  recordingProgress = 0; // 0-100 za progress bar tokom snimanja
 
-  // Drag state za selection bar
   private isDraggingSelection = false;
   private dragStartX = 0;
   private dragStartStart = 0;
   private dragStartEnd = 0;
-
-  // Seek debounce
   private seekTimeout: any = null;
-
-  private ffmpeg = new FFmpeg();
+  private recordingTimer: any = null;
 
   constructor(private modalCtrl: ModalController, private zone: NgZone) {}
 
   ngAfterViewInit() {
     this.videoUrl = URL.createObjectURL(this.file);
     const video = this.videoRef.nativeElement;
-
-    // preload=metadata je ključno za screen recordings
     video.preload = 'metadata';
-
     video.onloadedmetadata = () => {
       this.zone.run(() => {
-        this.duration = video.duration; // ne floor-ujemo, čuvamo preciznost
-        this.endTime = Math.min(10, this.duration);
+        this.duration = video.duration;
+        this.endTime = Math.min(MAX_TRIM, this.duration);
+        this.startTime = 0;
       });
     };
-
-    // Pokušaj da učita i podatke (za bolji seeking)
     video.load();
   }
 
   ngOnDestroy() {
     if (this.videoUrl) URL.revokeObjectURL(this.videoUrl);
     if (this.seekTimeout) clearTimeout(this.seekTimeout);
+    if (this.recordingTimer) clearInterval(this.recordingTimer);
   }
 
   // ========================
@@ -71,40 +64,41 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
   private seekTo(t: number) {
     const video = this.videoRef?.nativeElement;
     if (!video || this.duration === 0) return;
-
     const clamped = Math.max(0, Math.min(t, this.duration));
-
-    // Pauziraj pre seek-a
     video.pause();
-
-    // Debounce za glatko seekovanje
     if (this.seekTimeout) clearTimeout(this.seekTimeout);
     this.seekTimeout = setTimeout(() => {
-      // fastSeek za screen recordings (manje precizno ali brže)
-      if ((video as any).fastSeek) {
-        (video as any).fastSeek(clamped);
-      } else {
-        video.currentTime = clamped;
-      }
+      if ((video as any).fastSeek) (video as any).fastSeek(clamped);
+      else video.currentTime = clamped;
     }, 50);
   }
 
   // ========================
-  // START / END SLIDERS
+  // SLIDERS
   // ========================
 
   onStartChange(val: number) {
-    this.startTime = Math.min(val, this.endTime - 0.5);
+    const maxStart = this.endTime - 0.5;
+    this.startTime = Math.min(val, maxStart);
+    // Ako bi selekcija prešla MAX_TRIM, pomeri end
+    if (this.endTime - this.startTime > MAX_TRIM) {
+      this.endTime = Math.min(this.startTime + MAX_TRIM, this.duration);
+    }
     this.seekTo(this.startTime);
   }
 
   onEndChange(val: number) {
-    this.endTime = Math.max(val, this.startTime + 0.5);
-    this.seekTo(this.endTime);
+    const minEnd = this.startTime + 0.5;
+    this.endTime = Math.max(val, minEnd);
+    // Ako bi selekcija prešla MAX_TRIM, pomeri start
+    if (this.endTime - this.startTime > MAX_TRIM) {
+      this.startTime = Math.max(this.endTime - MAX_TRIM, 0);
+    }
+    this.seekTo(this.startTime);
   }
 
   // ========================
-  // DRAGGABLE SELECTION BAR
+  // DRAGGABLE SELECTION
   // ========================
 
   onSelectionPointerDown(event: PointerEvent) {
@@ -120,25 +114,22 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
     };
-
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
   }
 
   private onSelectionPointerMove(event: PointerEvent) {
     if (!this.isDraggingSelection || !this.timelineTrackRef) return;
-
     const trackWidth = this.timelineTrackRef.nativeElement.getBoundingClientRect().width;
     if (trackWidth === 0) return;
 
     const dx = event.clientX - this.dragStartX;
     const dTime = (dx / trackWidth) * this.duration;
-
     const selDuration = this.dragStartEnd - this.dragStartStart;
+
     let newStart = this.dragStartStart + dTime;
     let newEnd = newStart + selDuration;
 
-    // Clamp unutar granica
     if (newStart < 0) { newStart = 0; newEnd = selDuration; }
     if (newEnd > this.duration) { newEnd = this.duration; newStart = this.duration - selDuration; }
 
@@ -146,8 +137,6 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
       this.startTime = newStart;
       this.endTime = newEnd;
     });
-
-    // Seek na startTime dok se vuče
     this.seekTo(newStart);
   }
 
@@ -158,10 +147,8 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
   previewTrim() {
     const video = this.videoRef?.nativeElement;
     if (!video) return;
-
     video.currentTime = this.startTime;
     video.play();
-
     const stop = () => {
       if (video.currentTime >= this.endTime) {
         video.pause();
@@ -195,62 +182,90 @@ export class VideoTrimModal implements AfterViewInit, OnDestroy {
     return this.duration > 0 ? ((this.duration - this.endTime) / this.duration) * 100 : 0;
   }
 
+  get selectionTooLong(): boolean {
+    return this.trimDuration > MAX_TRIM;
+  }
+
   // ========================
-  // TRIM
+  // TRIM via MediaRecorder
   // ========================
 
   async trimAndReturn() {
+    const video = this.videoRef?.nativeElement;
+    if (!video) return;
+
     this.isProcessing = true;
-    this.processingMsg = 'Loading FFmpeg...';
+    this.processingMsg = `Recording ${this.trimDuration}s...`;
+    this.recordingProgress = 0;
 
     try {
-      if (!this.ffmpeg.loaded) {
-        const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
-        await this.ffmpeg.load({
-          coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-          wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+      // Seek na startTime
+      video.currentTime = this.startTime;
+      await new Promise<void>(resolve => {
+        const onSeeked = () => { video.removeEventListener('seeked', onSeeked); resolve(); };
+        video.addEventListener('seeked', onSeeked);
+      });
+
+      // Capture stream iz video elementa
+      const stream = (video as any).captureStream
+        ? (video as any).captureStream()
+        : (video as any).mozCaptureStream();
+
+      const chunks: Blob[] = [];
+      const recorder = new MediaRecorder(stream, {
+        mimeType: this.getSupportedMimeType()
+      });
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.start(100);
+      video.play();
+
+      // Progress timer
+      const trimMs = this.trimDuration * 1000;
+      const startedAt = Date.now();
+      this.recordingTimer = setInterval(() => {
+        const elapsed = Date.now() - startedAt;
+        this.zone.run(() => {
+          this.recordingProgress = Math.min((elapsed / trimMs) * 100, 100);
+          this.processingMsg = `Recording... ${Math.ceil((trimMs - elapsed) / 1000)}s`;
         });
-      }
+      }, 100);
 
-      this.processingMsg = 'Trimming video...';
+      // Čekaj trimDuration sekundi
+      await new Promise<void>(resolve => setTimeout(resolve, trimMs));
 
-      const inputName = 'input.' + this.file.name.split('.').pop();
-      const outputName = 'output.mp4';
+      clearInterval(this.recordingTimer);
+      video.pause();
+      recorder.stop();
 
-      await this.ffmpeg.writeFile(inputName, await fetchFile(this.file));
+      // Sačekaj da recorder završi
+      await new Promise<void>(resolve => { recorder.onstop = () => resolve(); });
 
-      await this.ffmpeg.exec([
-        '-i', inputName,
-        '-ss', String(this.startTime),
-        '-to', String(this.endTime),
-        '-c:v', 'libx264',
-        '-preset', 'ultrafast',
-        '-crf', '28',
-        '-an',
-        outputName
-      ]);
-
-      const data = await this.ffmpeg.readFile(outputName);
-      // @ts-ignore
-      const blob = new Blob([data], { type: 'video/mp4' });
-      const trimmedFile = new File([blob], 'trimmed.mp4', { type: 'video/mp4' });
+      const mimeType = this.getSupportedMimeType();
+      const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+      const blob = new Blob(chunks, { type: mimeType });
+      const trimmedFile = new File([blob], `trimmed.${ext}`, { type: mimeType });
 
       this.modalCtrl.dismiss(trimmedFile);
 
     } catch (e) {
-      console.error('FFmpeg error:', e);
-      this.processingMsg = 'Error processing video.';
+      console.error('MediaRecorder error:', e);
+      this.processingMsg = 'Error — try Skip Trim';
+      clearInterval(this.recordingTimer);
       setTimeout(() => { this.isProcessing = false; this.processingMsg = ''; }, 2000);
     }
   }
 
-  skipTrim() {
-    this.modalCtrl.dismiss(this.file);
+  private getSupportedMimeType(): string {
+    const types = ['video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
+    return types.find(t => MediaRecorder.isTypeSupported(t)) ?? 'video/webm';
   }
 
-  cancel() {
-    this.modalCtrl.dismiss(null);
-  }
+  skipTrim() { this.modalCtrl.dismiss(this.file); }
+  cancel() { this.modalCtrl.dismiss(null); }
 
   formatTime(s: number): string {
     const m = Math.floor(s / 60);
