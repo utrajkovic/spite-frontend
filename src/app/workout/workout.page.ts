@@ -203,7 +203,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
   get restTimeLeft() { return this.restLeft; }
   get totalRestTime() { return this.totalRest; }
 
-  private getExerciseById(id: string | undefined | null): Exercise | undefined {
+  getExerciseById(id: string | undefined | null): Exercise | undefined {
     if (!id) return undefined;
     return this.exercises.find(e => e.id === id);
   }
@@ -281,17 +281,50 @@ export class WorkoutPage implements OnInit, OnDestroy {
         this.persistState();
       }, 700);
     } else {
-      await this.finishWorkout();
+      await this.finishWorkout(false);
     }
   }
 
-  private async finishWorkout() {
-    // Čistimo state - trening je završen
+  // ==========================
+  // FINISH EARLY
+  // ==========================
+
+  async finishEarly() {
+    const alert = await this.alertCtrl.create({
+      header: 'Finish workout?',
+      message: `You've completed ${this.completionPercent}% of the workout. Are you sure you want to finish early?`,
+      cssClass: 'custom-alert',
+      buttons: [
+        { text: 'Continue', role: 'cancel' },
+        { text: 'Finish', handler: () => this.finishWorkout(true) }
+      ]
+    });
+    await alert.present();
+  }
+
+  get completionPercent(): number {
+    if (!this.items.length) return 0;
+    return Math.round((this.currentIndex / this.items.length) * 100);
+  }
+
+  get completedItemsCount(): number {
+    return this.currentIndex;
+  }
+
+  // ==========================
+  // FINISH WORKOUT
+  // ==========================
+
+  private async finishWorkout(early = false) {
     this.workoutState.clear();
-    // Zakažemo inactivity reminder za 3 dana
     this.notificationService.scheduleInactivityReminder(3).catch(() => {});
 
-    const exerciseList = this.items.map(item => {
+    // Samo vežbe koje su ZAVRŠENE (currentIndex = broj završenih)
+    const completedItems = early
+      ? this.items.slice(0, this.currentIndex)
+      : this.items;
+
+    const exerciseList = completedItems.map(item => {
       const ex = this.exercises.find(e => e.id === item.exerciseId);
       return {
         exerciseId: item.exerciseId,
@@ -301,7 +334,10 @@ export class WorkoutPage implements OnInit, OnDestroy {
       };
     });
 
-    // Otvaramo feedback modal PRE navigacije
+    const totalItems = this.items.length;
+    const completedCount = completedItems.length;
+    const percent = Math.round((completedCount / totalItems) * 100);
+
     const modal = await this.modalCtrl.create({
       component: WorkoutFeedbackModal,
       cssClass: 'feedback-transparent',
@@ -319,15 +355,14 @@ export class WorkoutPage implements OnInit, OnDestroy {
         workoutTitle: this.workout.title,
         userId,
         timestamp: Date.now(),
+        completionPercent: percent,
         exercises: feedback
       };
 
       this.backend.sendWorkoutFeedback(feedbackPayload).subscribe({
         next: () => console.log('Feedback saved'),
         error: () => {
-          // Offline: sačuvaj lokalno, poslaćemo kad se veza vrati
           this.workoutState.savePendingFeedback(feedbackPayload);
-          console.warn('Offline - feedback saved locally, will sync later');
         }
       });
     }

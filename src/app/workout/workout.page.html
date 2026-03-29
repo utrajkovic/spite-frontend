@@ -1,128 +1,148 @@
 <ion-content fullscreen>
+
   <!-- LOADING -->
-  <ion-spinner *ngIf="loading" name="crescent" class="spinner-center"></ion-spinner>
+  <div class="loading-screen" *ngIf="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
 
-  <div *ngIf="!loading" class="content-wrapper">
-    <div class="card-wrapper">
+  <!-- START SCREEN -->
+  <div class="start-screen" *ngIf="!loading && !started">
+    <div class="start-content">
+      <div class="workout-icon"><i class="fa-solid fa-dumbbell"></i></div>
+      <h1 class="workout-title">{{ workout?.title }}</h1>
+      <p class="workout-sub" *ngIf="workout?.subtitle">{{ workout?.subtitle }}</p>
 
-      <!-- CURRENT EXERCISE CARD -->
-      <ion-card *ngIf="started && items.length > 0" class="exercise-card" [class.superset-active]="showingSuperset">
-        <!-- PROGRESS PO ITEM-ima -->
-        <ion-progress-bar [value]="(currentExerciseIndex + 1) / items.length" class="progress-bar neon-progress">
-        </ion-progress-bar>
-
-        <ion-card-content>
-
-          <!-- NAZIV I OPIS TRENUTNE VEŽBE (main ili superset) -->
-          <div *ngIf="showingSuperset" class="superset-badge">
-            SUPERSET
-          </div>
-          <h2 class="exercise-name">
-            {{ currentExercise?.name }}
-          </h2>
-
-          <p class="exercise-desc">
-            {{ currentExercise?.description }}
-          </p>
-
-          <!-- VIDEO BLOK -->
-          <div class="video-container" *ngIf="!isResting">
-
-            <!-- Video ako postoji -->
-            <video *ngIf="currentExercise?.videoUrl" [src]="currentExercise?.videoUrl" autoplay loop [muted]="true"
-              playsinline class="exercise-video fade-in">
-            </video>
-
-            <!-- Loading overlay pri prelazu -->
-            <div *ngIf="isVideoLoading" class="video-loading-overlay fade-in">
-              <ion-spinner name="crescent"></ion-spinner>
-              <p>Loading next exercise...</p>
-            </div>
-
-            <!-- Placeholder ako nema video -->
-            <div *ngIf="!currentExercise?.videoUrl" class="video-placeholder fade-in">
-              <div class="placeholder-content">
-                <p class="placeholder-text">No video available</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- INFO O SERIJI / REPS -->
-          <div class="exercise-info" *ngIf="!isResting">
-            <p>
-              Set:
-              <strong>{{ currentSet }}/{{ currentItem?.sets }}</strong>
-            </p>
-            <p>
-              Reps:
-              <strong>{{ currentItem?.reps }}</strong>
-            </p>
-
-            <!-- indikator da ova vežba ima superset -->
-            <p *ngIf="hasSupersetForCurrent && !showingSuperset">
-              Superset: <strong>{{ supersetExerciseName }}</strong>
-            </p>
-
-          </div>
-
-          <!-- REST EKRAN -->
-          <div *ngIf="isResting" class="rest-container">
-            <h3 class="rest-title">
-              Rest: {{ restTimeLeft }}s
-            </h3>
-
-            <div class="rest-timer">
-              <svg class="circle-timer" viewBox="0 0 100 100">
-                <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
-                <circle class="circle-progress" cx="50" cy="50" r="45" [attr.stroke-dasharray]="circumference"
-                  [attr.stroke-dashoffset]="circumference * (restTimeLeft / totalRestTime)">
-                </circle>
-              </svg>
-            </div>
-          </div>
-
-        </ion-card-content>
-
-        <!-- DUGMAD -->
-        <div class="card-actions">
-          <ion-button *ngIf="isResting" expand="block" fill="outline" color="medium" (click)="skipRest()">
-            Skip Rest
-          </ion-button>
-
-          <ion-button expand="block" color="success" class="done-btn" (click)="completeSet()" [disabled]="isResting">
-            Done
-          </ion-button>
+      <div class="exercise-preview-list">
+        <div class="preview-item" *ngFor="let item of items; let i = index">
+          <span class="preview-num">{{ i + 1 }}</span>
+          <span class="preview-name">{{ getExerciseById(item.exerciseId)?.name || 'Exercise' }}</span>
+          <span class="preview-sets">{{ item.sets }}×{{ item.reps }}</span>
         </div>
-
-      </ion-card>
-
-      <!-- NEXT EXERCISE TEKST -->
-      <div *ngIf="started && nextMainExercise" class="next-exercise">
-        <p>
-          Next exercise:
-          <strong>{{ nextMainExercise?.name }}</strong>
-        </p>
       </div>
 
-      <!-- NEXT VIDEO PREVIEW WHILE RESTING -->
-      <ion-card *ngIf="isResting && nextMainExercise" class="next-exercise-card">
-        <ion-card-content>
-          <div class="video-container">
-            <video *ngIf="nextMainExercise?.videoUrl" [src]="nextMainExercise?.videoUrl" autoplay loop [muted]="true"
-              playsinline class="exercise-video">
-            </video>
-          </div>
-        </ion-card-content>
-      </ion-card>
-
-      <!-- START BUTTON -->
-      <ion-button expand="block" color="primary" class="start-btn" (click)="startWorkout()"
-        *ngIf="!started && !loading && items.length > 0">
+      <ion-button expand="block" class="start-btn" (click)="startWorkout()">
+        <i class="fa-solid fa-play" slot="start"></i>
         Start Workout
       </ion-button>
-
-      <div *ngIf="!loading && items.length === 0" class="no-exercises">
-      </div>
     </div>
   </div>
+
+  <!-- ACTIVE WORKOUT -->
+  <div class="workout-screen" *ngIf="!loading && started">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="progress-info">
+        <span class="ex-counter">{{ currentIndex + 1 }} / {{ items.length }}</span>
+        <span class="set-counter">Set {{ currentSet }} of {{ currentItem?.sets }}</span>
+      </div>
+      <button class="finish-early-btn" (click)="finishEarly()">
+        <i class="fa-solid fa-flag-checkered"></i>
+        Finish
+      </button>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-track">
+      <div class="progress-fill" [style.width.%]="((currentIndex) / items.length) * 100"></div>
+    </div>
+
+    <!-- SUPERSET BADGE -->
+    <div class="superset-banner" *ngIf="showingSuperset">
+      <i class="fa-solid fa-link"></i> SUPERSET
+    </div>
+
+    <!-- EXERCISE VIEW -->
+    <div class="exercise-view" *ngIf="!isResting">
+
+      <!-- VIDEO -->
+      <div class="video-zone">
+        <video *ngIf="currentExercise?.videoUrl && !isVideoLoading"
+          [src]="currentExercise?.videoUrl"
+          autoplay loop [muted]="true" playsinline
+          class="ex-video fade-in">
+        </video>
+
+        <div class="video-loading" *ngIf="isVideoLoading">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+
+        <div class="no-video" *ngIf="!currentExercise?.videoUrl && !isVideoLoading">
+          <i class="fa-solid fa-dumbbell"></i>
+        </div>
+      </div>
+
+      <!-- EXERCISE INFO -->
+      <div class="ex-info">
+        <h2 class="ex-name" [class.superset-name]="showingSuperset">
+          {{ currentExercise?.name }}
+        </h2>
+        <p class="ex-desc" *ngIf="currentExercise?.description">
+          {{ currentExercise?.description }}
+        </p>
+
+        <div class="ex-stats">
+          <div class="stat-box">
+            <span class="stat-val">{{ currentItem?.sets }}</span>
+            <span class="stat-lbl">Sets</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-box">
+            <span class="stat-val">{{ currentItem?.reps }}</span>
+            <span class="stat-lbl">Reps</span>
+          </div>
+          <div class="stat-divider" *ngIf="hasSupersetForCurrent && !showingSuperset"></div>
+          <div class="stat-box superset-hint" *ngIf="hasSupersetForCurrent && !showingSuperset">
+            <i class="fa-solid fa-link"></i>
+            <span class="stat-lbl">{{ supersetExerciseName }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- REST VIEW -->
+    <div class="rest-view" *ngIf="isResting">
+      <p class="rest-label">Rest</p>
+
+      <div class="circle-wrap">
+        <svg viewBox="0 0 100 100" class="circle-svg">
+          <circle class="circle-bg" cx="50" cy="50" r="42"/>
+          <circle class="circle-fg" cx="50" cy="50" r="42"
+            [attr.stroke-dasharray]="circumference"
+            [attr.stroke-dashoffset]="circumference * (restTimeLeft / totalRestTime)"/>
+        </svg>
+        <div class="circle-text">
+          <span class="rest-seconds">{{ restTimeLeft }}</span>
+          <span class="rest-unit">sec</span>
+        </div>
+      </div>
+
+      <!-- NEXT EXERCISE PREVIEW -->
+      <div class="next-preview" *ngIf="nextMainExercise">
+        <p class="next-label">Up next</p>
+        <div class="next-card">
+          <video *ngIf="nextMainExercise?.videoUrl"
+            [src]="nextMainExercise?.videoUrl"
+            autoplay loop [muted]="true" playsinline
+            class="next-video">
+          </video>
+          <span class="next-name">{{ nextMainExercise?.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ACTIONS -->
+    <div class="bottom-actions">
+      <ion-button *ngIf="isResting" expand="block" fill="outline" class="skip-btn" (click)="skipRest()">
+        Skip Rest
+      </ion-button>
+      <ion-button expand="block" class="done-btn" (click)="completeSet()" [disabled]="isResting">
+        <i class="fa-solid fa-check" slot="start"></i>
+        Done
+      </ion-button>
+    </div>
+
+  </div>
+
 </ion-content>

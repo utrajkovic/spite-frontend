@@ -54,9 +54,10 @@ export interface ExerciseFeedback {
 
 export interface WorkoutFeedback {
   workoutId: string;
-  workoutTitle?: string; // snapshot – ostaje čitljiv i posle brisanja treninga
+  workoutTitle?: string;
   userId: string;
   timestamp: number;
+  completionPercent?: number;
   exercises: ExerciseFeedback[];
 }
 
