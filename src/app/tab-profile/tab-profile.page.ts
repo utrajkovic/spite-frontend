@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import {
   IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
   IonItem, IonLabel, IonButton, IonList, IonListHeader,
@@ -65,6 +65,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
     private statsService: StatsService,
     private prService: PRService,
     private modalCtrl: ModalController,
+    private router: Router,
     public themeService: ThemeService
   ) {
     window.addEventListener('beforeinstallprompt', (e: any) => {
@@ -87,8 +88,8 @@ export class TabProfilePage implements OnInit, OnDestroy {
 
   async ionViewWillEnter() {
     if (this.user) {
+      this.badgeService.checkNow();
       this.loadData();
-      this.badgeService.markInvitesSeen(this.pendingInvites.map(i => i.id));
     }
   }
 
@@ -111,12 +112,24 @@ export class TabProfilePage implements OnInit, OnDestroy {
     });
 
     this.backend.getPendingInvites(this.user.username).subscribe({
-      next: (data) => { this.pendingInvites = data; },
+      next: (data) => {
+        this.pendingInvites = data;
+        this.badgeService.markInvitesSeen([
+          ...this.pendingInvites.map(i => i.id),
+          ...this.pendingShares.map(s => s.id)
+        ]);
+      },
       error: () => {}
     });
 
     this.backend.getPendingShares(this.user.username).subscribe({
-      next: (data) => { this.pendingShares = data; },
+      next: (data) => {
+        this.pendingShares = data;
+        this.badgeService.markInvitesSeen([
+          ...this.pendingInvites.map(i => i.id),
+          ...this.pendingShares.map(s => s.id)
+        ]);
+      },
       error: () => {}
     });
   }
@@ -287,6 +300,26 @@ export class TabProfilePage implements OnInit, OnDestroy {
       cssClass: 'calendar-wrapper'
     });
     await modal.present();
+  }
+
+  async logout() {
+    const alert = await this.alertCtrl.create({
+      header: 'Logout',
+      message: 'Are you sure you want to log out?',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Logout',
+          role: 'confirm',
+          handler: async () => {
+            await Preferences.remove({ key: 'user' });
+            await this.router.navigateByUrl('/login', { replaceUrl: true });
+          }
+        }
+      ],
+      cssClass: 'custom-alert'
+    });
+    await alert.present();
   }
 
   async clearHistory() {

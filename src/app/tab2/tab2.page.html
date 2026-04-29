@@ -86,12 +86,20 @@
 
       <ion-searchbar [value]="searchQuery" (ionInput)="onSearch($event)" placeholder="Search exercises..."></ion-searchbar>
 
-      <div class="search-item" *ngFor="let ex of filteredExercises">
+      <div class="search-item" *ngFor="let ex of visibleExercises">
         <span>{{ ex.name }}</span>
         <ion-button fill="outline" class="add-btn" (click)="addExercise(ex)">
           <i class="fa-solid fa-plus" slot="start"></i> Add
         </ion-button>
       </div>
+
+      <button
+        *ngIf="filteredExercises.length > EXERCISES_LIMIT"
+        class="show-more-btn"
+        (click)="showAllExercises = !showAllExercises">
+        <i class="fa-solid fa-chevron-{{ showAllExercises ? 'up' : 'down' }}"></i>
+        {{ showAllExercises ? 'Show less' : 'Show all (' + filteredExercises.length + ')' }}
+      </button>
 
       <ion-button expand="block" class="success-btn" (click)="saveNewWorkout()" [disabled]="isSavingWorkout">
         <ion-spinner *ngIf="isSavingWorkout" name="crescent" slot="start"></ion-spinner>

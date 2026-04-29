@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalController } from '@ionic/angular';
 import { IonButton } from '@ionic/angular/standalone';
@@ -10,9 +10,10 @@ import { IonButton } from '@ionic/angular/standalone';
   styleUrls: ['./workout-calendar.modal.scss'],
   imports: [CommonModule, IonButton]
 })
-export class WorkoutCalendarModal implements OnInit {
+export class WorkoutCalendarModal implements OnInit, OnChanges {
 
   @Input() feedbacks: any[] = [];
+  @Input() inline = false;
 
   currentYear = new Date().getFullYear();
   currentMonth = new Date().getMonth();
@@ -35,10 +36,18 @@ export class WorkoutCalendarModal implements OnInit {
     this.buildCalendar();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['feedbacks']) {
+      this.buildFeedbackMap();
+      this.selectedDay = null;
+      this.selectedFeedbacks = [];
+    }
+  }
+
   private buildFeedbackMap() {
     this.feedbackMap = {};
     this.feedbacks.forEach(fb => {
-      const key = this.toKey(new Date(fb.timestamp));
+      const key = this.tsToKey(fb.timestamp);
       if (!this.feedbackMap[key]) this.feedbackMap[key] = [];
       this.feedbackMap[key].push(fb);
     });
@@ -122,6 +131,12 @@ export class WorkoutCalendarModal implements OnInit {
   }
 
   private toKey(d: Date): string {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  private tsToKey(timestamp: number): string {
+    const d = new Date(timestamp);
+    // Koristimo lokalno vreme da izbegnemo UTC offset problem
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
 

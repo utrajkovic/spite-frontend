@@ -423,6 +423,43 @@ ion-modal.pr-modal-wrapper::part(backdrop) {
 }
 
 /* ============================================================
+   HIDE SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+ion-content::part(scroll) {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ============================================================
+   DESKTOP LAYOUT – centriran sadržaj sa praznim stranama
+   ============================================================ */
+
+@media (min-width: 768px) {
+  ion-content::part(scroll) {
+    max-width: 860px;
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (min-width: 1200px) {
+  ion-content::part(scroll) {
+    max-width: 1000px;
+  }
+}
+
+/* ============================================================
    THEMES
    ============================================================ */
 

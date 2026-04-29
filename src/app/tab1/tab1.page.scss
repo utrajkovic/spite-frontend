@@ -136,15 +136,8 @@ ion-button:not([fill="outline"]) {
   padding: 10px 12px;
   background: rgba(255, 200, 0, 0.06);
   border: 1px solid rgba(255, 200, 0, 0.2);
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px;
   margin-bottom: 12px;
-
-  i {
-    color: #ffc800;
-    font-size: 13px;
-    margin-top: 2px;
-    flex-shrink: 0;
-  }
 
   span {
     font-family: var(--font-body);
@@ -152,5 +145,33 @@ ion-button:not([fill="outline"]) {
     color: var(--color-text-muted);
     line-height: 1.4;
     opacity: 0.85;
+  }
+}
+
+.note-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  background: rgba(255, 200, 0, 0.05);
+  border: 1px solid rgba(255, 200, 0, 0.2);
+  border-radius: 10px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: #ffc800;
+  transition: background 0.2s;
+
+  &:active { background: rgba(255, 200, 0, 0.12); }
+
+  i:first-child { font-size: 13px; }
+
+  span { flex: 1; }
+
+  .toggle-arrow {
+    font-size: 11px;
+    transition: transform 0.2s;
+    &.open { transform: rotate(180deg); }
   }
 }

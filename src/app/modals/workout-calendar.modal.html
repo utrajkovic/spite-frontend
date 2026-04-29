@@ -4,7 +4,7 @@
     <button class="nav-btn" (click)="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
     <span class="month-label">{{ monthNames[currentMonth] }} {{ currentYear }}</span>
     <button class="nav-btn" (click)="nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
-    <button class="close-btn" (click)="dismiss()"><i class="fa-solid fa-xmark"></i></button>
+    <button class="close-btn" (click)="dismiss()" *ngIf="!inline"><i class="fa-solid fa-xmark"></i></button>
   </div>
 
   <!-- Day names -->

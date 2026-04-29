@@ -131,16 +131,23 @@ export class TabEditPage implements OnInit {
     return this.allExercises.find(e => e.id === id)?.name ?? 'Unknown';
   }
 
+  private normalize(str: string): string {
+    return str
+      .toLowerCase()
+      .replace(/č/g, 'c').replace(/ć/g, 'c')
+      .replace(/š/g, 's').replace(/ž/g, 'z')
+      .replace(/đ/g, 'd').replace(/dž/g, 'dz');
+  }
+
   onSearch(ev: any) {
-    this.searchQuery = ev.target.value?.toLowerCase() || '';
+    this.searchQuery = ev.target.value ?? '';
     this.filterList();
   }
 
   filterList() {
-    const q = this.searchQuery.toLowerCase();
-
+    const q = this.normalize(this.searchQuery);
     this.filteredExercises = this.allExercises.filter(ex =>
-      ex.name.toLowerCase().includes(q)
+      this.normalize(ex.name).includes(q)
     );
   }
 

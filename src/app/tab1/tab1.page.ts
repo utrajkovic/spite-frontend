@@ -29,7 +29,14 @@ import { BadgeService } from '../services/badge.service';
 export class Tab1Page {
   workouts: Workout[] = [];
   loading = false;
+  openNotes = new Set<string>();
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+
+  toggleNote(id: string | undefined) {
+    if (!id) return;
+    if (this.openNotes.has(id)) this.openNotes.delete(id);
+    else this.openNotes.add(id);
+  }
 
   constructor(
     private backendService: BackendService,
@@ -60,7 +67,7 @@ export class Tab1Page {
     }
 
     const userWorkouts$ = this.backendService.getWorkoutsByUser(currentUser.id);
-    const assignedWorkouts$ = this.http.get<Workout[]>(`${this.backendUrl}/api/trainer/client-workouts-full/${currentUser.username}`);
+    const assignedWorkouts$ = this.http.get<Workout[]>(`${this.backendUrl}/api/workouts/client/${currentUser.username}`);
 
     Promise.all([userWorkouts$.toPromise(), assignedWorkouts$.toPromise()])
       .then(([mine, assigned]) => {

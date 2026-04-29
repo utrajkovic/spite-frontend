@@ -349,3 +349,16 @@ ion-button {
     background: rgba(0, 255, 255, 0.04);
   }
 }
+
+.trainer-note-modal {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(0, 255, 255, 0.06);
+  border-left: 3px solid var(--color-primary, #00f7ff);
+  border-radius: 8px;
+  font-size: 13px;
+  color: rgba(0, 247, 255, 0.85);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}

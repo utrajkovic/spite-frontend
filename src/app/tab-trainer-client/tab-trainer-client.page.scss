@@ -1,16 +1,11 @@
 
 ion-content {
   --background: var(--bg-page);
-  --padding-top: 0;
   font-family: var(--font-body);
   color: var(--color-text);
-  padding: 24px 16px 32px;
 }
 
 ion-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
 }
@@ -18,7 +13,11 @@ ion-header {
 ion-toolbar {
   --background: var(--bg-page);
   border-bottom: 1px solid var(--border-cyan);
-  padding-bottom: 6px;
+}
+
+ion-toolbar ion-segment {
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 ion-title {
@@ -57,9 +56,18 @@ ion-segment-button::part(indicator) {
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
 }
 
+.section-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--color-primary);
+  opacity: 0.5;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+
 .section-box {
-  margin-top: 12px;
-  margin-bottom: 28px;
+  margin: 12px 16px 0;
   padding: 16px;
   border-radius: 18px;
   border: 1px solid rgba(0, 255, 255, 0.25);
@@ -219,6 +227,9 @@ ion-segment {
 }
 
 .client-profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   padding: 16px 0 8px;
 

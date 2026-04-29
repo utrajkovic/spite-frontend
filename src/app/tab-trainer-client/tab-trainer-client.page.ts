@@ -29,8 +29,8 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     IonContent, IonHeader, IonTitle, IonToolbar,
     IonItem, IonLabel, IonList, IonListHeader, IonButton, IonSpinner,
-    IonSegment,
-    IonSegmentButton
+    IonSegment, IonSegmentButton,
+    WorkoutCalendarModal
   ],
   providers: [ModalController]
 
@@ -140,7 +140,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
 
   loadClientWorkouts() {
-    this.http.get<any[]>(`${this.baseUrl}/client-workouts/${this.clientUsername}`)
+    this.http.get<any[]>(`https://spite-backend-v2.onrender.com/api/workouts/client/${this.clientUsername}`)
       .subscribe({
         next: async (res) => {
           this.clientWorkouts = res;
@@ -175,7 +175,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
   assignWorkout(workoutId: string) {
     const url =
-      `${this.baseUrl}/assign?trainer=${this.trainerUsername}&client=${this.clientUsername}&workoutId=${workoutId}`;
+      `https://spite-backend-v2.onrender.com/api/workouts/assign?workoutId=${workoutId}&clientUsername=${this.clientUsername}&assignedBy=${this.trainerUsername}`;
 
     this.http.post(url, {}, { responseType: 'text' as 'json' })
       .subscribe({
@@ -254,7 +254,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
   unassignWorkout(workoutId: string) {
     const url =
-      `${this.baseUrl}/unassign?client=${this.clientUsername}&workoutId=${workoutId}`;
+      `https://spite-backend-v2.onrender.com/api/workouts/assign?workoutId=${workoutId}&clientUsername=${this.clientUsername}`;
 
     this.http.delete(url, { responseType: 'text' as 'json' })
       .subscribe({

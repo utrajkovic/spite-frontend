@@ -43,6 +43,14 @@ export class Tab2Page implements OnInit {
   editableExercises: Exercise[] = [];
   filteredExercises: Exercise[] = [];
   searchQuery = '';
+  showAllExercises = false;
+  readonly EXERCISES_LIMIT = 10;
+
+  get visibleExercises(): Exercise[] {
+    return this.showAllExercises
+      ? this.filteredExercises
+      : this.filteredExercises.slice(0, this.EXERCISES_LIMIT);
+  }
 
   workoutItems: WorkoutItem[] = [];
 
@@ -96,14 +104,24 @@ export class Tab2Page implements OnInit {
   }
 
 
+  private normalize(str: string): string {
+    return str
+      .toLowerCase()
+      .replace(/č/g, 'c').replace(/ć/g, 'c')
+      .replace(/š/g, 's').replace(/ž/g, 'z')
+      .replace(/đ/g, 'd').replace(/dž/g, 'dz');
+  }
+
   onSearch(ev: any) {
-    this.searchQuery = ev.target.value?.toLowerCase() ?? '';
+    this.searchQuery = ev.target.value ?? '';
+    this.showAllExercises = false;
     this.filterList();
   }
 
   filterList() {
+    const q = this.normalize(this.searchQuery);
     this.filteredExercises = this.allExercises.filter(ex =>
-      ex.name.toLowerCase().includes(this.searchQuery) &&
+      this.normalize(ex.name).includes(q) &&
       !this.editableExercises.some(e => e.id === ex.id)
     );
   }

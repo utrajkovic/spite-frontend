@@ -143,10 +143,6 @@
     <div class="divider"></div>
   </section>
 
-  <ion-button color="danger" expand="block" class="logout-btn" (click)="logout()">
-    <i class="fa-solid fa-right-from-bracket" slot="start"></i>
-    Logout
-  </ion-button>
 
 </ion-content>
 
@@ -174,6 +170,9 @@
       <p class="modal-meta" *ngIf="previewWorkout?.content">
         <i class="fa-solid fa-align-left"></i> {{ previewWorkout?.content }}
       </p>
+      <div class="trainer-note-modal" *ngIf="previewWorkout?.note">
+        <i class="fa-solid fa-note-sticky"></i> {{ previewWorkout?.note }}
+      </div>
       <div class="exercise-list" *ngIf="previewWorkoutExercises.length">
         <p class="list-label">Exercises</p>
         <div class="ex-pill" *ngFor="let ex of previewWorkoutExercises">{{ ex }}</div>

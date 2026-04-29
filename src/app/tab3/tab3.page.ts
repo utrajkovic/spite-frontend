@@ -163,7 +163,7 @@ export class Tab3Page implements OnInit {
 
     const exercises$ = this.backend.getExercisesByUser(currentUser.id);
     const workouts$ = this.backend.getWorkoutsByUser(currentUser.id);
-    const assigned$ = this.http.get<Workout[]>(`${this.backendUrl}/api/trainer/client-workouts-full/${currentUser.username}`);
+    const assigned$ = this.http.get<Workout[]>(`${this.backendUrl}/api/workouts/client/${currentUser.username}`);
 
     forkJoin([exercises$, workouts$, assigned$]).subscribe({
       next: ([exercises, workouts, assigned]) => {
@@ -373,11 +373,19 @@ export class Tab3Page implements OnInit {
     this.exerciseModal.dismiss();
   }
 
+  private normalize(str: string): string {
+    return str
+      .toLowerCase()
+      .replace(/č/g, 'c').replace(/ć/g, 'c')
+      .replace(/š/g, 's').replace(/ž/g, 'z')
+      .replace(/đ/g, 'd').replace(/dž/g, 'dz');
+  }
+
   onExerciseSearch(ev: any) {
-    const q = ev.target.value?.toLowerCase() ?? '';
+    const q = ev.target.value ?? '';
     this.exerciseSearch = q;
     this.filteredExercises = this.exercises.filter(e =>
-      e.name.toLowerCase().includes(q)
+      this.normalize(e.name).includes(this.normalize(q))
     );
   }
 

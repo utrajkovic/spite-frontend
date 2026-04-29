@@ -21,8 +21,9 @@ export class BadgeService {
   start(username: string) {
     this.username = username;
     this.check();
-    // Poll svake 30 sekundi
-    this.pollInterval = setInterval(() => this.check(), 30000);
+    // Poll svake 10 sekundi
+    if (this.pollInterval) clearInterval(this.pollInterval);
+    this.pollInterval = setInterval(() => this.check(), 10000);
   }
 
   stop() {
@@ -36,12 +37,25 @@ export class BadgeService {
     this.checkNewWorkouts();
   }
 
+  checkNow() {
+    this.check();
+  }
+
   private checkInvites() {
+    const seenIds: string[] = JSON.parse(localStorage.getItem(SEEN_INVITES_KEY) || '[]');
+
     this.http.get<any[]>(`${this.API_URL}/trainer/invites/${this.username}`).subscribe({
       next: (invites) => {
-        const seenIds: string[] = JSON.parse(localStorage.getItem(SEEN_INVITES_KEY) || '[]');
-        const hasNew = invites.some(i => !seenIds.includes(i.id));
-        this.hasProfileBadge$.next(hasNew);
+        const hasNewInvite = invites.some(i => !seenIds.includes(i.id));
+        if (hasNewInvite) { this.hasProfileBadge$.next(true); return; }
+
+        this.http.get<any[]>(`${this.API_URL}/share/pending/${this.username}`).subscribe({
+          next: (shares) => {
+            const hasNewShare = shares.some(s => !seenIds.includes(s.id));
+            this.hasProfileBadge$.next(hasNewShare);
+          },
+          error: () => this.hasProfileBadge$.next(false)
+        });
       },
       error: () => {}
     });
@@ -58,7 +72,7 @@ export class BadgeService {
     });
   }
 
-  // Pozovi kad korisnik otvori profile tab - briše badge za invites
+  // Pozovi kad korisnik otvori profile tab - briše badge za invites i shares
   markInvitesSeen(inviteIds: string[]) {
     const existing: string[] = JSON.parse(localStorage.getItem(SEEN_INVITES_KEY) || '[]');
     const merged = [...new Set([...existing, ...inviteIds])];
