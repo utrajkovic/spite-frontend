@@ -1,19 +1,26 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalController } from '@ionic/angular';
 import { IonButton } from '@ionic/angular/standalone';
+import { WorkoutFeedbackModal } from './workout-feedback.modal';
+import { BackendService } from '../services/backend.service';
+import { FeedbackViewModal } from './feedback-view.modal';
+
 
 @Component({
   standalone: true,
   selector: 'workout-calendar-modal',
   templateUrl: './workout-calendar.modal.html',
   styleUrls: ['./workout-calendar.modal.scss'],
-  imports: [CommonModule, IonButton]
+  imports: [CommonModule, IonButton, WorkoutFeedbackModal]
 })
 export class WorkoutCalendarModal implements OnInit, OnChanges {
 
   @Input() feedbacks: any[] = [];
+  @Input() completedWorkouts: any[] = [];
+  @Input() username: string = '';
   @Input() inline = false;
+  @Output() dataChanged = new EventEmitter<void>();
 
   currentYear = new Date().getFullYear();
   currentMonth = new Date().getMonth();
@@ -23,22 +30,26 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
 
   // Map: 'YYYY-MM-DD' -> feedbacks[]
   feedbackMap: Record<string, any[]> = {};
+  // Map: 'YYYY-MM-DD' -> completedWorkout (bez feedbacka)
+  completedMap: Record<string, any[]> = {};
 
   weeks: (string | null)[][] = [];
   monthNames = ['January','February','March','April','May','June',
                 'July','August','September','October','November','December'];
   dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
-  constructor(private modalCtrl: ModalController) {}
+  constructor(private modalCtrl: ModalController, private backend: BackendService) {}
 
   ngOnInit() {
     this.buildFeedbackMap();
+    this.buildCompletedMap();
     this.buildCalendar();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['feedbacks']) {
+    if (changes['feedbacks'] || changes['completedWorkouts']) {
       this.buildFeedbackMap();
+      this.buildCompletedMap();
       this.selectedDay = null;
       this.selectedFeedbacks = [];
     }
@@ -51,6 +62,17 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
       if (!this.feedbackMap[key]) this.feedbackMap[key] = [];
       this.feedbackMap[key].push(fb);
     });
+  }
+
+  private buildCompletedMap() {
+    this.completedMap = {};
+    this.completedWorkouts
+      .filter(cw => !cw.hasFeedback)
+      .forEach(cw => {
+        const key = this.tsToKey(cw.completedAt);
+        if (!this.completedMap[key]) this.completedMap[key] = [];
+        this.completedMap[key].push(cw);
+      });
   }
 
   private buildCalendar() {
@@ -95,14 +117,118 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
   }
 
   selectDay(key: string | null) {
-    if (!key || !this.feedbackMap[key]) return;
+    if (!key) return;
+    if (!this.feedbackMap[key] && !this.completedMap[key]) return;
     this.selectedDay = key;
-    this.selectedFeedbacks = this.feedbackMap[key];
+    this.selectedFeedbacks = this.feedbackMap[key] || [];
   }
 
   hasWorkout(key: string | null): boolean {
     return !!key && !!this.feedbackMap[key];
   }
+
+  hasNoFeedback(key: string | null): boolean {
+    // Žuta ako postoji bar jedan completed bez feedbacka tog dana
+    return !!key && !!this.completedMap[key];
+  }
+
+  async openAddFeedback(cw: any) {
+    // Učitaj vežbe sa backenda
+    this.backend.getWorkoutById(cw.workoutId).subscribe({
+      next: async (workout: any) => {
+        const exercises = (workout.items || []).map((item: any) => {
+          const ex = (workout.exercises || []).find((e: any) => e.id === item.exerciseId);
+          return {
+            exerciseId: item.exerciseId,
+            name: ex?.name || 'Exercise',
+            sets: item.sets,
+            reps: item.reps
+          };
+        });
+
+        const modal = await this.modalCtrl.create({
+          component: WorkoutFeedbackModal,
+          cssClass: 'feedback-transparent',
+          componentProps: { exercises }
+        });
+        await modal.present();
+        const result = await modal.onDidDismiss();
+        if (result.data) {
+          const feedbackPayload = {
+            workoutId: cw.workoutId,
+            workoutTitle: cw.workoutTitle,
+            userId: this.username,
+            timestamp: cw.completedAt,
+            completionPercent: 100,
+            exercises: result.data
+          };
+          this.backend.sendWorkoutFeedback(feedbackPayload).subscribe({
+            next: (saved: any) => {
+              this.feedbacks = [...this.feedbacks, saved];
+              this.completedWorkouts = this.completedWorkouts.map(c =>
+                c.id === cw.id ? { ...c, hasFeedback: true, feedbackId: saved.id } : c
+              );
+              this.buildFeedbackMap();
+              this.buildCompletedMap();
+              this.selectedDay = null;
+              this.selectedFeedbacks = [];
+              this.dataChanged.emit();
+            }
+          });
+        }
+      },
+      error: async () => {
+        // Ako ne mozemo da ucitamo vezbe, otvori prazan feedback
+        const modal = await this.modalCtrl.create({
+          component: WorkoutFeedbackModal,
+          cssClass: 'feedback-transparent',
+          componentProps: { exercises: [{ exerciseId: '', name: cw.workoutTitle, sets: 1, reps: '10' }] }
+        });
+        await modal.present();
+      }
+    });
+  }
+
+  async openEditFeedback(fb: any) {
+    const modal = await this.modalCtrl.create({
+      component: WorkoutFeedbackModal,
+      cssClass: 'feedback-transparent',
+      componentProps: {
+        exercises: fb.exercises.map((ex: any) => ({
+          exerciseId: ex.exerciseId,
+          name: ex.exerciseName,
+          sets: ex.sets,
+          reps: ex.reps,
+          doneSets: ex.doneSets,
+          doneReps: ex.doneReps,
+          maxKg: ex.maxKg,
+          intensity: ex.intensity
+        }))
+      }
+    });
+    await modal.present();
+    const result = await modal.onDidDismiss();
+    if (result.data) {
+      this.backend.updateWorkoutFeedback(fb.id, { ...fb, exercises: result.data }).subscribe({
+        next: (updated: any) => {
+          this.feedbacks = this.feedbacks.map(f => f.id === fb.id ? updated : f);
+          this.buildFeedbackMap();
+          this.selectedDay = null;
+          this.selectedFeedbacks = [];
+          this.dataChanged.emit();
+        }
+      });
+    }
+  }
+
+  async openViewFeedback(fb: any) {
+  const modal = await this.modalCtrl.create({
+    component: FeedbackViewModal,
+    componentProps: { feedback: fb },
+    cssClass: 'feedback-transparent'
+  });
+  await modal.present();
+}
 
   isToday(key: string | null): boolean {
     return key === this.toKey(new Date());

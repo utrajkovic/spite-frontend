@@ -301,11 +301,35 @@ ion-modal.feedback-transparent::part(backdrop) {
 
 ion-modal.feedback-transparent::part(content),
 ion-modal.feedback-transparent::part(wrapper) {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 96% !important;
+  max-width: 96% !important;
+  max-height: 90vh !important;
   background: rgba(0, 20, 30, 0.20) !important;
   backdrop-filter: blur(12px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
   border-radius: 20px;
   box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
+  overflow: hidden !important;
+}
+
+@media (min-width: 600px) {
+  ion-modal.feedback-transparent::part(content),
+  ion-modal.feedback-transparent::part(wrapper) {
+    width: 90% !important;
+    max-width: 760px !important;
+  }
+}
+
+@media (min-width: 960px) {
+  ion-modal.feedback-transparent::part(content),
+  ion-modal.feedback-transparent::part(wrapper) {
+    width: 80% !important;
+    max-width: 900px !important;
+  }
 }
 
 /* ------------------------------------------------------

@@ -85,6 +85,18 @@ export class BackendService {
     return this.http.post(`${this.API_URL}/feedback`, data);
   }
 
+  updateWorkoutFeedback(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.API_URL}/feedback/${id}`, data);
+  }
+
+  saveCompletedWorkout(data: any): Observable<any> {
+    return this.http.post(`${this.API_URL}/completed-workouts`, data);
+  }
+
+  getCompletedWorkouts(username: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/completed-workouts/user/${username}`);
+  }
+
   // Share system
   sendShareInvite(fromUsername: string, toUsername: string, type: 'exercise' | 'workout', itemIds: string[]): Observable<string> {
     return this.http.post(`${this.API_URL}/share/send`,

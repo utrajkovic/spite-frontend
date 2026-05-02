@@ -346,4 +346,3 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
   }
 
 }
-

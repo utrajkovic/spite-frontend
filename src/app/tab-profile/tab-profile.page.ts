@@ -43,6 +43,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
 
   user: any = null;
   feedbackHistory: any[] = [];
+  completedWorkouts: any[] = [];
   pendingInvites: any[] = [];
   pendingShares: any[] = [];
   loading = true;
@@ -109,6 +110,11 @@ export class TabProfilePage implements OnInit, OnDestroy {
         setTimeout(() => this.renderChart(), 100);
       },
       error: () => { this.loading = false; }
+    });
+
+    this.backend.getCompletedWorkouts(this.user.username).subscribe({
+      next: (data) => { this.completedWorkouts = data; },
+      error: () => {}
     });
 
     this.backend.getPendingInvites(this.user.username).subscribe({
@@ -296,10 +302,17 @@ export class TabProfilePage implements OnInit, OnDestroy {
   async openCalendar() {
     const modal = await this.modalCtrl.create({
       component: WorkoutCalendarModal,
-      componentProps: { feedbacks: this.feedbackHistory },
+      componentProps: {
+        feedbacks: this.feedbackHistory,
+        completedWorkouts: this.completedWorkouts,
+        username: this.user.username
+      },
       cssClass: 'calendar-wrapper'
     });
     await modal.present();
+    await modal.onDidDismiss();
+    // Osvezi podatke nakon zatvaranja kalendara
+    this.loadData();
   }
 
   async logout() {

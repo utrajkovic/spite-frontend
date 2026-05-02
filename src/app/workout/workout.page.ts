@@ -351,6 +351,16 @@ export class WorkoutPage implements OnInit, OnDestroy {
     this.workoutState.clear();
     this.notificationService.scheduleInactivityReminder(3).catch(() => {});
 
+    // Sačuvaj completed workout zapis
+    const userId = localStorage.getItem('username') ?? JSON.parse(localStorage.getItem('user') ?? '{}').username ?? '';
+    this.backend.saveCompletedWorkout({
+      username: userId,
+      workoutId: this.workout.id!,
+      workoutTitle: this.workout.title,
+      completedAt: Date.now(),
+      hasFeedback: false
+    }).subscribe({ error: () => {} });
+
     // KORAK 1: Notifikacija "Trening završen"
     const doneAlert = await this.alertCtrl.create({
       header: '🎉 Workout Complete!',
