@@ -43,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private startSessionValidation() {
     // Provjeri odmah pri pokretanju, pa svakih 60 sekundi
     this.validateSession();
-    this.validateInterval = setInterval(() => this.validateSession(), 60_000);
+    this.validateInterval = setInterval(() => this.validateSession(), 10_000);
   }
 
   private async validateSession() {
