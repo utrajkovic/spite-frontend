@@ -31,6 +31,12 @@
           {{ u.role === 'TRAINER' ? 'Demote' : 'Promote' }}
         </ion-button>
 
+        <ion-button size="small" [color]="u.blocked ? 'success' : 'warning'" (click)="toggleBlock(u)">
+          <ion-spinner *ngIf="loadingAction === 'block-' + u.username" name="crescent" slot="start"></ion-spinner>
+          <i class="fa-solid" [class.fa-lock]="!u.blocked" [class.fa-lock-open]="u.blocked" slot="start" *ngIf="loadingAction !== 'block-' + u.username"></i>
+          {{ u.blocked ? 'Unblock' : 'Block' }}
+        </ion-button>
+
         <ion-button size="small" color="danger" (click)="deleteUser(u)">
           <ion-spinner *ngIf="loadingAction === 'delete-' + u.username" name="crescent" slot="start"></ion-spinner>
           <i class="fa-solid fa-trash" slot="start" *ngIf="loadingAction !== 'delete-' + u.username"></i>

@@ -5,6 +5,7 @@ import { BackendService } from '../services/backend.service';
 import { AlertController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Preferences } from '@capacitor/preferences';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-tab-admin',
@@ -28,7 +29,8 @@ export class TabAdminPage implements OnInit {
 
   constructor(
     private backend: BackendService,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private http: HttpClient
   ) { }
 
   async ngOnInit() {
@@ -84,6 +86,27 @@ export class TabAdminPage implements OnInit {
     });
   }
 
+
+  async toggleBlock(user: any) {
+    const action = user.blocked ? 'unblock' : 'block';
+    const ok = await this.confirmAction(`Are you sure you want to ${action} ${user.username}?`);
+    if (!ok) return;
+
+    this.loadingAction = 'block-' + user.username;
+
+    const url = `https://spite-backend-v2.onrender.com/api/admin/users/${user.username}/${action}?adminUsername=${this.currentUser.username}`;
+
+    this.http.put(url, {}, { responseType: 'text' as 'json' }).subscribe({
+      next: () => {
+        user.blocked = !user.blocked;
+        this.loadingAction = null;
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.loadingAction = null;
+      }
+    });
+  }
 
   async deleteUser(user: any) {
 
