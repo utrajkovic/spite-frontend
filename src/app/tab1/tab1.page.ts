@@ -2,7 +2,7 @@ import { Component, NgZone } from '@angular/core';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent,
   IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
-  IonButton, IonIcon, IonSpinner
+  IonButton, IonIcon
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -22,7 +22,7 @@ import { BadgeService } from '../services/badge.service';
   imports: [
     CommonModule,
     IonButton, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader,
-    IonCard, IonContent, RouterLink, IonSpinner,
+    IonCard, IonContent, RouterLink,
     PageLoadingOverlayComponent
 ],
 })
@@ -46,13 +46,8 @@ export class Tab1Page {
     private badgeService: BadgeService
   ) { }
 
-  private initialized = false;
-
   ionViewWillEnter() {
-    if (!this.initialized) {
-      this.loadUserWorkouts();
-      this.initialized = true;
-    }
+    this.loadUserWorkouts();
   }
 
   async loadUserWorkouts() {

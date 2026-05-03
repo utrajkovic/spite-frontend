@@ -346,6 +346,8 @@ export class Tab3Page implements OnInit {
           role: 'confirm',
           handler: async () => {
             await Preferences.remove({ key: 'user' });
+            await Preferences.remove({ key: 'authToken' });
+            localStorage.removeItem('authToken');
             await this.router.navigateByUrl('/login', { replaceUrl: true });
           }
         }

@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import {
   IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
-  IonItem, IonLabel, IonButton, IonList, IonListHeader,
-  IonBadge, IonSpinner, AlertController
+  IonItem, IonLabel, IonButton, IonList,
+  IonBadge, AlertController
 } from '@ionic/angular/standalone';
 import { BackendService } from '../services/backend.service';
 import { Preferences } from '@capacitor/preferences';
@@ -31,8 +31,8 @@ Chart.register(...registerables);
   imports: [
     CommonModule, FormsModule, RouterModule,
     IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
-    IonItem, IonLabel, IonButton, IonList, IonListHeader,
-    IonBadge, IonSpinner,
+    IonItem, IonLabel, IonButton, IonList,
+    IonBadge,
     PageLoadingOverlayComponent
   ],
   providers: [ModalController]
@@ -326,6 +326,8 @@ export class TabProfilePage implements OnInit, OnDestroy {
           role: 'confirm',
           handler: async () => {
             await Preferences.remove({ key: 'user' });
+            await Preferences.remove({ key: 'authToken' });
+            localStorage.removeItem('authToken');
             await this.router.navigateByUrl('/login', { replaceUrl: true });
           }
         }

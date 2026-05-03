@@ -55,7 +55,7 @@ export class BackendService {
   //        ADMIN API
 
   getAllUsers(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.API_URL}/admin/users`);
+    return this.http.get<any[]>(`${this.API_URL}/admin/users?adminUsername=${this.adminUsername}`);
   }
 
   updateUserRole(username: string, newRole: string): Observable<string> {
@@ -117,9 +117,9 @@ export class BackendService {
     return this.http.post(`${this.API_URL}/share/${inviteId}/decline`, {}, { responseType: 'text' });
   }
 
-  assignWorkoutNote(workoutId: string, clientUsername: string, note: string): Observable<string> {
+  assignWorkoutNote(workoutId: string, clientUsername: string, trainerUsername: string, note: string): Observable<string> {
     return this.http.put(
-      `${this.API_URL}/workouts/assign/note?workoutId=${workoutId}&clientUsername=${clientUsername}&note=${encodeURIComponent(note)}`,
+      `${this.API_URL}/workouts/assign/note?workoutId=${workoutId}&clientUsername=${clientUsername}&trainerUsername=${trainerUsername}&note=${encodeURIComponent(note)}`,
       {},
       { responseType: 'text' }
     );

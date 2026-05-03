@@ -14,7 +14,6 @@ Chart.register(...registerables);
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonList, IonListHeader, IonButton, AlertController, LoadingController, IonBackButton, IonButtons, IonSegment, IonSegmentButton } from '@ionic/angular/standalone';
 
 import { CommonModule } from '@angular/common';
-import { IonSpinner } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 
 
@@ -28,7 +27,7 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     FormsModule,
     IonContent, IonHeader, IonTitle, IonToolbar,
-    IonItem, IonLabel, IonList, IonListHeader, IonButton, IonSpinner,
+    IonItem, IonLabel, IonList, IonListHeader, IonButton,
     IonSegment, IonSegmentButton,
     WorkoutCalendarModal
   ],
@@ -218,7 +217,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
   saveNote(workoutId: string, note: string) {
     this.http.put(
-      `https://spite-backend-v2.onrender.com/api/workouts/assign/note?workoutId=${workoutId}&clientUsername=${this.clientUsername}&note=${encodeURIComponent(note)}`,
+      `https://spite-backend-v2.onrender.com/api/workouts/assign/note?workoutId=${workoutId}&clientUsername=${this.clientUsername}&trainerUsername=${this.trainerUsername}&note=${encodeURIComponent(note)}`,
       {},
       { responseType: 'text' as 'json' }
     ).subscribe({ error: () => console.warn('Note save failed') });
@@ -254,7 +253,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
   unassignWorkout(workoutId: string) {
     const url =
-      `https://spite-backend-v2.onrender.com/api/workouts/assign?workoutId=${workoutId}&clientUsername=${this.clientUsername}`;
+      `https://spite-backend-v2.onrender.com/api/workouts/assign?workoutId=${workoutId}&clientUsername=${this.clientUsername}&assignedBy=${this.trainerUsername}`;
 
     this.http.delete(url, { responseType: 'text' as 'json' })
       .subscribe({

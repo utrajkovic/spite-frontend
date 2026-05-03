@@ -6,9 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { Preferences } from '@capacitor/preferences';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
-  IonItem, IonLabel, IonInput, IonButton
+  IonInput, IonButton
 } from '@ionic/angular/standalone';
-import { BackendService } from 'src/app/services/backend.service';
 import { AlertController } from '@ionic/angular';
 import { NotificationService } from 'src/app/services/notification.service';
 
@@ -23,8 +22,6 @@ import { NotificationService } from 'src/app/services/notification.service';
     CommonModule,
     ReactiveFormsModule,
     IonContent,
-    IonItem,
-    IonLabel,
     IonInput,
     IonButton,
     RouterModule
@@ -38,7 +35,6 @@ export class LoginPage {
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private backendService: BackendService,
     private alertCtrl: AlertController,
     private notificationService: NotificationService
   ) {
@@ -57,16 +53,24 @@ export class LoginPage {
     const credentials = this.loginForm.value;
 
     try {
-      const user: any = await this.http.post(this.backendUrl, credentials).toPromise();
+      const response: any = await this.http.post(this.backendUrl, credentials).toPromise();
+      const user = response?.user ?? response;
+      const token = response?.token ?? null;
+
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('username', user.username);
       localStorage.setItem('role', user.role);
+      if (token) {
+        localStorage.setItem('authToken', token);
+      }
       
       await Preferences.set({
         key: 'user',
         value: JSON.stringify(user)
       });
-      localStorage.setItem('user', JSON.stringify(user));
+      if (token) {
+        await Preferences.set({ key: 'authToken', value: token });
+      }
 
       this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true });
       // Inicijalizuj notifikacije u pozadini

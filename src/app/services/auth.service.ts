@@ -34,5 +34,7 @@ export class AuthService {
 
   async logout(): Promise<void> {
     await Preferences.remove({ key: 'user' });
+    await Preferences.remove({ key: 'authToken' });
+    localStorage.removeItem('authToken');
   }
 }
