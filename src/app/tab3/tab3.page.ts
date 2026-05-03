@@ -12,6 +12,7 @@ import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { LocalDataService } from '../services/local-data.service';
 import { HttpClient } from '@angular/common/http';
+import { BadgeService } from '../services/badge.service';
 import { IonModal } from '@ionic/angular/standalone';
 import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
 import { forkJoin } from 'rxjs';
@@ -110,6 +111,7 @@ export class Tab3Page implements OnInit {
     private localData: LocalDataService,
     private zone: NgZone,
     private loadingCtrl: LoadingController,
+    private badgeService: BadgeService,
     private http: HttpClient
   ) { }
 
@@ -345,6 +347,7 @@ export class Tab3Page implements OnInit {
           text: 'Logout',
           role: 'confirm',
           handler: async () => {
+            this.badgeService.stop();
             await Preferences.remove({ key: 'user' });
             await Preferences.remove({ key: 'authToken' });
             localStorage.removeItem('authToken');

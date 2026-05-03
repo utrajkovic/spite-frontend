@@ -5,12 +5,13 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Preferences } from '@capacitor/preferences';
 import { AlertController } from '@ionic/angular';
+import { BadgeService } from '../services/badge.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthInterceptor implements HttpInterceptor {
   private showingServerError = false;
 
-  constructor(private router: Router, private alertCtrl: AlertController) {}
+  constructor(private router: Router, private alertCtrl: AlertController, private badge: BadgeService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Ne interceptuj login/register
@@ -72,6 +73,7 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   async forceLogout() {
+    this.badge.stop();
     await Preferences.remove({ key: 'user' });
     await Preferences.remove({ key: 'authToken' });
     localStorage.removeItem('user');

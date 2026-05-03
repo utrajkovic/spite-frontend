@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Preferences } from '@capacitor/preferences';
 import { Observable } from 'rxjs';
 import { User } from './models';
+import { BadgeService } from './badge.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { User } from './models';
 export class AuthService {
   private readonly backendUrl = 'https://spite-backend-v2.onrender.com/api/users';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private badge: BadgeService) {}
 
   register(user: User): Observable<any> {
     return this.http.post(`${this.backendUrl}/register`, user);
@@ -33,6 +34,7 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
+    this.badge.stop();
     await Preferences.remove({ key: 'user' });
     await Preferences.remove({ key: 'authToken' });
     localStorage.removeItem('authToken');

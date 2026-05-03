@@ -325,6 +325,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
           text: 'Logout',
           role: 'confirm',
           handler: async () => {
+            this.badgeService.stop();
             await Preferences.remove({ key: 'user' });
             await Preferences.remove({ key: 'authToken' });
             localStorage.removeItem('authToken');

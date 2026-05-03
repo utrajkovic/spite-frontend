@@ -19,6 +19,10 @@ export class BadgeService {
   constructor(private http: HttpClient) {}
 
   start(username: string) {
+    if (!username) {
+      this.stop();
+      return;
+    }
     this.username = username;
     this.check();
     // Poll svake 10 sekundi
@@ -27,12 +31,22 @@ export class BadgeService {
   }
 
   stop() {
-    clearInterval(this.pollInterval);
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+      this.pollInterval = null;
+    }
+    this.username = '';
     this.hasProfileBadge$.next(false);
     this.hasWorkoutBadge$.next(false);
   }
 
   private check() {
+    const token = localStorage.getItem('authToken');
+    const user = localStorage.getItem('user');
+    if (!this.username || !token || !user) {
+      this.stop();
+      return;
+    }
     this.checkInvites();
     this.checkNewWorkouts();
   }
@@ -54,10 +68,19 @@ export class BadgeService {
             const hasNewShare = shares.some(s => !seenIds.includes(s.id));
             this.hasProfileBadge$.next(hasNewShare);
           },
-          error: () => this.hasProfileBadge$.next(false)
+          error: (err) => {
+            this.hasProfileBadge$.next(false);
+            if (err?.status === 401 || err?.status === 403) {
+              this.stop();
+            }
+          }
         });
       },
-      error: () => {}
+      error: (err) => {
+        if (err?.status === 401 || err?.status === 403) {
+          this.stop();
+        }
+      }
     });
   }
 
@@ -68,7 +91,11 @@ export class BadgeService {
         const hasNew = workouts.some(w => !seenIds.includes(w.id));
         this.hasWorkoutBadge$.next(hasNew);
       },
-      error: () => {}
+      error: (err) => {
+        if (err?.status === 401 || err?.status === 403) {
+          this.stop();
+        }
+      }
     });
   }
 

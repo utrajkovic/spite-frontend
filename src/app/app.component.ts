@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonApp, IonRouterOutlet, IonAlert } from '@ionic/angular/standalone';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { Capacitor } from '@capacitor/core';
 import { WorkoutStateService } from './services/workout-state.service';
 import { BackendService } from './services/backend.service';
 import { ThemeService } from './services/theme.service';
@@ -25,9 +26,11 @@ export class AppComponent implements OnInit, OnDestroy {
     private authInterceptor: AuthInterceptor,
     private http: HttpClient
   ) {
-    StatusBar.setOverlaysWebView({ overlay: false });
-    StatusBar.setBackgroundColor({ color: '#00111a' });
-    StatusBar.setStyle({ style: Style.Dark });
+    if (Capacitor.isNativePlatform()) {
+      StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: '#00111a' }).catch(() => {});
+      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+    }
     this.themeService.init();
   }
 
