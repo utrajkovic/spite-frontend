@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonLabel, IonInput, IonButton, IonList, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder, IonAlert, IonSelect, IonSelectOption, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonItem, IonInput, IonButton, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder } from '@ionic/angular/standalone';
 
 import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
@@ -21,12 +21,10 @@ import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loadin
   standalone: true,
   imports: [
     CommonModule, FormsModule, ReactiveFormsModule,
-    IonContent, IonHeader, IonToolbar, IonTitle,
-    IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonSearchbar, IonSpinner,
-    IonReorderGroup, IonReorder, IonAlert,
-    IonSelect, IonSelectOption,
-    IonIcon, ExerciseSettingsModalComponent,
+    IonContent,
+    IonItem, IonInput, IonButton,
+    IonSearchbar, IonSpinner,
+    IonReorderGroup, IonReorder,
     PageLoadingOverlayComponent
   ],
   providers: [ModalController]

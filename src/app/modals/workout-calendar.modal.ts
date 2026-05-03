@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalController } from '@ionic/angular';
-import { IonButton } from '@ionic/angular/standalone';
 import { WorkoutFeedbackModal } from './workout-feedback.modal';
 import { BackendService } from '../services/backend.service';
 import { FeedbackViewModal } from './feedback-view.modal';
@@ -12,7 +11,7 @@ import { FeedbackViewModal } from './feedback-view.modal';
   selector: 'workout-calendar-modal',
   templateUrl: './workout-calendar.modal.html',
   styleUrls: ['./workout-calendar.modal.scss'],
-  imports: [CommonModule, IonButton, WorkoutFeedbackModal]
+  imports: [CommonModule]
 })
 export class WorkoutCalendarModal implements OnInit, OnChanges {
 
@@ -37,6 +36,8 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
   monthNames = ['January','February','March','April','May','June',
                 'July','August','September','October','November','December'];
   dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  addingFeedbackForCompletedId = new Set<string>();
+  editingFeedbackIds = new Set<string>();
 
   constructor(private modalCtrl: ModalController, private backend: BackendService) {}
 
@@ -133,6 +134,8 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
   }
 
   async openAddFeedback(cw: any) {
+    if (!cw?.id || this.addingFeedbackForCompletedId.has(cw.id)) return;
+    this.addingFeedbackForCompletedId.add(cw.id);
     // Učitaj vežbe sa backenda
     this.backend.getWorkoutById(cw.workoutId).subscribe({
       next: async (workout: any) => {
@@ -164,6 +167,7 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
           };
           this.backend.sendWorkoutFeedback(feedbackPayload).subscribe({
             next: (saved: any) => {
+              this.addingFeedbackForCompletedId.delete(cw.id);
               this.feedbacks = [...this.feedbacks, saved];
               this.completedWorkouts = this.completedWorkouts.map(c =>
                 c.id === cw.id ? { ...c, hasFeedback: true, feedbackId: saved.id } : c
@@ -173,11 +177,17 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
               this.selectedDay = null;
               this.selectedFeedbacks = [];
               this.dataChanged.emit();
+            },
+            error: () => {
+              this.addingFeedbackForCompletedId.delete(cw.id);
             }
           });
+          return;
         }
+        this.addingFeedbackForCompletedId.delete(cw.id);
       },
       error: async () => {
+        this.addingFeedbackForCompletedId.delete(cw.id);
         // Ako ne mozemo da ucitamo vezbe, otvori prazan feedback
         const modal = await this.modalCtrl.create({
           component: WorkoutFeedbackModal,
@@ -190,6 +200,8 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
   }
 
   async openEditFeedback(fb: any) {
+    if (!fb?.id || this.editingFeedbackIds.has(fb.id)) return;
+    this.editingFeedbackIds.add(fb.id);
     const modal = await this.modalCtrl.create({
       component: WorkoutFeedbackModal,
       cssClass: 'feedback-transparent',
@@ -211,14 +223,20 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
     if (result.data) {
       this.backend.updateWorkoutFeedback(fb.id, { ...fb, exercises: result.data }).subscribe({
         next: (updated: any) => {
+          this.editingFeedbackIds.delete(fb.id);
           this.feedbacks = this.feedbacks.map(f => f.id === fb.id ? updated : f);
           this.buildFeedbackMap();
           this.selectedDay = null;
           this.selectedFeedbacks = [];
           this.dataChanged.emit();
+        },
+        error: () => {
+          this.editingFeedbackIds.delete(fb.id);
         }
       });
+      return;
     }
+    this.editingFeedbackIds.delete(fb.id);
   }
 
   async openViewFeedback(fb: any) {

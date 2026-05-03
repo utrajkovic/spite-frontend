@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
 import { BadgeService } from '../services/badge.service';
-import { DailyAgenda } from '../services/models';
+import { DailyAgenda, TrainerInbox } from '../services/models';
 
 @Component({
   selector: 'app-tab1',
@@ -33,7 +33,11 @@ export class Tab1Page {
   openNotes = new Set<string>();
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
   agenda: DailyAgenda | null = null;
+  trainerInbox: TrainerInbox | null = null;
   currentUsername = '';
+  currentRole = '';
+  checkInSubmitting = false;
+  reviewingCheckInIds = new Set<string>();
 
   toggleNote(id: string | undefined) {
     if (!id) return;
@@ -65,7 +69,13 @@ export class Tab1Page {
     }
 
     this.currentUsername = currentUser.username;
-    this.loadDailyAgenda(currentUser.username);
+    this.currentRole = currentUser.role || '';
+
+    if (this.currentRole === 'TRAINER') {
+      this.loadTrainerQuickAgenda(currentUser.username);
+    } else {
+      this.loadDailyAgenda(currentUser.username);
+    }
 
     const userWorkouts$ = this.backendService.getWorkoutsByUser(currentUser.id);
     const assignedWorkouts$ = this.http.get<Workout[]>(`${this.backendUrl}/api/workouts/client/${currentUser.username}`);
@@ -84,6 +94,17 @@ export class Tab1Page {
       });
   }
 
+  private loadTrainerQuickAgenda(username: string) {
+    this.backendService.getTrainerInbox(username).subscribe({
+      next: (inbox) => {
+        this.trainerInbox = inbox;
+      },
+      error: () => {
+        this.trainerInbox = null;
+      }
+    });
+  }
+
   private loadDailyAgenda(username: string) {
     this.backendService.getTodayAgenda(username).subscribe({
       next: (agenda) => {
@@ -91,6 +112,21 @@ export class Tab1Page {
       },
       error: () => {
         this.agenda = null;
+      }
+    });
+  }
+
+  markCheckInReviewed(id?: string) {
+    if (!id || this.reviewingCheckInIds.has(id)) return;
+    this.reviewingCheckInIds.add(id);
+    this.backendService.markCheckInReviewed(id).subscribe({
+      next: () => {
+        this.reviewingCheckInIds.delete(id);
+        this.loadTrainerQuickAgenda(this.currentUsername);
+      },
+      error: () => {
+        this.reviewingCheckInIds.delete(id);
+        this.showSimpleAlert('Failed to mark check-in as reviewed.');
       }
     });
   }
@@ -116,6 +152,7 @@ export class Tab1Page {
         {
           text: 'Submit',
           handler: (data) => {
+            this.checkInSubmitting = true;
             const payload = {
               username: this.currentUsername,
               trainerUsername: this.agenda?.trainerUsername || '',
@@ -128,16 +165,18 @@ export class Tab1Page {
 
             this.backendService.submitDailyCheckIn(payload).subscribe({
               next: () => {
+                this.checkInSubmitting = false;
                 this.showSimpleAlert('Check-in submitted.');
                 this.loadDailyAgenda(this.currentUsername);
               },
               error: (err) => {
+                this.checkInSubmitting = false;
                 const msg = typeof err?.error === 'string' ? err.error : 'Failed to submit check-in.';
                 this.showSimpleAlert(msg);
               }
             });
 
-            return false;
+            return true;
           }
         }
       ]
@@ -151,6 +190,25 @@ export class Tab1Page {
       header: 'Notification',
       message,
       buttons: ['OK'],
+      cssClass: 'custom-alert'
+    });
+    await alert.present();
+  }
+
+  async openCheckInDetails(checkIn: any) {
+    if (!checkIn) return;
+    const createdAt = checkIn.createdAt ? new Date(checkIn.createdAt).toLocaleString('sr-RS') : '-';
+    const comment = (checkIn.comment || '').trim() || 'No comment';
+    const alert = await this.alertCtrl.create({
+      header: `Check-in • ${checkIn.username || 'Client'}`,
+      message:
+        `<p><strong>Date:</strong> ${createdAt}</p>` +
+        `<p><strong>Sleep:</strong> ${checkIn.sleepHours ?? '-'}h</p>` +
+        `<p><strong>Energy:</strong> ${checkIn.energy ?? '-'}/5</p>` +
+        `<p><strong>Pain:</strong> ${checkIn.pain ?? '-'}/5</p>` +
+        `<p><strong>Weight:</strong> ${checkIn.weight ?? '-'} kg</p>` +
+        `<p><strong>Comment:</strong><br>${comment}</p>`,
+      buttons: ['Close'],
       cssClass: 'custom-alert'
     });
     await alert.present();

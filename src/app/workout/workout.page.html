@@ -9,8 +9,8 @@
   <div class="start-screen" *ngIf="!loading && !started">
     <div class="start-content">
       <div class="workout-icon"><i class="fa-solid fa-dumbbell"></i></div>
-      <h1 class="workout-title">{{ workout?.title }}</h1>
-      <p class="workout-sub" *ngIf="workout?.subtitle">{{ workout?.subtitle }}</p>
+      <h1 class="workout-title">{{ workout.title }}</h1>
+      <p class="workout-sub" *ngIf="workout.subtitle">{{ workout.subtitle }}</p>
 
       <div class="exercise-preview-list">
         <div class="preview-item" *ngFor="let item of items; let i = index">
@@ -30,13 +30,17 @@
   <!-- ACTIVE WORKOUT -->
   <div class="workout-screen" *ngIf="!loading && started">
 
+    <div class="loading-screen" *ngIf="savingFeedback">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+
     <!-- TOP BAR -->
     <div class="top-bar">
       <div class="progress-info">
         <span class="ex-counter">{{ currentIndex + 1 }} / {{ items.length }}</span>
-        <span class="set-counter">Set {{ currentSet }} of {{ currentItem?.sets }}</span>
+        <span class="set-counter">Set {{ currentSet }} of {{ currentItem.sets }}</span>
       </div>
-      <button class="finish-early-btn" (click)="finishEarly()">
+      <button class="finish-early-btn" (click)="finishEarly()" [disabled]="finishingWorkout || savingFeedback">
         <i class="fa-solid fa-flag-checkered"></i>
         Finish
       </button>
@@ -85,12 +89,12 @@
 
         <div class="ex-stats">
           <div class="stat-box">
-            <span class="stat-val">{{ currentItem?.sets }}</span>
+            <span class="stat-val">{{ currentItem.sets }}</span>
             <span class="stat-lbl">Sets</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-box">
-            <span class="stat-val">{{ currentItem?.reps }}</span>
+            <span class="stat-val">{{ currentItem.reps }}</span>
             <span class="stat-lbl">Reps</span>
           </div>
           <div class="stat-divider" *ngIf="hasSupersetForCurrent && !showingSuperset"></div>
@@ -124,24 +128,24 @@
       <div class="next-preview" *ngIf="nextMainExercise">
         <p class="next-label">Up next</p>
         <div class="next-card">
-          <video [hidden]="!nextMainExercise?.videoUrl"
-            [src]="nextMainExercise?.videoUrl"
+          <video [hidden]="!nextMainExercise.videoUrl"
+            [src]="nextMainExercise.videoUrl"
             autoplay loop [muted]="true" playsinline
             class="next-video">
           </video>
-          <span class="next-name">{{ nextMainExercise?.name }}</span>
+          <span class="next-name">{{ nextMainExercise.name }}</span>
         </div>
       </div>
     </div>
 
     <!-- BOTTOM ACTIONS -->
     <div class="bottom-actions">
-      <ion-button *ngIf="isResting" expand="block" fill="outline" class="skip-btn" (click)="skipRest()">
+      <ion-button *ngIf="isResting" expand="block" fill="outline" class="skip-btn" (click)="skipRest()" [disabled]="finishingWorkout || savingFeedback">
         Skip Rest
       </ion-button>
-      <ion-button expand="block" class="done-btn" (click)="completeSet()" [disabled]="isResting">
+      <ion-button expand="block" class="done-btn" (click)="completeSet()" [disabled]="isResting || finishingWorkout || savingFeedback">
         <i class="fa-solid fa-check" slot="start"></i>
-        Done
+        {{ savingFeedback ? 'Saving...' : 'Done' }}
       </ion-button>
     </div>
 

@@ -37,6 +37,10 @@ export class TabMessagesPage {
   conversations: string[] = [];
   trainerInbox: TrainerInbox | null = null;
   inboxLoading = false;
+  reviewAllLoading = false;
+  remindLoading = false;
+  reviewingCheckInIds = new Set<string>();
+  readingFeedbackIds = new Set<string>();
 
   newChatUsername: string = '';
   unsubscribe: any = null;
@@ -102,38 +106,63 @@ export class TabMessagesPage {
   }
 
   markCheckInReviewed(id?: string) {
-    if (!id) return;
+    if (!id || this.reviewingCheckInIds.has(id)) return;
+    this.reviewingCheckInIds.add(id);
     this.backend.markCheckInReviewed(id).subscribe({
-      next: () => this.loadTrainerInbox(),
-      error: () => this.showAlert('Unable to mark check-in as reviewed.')
+      next: () => {
+        this.reviewingCheckInIds.delete(id);
+        this.loadTrainerInbox();
+      },
+      error: () => {
+        this.reviewingCheckInIds.delete(id);
+        this.showAlert('Unable to mark check-in as reviewed.');
+      }
     });
   }
 
   markAllReviewed() {
-    if (!this.myId) return;
+    if (!this.myId || this.reviewAllLoading) return;
+    this.reviewAllLoading = true;
     this.backend.markAllCheckInsReviewed(this.myId).subscribe({
       next: async (msg) => {
+        this.reviewAllLoading = false;
         await this.showAlert(msg || 'All pending check-ins reviewed.');
         this.loadTrainerInbox();
       },
-      error: () => this.showAlert('Bulk review failed.')
+      error: () => {
+        this.reviewAllLoading = false;
+        this.showAlert('Bulk review failed.');
+      }
     });
   }
 
   sendLateReminders() {
-    if (!this.myId) return;
+    if (!this.myId || this.remindLoading) return;
+    this.remindLoading = true;
     this.backend.sendBulkLateReminders(this.myId).subscribe({
       next: async (msg) => {
+        this.remindLoading = false;
         await this.showAlert(msg || 'Reminders sent.');
       },
-      error: () => this.showAlert('Failed to send reminders.')
+      error: () => {
+        this.remindLoading = false;
+        this.showAlert('Failed to send reminders.');
+      }
     });
   }
 
   async markFeedbackRead(feedbackId: string) {
+    if (this.readingFeedbackIds.has(feedbackId)) return;
+    this.readingFeedbackIds.add(feedbackId);
     this.backend.markFeedbackReadByTrainer(feedbackId).subscribe({
-      next: () => this.loadTrainerInbox(),
-      error: () => this.showAlert('Failed to mark feedback as read.')
+      next: () => {
+        this.readingFeedbackIds.delete(feedbackId);
+        this.loadTrainerInbox();
+      },
+      error: () => {
+        this.readingFeedbackIds.delete(feedbackId);
+        this.showAlert('Failed to mark feedback as read.');
+      }
     });
   }
 
@@ -174,6 +203,25 @@ export class TabMessagesPage {
       header: 'Notification',
       message,
       buttons: ['OK'],
+      cssClass: 'custom-alert'
+    });
+    await alert.present();
+  }
+
+  async openCheckInDetails(checkIn: any) {
+    if (!checkIn) return;
+    const createdAt = checkIn.createdAt ? new Date(checkIn.createdAt).toLocaleString('sr-RS') : '-';
+    const comment = (checkIn.comment || '').trim() || 'No comment';
+    const alert = await this.alertCtrl.create({
+      header: `Check-in • ${checkIn.username || 'Client'}`,
+      message:
+        `<p><strong>Date:</strong> ${createdAt}</p>` +
+        `<p><strong>Sleep:</strong> ${checkIn.sleepHours ?? '-'}h</p>` +
+        `<p><strong>Energy:</strong> ${checkIn.energy ?? '-'}/5</p>` +
+        `<p><strong>Pain:</strong> ${checkIn.pain ?? '-'}/5</p>` +
+        `<p><strong>Weight:</strong> ${checkIn.weight ?? '-'} kg</p>` +
+        `<p><strong>Comment:</strong><br>${comment}</p>`,
+      buttons: ['Close'],
       cssClass: 'custom-alert'
     });
     await alert.present();

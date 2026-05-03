@@ -46,9 +46,12 @@
     </div>
 
     <div class="add-row" *ngIf="isTrainer">
-      <input type="number" min="0" placeholder="sec" [(ngModel)]="timestampSec" />
-      <input type="text" placeholder="Comment on technique..." [(ngModel)]="newComment" />
-      <ion-button size="small" (click)="addComment()">Add</ion-button>
+      <input type="number" min="0" placeholder="sec" [(ngModel)]="timestampSec" [disabled]="addingComment" />
+      <input type="text" placeholder="Comment on technique..." [(ngModel)]="newComment" [disabled]="addingComment" />
+      <ion-button size="small" (click)="addComment()" [disabled]="addingComment">
+        <i *ngIf="addingComment" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+        {{ addingComment ? 'Adding...' : 'Add' }}
+      </ion-button>
     </div>
   </div>
 

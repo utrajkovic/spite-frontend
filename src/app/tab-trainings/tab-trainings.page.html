@@ -26,21 +26,21 @@
 
     <!-- VIDEO -->
     <div class="video-container">
-      <video *ngIf="currentExercise?.videoUrl" [src]="currentExercise.videoUrl" autoplay loop [muted]="true" playsinline
+      <video *ngIf="currentExercise.videoUrl" [src]="currentExercise.videoUrl" autoplay loop [muted]="true" playsinline
         class="exercise-video">
       </video>
 
-      <div *ngIf="!currentExercise?.videoUrl" class="video-placeholder">
+      <div *ngIf="!currentExercise.videoUrl" class="video-placeholder">
         <p>No video available.</p>
       </div>
     </div>
 
     <!-- IME I OPIS -->
-    <h2 *ngIf="!isSupersetNow">{{ currentExercise?.name }}</h2>
+    <h2 *ngIf="!isSupersetNow">{{ currentExercise.name }}</h2>
 
-    <h2 *ngIf="isSupersetNow">Superset: {{ currentExercise?.name }}</h2>
+    <h2 *ngIf="isSupersetNow">Superset: {{ currentExercise.name }}</h2>
 
-    <p>{{ currentExercise?.description || 'No description available.' }}</p>
+    <p>{{ currentExercise.description || 'No description available.' }}</p>
 
   </div>
 

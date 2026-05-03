@@ -25,8 +25,13 @@
           <ion-label>
             <h3>Trainer: <strong>{{ invite.trainerUsername }}</strong></h3>
           </ion-label>
-          <ion-button slot="end" size="small" color="success" (click)="acceptInvite(invite)">Accept</ion-button>
-          <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineInvite(invite)">Decline</ion-button>
+          <ion-button slot="end" size="small" color="success" (click)="acceptInvite(invite)" [disabled]="pendingInviteActions.has(invite.id)">
+            <i *ngIf="pendingInviteActions.has(invite.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+            {{ pendingInviteActions.has(invite.id) ? 'Accepting...' : 'Accept' }}
+          </ion-button>
+          <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineInvite(invite)" [disabled]="pendingInviteActions.has(invite.id)">
+            {{ pendingInviteActions.has(invite.id) ? 'Working...' : 'Decline' }}
+          </ion-button>
         </ion-item>
         <ion-item *ngFor="let share of pendingShares" class="invite-item">
           <ion-label>
@@ -34,8 +39,13 @@
             <p>Type: <strong>{{ share.type }}</strong></p>
             <p *ngIf="share.itemNames && share.itemNames.length > 0">Items: <span *ngFor="let n of share.itemNames; let last = last">{{ n }}<span *ngIf="!last">, </span></span></p>
           </ion-label>
-          <ion-button slot="end" size="small" color="success" (click)="acceptShare(share)">Accept</ion-button>
-          <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineShare(share)">Decline</ion-button>
+          <ion-button slot="end" size="small" color="success" (click)="acceptShare(share)" [disabled]="pendingShareActions.has(share.id)">
+            <i *ngIf="pendingShareActions.has(share.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+            {{ pendingShareActions.has(share.id) ? 'Accepting...' : 'Accept' }}
+          </ion-button>
+          <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineShare(share)" [disabled]="pendingShareActions.has(share.id)">
+            {{ pendingShareActions.has(share.id) ? 'Working...' : 'Decline' }}
+          </ion-button>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -83,7 +93,7 @@
   </ion-card>
 
   <!-- Quick actions -->
-  <div class="quick-actions" *ngIf="stats && stats.totalWorkouts > 0">
+  <div class="quick-actions" *ngIf="hasWorkoutHistory">
     <button class="action-btn" (click)="openCalendar()">
       <i class="fa-solid fa-calendar-days"></i>
       <span>Workout Calendar</span>
@@ -132,9 +142,9 @@
     </ion-card-header>
     <ion-card-content>
       <p class="install-desc">Permanently delete your workout history and personal records.</p>
-      <ion-button expand="block" color="danger" fill="outline" (click)="clearHistory()">
+      <ion-button expand="block" color="danger" fill="outline" (click)="clearHistory()" [disabled]="clearHistoryLoading">
         <i class="fa-solid fa-trash-can" slot="start"></i>
-        Clear History & PRs
+        {{ clearHistoryLoading ? 'Clearing...' : 'Clear History & PRs' }}
       </ion-button>
     </ion-card-content>
   </ion-card>

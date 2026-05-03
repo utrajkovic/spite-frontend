@@ -46,6 +46,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
   segment: string = 'assign';
   feedbackList: any[] = [];
+  clientCheckIns: any[] = [];
   clientInfo: any = null;
   clientStats: WorkoutStats | null = null;
   clientPRs: ExercisePR[] = [];
@@ -54,8 +55,13 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
   baseUrl = 'https://spite-backend-v2.onrender.com/api/trainer';
   feedbackUrl = 'https://spite-backend-v2.onrender.com/api/feedback';
+  checkinUrl = 'https://spite-backend-v2.onrender.com/api/checkins';
 
   loading: HTMLIonLoadingElement | null = null;
+  assigningWorkoutIds = new Set<string>();
+  unassigningWorkoutIds = new Set<string>();
+  reviewingCheckInIds = new Set<string>();
+  savingNoteWorkoutIds = new Set<string>();
 
   constructor(
     private route: ActivatedRoute,
@@ -128,6 +134,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
           this.trainerWorkouts = res;
           this.loadClientWorkouts();
           this.loadFeedback();
+          this.loadClientCheckIns();
           this.loadClientInfo();
         },
         error: async () => {
@@ -164,6 +171,36 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
       });
   }
 
+  loadClientCheckIns() {
+    this.http.get<any[]>(`${this.checkinUrl}/trainer/${this.trainerUsername}?pendingOnly=false`)
+      .subscribe({
+        next: (res) => {
+          this.clientCheckIns = (res || [])
+            .filter((c: any) => c.username === this.clientUsername)
+            .sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
+        },
+        error: () => {
+          this.clientCheckIns = [];
+        }
+      });
+  }
+
+  markCheckInReviewed(id?: string) {
+    if (!id || this.reviewingCheckInIds.has(id)) return;
+    this.reviewingCheckInIds.add(id);
+    this.http.put(`${this.checkinUrl}/${id}/review`, {}, { responseType: 'text' as 'json' })
+      .subscribe({
+        next: () => {
+          this.reviewingCheckInIds.delete(id);
+          this.loadClientCheckIns();
+        },
+        error: () => {
+          this.reviewingCheckInIds.delete(id);
+          this.showAlert('Failed to mark check-in as reviewed.');
+        }
+      });
+  }
+
   loadClientInfo() {
     this.http.get<any>(`https://spite-backend-v2.onrender.com/api/users/username/${this.clientUsername}`)
       .subscribe({
@@ -173,17 +210,23 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
   }
 
   assignWorkout(workoutId: string) {
+    if (!workoutId || this.assigningWorkoutIds.has(workoutId)) return;
+    this.assigningWorkoutIds.add(workoutId);
     const url =
       `https://spite-backend-v2.onrender.com/api/workouts/assign?workoutId=${workoutId}&clientUsername=${this.clientUsername}&assignedBy=${this.trainerUsername}`;
 
     this.http.post(url, {}, { responseType: 'text' as 'json' })
       .subscribe({
         next: async () => {
+          this.assigningWorkoutIds.delete(workoutId);
           // Pitaj za napomenu nakon dodeljivanja
           this.promptNote(workoutId);
           this.loadClientWorkouts();
         },
-        error: () => this.showAlert('Error assigning workout.')
+        error: () => {
+          this.assigningWorkoutIds.delete(workoutId);
+          this.showAlert('Error assigning workout.');
+        }
       });
   }
 
@@ -216,11 +259,21 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
   }
 
   saveNote(workoutId: string, note: string) {
+    if (!workoutId || this.savingNoteWorkoutIds.has(workoutId)) return;
+    this.savingNoteWorkoutIds.add(workoutId);
     this.http.put(
       `https://spite-backend-v2.onrender.com/api/workouts/assign/note?workoutId=${workoutId}&clientUsername=${this.clientUsername}&trainerUsername=${this.trainerUsername}&note=${encodeURIComponent(note)}`,
       {},
       { responseType: 'text' as 'json' }
-    ).subscribe({ error: () => console.warn('Note save failed') });
+    ).subscribe({
+      next: () => {
+        this.savingNoteWorkoutIds.delete(workoutId);
+      },
+      error: () => {
+        this.savingNoteWorkoutIds.delete(workoutId);
+        console.warn('Note save failed');
+      }
+    });
   }
 
   async editNote(workout: any) {
@@ -252,16 +305,22 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
 
   unassignWorkout(workoutId: string) {
+    if (!workoutId || this.unassigningWorkoutIds.has(workoutId)) return;
+    this.unassigningWorkoutIds.add(workoutId);
     const url =
       `https://spite-backend-v2.onrender.com/api/workouts/assign?workoutId=${workoutId}&clientUsername=${this.clientUsername}&assignedBy=${this.trainerUsername}`;
 
     this.http.delete(url, { responseType: 'text' as 'json' })
       .subscribe({
         next: () => {
+          this.unassigningWorkoutIds.delete(workoutId);
           this.showAlert('Workout successfully removed from client.');
           this.loadClientWorkouts();
         },
-        error: () => this.showAlert('Error removing workout.')
+        error: () => {
+          this.unassigningWorkoutIds.delete(workoutId);
+          this.showAlert('Error removing workout.');
+        }
       });
   }
 
@@ -271,6 +330,25 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
       header: 'Notification',
       message,
       buttons: ['OK'],
+      cssClass: 'custom-alert'
+    });
+    await alert.present();
+  }
+
+  async openCheckInDetails(checkIn: any) {
+    if (!checkIn) return;
+    const createdAt = checkIn.createdAt ? new Date(checkIn.createdAt).toLocaleString('sr-RS') : '-';
+    const comment = (checkIn.comment || '').trim() || 'No comment';
+    const alert = await this.alertCtrl.create({
+      header: `Check-in • ${checkIn.username || this.clientUsername}`,
+      message:
+        `<p><strong>Date:</strong> ${createdAt}</p>` +
+        `<p><strong>Sleep:</strong> ${checkIn.sleepHours ?? '-'}h</p>` +
+        `<p><strong>Energy:</strong> ${checkIn.energy ?? '-'}/5</p>` +
+        `<p><strong>Pain:</strong> ${checkIn.pain ?? '-'}/5</p>` +
+        `<p><strong>Weight:</strong> ${checkIn.weight ?? '-'} kg</p>` +
+        `<p><strong>Comment:</strong><br>${comment}</p>`,
+      buttons: ['Close'],
       cssClass: 'custom-alert'
     });
     await alert.present();

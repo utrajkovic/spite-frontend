@@ -13,8 +13,8 @@ export class AuthService {
 
   constructor(private http: HttpClient, private badge: BadgeService) {}
 
-  register(user: User): Observable<any> {
-    return this.http.post(`${this.backendUrl}/register`, user);
+  register(user: User): Observable<string> {
+    return this.http.post(`${this.backendUrl}/register`, user, { responseType: 'text' });
   }
 
   login(user: User): Observable<any> {

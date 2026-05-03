@@ -18,8 +18,9 @@
         <ion-input type="password" formControlName="password" placeholder="Enter password"></ion-input>
       </div>
 
-      <ion-button expand="block" type="submit" class="submit-btn">
-        Login
+      <ion-button expand="block" type="submit" class="submit-btn" [disabled]="isLoggingIn || loginForm.invalid">
+        <i *ngIf="isLoggingIn" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+        {{ isLoggingIn ? 'Signing in...' : 'Login' }}
       </ion-button>
 
     </form>

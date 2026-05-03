@@ -4,7 +4,7 @@ import { ChatService } from '../services/chat.service';
 import { LocalDataService } from '../services/local-data.service';
 import { FormsModule } from '@angular/forms';
 
-import { IonContent, IonInput, IonButton, IonItem, IonLabel, IonList, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonInput, IonButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Location } from '@angular/common';
 
@@ -19,8 +19,7 @@ import { Location } from '@angular/common';
     FormsModule,
     IonContent,
     IonInput,
-    IonButton,
-    IonIcon
+    IonButton
   ]
 })
 export class ChatPage implements OnInit {

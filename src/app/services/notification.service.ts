@@ -32,6 +32,12 @@ export class NotificationService {
   private async initWebPush(username: string) {
     if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
 
+    const vapidKey = (environment.vapidKey || '').trim();
+    if (!vapidKey || vapidKey.includes('PLACEHOLDER') || !/^[A-Za-z0-9_-]+$/.test(vapidKey)) {
+      console.warn('Web push skipped: invalid or missing VAPID key.');
+      return;
+    }
+
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') return;
 
@@ -42,7 +48,7 @@ export class NotificationService {
       const swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
 
       const token = await getToken(messaging, {
-        vapidKey: environment.vapidKey,
+        vapidKey,
         serviceWorkerRegistration: swReg
       });
 

@@ -38,7 +38,10 @@
 
         <ion-item *ngFor="let w of trainerWorkouts" class="item-card">
           <ion-label><h3>{{ w.title }}</h3></ion-label>
-          <ion-button slot="end" size="small" (click)="assignWorkout(w.id)">Assign</ion-button>
+          <ion-button slot="end" size="small" (click)="assignWorkout(w.id)" [disabled]="assigningWorkoutIds.has(w.id)">
+            <i *ngIf="assigningWorkoutIds.has(w.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+            {{ assigningWorkoutIds.has(w.id) ? 'Assigning...' : 'Assign' }}
+          </ion-button>
         </ion-item>
       </ion-list>
     </section>
@@ -60,10 +63,13 @@
             </p>
           </ion-label>
           <ion-button fill="clear" slot="end" size="small" class="note-btn"
-            (click)="editNote(w); $event.stopPropagation()">
+            (click)="editNote(w); $event.stopPropagation()" [disabled]="savingNoteWorkoutIds.has(w.id)">
             <i class="fa-solid fa-note-sticky"></i>
           </ion-button>
-          <ion-button color="danger" slot="end" size="small" (click)="unassignWorkout(w.id)">Remove</ion-button>
+          <ion-button color="danger" slot="end" size="small" (click)="unassignWorkout(w.id)" [disabled]="unassigningWorkoutIds.has(w.id)">
+            <i *ngIf="unassigningWorkoutIds.has(w.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+            {{ unassigningWorkoutIds.has(w.id) ? 'Removing...' : 'Remove' }}
+          </ion-button>
         </ion-item>
       </ion-list>
     </section>
@@ -74,6 +80,35 @@
     <section class="section-box">
       <p class="section-label">Workout Calendar</p>
       <workout-calendar-modal [feedbacks]="feedbackList" [inline]="true"></workout-calendar-modal>
+    </section>
+
+    <section class="section-box">
+      <p class="section-label">Client Daily Check-ins</p>
+
+      <div class="checkin-empty" *ngIf="clientCheckIns.length === 0">
+        No daily check-ins submitted yet.
+      </div>
+
+      <div class="checkin-card" *ngFor="let c of clientCheckIns | slice:0:10" (click)="openCheckInDetails(c)">
+        <div class="checkin-head">
+          <span>{{ formatDate(c.createdAt || 0) }}</span>
+          <span class="checkin-state" [class.reviewed]="c.reviewed">{{ c.reviewed ? 'Reviewed' : 'Pending' }}</span>
+        </div>
+
+        <div class="checkin-grid">
+          <span>Sleep: <strong>{{ c.sleepHours }}h</strong></span>
+          <span>Energy: <strong>{{ c.energy }}/5</strong></span>
+          <span>Pain: <strong>{{ c.pain }}/5</strong></span>
+          <span *ngIf="c.weight">Weight: <strong>{{ c.weight }}kg</strong></span>
+        </div>
+
+        <p class="checkin-comment" *ngIf="c.comment">{{ c.comment }}</p>
+
+        <ion-button *ngIf="!c.reviewed" size="small" fill="outline" (click)="markCheckInReviewed(c.id); $event.stopPropagation()" [disabled]="reviewingCheckInIds.has(c.id)">
+          <i *ngIf="reviewingCheckInIds.has(c.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+          {{ reviewingCheckInIds.has(c.id) ? 'Reviewing...' : 'Mark reviewed' }}
+        </ion-button>
+      </div>
     </section>
   </ng-container>
 

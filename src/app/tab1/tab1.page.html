@@ -2,7 +2,7 @@
 
   <page-loading-overlay [active]="loading" message="Loading workouts..."></page-loading-overlay>
 
-  <div class="agenda-card" *ngIf="agenda">
+  <div class="agenda-card" *ngIf="currentRole !== 'TRAINER' && agenda">
     <div class="agenda-head">
       <h3>Daily Agenda</h3>
       <span>{{ agenda.dateKey }}</span>
@@ -19,9 +19,37 @@
       <span>{{ t.title }}</span>
     </div>
 
-    <ion-button expand="block" fill="outline" (click)="openCheckInForm()" [disabled]="agenda.checkInSubmitted">
-      {{ agenda.checkInSubmitted ? 'Check-in submitted' : 'Submit daily check-in' }}
+    <ion-button expand="block" fill="outline" (click)="openCheckInForm()" [disabled]="agenda.checkInSubmitted || checkInSubmitting">
+      <i *ngIf="checkInSubmitting" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+      {{ agenda.checkInSubmitted ? 'Check-in submitted' : (checkInSubmitting ? 'Submitting...' : 'Submit daily check-in') }}
     </ion-button>
+  </div>
+
+  <div class="agenda-card trainer-agenda" *ngIf="currentRole === 'TRAINER' && trainerInbox">
+    <div class="agenda-head">
+      <h3>Trainer Quick Agenda</h3>
+      <span>Today</span>
+    </div>
+
+    <div class="agenda-stats">
+      <div><strong>{{ trainerInbox.pendingCheckins.length }}</strong><span>Pending check-ins</span></div>
+      <div><strong>{{ trainerInbox.priorityClients.length }}</strong><span>Priority clients</span></div>
+      <div><strong>{{ trainerInbox.unreadFeedback.length }}</strong><span>Unread feedback</span></div>
+    </div>
+
+    <div class="agenda-task" *ngFor="let c of trainerInbox.pendingCheckins | slice:0:5" (click)="openCheckInDetails(c)">
+      <i class="fa-solid fa-user-check"></i>
+      <span>{{ c.username }} • sleep {{ c.sleepHours }}h • energy {{ c.energy }}/5 • pain {{ c.pain }}/5</span>
+      <ion-button size="small" fill="outline" (click)="markCheckInReviewed(c.id); $event.stopPropagation()" [disabled]="!!c.id && reviewingCheckInIds.has(c.id)">
+        <i *ngIf="!!c.id && reviewingCheckInIds.has(c.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+        {{ !!c.id && reviewingCheckInIds.has(c.id) ? 'Reviewing...' : 'Review' }}
+      </ion-button>
+    </div>
+
+    <div class="agenda-task" *ngIf="trainerInbox.pendingCheckins.length === 0">
+      <i class="fa-solid fa-circle-check"></i>
+      <span>No pending check-ins right now.</span>
+    </div>
   </div>
 
   <div class="empty-state" *ngIf="!loading && workouts.length === 0">

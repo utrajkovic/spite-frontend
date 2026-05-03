@@ -30,6 +30,7 @@ import { NotificationService } from 'src/app/services/notification.service';
 export class LoginPage {
   loginForm: FormGroup;
   readonly backendUrl = 'https://spite-backend-v2.onrender.com/api/users/login';
+  isLoggingIn = false;
 
   constructor(
     private fb: FormBuilder,
@@ -45,12 +46,15 @@ export class LoginPage {
   }
 
   async login() {
+    if (this.isLoggingIn) return;
+
     if (this.loginForm.invalid) {
       this.showAlert('Please fill in all fields.');
       return;
     }
 
     const credentials = this.loginForm.value;
+    this.isLoggingIn = true;
 
     try {
       const response: any = await this.http.post(this.backendUrl, credentials).toPromise();
@@ -79,6 +83,8 @@ export class LoginPage {
     } catch (error) {
       console.error('Login error:', error);
       this.showAlert('Invalid username or password.');
+    } finally {
+      this.isLoggingIn = false;
     }
   }
   async showAlert(msg: string) {

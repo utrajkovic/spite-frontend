@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  IonContent, IonButton, IonCard, IonCardContent,
-  IonSpinner, IonProgressBar, IonIcon
+  IonContent, IonButton,
+  IonSpinner
 } from '@ionic/angular/standalone';
 
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,9 +21,8 @@ import { WorkoutFeedbackModal } from '../modals/workout-feedback.modal';
   standalone: true,
   imports: [
     CommonModule,
-    IonContent, IonButton, IonCard, IonCardContent,
-    IonSpinner, IonProgressBar, IonIcon,
-    WorkoutFeedbackModal
+    IonContent, IonButton,
+    IonSpinner
   ],
   providers: [ModalController]
 })
@@ -51,6 +50,8 @@ export class WorkoutPage implements OnInit, OnDestroy {
 
   started = false;
   isVideoLoading = false;
+  finishingWorkout = false;
+  savingFeedback = false;
 
   circleLength = 2 * Math.PI * 45;
 
@@ -346,6 +347,8 @@ export class WorkoutPage implements OnInit, OnDestroy {
   // ==========================
 
   private async finishWorkout(early = false) {
+    if (this.finishingWorkout) return;
+    this.finishingWorkout = true;
     clearInterval(this.timer);
     this.isResting = false;
     this.workoutState.clear();
@@ -368,6 +371,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
         ? `You finished ${this.completionPercent}% of the workout. Great effort!`
         : 'Amazing job! You completed the full workout!',
       cssClass: 'custom-alert',
+      backdropDismiss: false,
       buttons: [
         {
           text: 'Skip Feedback',
@@ -420,6 +424,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
     const feedback = result.data;
 
     if (feedback) {
+      this.savingFeedback = true;
       const userId = localStorage.getItem('username') ?? JSON.parse(localStorage.getItem('user') ?? '{}').username ?? '';
       const feedbackPayload = {
         workoutId: this.workout.id!,
@@ -431,9 +436,17 @@ export class WorkoutPage implements OnInit, OnDestroy {
       };
 
       this.backend.sendWorkoutFeedback(feedbackPayload).subscribe({
-        next: () => console.log('Feedback saved'),
-        error: () => { this.workoutState.savePendingFeedback(feedbackPayload); }
+        next: () => {
+          this.savingFeedback = false;
+          this.router.navigate(['/tabs/tab1']);
+        },
+        error: () => {
+          this.savingFeedback = false;
+          this.workoutState.savePendingFeedback(feedbackPayload);
+          this.router.navigate(['/tabs/tab1']);
+        }
       });
+      return;
     }
 
     this.router.navigate(['/tabs/tab1']);

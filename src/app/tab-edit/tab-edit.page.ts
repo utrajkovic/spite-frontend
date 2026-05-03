@@ -38,8 +38,7 @@ import { ModalController } from '@ionic/angular';
     IonButtons,
     IonSpinner,
     IonSelect,
-    IonSelectOption,
-    ExerciseSettingsModalComponent
+    IonSelectOption
   ],
   providers: [ModalController]
 

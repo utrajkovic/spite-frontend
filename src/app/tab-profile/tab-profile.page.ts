@@ -55,8 +55,15 @@ export class TabProfilePage implements OnInit, OnDestroy {
   isInstalled = false;
   notificationsEnabled = false;
   notificationsSupported = 'Notification' in window;
+  pendingInviteActions = new Set<string>();
+  pendingShareActions = new Set<string>();
+  clearHistoryLoading = false;
 
   private chart: Chart | null = null;
+
+  get hasWorkoutHistory(): boolean {
+    return (this.completedWorkouts?.length || 0) > 0 || (this.feedbackHistory?.length || 0) > 0;
+  }
 
   constructor(
     private backend: BackendService,
@@ -140,21 +147,33 @@ export class TabProfilePage implements OnInit, OnDestroy {
     });
   }
   async acceptShare(share: any) {
+    if (!share?.id || this.pendingShareActions.has(share.id)) return;
+    this.pendingShareActions.add(share.id);
     this.backend.acceptShare(share.id).subscribe({
       next: () => {
+        this.pendingShareActions.delete(share.id);
         this.pendingShares = this.pendingShares.filter(s => s.id !== share.id);
         this.showAlert(`Prihvatio si deljenje od korisnika "${share.fromUsername}".`);
       },
-      error: () => this.showAlert('Greška pri prihvatanju deljenja.')
+      error: () => {
+        this.pendingShareActions.delete(share.id);
+        this.showAlert('Greška pri prihvatanju deljenja.');
+      }
     });
   }
 
   async declineShare(share: any) {
+    if (!share?.id || this.pendingShareActions.has(share.id)) return;
+    this.pendingShareActions.add(share.id);
     this.backend.declineShare(share.id).subscribe({
       next: () => {
+        this.pendingShareActions.delete(share.id);
         this.pendingShares = this.pendingShares.filter(s => s.id !== share.id);
       },
-      error: () => this.showAlert('Greška pri odbijanju deljenja.')
+      error: () => {
+        this.pendingShareActions.delete(share.id);
+        this.showAlert('Greška pri odbijanju deljenja.');
+      }
     });
   }
 
@@ -214,21 +233,33 @@ export class TabProfilePage implements OnInit, OnDestroy {
   }
 
   async acceptInvite(invite: any) {
+    if (!invite?.id || this.pendingInviteActions.has(invite.id)) return;
+    this.pendingInviteActions.add(invite.id);
     this.backend.acceptInvite(invite.id).subscribe({
       next: () => {
+        this.pendingInviteActions.delete(invite.id);
         this.pendingInvites = this.pendingInvites.filter(i => i.id !== invite.id);
         this.showAlert(`Prihvatio si pozivnicu od trenera "${invite.trainerUsername}".`);
       },
-      error: () => this.showAlert('Greška pri prihvatanju pozivnice.')
+      error: () => {
+        this.pendingInviteActions.delete(invite.id);
+        this.showAlert('Greška pri prihvatanju pozivnice.');
+      }
     });
   }
 
   async declineInvite(invite: any) {
+    if (!invite?.id || this.pendingInviteActions.has(invite.id)) return;
+    this.pendingInviteActions.add(invite.id);
     this.backend.declineInvite(invite.id).subscribe({
       next: () => {
+        this.pendingInviteActions.delete(invite.id);
         this.pendingInvites = this.pendingInvites.filter(i => i.id !== invite.id);
       },
-      error: () => this.showAlert('Greška pri odbijanju pozivnice.')
+      error: () => {
+        this.pendingInviteActions.delete(invite.id);
+        this.showAlert('Greška pri odbijanju pozivnice.');
+      }
     });
   }
 
@@ -349,8 +380,10 @@ export class TabProfilePage implements OnInit, OnDestroy {
           text: 'Clear',
           cssClass: 'alert-button-danger',
           handler: () => {
+            this.clearHistoryLoading = true;
             this.backend.clearFeedbackHistory(this.user.username).subscribe({
               next: () => {
+                this.clearHistoryLoading = false;
                 this.feedbackHistory = [];
                 this.stats = null;
                 this.prs = [];
@@ -358,7 +391,10 @@ export class TabProfilePage implements OnInit, OnDestroy {
                 this.chart = null;
                 this.showAlert('Workout history and personal records cleared.');
               },
-              error: () => this.showAlert('Error clearing history.')
+              error: () => {
+                this.clearHistoryLoading = false;
+                this.showAlert('Error clearing history.');
+              }
             });
           }
         }

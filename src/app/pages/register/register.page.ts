@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { IonicModule, AlertController } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../services/models';
 
@@ -25,12 +26,19 @@ export class RegisterPage {
   ) {
     this.registerForm = this.fb.group(
       {
-        username: ['', [Validators.required, Validators.maxLength(30)]],
+        username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(32), this.usernameValidator]],
         password: ['', [Validators.required, this.passwordValidator]],
         confirmPassword: ['', Validators.required]
       },
       { validator: this.passwordMatchValidator }
     );
+  }
+
+  usernameValidator(control: AbstractControl): ValidationErrors | null {
+    const username = (control.value || '').toString();
+    if (!username) return null;
+    const valid = /^[a-zA-Z0-9._-]+$/.test(username);
+    return valid ? null : { usernameRules: true };
   }
 
   async ngOnInit() {
@@ -94,7 +102,7 @@ export class RegisterPage {
 
     this.loading = true;
     const user: User = {
-      username: this.registerForm.value.username,
+      username: (this.registerForm.value.username || '').trim(),
       password: this.registerForm.value.password
     };
 
@@ -104,9 +112,12 @@ export class RegisterPage {
         this.showAlert('Registration successful! You can now log in.');
         this.router.navigateByUrl('/login', { replaceUrl: true });
       },
-      error: () => {
+      error: (err: HttpErrorResponse) => {
         this.loading = false;
-        this.showAlert('Username already exists or an error occurred.');
+        const msg = typeof err?.error === 'string' && err.error.trim().length
+          ? err.error
+          : 'Username already exists or an error occurred.';
+        this.showAlert(msg);
       }
     });
   }

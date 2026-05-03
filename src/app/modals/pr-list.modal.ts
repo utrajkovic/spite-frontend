@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalController } from '@ionic/angular';
-import { IonButton } from '@ionic/angular/standalone';
 import { ExercisePR } from '../services/pr.service';
 import { PRDetailModal } from './pr-detail.modal';
 
@@ -10,7 +9,7 @@ import { PRDetailModal } from './pr-detail.modal';
   selector: 'pr-list-modal',
   templateUrl: './pr-list.modal.html',
   styleUrls: ['./pr-list.modal.scss'],
-  imports: [CommonModule, IonButton],
+  imports: [CommonModule],
   providers: [ModalController]
 })
 export class PRListModal {

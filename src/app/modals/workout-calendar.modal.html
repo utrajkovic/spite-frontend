@@ -40,6 +40,9 @@
     <div class="fb-top">
       <div class="fb-icon"><i class="fa-solid fa-dumbbell"></i></div>
       <span class="fb-title">{{ fb.workoutTitle || 'Workout' }}</span>
+      <span class="no-fb-badge" *ngIf="!!username && editingFeedbackIds.has(fb.id)">
+        <i class="fa-solid fa-spinner fa-spin"></i> Saving
+      </span>
       <span class="intensity-badge"
         [class.easy]="avgIntensity(fb)==='Easy'"
         [class.normal]="avgIntensity(fb)==='Normal'"
@@ -56,7 +59,8 @@
       (click)="openAddFeedback(cw)">
       <div class="fb-icon no-fb-icon"><i class="fa-solid fa-dumbbell"></i></div>
       <span class="cw-title">{{ cw.workoutTitle }}</span>
-      <span class="no-fb-badge"><i class="fa-solid fa-plus"></i> Add Feedback</span>
+      <span class="no-fb-badge" *ngIf="!addingFeedbackForCompletedId.has(cw.id)"><i class="fa-solid fa-plus"></i> Add Feedback</span>
+      <span class="no-fb-badge" *ngIf="addingFeedbackForCompletedId.has(cw.id)"><i class="fa-solid fa-spinner fa-spin"></i> Saving</span>
     </div>
   </div>
 </div>

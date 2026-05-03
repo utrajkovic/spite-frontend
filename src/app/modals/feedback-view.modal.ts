@@ -27,6 +27,7 @@ export class FeedbackViewModal {
         newComment = '';
         me = '';
         role = '';
+        addingComment = false;
 
         constructor(
             private modalCtrl: ModalController,
@@ -65,7 +66,9 @@ export class FeedbackViewModal {
 
         addComment() {
             if (!this.isTrainer || !this.feedback?.id || !this.feedback?.userId) return;
-            if (this.timestampSec == null || this.timestampSec < 0 || !this.newComment.trim()) return;
+            if (this.addingComment || this.timestampSec == null || this.timestampSec < 0 || !this.newComment.trim()) return;
+
+            this.addingComment = true;
 
             this.backend.addVideoComment({
                 feedbackId: this.feedback.id,
@@ -76,11 +79,14 @@ export class FeedbackViewModal {
                 comment: this.newComment.trim()
             }).subscribe({
                 next: () => {
+                    this.addingComment = false;
                     this.timestampSec = null;
                     this.newComment = '';
                     this.loadComments();
                 },
-                error: () => {}
+                error: () => {
+                    this.addingComment = false;
+                }
             });
         }
 

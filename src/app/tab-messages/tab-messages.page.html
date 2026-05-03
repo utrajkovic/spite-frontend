@@ -4,8 +4,14 @@
     <div class="section-head">
       <h3>Coach Inbox</h3>
       <div class="head-actions">
-        <ion-button size="small" fill="clear" (click)="markAllReviewed()">Review all</ion-button>
-        <ion-button size="small" fill="clear" (click)="sendLateReminders()">Remind late</ion-button>
+        <ion-button size="small" fill="clear" (click)="markAllReviewed()" [disabled]="reviewAllLoading">
+          <i *ngIf="reviewAllLoading" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+          {{ reviewAllLoading ? 'Reviewing...' : 'Review all' }}
+        </ion-button>
+        <ion-button size="small" fill="clear" (click)="sendLateReminders()" [disabled]="remindLoading">
+          <i *ngIf="remindLoading" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+          {{ remindLoading ? 'Sending...' : 'Remind late' }}
+        </ion-button>
       </div>
     </div>
 
@@ -26,12 +32,15 @@
 
     <div class="sub-list" *ngIf="trainerInbox?.pendingCheckins?.length">
       <p class="sub-title">Pending check-ins</p>
-      <div class="sub-item" *ngFor="let c of trainerInbox?.pendingCheckins | slice:0:5">
+      <div class="sub-item" *ngFor="let c of trainerInbox?.pendingCheckins | slice:0:5" (click)="openCheckInDetails(c)">
         <div>
           <strong>{{ c.username }}</strong>
           <span>{{ c.sleepHours }}h sleep • energy {{ c.energy }}/5 • pain {{ c.pain }}/5</span>
         </div>
-        <ion-button size="small" fill="outline" (click)="markCheckInReviewed(c.id)">Review</ion-button>
+        <ion-button size="small" fill="outline" (click)="markCheckInReviewed(c.id); $event.stopPropagation()" [disabled]="!!c.id && reviewingCheckInIds.has(c.id)">
+          <i *ngIf="!!c.id && reviewingCheckInIds.has(c.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+          {{ !!c.id && reviewingCheckInIds.has(c.id) ? 'Reviewing...' : 'Review' }}
+        </ion-button>
       </div>
     </div>
 
