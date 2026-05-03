@@ -1,14 +1,15 @@
 import { Component, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
-  IonButton, IonContent, IonHeader, IonInput,
-  IonItem, IonLabel, IonList, IonListHeader,
-  IonTitle, IonToolbar, AlertController
+  IonButton, IonContent, IonInput,
+  AlertController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
+import { BackendService } from '../services/backend.service';
+import { PriorityClient } from '../services/models';
 
 @Component({
   selector: 'app-tab-trainer',
@@ -17,9 +18,8 @@ import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loadin
   standalone: true,
   imports: [
     CommonModule, FormsModule, RouterModule,
-    IonHeader, IonToolbar, IonTitle, IonContent,
-    IonItem, IonLabel, IonInput, IonButton,
-    IonList, IonListHeader,
+    IonContent,
+    IonInput, IonButton,
     PageLoadingOverlayComponent
 ]
 })
@@ -28,6 +28,7 @@ export class TabTrainerPage {
   trainerUsername = '';
   clientUsername = '';
   clients: { clientUsername: string }[] = [];
+  priorityClients: PriorityClient[] = [];
 
   baseUrl = 'https://spite-backend-v2.onrender.com/api/trainer';
   isLoading = false;
@@ -35,7 +36,8 @@ export class TabTrainerPage {
   constructor(
     private http: HttpClient,
     private alertCtrl: AlertController,
-    private zone: NgZone
+    private zone: NgZone,
+    private backend: BackendService
   ) {}
 
   ionViewWillEnter() {
@@ -58,6 +60,7 @@ export class TabTrainerPage {
       next: (res) => {
         this.zone.run(() => {
           this.clients = res;
+          this.loadPriorities();
           this.isLoading = false;
         });
       },
@@ -65,6 +68,26 @@ export class TabTrainerPage {
         this.isLoading = false;
         this.showAlert('❌ Greška pri učitavanju klijenata.');
       }
+    });
+  }
+
+  loadPriorities() {
+    if (!this.trainerUsername) return;
+    this.backend.getTrainerInbox(this.trainerUsername).subscribe({
+      next: (res) => {
+        this.priorityClients = (res.priorityClients || []).slice(0, 5);
+      },
+      error: () => {
+        this.priorityClients = [];
+      }
+    });
+  }
+
+  sendLateReminders() {
+    if (!this.trainerUsername) return;
+    this.backend.sendBulkLateReminders(this.trainerUsername).subscribe({
+      next: (msg) => this.showAlert(msg || 'Reminders sent.'),
+      error: () => this.showAlert('❌ Failed to send reminders.')
     });
   }
 

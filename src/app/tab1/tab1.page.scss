@@ -3,6 +3,71 @@ ion-content {
   --padding-top: var(--header-offset);
 }
 
+.agenda-card {
+  background: rgba(0, 40, 60, 0.25);
+  border: 1px solid var(--border-cyan);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.agenda-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    color: var(--color-primary);
+  }
+
+  span {
+    font-size: 11px;
+    color: var(--color-text-muted);
+  }
+}
+
+.agenda-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+
+  div {
+    border: 1px solid var(--border-cyan);
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  strong {
+    color: var(--color-primary);
+    font-size: 16px;
+  }
+
+  span {
+    color: var(--color-text-muted);
+    font-size: 11px;
+  }
+}
+
+.agenda-task {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text);
+  margin-bottom: 6px;
+
+  i {
+    color: var(--color-primary);
+    opacity: 0.8;
+  }
+}
+
 .workout-card {
   background: var(--bg-card);
   border: 1px solid var(--border-cyan);

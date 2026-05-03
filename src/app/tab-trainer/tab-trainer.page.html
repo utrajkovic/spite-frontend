@@ -35,5 +35,20 @@
       </div>
     </div>
 
+    <div class="priority-section" *ngIf="priorityClients.length">
+      <div class="priority-head">
+        <p class="section-label">Priority Queue</p>
+        <ion-button size="small" fill="clear" (click)="sendLateReminders()">Remind late</ion-button>
+      </div>
+
+      <div class="priority-card" *ngFor="let p of priorityClients">
+        <div class="left">
+          <strong>{{ p.clientUsername }}</strong>
+          <span>{{ p.daysSinceLastWorkout ?? '-' }}d inactive • {{ p.pendingCheckins }} pending • {{ p.unreadFeedback }} unread</span>
+        </div>
+        <span class="risk" [class.high]="p.risk === 'HIGH'" [class.medium]="p.risk === 'MEDIUM'">{{ p.risk }}</span>
+      </div>
+    </div>
+
   </div>
 </ion-content>

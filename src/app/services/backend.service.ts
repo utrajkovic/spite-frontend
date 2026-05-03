@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Workout, Exercise, WorkoutFeedback } from './models';
+import { Workout, Exercise, WorkoutFeedback, DailyCheckIn, DailyAgenda, TrainerInbox, VideoComment } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -151,5 +151,49 @@ export class BackendService {
   }
   clearFeedbackHistory(username: string): Observable<string> {
     return this.http.delete(`${this.API_URL}/feedback/user/${username}`, { responseType: 'text' });
+  }
+
+  markFeedbackReadByTrainer(feedbackId: string): Observable<string> {
+    return this.http.put(`${this.API_URL}/feedback/${feedbackId}/trainer-read`, {}, { responseType: 'text' });
+  }
+
+  submitDailyCheckIn(payload: DailyCheckIn): Observable<DailyCheckIn> {
+    return this.http.post<DailyCheckIn>(`${this.API_URL}/checkins`, payload);
+  }
+
+  getMyCheckIns(username: string): Observable<DailyCheckIn[]> {
+    return this.http.get<DailyCheckIn[]>(`${this.API_URL}/checkins/user/${username}`);
+  }
+
+  getTrainerCheckIns(trainerUsername: string, pendingOnly = true): Observable<DailyCheckIn[]> {
+    return this.http.get<DailyCheckIn[]>(`${this.API_URL}/checkins/trainer/${trainerUsername}?pendingOnly=${pendingOnly}`);
+  }
+
+  markCheckInReviewed(checkInId: string): Observable<string> {
+    return this.http.put(`${this.API_URL}/checkins/${checkInId}/review`, {}, { responseType: 'text' });
+  }
+
+  markAllCheckInsReviewed(trainerUsername: string): Observable<string> {
+    return this.http.put(`${this.API_URL}/checkins/trainer/${trainerUsername}/review-all`, {}, { responseType: 'text' });
+  }
+
+  getTodayAgenda(username: string): Observable<DailyAgenda> {
+    return this.http.get<DailyAgenda>(`${this.API_URL}/agenda/today/${username}`);
+  }
+
+  getTrainerInbox(trainerUsername: string): Observable<TrainerInbox> {
+    return this.http.get<TrainerInbox>(`${this.API_URL}/trainer/inbox/${trainerUsername}`);
+  }
+
+  sendBulkLateReminders(trainerUsername: string): Observable<string> {
+    return this.http.post(`${this.API_URL}/trainer/inbox/${trainerUsername}/bulk/remind-late`, {}, { responseType: 'text' });
+  }
+
+  getVideoComments(feedbackId: string): Observable<VideoComment[]> {
+    return this.http.get<VideoComment[]>(`${this.API_URL}/video-comments/feedback/${feedbackId}`);
+  }
+
+  addVideoComment(payload: VideoComment): Observable<VideoComment> {
+    return this.http.post<VideoComment>(`${this.API_URL}/video-comments`, payload);
   }
 }

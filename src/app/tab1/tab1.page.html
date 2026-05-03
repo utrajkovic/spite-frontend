@@ -2,6 +2,28 @@
 
   <page-loading-overlay [active]="loading" message="Loading workouts..."></page-loading-overlay>
 
+  <div class="agenda-card" *ngIf="agenda">
+    <div class="agenda-head">
+      <h3>Daily Agenda</h3>
+      <span>{{ agenda.dateKey }}</span>
+    </div>
+
+    <div class="agenda-stats">
+      <div><strong>{{ agenda.assignedCount }}</strong><span>Assigned</span></div>
+      <div><strong>{{ agenda.completedToday }}</strong><span>Completed today</span></div>
+      <div><strong>{{ agenda.checkInSubmitted ? 'Yes' : 'No' }}</strong><span>Check-in</span></div>
+    </div>
+
+    <div class="agenda-task" *ngFor="let t of agenda.tasks">
+      <i class="fa-solid" [class.fa-circle-check]="t.done" [class.fa-circle]="!t.done"></i>
+      <span>{{ t.title }}</span>
+    </div>
+
+    <ion-button expand="block" fill="outline" (click)="openCheckInForm()" [disabled]="agenda.checkInSubmitted">
+      {{ agenda.checkInSubmitted ? 'Check-in submitted' : 'Submit daily check-in' }}
+    </ion-button>
+  </div>
+
   <div class="empty-state" *ngIf="!loading && workouts.length === 0">
     <i class="fa-solid fa-dumbbell empty-icon"></i>
     <p>No workouts yet.</p>

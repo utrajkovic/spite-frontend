@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
 import { BadgeService } from '../services/badge.service';
+import { DailyAgenda } from '../services/models';
 
 @Component({
   selector: 'app-tab1',
@@ -31,6 +32,8 @@ export class Tab1Page {
   loading = false;
   openNotes = new Set<string>();
   readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+  agenda: DailyAgenda | null = null;
+  currentUsername = '';
 
   toggleNote(id: string | undefined) {
     if (!id) return;
@@ -61,6 +64,9 @@ export class Tab1Page {
       return;
     }
 
+    this.currentUsername = currentUser.username;
+    this.loadDailyAgenda(currentUser.username);
+
     const userWorkouts$ = this.backendService.getWorkoutsByUser(currentUser.id);
     const assignedWorkouts$ = this.http.get<Workout[]>(`${this.backendUrl}/api/workouts/client/${currentUser.username}`);
 
@@ -76,6 +82,78 @@ export class Tab1Page {
         console.error('❌ Greška pri učitavanju treninga:', err);
         this.loading = false;
       });
+  }
+
+  private loadDailyAgenda(username: string) {
+    this.backendService.getTodayAgenda(username).subscribe({
+      next: (agenda) => {
+        this.agenda = agenda;
+      },
+      error: () => {
+        this.agenda = null;
+      }
+    });
+  }
+
+  async openCheckInForm() {
+    if (!this.currentUsername || !this.agenda?.trainerUsername) {
+      this.showSimpleAlert('No trainer assigned yet. Check-in requires active trainer link.');
+      return;
+    }
+
+    const alert = await this.alertCtrl.create({
+      header: 'Daily check-in',
+      cssClass: 'custom-alert',
+      inputs: [
+        { name: 'sleepHours', type: 'number', placeholder: 'Sleep hours (0-24)' },
+        { name: 'energy', type: 'number', placeholder: 'Energy (1-5)' },
+        { name: 'pain', type: 'number', placeholder: 'Pain (1-5)' },
+        { name: 'weight', type: 'number', placeholder: 'Weight (optional)' },
+        { name: 'comment', type: 'textarea', placeholder: 'Comment (optional)' }
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Submit',
+          handler: (data) => {
+            const payload = {
+              username: this.currentUsername,
+              trainerUsername: this.agenda?.trainerUsername || '',
+              sleepHours: Number(data.sleepHours),
+              energy: Number(data.energy),
+              pain: Number(data.pain),
+              weight: data.weight ? Number(data.weight) : null,
+              comment: (data.comment || '').trim()
+            };
+
+            this.backendService.submitDailyCheckIn(payload).subscribe({
+              next: () => {
+                this.showSimpleAlert('Check-in submitted.');
+                this.loadDailyAgenda(this.currentUsername);
+              },
+              error: (err) => {
+                const msg = typeof err?.error === 'string' ? err.error : 'Failed to submit check-in.';
+                this.showSimpleAlert(msg);
+              }
+            });
+
+            return false;
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  private async showSimpleAlert(message: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Notification',
+      message,
+      buttons: ['OK'],
+      cssClass: 'custom-alert'
+    });
+    await alert.present();
   }
 
   async showWorkoutPreview(workout: Workout) {

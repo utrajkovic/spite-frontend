@@ -1,5 +1,51 @@
 <ion-content [fullscreen]="true" class="messages-page">
 
+  <div class="inbox-section" *ngIf="isTrainer">
+    <div class="section-head">
+      <h3>Coach Inbox</h3>
+      <div class="head-actions">
+        <ion-button size="small" fill="clear" (click)="markAllReviewed()">Review all</ion-button>
+        <ion-button size="small" fill="clear" (click)="sendLateReminders()">Remind late</ion-button>
+      </div>
+    </div>
+
+    <div class="mini-grid" *ngIf="trainerInbox as inbox">
+      <div class="mini-card">
+        <span class="label">Pending check-ins</span>
+        <span class="value">{{ inbox.pendingCheckins.length }}</span>
+      </div>
+      <div class="mini-card">
+        <span class="label">Unread feedback</span>
+        <span class="value">{{ inbox.unreadFeedback.length }}</span>
+      </div>
+      <div class="mini-card">
+        <span class="label">Priority clients</span>
+        <span class="value">{{ inbox.priorityClients.length }}</span>
+      </div>
+    </div>
+
+    <div class="sub-list" *ngIf="trainerInbox?.pendingCheckins?.length">
+      <p class="sub-title">Pending check-ins</p>
+      <div class="sub-item" *ngFor="let c of trainerInbox?.pendingCheckins | slice:0:5">
+        <div>
+          <strong>{{ c.username }}</strong>
+          <span>{{ c.sleepHours }}h sleep • energy {{ c.energy }}/5 • pain {{ c.pain }}/5</span>
+        </div>
+        <ion-button size="small" fill="outline" (click)="markCheckInReviewed(c.id)">Review</ion-button>
+      </div>
+    </div>
+
+    <div class="sub-list" *ngIf="trainerInbox?.priorityClients?.length">
+      <p class="sub-title">Client priority</p>
+      <div class="sub-item" *ngFor="let p of trainerInbox?.priorityClients | slice:0:5">
+        <div>
+          <strong>{{ p.clientUsername }}</strong>
+          <span>{{ p.risk }} risk • {{ p.daysSinceLastWorkout ?? '-' }} days since workout • {{ p.pendingCheckins }} pending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="new-chat-box">
     <ion-input [(ngModel)]="newChatUsername" placeholder="Start a new chat..." class="chat-input"></ion-input>
     <ion-button class="start-btn" (click)="startNewChat()">

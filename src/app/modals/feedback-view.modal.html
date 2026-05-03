@@ -37,6 +37,21 @@
 
   </div>
 
+  <div class="video-comments">
+    <h3>Timestamp comments</h3>
+
+    <div class="comment-row" *ngFor="let c of videoComments">
+      <span class="time">{{ toTime(c.timestampSec) }}</span>
+      <span class="text">{{ c.comment }}</span>
+    </div>
+
+    <div class="add-row" *ngIf="isTrainer">
+      <input type="number" min="0" placeholder="sec" [(ngModel)]="timestampSec" />
+      <input type="text" placeholder="Comment on technique..." [(ngModel)]="newComment" />
+      <ion-button size="small" (click)="addComment()">Add</ion-button>
+    </div>
+  </div>
+
   <ion-button expand="block" color="primary" (click)="dismiss()">
     Close
   </ion-button>
