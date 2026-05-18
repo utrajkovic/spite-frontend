@@ -1,0 +1,54 @@
+<ion-content [fullscreen]="true" class="admin-page">
+  <div class="admin-wrapper">
+
+    <div class="filter-row">
+      <span class="filter-label">Filter:</span>
+      <div class="filter-pills">
+        <button class="pill" [class.active]="selectedRole === 'ALL'" (click)="selectedRole='ALL'; applyFilter()">All</button>
+        <button class="pill" [class.active]="selectedRole === 'USER'" (click)="selectedRole='USER'; applyFilter()">Users</button>
+        <button class="pill" [class.active]="selectedRole === 'TRAINER'" (click)="selectedRole='TRAINER'; applyFilter()">Trainers</button>
+        <button class="pill" [class.active]="selectedRole === 'ADMIN'" (click)="selectedRole='ADMIN'; applyFilter()">Admins</button>
+      </div>
+    </div>
+
+    <div class="user-card" *ngFor="let u of filteredUsers">
+      <div class="user-header">
+        <div class="user-avatar">{{ u.username[0] | uppercase }}</div>
+        <div class="user-info">
+          <span class="username">{{ u.username }}</span>
+          <span class="role-tag" [class]="'role-' + u.role.toLowerCase()">{{ u.role }}</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <ion-button size="small" fill="outline" class="pass-btn" (click)="changePassword(u)">
+          <i class="fa-solid fa-key" slot="start"></i> Password
+        </ion-button>
+
+        <ion-button size="small" class="role-btn" (click)="changeRole(u, u.role === 'TRAINER' ? 'USER' : 'TRAINER')">
+          <ion-spinner *ngIf="loadingAction === 'role-' + u.username" name="crescent" slot="start"></ion-spinner>
+          <i class="fa-solid fa-arrows-rotate" slot="start" *ngIf="loadingAction !== 'role-' + u.username"></i>
+          {{ u.role === 'TRAINER' ? 'Demote' : 'Promote' }}
+        </ion-button>
+
+        <ion-button size="small" [color]="u.blocked ? 'success' : 'warning'" (click)="toggleBlock(u)">
+          <ion-spinner *ngIf="loadingAction === 'block-' + u.username" name="crescent" slot="start"></ion-spinner>
+          <i class="fa-solid" [class.fa-lock]="!u.blocked" [class.fa-lock-open]="u.blocked" slot="start" *ngIf="loadingAction !== 'block-' + u.username"></i>
+          {{ u.blocked ? 'Unblock' : 'Block' }}
+        </ion-button>
+
+        <ion-button size="small" color="danger" (click)="deleteUser(u)">
+          <ion-spinner *ngIf="loadingAction === 'delete-' + u.username" name="crescent" slot="start"></ion-spinner>
+          <i class="fa-solid fa-trash" slot="start" *ngIf="loadingAction !== 'delete-' + u.username"></i>
+          Delete
+        </ion-button>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredUsers.length === 0">
+      <i class="fa-solid fa-users-slash"></i>
+      <span>No users found</span>
+    </div>
+
+  </div>
+</ion-content>

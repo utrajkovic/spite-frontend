@@ -1,0 +1,34 @@
+<ion-content class="auth-page">
+  <div class="auth-wrapper">
+
+    <div class="brand">
+      <h1 class="flicker">SPITE</h1>
+      <p>Your personal fitness assistant</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="auth-form">
+
+      <div class="field">
+        <label>Username</label>
+        <ion-input formControlName="username" placeholder="Enter username"></ion-input>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <ion-input type="password" formControlName="password" placeholder="Enter password"></ion-input>
+      </div>
+
+      <ion-button expand="block" type="submit" class="submit-btn" [disabled]="isLoggingIn || loginForm.invalid">
+        <i *ngIf="isLoggingIn" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+        {{ isLoggingIn ? 'Signing in...' : 'Login' }}
+      </ion-button>
+
+    </form>
+
+    <div class="auth-footer">
+      <span>Don't have an account?</span>
+      <ion-button fill="clear" routerLink="/register" class="link-btn">Register</ion-button>
+    </div>
+
+  </div>
+</ion-content>

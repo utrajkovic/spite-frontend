@@ -1,0 +1,70 @@
+<div class="cal-modal">
+
+  <div class="cal-header">
+    <button class="nav-btn" (click)="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
+    <span class="month-label">{{ monthNames[currentMonth] }} {{ currentYear }}</span>
+    <button class="nav-btn" (click)="nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
+    <button class="close-btn" (click)="dismiss()" *ngIf="!inline"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <!-- Day names -->
+  <div class="day-names">
+    <span *ngFor="let d of dayNames">{{ d }}</span>
+  </div>
+
+  <!-- Calendar grid -->
+  <div class="cal-grid">
+    <ng-container *ngFor="let week of weeks">
+      <div *ngFor="let day of week" class="cal-cell"
+        [class.has-workout]="hasWorkout(day)"
+        [class.no-feedback]="hasNoFeedback(day)"
+        [class.today]="isToday(day)"
+        [class.selected]="isSelected(day)"
+        [class.empty]="!day"
+        (click)="selectDay(day)">
+        <span *ngIf="day">{{ getDayNumber(day) }}</span>
+        <div class="dot" *ngIf="hasWorkout(day)"></div>
+      </div>
+    </ng-container>
+  </div>
+
+<!-- Selected day detail -->
+<div class="day-detail" *ngIf="selectedDay && (selectedFeedbacks.length || completedMap[selectedDay])">
+  <p class="detail-date">{{ formatSelectedDate() }}</p>
+
+  <!-- Treninzi sa feedbackom -->
+  <div class="fb-card"
+    *ngFor="let fb of selectedFeedbacks"
+    [class.clickable]="!!username"
+    (click)="username ? openEditFeedback(fb) : openViewFeedback(fb)">
+    <div class="fb-top">
+      <div class="fb-icon"><i class="fa-solid fa-dumbbell"></i></div>
+      <span class="fb-title">{{ fb.workoutTitle || 'Workout' }}</span>
+      <span class="no-fb-badge" *ngIf="!!username && editingFeedbackIds.has(fb.id)">
+        <i class="fa-solid fa-spinner fa-spin"></i> Saving
+      </span>
+      <span class="intensity-badge"
+        [class.easy]="avgIntensity(fb)==='Easy'"
+        [class.normal]="avgIntensity(fb)==='Normal'"
+        [class.hard]="avgIntensity(fb)==='Hard'">
+        {{ avgIntensity(fb) }}
+      </span>
+      <i class="fa-solid fa-chevron-right edit-arrow" *ngIf="username"></i>
+    </div>
+  </div>
+
+  <!-- Treninzi bez feedbacka — samo za korisnika -->
+  <div *ngIf="username && completedMap[selectedDay]">
+    <div class="no-fb-card" *ngFor="let cw of completedMap[selectedDay]"
+      (click)="openAddFeedback(cw)">
+      <div class="fb-icon no-fb-icon"><i class="fa-solid fa-dumbbell"></i></div>
+      <span class="cw-title">{{ cw.workoutTitle }}</span>
+      <span class="no-fb-badge" *ngIf="!addingFeedbackForCompletedId.has(cw.id)"><i class="fa-solid fa-plus"></i> Add Feedback</span>
+      <span class="no-fb-badge" *ngIf="addingFeedbackForCompletedId.has(cw.id)"><i class="fa-solid fa-spinner fa-spin"></i> Saving</span>
+    </div>
+  </div>
+</div>
+
+<p class="hint" *ngIf="!selectedDay">Tap a highlighted day to see workout details</p>
+
+</div>

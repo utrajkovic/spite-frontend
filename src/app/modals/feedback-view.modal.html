@@ -1,0 +1,24 @@
+<div class="feedback-modal">
+
+  <h2 class="title">{{ feedback.workoutTitle || 'Workout Feedback' }}</h2>
+
+  <div class="ex-list">
+    <div class="ex-row" *ngFor="let ex of feedback.exercises">
+      <span class="ex-name">{{ ex.exerciseName }}</span>
+      <span class="ex-done">{{ ex.doneSets }}×{{ ex.doneReps }}<span *ngIf="ex.maxKg" class="ex-kg"> {{ ex.maxKg }}kg</span></span>
+      <span class="pill"
+            [class.easy]="ex.intensity === 'easy'"
+            [class.normal]="ex.intensity === 'normal'"
+            [class.hard]="ex.intensity === 'hard'">
+        {{ ex.intensity | titlecase }}
+      </span>
+    </div>
+  </div>
+
+  <div class="close-btn">
+    <ion-button expand="block" color="primary" (click)="dismiss()">
+      Close
+    </ion-button>
+  </div>
+
+</div>

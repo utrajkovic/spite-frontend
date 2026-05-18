@@ -1,0 +1,183 @@
+<ion-content #contentRef [fullscreen]="true">
+  <page-loading-overlay [active]="isLoading" message="Loading..."></page-loading-overlay>
+
+  <!-- MY EXERCISES -->
+  <section class="section-box">
+    <div class="section-header">
+      <h2>My Exercises</h2>
+      <span class="count-badge">{{ exercises.length }}</span>
+      <ion-button fill="clear" size="small" class="share-btn" (click)="startShare('exercise')" *ngIf="shareMode === 'none' && exercises.length > 0">
+        <i class="fa-solid fa-share-nodes"></i> Share
+      </ion-button>
+    </div>
+
+    <ion-searchbar
+      *ngIf="exercises.length > 5 && shareMode !== 'exercise'"
+      placeholder="Search exercises..."
+      (ionInput)="onExerciseSearch($event)"
+      class="ex-search">
+    </ion-searchbar>
+
+    <div class="empty-state" *ngIf="filteredExercises.length === 0 && !isLoading">
+      <i class="fa-solid fa-dumbbell"></i>
+      <span>{{ exerciseSearch ? 'No results' : 'No exercises yet' }}</span>
+    </div>
+
+    <div class="list-item"
+      *ngFor="let exercise of visibleExercises"
+      [class.selectable]="shareMode === 'exercise'"
+      [class.selected]="shareMode === 'exercise' && exercise.id && selectedIds.has(exercise.id)"
+      (click)="shareMode === 'exercise' ? toggleSelect(exercise.id!) : openExercisePreview(exercise)">
+      <div class="item-left">
+        <div class="item-icon"><i class="fa-solid fa-dumbbell"></i></div>
+        <span class="item-name">{{ exercise.name }}</span>
+      </div>
+      <ion-button fill="clear" class="danger-btn"
+        (click)="deleteExercise(exercise.id!); $event.stopPropagation();"
+        [disabled]="isDeleting === exercise.id"
+        *ngIf="shareMode !== 'exercise'">
+        <ion-spinner name="crescent" *ngIf="isDeleting === exercise.id"></ion-spinner>
+        <i class="fa-solid fa-trash" *ngIf="isDeleting !== exercise.id"></i>
+      </ion-button>
+      <i class="fa-solid fa-check checkmark" *ngIf="shareMode === 'exercise' && exercise.id && selectedIds.has(exercise.id)"></i>
+    </div>
+
+    <button class="show-more-btn" *ngIf="hasMoreExercises" (click)="exercisesExpanded = true && shareMode !== 'exercise'">
+      Show all {{ filteredExercises.length }} exercises
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <button class="show-more-btn" *ngIf="exercisesExpanded && filteredExercises.length > 5 && shareMode !== 'exercise'" (click)="exercisesExpanded = false">
+      Show less <i class="fa-solid fa-chevron-up"></i>
+    </button>
+
+    <!-- Share bar for exercises -->
+    <div class="share-bar" *ngIf="shareMode === 'exercise'">
+      <input class="share-input" [(ngModel)]="shareUsername" placeholder="Username to share with...">
+      <ion-button color="primary" (click)="confirmShare()" [disabled]="isSharing">
+        <ion-spinner *ngIf="isSharing" name="crescent"></ion-spinner>
+        <i class="fa-solid fa-paper-plane"></i> Share ({{ selectedIds.size }})
+      </ion-button>
+      <ion-button fill="clear" color="danger" (click)="cancelShare()" [disabled]="isSharing">
+        Cancel
+      </ion-button>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MY WORKOUTS -->
+  <section class="section-box">
+    <div class="section-header">
+      <h2>My Workouts</h2>
+      <span class="count-badge">{{ workouts.length }}</span>
+      <ion-button fill="clear" size="small" class="share-btn" (click)="startShare('workout')" *ngIf="shareMode === 'none' && workouts.length > 0">
+        <i class="fa-solid fa-share-nodes"></i> Share
+      </ion-button>
+    </div>
+
+    <div class="empty-state" *ngIf="workouts.length === 0 && !isLoading">
+      <i class="fa-solid fa-list-check"></i>
+      <span>No workouts yet</span>
+    </div>
+
+    <div class="list-item"
+      *ngFor="let workout of workouts"
+      [class.selectable]="shareMode === 'workout'"
+      [class.selected]="shareMode === 'workout' && workout.id && selectedIds.has(workout.id)"
+      (click)="shareMode === 'workout' ? toggleSelect(workout.id!) : showWorkoutDetails(workout)">
+      <div class="item-left">
+        <div class="item-icon"><i class="fa-solid fa-fire"></i></div>
+        <div class="item-text">
+          <span class="item-name">{{ workout.title }}</span>
+          <span class="item-sub" *ngIf="workout.subtitle">{{ workout.subtitle }}</span>
+        </div>
+      </div>
+      <div class="item-actions" *ngIf="shareMode !== 'workout'">
+        <ion-button fill="clear" class="edit-btn"
+          (click)="openEditWorkout(workout); $event.stopPropagation();">
+          <i class="fa-solid fa-pen"></i>
+        </ion-button>
+        <ion-button fill="clear" class="danger-btn"
+          (click)="deleteWorkout(workout.id!); $event.stopPropagation();"
+          [disabled]="isDeleting === workout.id">
+          <ion-spinner name="crescent" *ngIf="isDeleting === workout.id"></ion-spinner>
+          <i class="fa-solid fa-trash" *ngIf="isDeleting !== workout.id"></i>
+        </ion-button>
+      </div>
+      <i class="fa-solid fa-check checkmark" *ngIf="shareMode === 'workout' && workout.id && selectedIds.has(workout.id)"></i>
+    </div>
+
+    <!-- Share bar for workouts -->
+    <div class="share-bar" *ngIf="shareMode === 'workout'">
+      <input class="share-input" [(ngModel)]="shareUsername" placeholder="Username to share with...">
+      <ion-button color="primary" (click)="confirmShare()" [disabled]="isSharing">
+        <ion-spinner *ngIf="isSharing" name="crescent"></ion-spinner>
+        <i class="fa-solid fa-paper-plane"></i> Share ({{ selectedIds.size }})
+      </ion-button>
+      <ion-button fill="clear" color="danger" (click)="cancelShare()" [disabled]="isSharing">
+        Cancel
+      </ion-button>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ASSIGNED BY TRAINER -->
+  <section class="section-box" *ngIf="assignedWorkouts.length > 0">
+    <div class="section-header">
+      <h2>Assigned by Trainer</h2>
+      <span class="count-badge">{{ assignedWorkouts.length }}</span>
+    </div>
+
+    <div class="list-item" *ngFor="let w of assignedWorkouts" (click)="showWorkoutDetails(w)">
+      <div class="item-left">
+        <div class="item-icon trainer-icon"><i class="fa-solid fa-user-tie"></i></div>
+        <div class="item-text">
+          <span class="item-name">{{ w.title }}</span>
+          <span class="item-sub" *ngIf="w.subtitle">{{ w.subtitle }}</span>
+        </div>
+      </div>
+      <i class="fa-solid fa-chevron-right chevron"></i>
+    </div>
+
+    <div class="divider"></div>
+  </section>
+
+
+</ion-content>
+
+<!-- EXERCISE MODAL -->
+<ion-modal #exerciseModal class="exercise-modal" [presentingElement]="null">
+  <ng-template>
+    <div class="modal-box">
+      <h2 class="modal-title">{{ previewExercise?.name }}</h2>
+      <video [src]="previewExercise?.videoUrl" [hidden]="!previewExercise?.videoUrl"
+        autoplay loop [muted]="true" playsinline class="modal-video"></video>
+      <p class="modal-desc">{{ previewExercise?.description || 'No description' }}</p>
+      <ion-button expand="block" (click)="closeExerciseModal()">Close</ion-button>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<!-- WORKOUT MODAL -->
+<ion-modal #workoutModal class="workout-modal" [presentingElement]="null">
+  <ng-template>
+    <div class="modal-box">
+      <h2 class="modal-title">{{ previewWorkout?.title }}</h2>
+      <p class="modal-meta" *ngIf="previewWorkout?.subtitle">
+        <i class="fa-solid fa-tag"></i> {{ previewWorkout?.subtitle }}
+      </p>
+      <p class="modal-meta" *ngIf="previewWorkout?.content">
+        <i class="fa-solid fa-align-left"></i> {{ previewWorkout?.content }}
+      </p>
+      <div class="trainer-note-modal" *ngIf="previewWorkout?.note">
+        <i class="fa-solid fa-note-sticky"></i> {{ previewWorkout?.note }}
+      </div>
+      <div class="exercise-list" *ngIf="previewWorkoutExercises.length">
+        <p class="list-label">Exercises</p>
+        <div class="ex-pill" *ngFor="let ex of previewWorkoutExercises">{{ ex }}</div>
+      </div>
+      <ion-button expand="block" (click)="closeWorkoutModal()">Close</ion-button>
+    </div>
+  </ng-template>
+</ion-modal>

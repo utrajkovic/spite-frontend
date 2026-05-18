@@ -1,0 +1,704 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ */
+
+/* ============================================================
+   SPITE – DESIGN TOKENS
+   Sve boje i fontovi na jednom mestu.
+   Koristi ove varijable svuda umesto hardkodovanih vrednosti.
+   ============================================================ */
+:root {
+  /* Primarne boje */
+  --color-primary:      #00f7ff;   /* cyan – naslovi, ikonice, akcenti */
+  --color-primary-dim:  #8efcff;   /* svetliji cyan – labele, sekundarni tekst */
+  --color-text:         #e0ffff;   /* beli tekst sa cyan nijansama */
+  --color-text-muted:   #aefcff;   /* muted tekst, opisi */
+  --color-danger:       #ff4d4d;   /* crvena – brisanje, greška */
+  --color-success:      #00ffaa;   /* zelena – uspeh */
+  --color-warning:      #ffe600;   /* žuta – superset */
+
+  /* Pozadine */
+  --bg-page:            radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --bg-card:            rgba(0, 40, 60, 0.25);
+  --bg-card-hover:      rgba(0, 40, 60, 0.45);
+  --bg-input:           rgba(0, 40, 60, 0.35);
+
+  /* Borderi */
+  --border-cyan:        rgba(0, 255, 255, 0.25);
+  --border-cyan-hover:  rgba(0, 255, 255, 0.5);
+
+  /* Fontovi */
+  --font-display:       'Orbitron', sans-serif;
+  --font-body:          'Tilt Neon', cursive;
+
+  /* Padding top (zbog globalnog headera) */
+  --header-offset:      72px;
+}
+
+/* Core CSS required for Ionic components */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional utilities */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/* Dark mode */
+@import '@ionic/angular/css/palettes/dark.system.css';
+
+/* ------------------------------------------------------
+   🌐 GLOBAL CYBERPUNK ALERT
+------------------------------------------------------- */
+
+ion-alert.custom-alert {
+  --background: rgba(0, 28, 40, 0.32) !important;
+  --backdrop-opacity: 0.45;
+  --border-radius: 18px;
+  --box-shadow: 0 0 25px rgba(0, 255, 255, 0.45);
+  --width: 94%;
+  --max-width: 380px;
+  --color: var(--color-text-muted) !important;
+
+  border: 1px solid var(--border-cyan);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+
+  font-family: var(--font-display) !important;
+  letter-spacing: 0.4px;
+}
+
+ion-alert.custom-alert::part(header) {
+  color: var(--color-primary) !important;
+  font-size: 20px !important;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+  margin-bottom: 6px;
+}
+
+ion-alert.custom-alert::part(message) {
+  color: var(--color-text) !important;
+  font-size: 15px !important;
+  line-height: 1.5em;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
+}
+
+ion-alert.custom-alert::part(button) {
+  color: var(--color-primary) !important;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  background: rgba(0, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 14px;
+  transition: 0.22s ease;
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+}
+
+ion-alert.custom-alert::part(button):hover {
+  filter: brightness(1.2);
+  transform: scale(1.04);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+ion-alert,
+ion-alert::part(content),
+.alert-wrapper,
+.alert-container,
+.alert-overlay {
+  z-index: 999999 !important;
+  position: fixed !important;
+}
+
+/* ------------------------------------------------------
+   TOAST
+------------------------------------------------------- */
+
+ion-toast.custom-toast {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  --background: transparent !important;
+  --border-radius: 0;
+  --box-shadow: none;
+  backdrop-filter: none !important;
+  opacity: 1 !important;
+}
+
+ion-toast.custom-toast::part(container) {
+  all: unset;
+  display: block;
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-cyan);
+  border-radius: 16px;
+  padding: 14px 22px;
+  box-shadow: 0 0 14px rgba(0, 255, 255, 0.4);
+  backdrop-filter: blur(12px) saturate(180%);
+}
+
+ion-toast.custom-toast::part(message) {
+  all: unset;
+  display: block;
+  text-align: center;
+  color: var(--color-primary);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+}
+
+ion-toast.success-toast::part(message) {
+  color: var(--color-success);
+  text-shadow: 0 0 8px rgba(0, 255, 170, 0.6);
+}
+
+ion-toast.error-toast::part(message) {
+  color: var(--color-danger);
+  text-shadow: 0 0 8px rgba(255, 80, 80, 0.6);
+}
+
+/* ------------------------------------------------------
+   EXERCISE PREVIEW ALERT (video)
+------------------------------------------------------- */
+
+ion-alert.exercise-preview-modal {
+  --background: var(--bg-card);
+  --backdrop-opacity: 0.3;
+  --border-radius: 18px;
+  --box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  font-family: var(--font-display);
+}
+
+.exercise-preview-alert {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.exercise-preview-alert video {
+  width: 100%;
+  max-height: 40vh;
+  border-radius: 14px;
+  margin: 10px 0;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  object-fit: contain;
+}
+
+.exercise-preview-alert h3 {
+  font-family: var(--font-display);
+  color: var(--color-primary);
+  font-size: 16px;
+  margin: 8px 0 4px;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+.exercise-preview-alert p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin: 0;
+}
+
+.exercise-preview-alert .index-indicator {
+  font-size: 13px;
+  color: var(--color-primary-dim);
+  opacity: 0.8;
+  margin: 6px 0;
+}
+
+.exercise-preview-alert .nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+ion-alert.exercise-preview-modal::part(message) {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* ------------------------------------------------------
+   WORKOUT PREVIEW STYLING
+------------------------------------------------------- */
+
+.workout-details-alert {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  line-height: 1.5em;
+}
+
+.workout-details-alert h4 {
+  color: var(--color-success);
+  text-shadow: 0 0 6px rgba(0, 255, 170, 0.4);
+}
+
+.workout-details-alert p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+ion-alert.workout-preview-modal {
+  --background: var(--bg-card);
+  --backdrop-opacity: 0.3;
+  --border-radius: 18px;
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-cyan);
+}
+
+/* ------------------------------------------------------
+   LOADING OVERLAY
+------------------------------------------------------- */
+
+ion-loading.custom-loading {
+  --background: var(--bg-card);
+  --spinner-color: var(--color-primary);
+  --color: var(--color-primary);
+  --border-radius: 16px;
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-cyan);
+}
+
+/* ------------------------------------------------------
+   MODAL – TRANSPARENT FEEDBACK
+------------------------------------------------------- */
+
+ion-modal::part(content) {
+  --background: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+ion-modal::part(backdrop) {
+  background: transparent !important;
+  --backdrop-opacity: 0 !important;
+}
+
+ion-modal::part(wrapper),
+ion-modal .modal-wrapper {
+  background: transparent !important;
+  --background: transparent !important;
+}
+
+ion-modal.feedback-transparent::part(backdrop) {
+  background: rgba(0, 0, 0, 0.6) !important;
+  --backdrop-opacity: 0.6 !important;
+}
+
+ion-modal.feedback-transparent::part(content),
+ion-modal.feedback-transparent::part(wrapper) {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  top: auto !important;
+  transform: translateX(-50%) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 92vh !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 18px 18px 0 0;
+  box-shadow: none;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 600px) {
+  ion-modal.feedback-transparent::part(content),
+  ion-modal.feedback-transparent::part(wrapper) {
+    bottom: auto !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90% !important;
+    max-width: 760px !important;
+    border-radius: 18px;
+  }
+}
+
+@media (min-width: 960px) {
+  ion-modal.feedback-transparent::part(content),
+  ion-modal.feedback-transparent::part(wrapper) {
+    width: 80% !important;
+    max-width: 900px !important;
+  }
+}
+
+/* ------------------------------------------------------
+   GLOBAL SPINNER COLOR
+------------------------------------------------------- */
+
+ion-spinner {
+  color: var(--color-primary);
+}
+
+
+
+
+/* ------------------------------------------------------
+   GLOBAL TYPOGRAPHY CONSISTENCY
+------------------------------------------------------- */
+
+h2, h3 {
+  font-family: var(--font-display);
+  color: var(--color-primary);
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+  margin-bottom: 16px;
+}
+
+h3 {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* ------------------------------------------------------
+   GLOBAL ION-LABEL CONSISTENCY
+------------------------------------------------------- */
+
+ion-label {
+  color: var(--color-primary) !important;
+  font-family: var(--font-display) !important;
+}
+
+ion-list-header ion-label {
+  font-size: 15px !important;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+/* ------------------------------------------------------
+   GLOBAL ION-ITEM BORDER RESET
+------------------------------------------------------- */
+
+ion-item::part(native) {
+  --inner-border-width: 0 !important;
+  border-bottom: none !important;
+}
+
+/* ------------------------------------------------------
+   GLOBAL ION-BUTTON FONT
+------------------------------------------------------- */
+
+ion-button {
+  font-family: var(--font-display) !important;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ------------------------------------------------------
+   VIDEO TRIM MODAL
+------------------------------------------------------- */
+ion-modal.trim-modal-wrapper::part(content) {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 92%;
+  max-width: 420px;
+  max-height: 90vh;
+  border-radius: 20px;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+ion-modal.trim-modal-wrapper::part(backdrop) {
+  background: rgba(0, 0, 0, 0.7) !important;
+  --backdrop-opacity: 0.7 !important;
+}
+
+/* PR Detail Modal */
+ion-modal.pr-modal-wrapper::part(content) {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  top: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 90vh !important;
+  border-radius: 18px 18px 0 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+ion-modal.pr-modal-wrapper::part(backdrop) {
+  background: rgba(0, 0, 0, 0.65) !important;
+  --backdrop-opacity: 0.65 !important;
+}
+
+@media (min-width: 600px) {
+  ion-modal.pr-modal-wrapper::part(content) {
+    bottom: auto !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 92% !important;
+    max-width: 420px !important;
+    border-radius: 20px;
+  }
+}
+
+/* ============================================================
+   HIDE SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+ion-content::part(scroll) {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ============================================================
+   DESKTOP LAYOUT – centriran sadržaj sa praznim stranama
+   ============================================================ */
+
+@media (min-width: 768px) {
+  ion-content::part(scroll) {
+    max-width: 860px;
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (min-width: 1200px) {
+  ion-content::part(scroll) {
+    max-width: 1000px;
+  }
+}
+
+/* ============================================================
+   THEMES
+   ============================================================ */
+
+/* CYBERPUNK (default - već definisan u :root) */
+[data-theme="cyberpunk"] {
+  --color-primary:      #00f7ff;
+  --color-primary-dim:  #8efcff;
+  --color-text:         #e0ffff;
+  --color-text-muted:   #aefcff;
+  --color-danger:       #ff4d4d;
+  --color-success:      #00ffaa;
+  --color-warning:      #ffe600;
+  --bg-page:            radial-gradient(circle at top, #00111a 0%, #000000 100%);
+  --bg-card:            rgba(0, 40, 60, 0.25);
+  --bg-card-hover:      rgba(0, 40, 60, 0.45);
+  --bg-input:           rgba(0, 40, 60, 0.35);
+  --border-cyan:        rgba(0, 255, 255, 0.25);
+  --border-cyan-hover:  rgba(0, 255, 255, 0.5);
+  --font-display:       'Orbitron', sans-serif;
+  --font-body:          'Tilt Neon', cursive;
+}
+
+/* DARK */
+[data-theme="dark"] {
+  --color-primary:      #a78bfa;
+  --color-primary-dim:  #c4b5fd;
+  --color-text:         #f1f0f5;
+  --color-text-muted:   #c4b5fd;
+  --color-danger:       #f87171;
+  --color-success:      #34d399;
+  --color-warning:      #fbbf24;
+  --bg-page:            linear-gradient(160deg, #0f0f1a 0%, #1a1a2e 100%);
+  --bg-card:            rgba(30, 30, 50, 0.6);
+  --bg-card-hover:      rgba(40, 40, 65, 0.8);
+  --bg-input:           rgba(30, 30, 50, 0.7);
+  --border-cyan:        rgba(167, 139, 250, 0.2);
+  --border-cyan-hover:  rgba(167, 139, 250, 0.45);
+  --font-display:       'Orbitron', sans-serif;
+  --font-body:          'Tilt Neon', cursive;
+}
+
+/* LIGHT */
+[data-theme="light"] {
+  --color-primary:      #6d28d9;
+  --color-primary-dim:  #7c3aed;
+  --color-text:         #1e1b4b;
+  --color-text-muted:   #4c1d95;
+  --color-danger:       #dc2626;
+  --color-success:      #059669;
+  --color-warning:      #d97706;
+  --bg-page:            linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%);
+  --bg-card:            rgba(255, 255, 255, 0.75);
+  --bg-card-hover:      rgba(255, 255, 255, 0.95);
+  --bg-input:           rgba(255, 255, 255, 0.8);
+  --border-cyan:        rgba(109, 40, 217, 0.2);
+  --border-cyan-hover:  rgba(109, 40, 217, 0.45);
+  --font-display:       'Orbitron', sans-serif;
+  --font-body:          'Tilt Neon', cursive;
+}
+
+/* Light theme overrides za Ionic komponente */
+[data-theme="light"] ion-content {
+  --background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%) !important;
+  color: #1e1b4b;
+}
+
+[data-theme="light"] ion-toolbar {
+  --background: rgba(245, 243, 255, 0.9) !important;
+}
+
+[data-theme="light"] .glass-tab-bar {
+  background: rgba(245, 243, 255, 0.92) !important;
+  --background: rgba(245, 243, 255, 0.92) !important;
+  border-top-color: rgba(109, 40, 217, 0.15) !important;
+}
+
+[data-theme="light"] ion-tab-button {
+  --color: rgba(109, 40, 217, 0.4);
+  --color-selected: #6d28d9;
+}
+
+[data-theme="light"] .workout-title {
+  color: #6d28d9 !important;
+  text-shadow: 0 0 10px rgba(109, 40, 217, 0.3) !important;
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] ion-content {
+  --background: linear-gradient(160deg, #0f0f1a 0%, #1a1a2e 100%) !important;
+}
+
+[data-theme="dark"] ion-toolbar {
+  --background: rgba(15, 15, 26, 0.9) !important;
+}
+
+[data-theme="dark"] .glass-tab-bar {
+  background: rgba(15, 15, 26, 0.92) !important;
+  --background: rgba(15, 15, 26, 0.92) !important;
+  border-top-color: rgba(167, 139, 250, 0.15) !important;
+}
+
+[data-theme="dark"] ion-tab-button {
+  --color: rgba(167, 139, 250, 0.35);
+  --color-selected: #a78bfa;
+}
+
+[data-theme="dark"] .workout-title {
+  color: #a78bfa !important;
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.4) !important;
+}
+
+/* PR List Modal */
+ion-modal.pr-list-wrapper::part(content) {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  top: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 90vh !important;
+  height: auto !important;
+  border-radius: 18px 18px 0 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+ion-modal.pr-list-wrapper::part(backdrop) {
+  background: rgba(0,0,0,0.65) !important;
+  --backdrop-opacity: 0.65 !important;
+}
+
+@media (min-width: 600px) {
+  ion-modal.pr-list-wrapper::part(content) {
+    bottom: auto !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 92% !important;
+    max-width: 420px !important;
+    max-height: 85vh !important;
+    height: auto !important;
+    border-radius: 20px;
+    overflow: visible !important;
+  }
+}
+
+ion-modal.pr-list-wrapper::part(backdrop) {
+  background: rgba(0,0,0,0.65) !important;
+  --backdrop-opacity: 0.65 !important;
+}
+
+@media (min-width: 600px) {
+  ion-modal.pr-list-wrapper::part(content) {
+    bottom: auto !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 92% !important;
+    max-width: 420px !important;
+    border-radius: 20px;
+  }
+}
+
+/* Calendar Modal */
+ion-modal.calendar-wrapper::part(content) {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  top: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 90vh !important;
+  border-radius: 18px 18px 0 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+ion-modal.calendar-wrapper::part(backdrop) {
+  background: rgba(0,0,0,0.65) !important;
+  --backdrop-opacity: 0.65 !important;
+}
+
+@media (min-width: 600px) {
+  ion-modal.calendar-wrapper::part(content) {
+    bottom: auto !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 94% !important;
+    max-width: 440px !important;
+    border-radius: 20px;
+  }
+}

@@ -1,0 +1,29 @@
+<ion-content [fullscreen]="true" class="messages-page">
+
+  <div class="new-chat-box">
+    <ion-input [(ngModel)]="newChatUsername" placeholder="Start a new chat..." class="chat-input"></ion-input>
+    <ion-button class="start-btn" (click)="startNewChat()">
+      <i class="fa-solid fa-paper-plane"></i>
+    </ion-button>
+  </div>
+
+  <div class="empty-state" *ngIf="conversations.length === 0">
+    <i class="fa-solid fa-message"></i>
+    <span>No conversations yet</span>
+  </div>
+
+  <div class="chat-list">
+    <div *ngFor="let user of conversations" class="chat-item" (click)="openChat(user)">
+      <div class="avatar-wrapper">
+        <div class="avatar">{{ user[0] | uppercase }}</div>
+        <div *ngIf="hasUnread(user)" class="badge">!</div>
+      </div>
+      <div class="chat-meta">
+        <span class="username">{{ user }}</span>
+        <span class="tap-hint">Tap to open</span>
+      </div>
+      <i class="fa-solid fa-chevron-right chevron"></i>
+    </div>
+  </div>
+
+</ion-content>

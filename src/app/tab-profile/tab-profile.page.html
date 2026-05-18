@@ -1,0 +1,159 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <page-loading-overlay *ngIf="loading" [active]="loading" message="Loading profile..."></page-loading-overlay>
+
+  <!-- User info + trainer info -->
+  <ion-card class="profile-card" *ngIf="user">
+    <ion-card-header>
+      <div class="avatar"><i class="fa-solid fa-user-circle"></i></div>
+      <ion-card-title>{{ user.username }}</ion-card-title>
+      <p class="role-badge">{{ user.role }}</p>
+    </ion-card-header>
+    <ion-card-content class="info-grid">
+      <div class="info-item">
+        <i class="fa-solid fa-dumbbell info-icon"></i>
+        <div>
+          <span class="info-label">Workouts</span>
+          <span class="info-value">{{ completedWorkouts.length }}</span>
+        </div>
+      </div>
+      <div class="info-item" *ngIf="trainerName">
+        <i class="fa-solid fa-user-shield info-icon trainer-color"></i>
+        <div>
+          <span class="info-label">Trainer</span>
+          <span class="info-value trainer-color">{{ trainerName }}</span>
+        </div>
+      </div>
+      <div class="info-item" *ngIf="!trainerName && user.role === 'USER'">
+        <i class="fa-solid fa-user-shield info-icon dim"></i>
+        <div>
+          <span class="info-label">Trainer</span>
+          <span class="info-value dim">No trainer linked</span>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="fa-solid fa-calendar-check info-icon"></i>
+        <div>
+          <span class="info-label">Member since</span>
+          <span class="info-value">{{ memberSince }}</span>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Pending invites -->
+  <ion-card *ngIf="pendingInvites.length > 0 || pendingShares.length > 0" class="invite-card">
+    <ion-card-header>
+      <ion-card-title>
+        <i class="fa-solid fa-envelope"></i>
+        Invites
+        <ion-badge color="warning">{{ pendingInvites.length + pendingShares.length }}</ion-badge>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item *ngFor="let invite of pendingInvites" class="invite-item">
+          <ion-label>
+            <h3>Trainer: <strong>{{ invite.trainerUsername }}</strong></h3>
+          </ion-label>
+          <ion-button slot="end" size="small" color="success" (click)="acceptInvite(invite)" [disabled]="pendingInviteActions.has(invite.id)">
+            <i *ngIf="pendingInviteActions.has(invite.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+            {{ pendingInviteActions.has(invite.id) ? 'Accepting...' : 'Accept' }}
+          </ion-button>
+          <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineInvite(invite)" [disabled]="pendingInviteActions.has(invite.id)">
+            {{ pendingInviteActions.has(invite.id) ? 'Working...' : 'Decline' }}
+          </ion-button>
+        </ion-item>
+        <ion-item *ngFor="let share of pendingShares" class="invite-item">
+          <ion-label>
+            <h3>Share from: <strong>{{ share.fromUsername }}</strong></h3>
+            <p>Type: <strong>{{ share.type }}</strong></p>
+            <p *ngIf="share.itemNames && share.itemNames.length > 0">Items: <span *ngFor="let n of share.itemNames; let last = last">{{ n }}<span *ngIf="!last">, </span></span></p>
+          </ion-label>
+          <ion-button slot="end" size="small" color="success" (click)="acceptShare(share)" [disabled]="pendingShareActions.has(share.id)">
+            <i *ngIf="pendingShareActions.has(share.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+            {{ pendingShareActions.has(share.id) ? 'Accepting...' : 'Accept' }}
+          </ion-button>
+          <ion-button slot="end" size="small" color="danger" fill="outline" (click)="declineShare(share)" [disabled]="pendingShareActions.has(share.id)">
+            {{ pendingShareActions.has(share.id) ? 'Working...' : 'Decline' }}
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Workout Calendar INLINE -->
+  <ion-card class="calendar-card" *ngIf="!loading">
+    <ion-card-header>
+      <ion-card-title><i class="fa-solid fa-calendar-days"></i> Workout Calendar</ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="calendar-content">
+      <workout-calendar-modal
+        [inline]="true"
+        [feedbacks]="feedbackHistory"
+        [completedWorkouts]="completedWorkouts"
+        [username]="user?.username || ''"
+        (dataChanged)="loadData()">
+      </workout-calendar-modal>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Personal Records -->
+  <div class="quick-actions" *ngIf="prs.length > 0">
+    <button class="action-btn" (click)="openPRList()">
+      <i class="fa-solid fa-trophy"></i>
+      <span>Personal Records <span class="badge-count">{{ prs.length }}</span></span>
+      <i class="fa-solid fa-chevron-right arrow"></i>
+    </button>
+  </div>
+
+  <!-- Install app -->
+  <ion-card class="install-card" *ngIf="!isInstalled && (installPrompt || isIos)">
+    <ion-card-header>
+      <ion-card-title><i class="fa-solid fa-mobile-screen"></i> Install App</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="install-desc">Add Spite to your home screen for a better experience.</p>
+      <ion-button expand="block" (click)="installApp()" *ngIf="installPrompt">
+        <i class="fa-solid fa-download" slot="start"></i> Add to Home Screen
+      </ion-button>
+      <ion-button expand="block" fill="outline" (click)="showIosInstallGuide()" *ngIf="isIos && !installPrompt">
+        <i class="fa-brands fa-apple" slot="start"></i> How to install on iOS
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Notifications -->
+  <ion-card class="notif-card" *ngIf="notificationsSupported && !notificationsEnabled">
+    <ion-card-header>
+      <ion-card-title><i class="fa-solid fa-bell"></i> Notifications</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="install-desc">Enable notifications for new workouts, invites and messages.</p>
+      <ion-button expand="block" (click)="enableNotifications()">
+        <i class="fa-solid fa-bell" slot="start"></i> Enable Notifications
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Danger zone — extra spacing and separated -->
+  <div class="danger-zone">
+    <p class="danger-zone-title"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</p>
+    <ion-card class="danger-card">
+      <ion-card-content>
+        <p class="install-desc">Permanently delete your workout history and personal records. This cannot be undone.</p>
+        <ion-button expand="block" color="danger" fill="outline" (click)="clearHistory()" [disabled]="clearHistoryLoading">
+          <i class="fa-solid fa-trash-can" slot="start"></i>
+          {{ clearHistoryLoading ? 'Clearing...' : 'Clear History & PRs' }}
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- LOGOUT -->
+  <ion-button color="danger" expand="block" class="logout-btn" (click)="logout()">
+    <i class="fa-solid fa-right-from-bracket" slot="start"></i>
+    Logout
+  </ion-button>
+
+</ion-content>

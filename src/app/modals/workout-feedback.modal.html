@@ -1,0 +1,49 @@
+<div class="feedback-modal">
+
+    <h2 class="title">Workout Feedback</h2>
+    <p class="subtitle">How did the workout go?</p>
+
+    <div class="table-header">
+        <div class="col ex">Exercise</div>
+        <div class="col sr">Sets × Reps</div>
+        <div class="col done">Done</div>
+        <div class="col rate">Difficulty</div>
+    </div>
+
+    <div class="table-row mobile-row" *ngFor="let f of feedback; let i = index">
+
+        <div class="line-1">
+            <span class="ex-name">{{ f.exerciseName }}</span>
+            <span class="ex-expected">{{ f.sets }}×{{ f.reps }}</span>
+        </div>
+
+        <div class="line-2">
+            <div class="done-box">
+                <input type="number" inputmode="numeric" pattern="[0-9]*" [(ngModel)]="f.doneSets" class="mini-input">
+                ×
+                <input type="number" inputmode="numeric" pattern="[0-9]*" [(ngModel)]="f.doneReps" class="mini-input">
+            </div>
+
+            <div class="kg-box">
+                <input type="number" inputmode="decimal" pattern="[0-9.]*" [(ngModel)]="f.maxKg" class="mini-input" placeholder="kg">
+            </div>
+        </div>
+
+        <div class="difficulty mobile-difficulty">
+            <button class="pill" [class.active]="f.intensity==='easy'" (click)="setIntensity(i,'easy')">Easy</button>
+            <button class="pill" [class.active]="f.intensity==='normal'" (click)="setIntensity(i,'normal')">Normal</button>
+            <button class="pill" [class.active]="f.intensity==='hard'" (click)="setIntensity(i,'hard')">Hard</button>
+        </div>
+
+    </div>
+
+    <div class="modal-actions">
+        <ion-button expand="block" fill="outline" color="medium" class="skip-btn" (click)="skip()">
+            Skip
+        </ion-button>
+        <ion-button expand="block" color="success" class="send-btn" (click)="finish()">
+            Send Feedback
+        </ion-button>
+    </div>
+
+</div>

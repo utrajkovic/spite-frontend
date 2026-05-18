@@ -1,0 +1,33 @@
+<div class="pr-list-modal">
+  <div class="modal-header">
+    <h2><i class="fa-solid fa-trophy"></i> Personal Records</h2>
+    <button class="close-btn" (click)="dismiss()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <div class="pr-list">
+    <div class="pr-item" *ngFor="let pr of prs" (click)="openPR(pr)">
+      <div class="pr-left">
+        <div class="pr-icon-wrap"><i class="fa-solid fa-dumbbell"></i></div>
+        <div class="pr-info">
+          <span class="pr-name">{{ pr.exerciseName }}</span>
+          <span class="pr-sessions">{{ pr.history.length }} sessions</span>
+        </div>
+      </div>
+      <div class="pr-right">
+        <span class="pr-val">{{ pr.currentRecord }}{{ pr.unit }}</span>
+        <i class="fa-solid trend-icon"
+          [class.fa-arrow-trend-up]="pr.trend === 'up'"
+          [class.fa-arrow-trend-down]="pr.trend === 'down'"
+          [class.fa-minus]="pr.trend === 'same'"
+          [class.trend-up]="pr.trend === 'up'"
+          [class.trend-down]="pr.trend === 'down'"
+          [class.trend-same]="pr.trend === 'same'">
+        </i>
+      </div>
+    </div>
+
+    <p class="empty" *ngIf="prs.length === 0">No records yet.</p>
+  </div>
+</div>

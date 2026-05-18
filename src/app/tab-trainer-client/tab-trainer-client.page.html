@@ -1,0 +1,193 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab-trainer"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ clientUsername }}</ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="segment" (ionChange)="onSegmentChange()">
+      <ion-segment-button value="assign">
+        <ion-label>Assign</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="logs">
+        <ion-label>Logs</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="info">
+        <ion-label>Info</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="profile">
+        <ion-label>Profile</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- ASSIGN -->
+  <ng-container *ngIf="segment === 'assign'">
+    <section class="section-box">
+      <ion-list lines="none">
+        <ion-list-header><ion-label>My trainings</ion-label></ion-list-header>
+
+        <ion-item *ngIf="trainerWorkouts.length === 0">
+          <ion-label>No created trainings</ion-label>
+        </ion-item>
+
+        <ion-item *ngFor="let w of trainerWorkouts" class="item-card">
+          <ion-label><h3>{{ w.title }}</h3></ion-label>
+          <ion-button slot="end" size="small" (click)="assignWorkout(w.id)" [disabled]="assigningWorkoutIds.has(w.id)">
+            <i *ngIf="assigningWorkoutIds.has(w.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+            {{ assigningWorkoutIds.has(w.id) ? 'Assigning...' : 'Assign' }}
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </section>
+
+    <section class="section-box">
+      <ion-list lines="none">
+        <ion-list-header><ion-label>Client trainings</ion-label></ion-list-header>
+
+        <ion-item *ngIf="clientWorkouts.length === 0">
+          <ion-label>No assigned workouts</ion-label>
+        </ion-item>
+
+        <ion-item *ngFor="let w of clientWorkouts" class="item-card">
+          <ion-label>
+            <h3>{{ w.title }}</h3>
+            <p>{{ w.subtitle || 'No category' }}</p>
+            <p class="workout-note" *ngIf="w.note">
+              <i class="fa-solid fa-note-sticky"></i> {{ w.note }}
+            </p>
+          </ion-label>
+          <ion-button fill="clear" slot="end" size="small" class="note-btn"
+            (click)="editNote(w); $event.stopPropagation()" [disabled]="savingNoteWorkoutIds.has(w.id)">
+            <i class="fa-solid fa-note-sticky"></i>
+          </ion-button>
+          <ion-button color="danger" slot="end" size="small" (click)="unassignWorkout(w.id)" [disabled]="unassigningWorkoutIds.has(w.id)">
+            <i *ngIf="unassigningWorkoutIds.has(w.id)" class="fa-solid fa-spinner fa-spin" slot="start"></i>
+            {{ unassigningWorkoutIds.has(w.id) ? 'Removing...' : 'Remove' }}
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </section>
+  </ng-container>
+
+  <!-- INFO -->
+  <ng-container *ngIf="segment === 'info'">
+    <section class="section-box">
+      <p class="section-label">Workout Calendar</p>
+      <workout-calendar-modal [feedbacks]="feedbackList" [inline]="true"></workout-calendar-modal>
+    </section>
+  </ng-container>
+
+  <!-- LOGS -->
+  <ng-container *ngIf="segment === 'logs'">
+    <section class="section-box" *ngIf="clientPRs.length === 0">
+      <p class="empty-stats">No exercise records yet. Client needs to complete workouts with kg/reps data.</p>
+    </section>
+
+    <section class="section-box" *ngIf="clientPRs.length > 0">
+      <p class="stats-section-label">Personal Records</p>
+      <div class="pr-card" *ngFor="let pr of clientPRs" (click)="openPR(pr)">
+        <div class="pr-left">
+          <div class="pr-icon-wrap"><i class="fa-solid fa-dumbbell"></i></div>
+          <div class="pr-info">
+            <span class="pr-name">{{ pr.exerciseName }}</span>
+            <span class="pr-sessions">{{ pr.history.length }} sessions</span>
+          </div>
+        </div>
+        <div class="pr-right">
+          <span class="pr-val">{{ pr.currentRecord }}{{ pr.unit }}</span>
+          <i class="fa-solid trend-icon"
+            [class.fa-arrow-trend-up]="pr.trend === 'up'"
+            [class.fa-arrow-trend-down]="pr.trend === 'down'"
+            [class.fa-minus]="pr.trend === 'same'"
+            [class.trend-up]="pr.trend === 'up'"
+            [class.trend-down]="pr.trend === 'down'"
+            [class.trend-same]="pr.trend === 'same'">
+          </i>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+
+  <!-- PROFILE -->
+  <ng-container *ngIf="segment === 'profile'">
+    <section class="section-box">
+      <div class="client-profile-header">
+        <i class="fa-solid fa-user-circle profile-avatar"></i>
+        <h2>{{ clientUsername }}</h2>
+        <p class="role-label" *ngIf="clientInfo">{{ clientInfo.role }}</p>
+      </div>
+    </section>
+
+    <section class="section-box" *ngIf="clientStats && clientStats.totalWorkouts > 0">
+      <p class="stats-section-label">Progress Overview</p>
+      <div class="stats-row">
+        <div class="stat-pill">
+          <span class="stat-val">{{ clientStats.totalWorkouts }}</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val">{{ clientStats.thisWeek }}</span>
+          <span class="stat-label">This week</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val">{{ clientStats.streak }}</span>
+          <span class="stat-label">Streak</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val">{{ clientStats.avgIntensity }}</span>
+          <span class="stat-label">Avg intensity</span>
+        </div>
+      </div>
+
+      <p class="chart-label">Workouts per week</p>
+      <div class="chart-wrapper">
+        <canvas #clientChartCanvas></canvas>
+      </div>
+
+      <div *ngIf="clientStats.topExercises.length > 0">
+        <p class="chart-label">Most trained</p>
+        <div class="top-ex-list">
+          <div class="top-ex-item" *ngFor="let ex of clientStats.topExercises; let i = index">
+            <span class="ex-rank">#{{ i + 1 }}</span>
+            <span class="ex-name">{{ ex.name }}</span>
+            <span class="ex-count">{{ ex.count }}×</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-box" *ngIf="!clientStats || clientStats.totalWorkouts === 0">
+      <p class="empty-stats">Client hasn't completed any workouts yet.</p>
+    </section>
+
+    <section class="section-box">
+      <ion-list lines="none">
+        <ion-list-header><ion-label>Workout History</ion-label></ion-list-header>
+
+        <ion-item *ngIf="feedbackList.length === 0">
+          <ion-label>No completed workouts</ion-label>
+        </ion-item>
+
+        <ion-item *ngFor="let fb of feedbackList" detail (click)="openFeedback(fb)" class="fb-card">
+          <ion-label>
+            <div class="fb-header">
+              <h3>{{ getWorkoutName(fb) }}</h3>
+              <span class="workout-name">{{ formatDate(fb.timestamp) }}</span>
+            </div>
+            <div class="fb-meta">
+              <span class="meta-pill">{{ fb.exercises?.length || 0 }} exercises</span>
+              <span class="meta-pill time-pill">{{ avgIntensity(fb) }}</span>
+            </div>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </section>
+  </ng-container>
+
+</ion-content>
