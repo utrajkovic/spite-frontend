@@ -24,7 +24,7 @@
           <span class="info-value trainer-color">{{ trainerName }}</span>
         </div>
       </div>
-      <div class="info-item" *ngIf="!trainerName && user.role === 'USER'">
+      <div class="info-item" *ngIf="!trainerName && (user.role === 'USER' || user.role === 'ADMIN')">
         <i class="fa-solid fa-user-shield info-icon dim"></i>
         <div>
           <span class="info-label">Trainer</span>
@@ -82,21 +82,109 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Workout Calendar INLINE -->
-  <ion-card class="calendar-card" *ngIf="!loading">
-    <ion-card-header>
-      <ion-card-title><i class="fa-solid fa-calendar-days"></i> Workout Calendar</ion-card-title>
-    </ion-card-header>
-    <ion-card-content class="calendar-content">
-      <workout-calendar-modal
-        [inline]="true"
-        [feedbacks]="feedbackHistory"
-        [completedWorkouts]="completedWorkouts"
-        [username]="user?.username || ''"
-        (dataChanged)="loadData()">
-      </workout-calendar-modal>
-    </ion-card-content>
-  </ion-card>
+<!-- Swipe Cards: Calendar + Trainer Zone -->
+  <div class="swipe-container" *ngIf="!loading">
+    <div class="swipe-header">
+      <button class="swipe-arrow" (click)="prevCard()" [class.disabled]="cardIndex === 0">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <span class="swipe-title">{{ cardTitles[cardIndex] }}</span>
+      <button class="swipe-arrow" (click)="nextCard()" [class.disabled]="cardIndex === cardTitles.length - 1">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="swipe-viewport">
+      <div class="swipe-track" [style.transform]="'translateX(-' + (cardIndex * 100) + '%)'">
+
+        <!-- Card 1: Workout Calendar -->
+        <div class="swipe-card">
+          <ion-card class="calendar-card">
+            <ion-card-content class="calendar-content">
+              <workout-calendar-modal
+                [inline]="true"
+                [feedbacks]="feedbackHistory"
+                [completedWorkouts]="completedWorkouts"
+                [username]="user?.username || ''"
+                (dataChanged)="loadData()">
+              </workout-calendar-modal>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
+<!-- Card 2: Trainer Zone -->
+        <div class="swipe-card">
+          <ion-card class="trainer-zone-card" *ngIf="trainerName">
+            <ion-card-content>
+              <div class="tz-top">
+                <div class="tz-avatar">{{ trainerName[0] | uppercase }}</div>
+                <div class="tz-details">
+                  <span class="tz-name">{{ trainerName }}</span>
+                  <span class="tz-role">Your Personal Trainer</span>
+                </div>
+                <div class="tz-status">
+                  <span class="tz-status-dot"></span>
+                  <span>Linked</span>
+                </div>
+              </div>
+
+              <div class="tz-stats">
+                <div class="tz-stat">
+                  <i class="fa-solid fa-clipboard-list"></i>
+                  <span class="tz-stat-value">{{ assignedWorkoutsCount }}</span>
+                  <span class="tz-stat-label">Assigned</span>
+                </div>
+                <div class="tz-stat">
+                  <i class="fa-solid fa-check-double"></i>
+                  <span class="tz-stat-value">{{ completedWorkouts.length }}</span>
+                  <span class="tz-stat-label">Completed</span>
+                </div>
+                <div class="tz-stat">
+                  <i class="fa-solid fa-fire"></i>
+                  <span class="tz-stat-value">{{ completionRate }}%</span>
+                  <span class="tz-stat-label">Rate</span>
+                </div>
+              </div>
+
+              <div class="tz-progress" *ngIf="assignedWorkoutsCount > 0">
+                <div class="tz-progress-header">
+                  <span>Completion</span>
+                  <span>{{ completionRate }}%</span>
+                </div>
+                <div class="tz-progress-bar">
+                  <div class="tz-progress-fill" [style.width.%]="completionRate"></div>
+                </div>
+              </div>
+
+              <div class="tz-last-workout" *ngIf="lastWorkoutDate">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Last workout: <strong>{{ lastWorkoutDate }}</strong></span>
+              </div>
+
+              <button class="tz-message-btn" (click)="openTrainerChat()">
+                <i class="fa-solid fa-comment"></i>
+                Message Trainer
+              </button>
+            </ion-card-content>
+          </ion-card>
+          <ion-card class="trainer-zone-card no-trainer" *ngIf="!trainerName">
+            <ion-card-content>
+              <div class="tz-empty">
+                <i class="fa-solid fa-user-shield"></i>
+                <p>No trainer linked</p>
+                <span>Ask a trainer to send you an invite from your profile</span>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="swipe-dots">
+      <span class="dot" *ngFor="let t of cardTitles; let i = index" [class.active]="cardIndex === i" (click)="cardIndex = i"></span>
+    </div>
+  </div>
 
   <!-- Personal Records -->
   <div class="quick-actions" *ngIf="prs.length > 0">

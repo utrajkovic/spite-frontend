@@ -621,7 +621,7 @@ ion-card {
   }
 
   .calendar-content {
-    padding: 0 4px 16px !important;
+    padding: 16px 4px 16px !important;
   }
 
   workout-calendar-modal {
@@ -677,4 +677,482 @@ ion-card {
   font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: 0.5px;
+}
+
+// Carousel styles
+.profile-carousel {
+  margin-top: 12px;
+}
+
+.carousel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  color: var(--color-primary);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.card-nav-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--border-cyan);
+  background: rgba(0, 255, 255, 0.06);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:active {
+    background: rgba(0, 255, 255, 0.15);
+  }
+}
+
+.carousel-card {
+  margin-top: 0;
+  margin-bottom: 0;
+  min-height: 460px;
+}
+
+.carousel-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 28px;
+}
+
+.carousel-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.carousel-dots .dot.active {
+  background: var(--color-primary);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+.empty-trainer-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  text-align: center;
+
+  p {
+    margin: 8px 0;
+  }
+
+  p:first-child {
+    font-size: 48px;
+    color: var(--color-text-muted);
+    opacity: 0.4;
+  }
+
+  p strong {
+    color: var(--color-primary);
+    display: block;
+    margin: 12px 0 6px;
+  }
+
+  .hint-text {
+    color: var(--color-text-muted);
+    font-size: 12px;
+    opacity: 0.6;
+  }
+}
+
+// Mobile-First Responsive
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 16px 10px;
+
+    ion-card-title {
+      font-size: 18px;
+    }
+  }
+
+  .carousel-card {
+    min-height: 380px;
+  }
+
+  .carousel-head {
+    margin-bottom: 6px;
+  }
+
+  .card-title {
+    font-size: 13px;
+  }
+
+  .card-nav-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .empty-trainer-zone {
+    min-height: 280px;
+    padding: 20px;
+
+    p:first-child {
+      font-size: 36px;
+    }
+  }
+
+  .quick-actions .action-btn {
+    font-size: 13px;
+  }
+
+  ion-card {
+    margin: 10px 0;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .carousel-card {
+    min-height: 420px;
+  }
+
+  .card-title {
+    font-size: 14px;
+  }
+}
+
+/* ─── Swipe Container ─── */
+.swipe-card {
+  min-width: 100%;
+  width: 100%;
+  flex-shrink: 0;
+  min-height: 320px;
+  padding: 0 16px;
+  box-sizing: border-box;
+
+  ion-card {
+    margin: 0;
+    height: 100%;
+  }
+}
+
+.swipe-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 4px 8px;
+}
+
+.swipe-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--color-primary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.swipe-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(0, 255, 255, 0.06);
+  border: 1px solid var(--border-cyan);
+  color: var(--color-primary);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:active {
+    background: rgba(0, 255, 255, 0.15);
+    transform: scale(0.95);
+  }
+
+  &.disabled {
+    opacity: 0.2;
+    pointer-events: none;
+  }
+}
+
+.swipe-track {
+  display: flex;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.swipe-card {
+  min-width: 100%;
+  flex-shrink: 0;
+  min-height: 320px;
+
+  ion-card {
+    margin: 0;
+    height: 100%;
+  }
+}
+
+.swipe-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 0 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(0, 255, 255, 0.15);
+  border: 1px solid var(--border-cyan);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.active {
+    background: var(--color-primary);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+    transform: scale(1.2);
+  }
+}
+
+/* ─── Trainer Zone Card ─── */
+.trainer-zone-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  ion-card-content {
+    padding: 20px 16px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.tz-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tz-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(0, 255, 150, 0.2), rgba(0, 255, 150, 0.05));
+  border: 2px solid rgba(0, 255, 150, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: #00ff96;
+  flex-shrink: 0;
+}
+
+.tz-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.tz-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: #00ff96;
+}
+
+.tz-role {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.tz-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: rgba(0, 255, 150, 0.08);
+  border: 1px solid rgba(0, 255, 150, 0.2);
+  border-radius: 20px;
+  font-size: 10px;
+  color: #00ff96;
+  font-family: var(--font-display);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.tz-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00ff96;
+  box-shadow: 0 0 6px #00ff96;
+}
+
+.tz-stats {
+  display: flex;
+  gap: 8px;
+}
+
+.tz-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 6px;
+  background: rgba(0, 255, 255, 0.04);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  border-radius: 12px;
+
+  i {
+    font-size: 14px;
+    color: var(--color-primary);
+    opacity: 0.5;
+  }
+}
+
+.tz-stat-value {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.tz-stat-label {
+  font-size: 9px;
+  color: var(--color-text-muted);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tz-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tz-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  font-family: var(--font-display);
+  letter-spacing: 0.3px;
+}
+
+.tz-progress-bar {
+  height: 6px;
+  background: rgba(0, 255, 255, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff96, var(--color-primary));
+  border-radius: 10px;
+  transition: width 0.6s ease;
+}
+
+.tz-last-workout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(0, 255, 255, 0.03);
+  border: 1px solid rgba(0, 255, 255, 0.08);
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+
+  i {
+    color: var(--color-primary);
+    opacity: 0.5;
+    font-size: 13px;
+  }
+
+  strong {
+    color: var(--color-primary);
+  }
+}
+
+.tz-message-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(0, 255, 150, 0.12), rgba(0, 255, 150, 0.06));
+  border: 1px solid rgba(0, 255, 150, 0.25);
+  border-radius: 14px;
+  color: #00ff96;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+
+  &:active {
+    background: rgba(0, 255, 150, 0.2);
+    transform: scale(0.98);
+  }
+
+  i { font-size: 15px; }
+}
+
+.tz-empty {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--color-text-muted);
+  opacity: 0.4;
+
+  i {
+    font-size: 36px;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  p {
+    font-family: var(--font-display);
+    font-size: 14px;
+    margin: 0 0 6px;
+  }
+
+  span { font-size: 12px; }
+}
+
+.no-trainer {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.swipe-viewport {
+  overflow: hidden;
+  width: 100%;
 }

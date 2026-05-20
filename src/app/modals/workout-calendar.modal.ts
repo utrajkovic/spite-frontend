@@ -38,6 +38,11 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
   dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   addingFeedbackForCompletedId = new Set<string>();
   editingFeedbackIds = new Set<string>();
+  activeProfileCard = 0;
+  private touchStartX: number | null = null;
+  private readonly swipeThreshold = 45;
+
+profileCards = ['calendar', 'snapshot', 'upcoming', 'trainerZone'] as const;
 
   constructor(private modalCtrl: ModalController, private backend: BackendService) {}
 

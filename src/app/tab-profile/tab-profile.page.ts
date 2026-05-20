@@ -45,6 +45,12 @@ export class TabProfilePage implements OnInit, OnDestroy {
   prs: ExercisePR[] = [];
   trainerName: string = '';
   memberSince: string = '';
+  assignedWorkoutsCount: number = 0;
+  cardIndex = 0;
+  cardTitles = ['Workout Calendar', 'Trainer Zone'];
+  completionRate: number = 0;
+  lastWorkoutDate: string = '';
+
 
   installPrompt: any = null;
   isIos = false;
@@ -54,6 +60,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
   pendingInviteActions = new Set<string>();
   pendingShareActions = new Set<string>();
   clearHistoryLoading = false;
+  
 
   private readonly backendUrl = 'https://spite-backend-v2.onrender.com/api';
 
@@ -111,47 +118,64 @@ export class TabProfilePage implements OnInit, OnDestroy {
     }
   }
 
-  /** Try to find trainer name from assigned workouts endpoint */
-  loadTrainerName() {
-    // Use the client workouts endpoint — if workouts are assigned, there's a trainer
-    this.http.get<any[]>(`${this.backendUrl}/workouts/client/${this.user.username}`).subscribe({
-      next: (workouts) => {
-        if (workouts && workouts.length > 0 && workouts[0].note) {
-          // Notes often contain trainer context, but we need direct link
-        }
-      },
-      error: () => {}
-    });
-
-    // Check accepted invites via pending (already accepted ones show in trainer links)
-    // Best approach: check if there are accepted invites by looking at existing data
-    this.backend.getPendingInvites(this.user.username).subscribe({
-      next: (invites) => {
-        // Pending invites have trainerUsername — but these are NOT yet accepted
-        // We need accepted trainers. Let's use a workaround:
-        // If user has assigned workouts, they have a trainer
-      },
-      error: () => {}
-    });
-
-    // Fallback: try to read from localStorage if old app stored it
-    const storedTrainer = localStorage.getItem('trainerUsername');
-    if (storedTrainer) {
-      this.trainerName = storedTrainer;
+  calcCompletionRate() {
+    if (this.assignedWorkoutsCount === 0) {
+      this.completionRate = 0;
       return;
     }
+    const rate = Math.round((this.completedWorkouts.length / this.assignedWorkoutsCount) * 100);
+    this.completionRate = Math.min(rate, 100);
+  }
 
-    // Last resort: check assigned workouts — if they exist, get trainer from client workout links
-    this.http.get<any[]>(`${this.backendUrl}/workouts/client/${this.user.username}`).subscribe({
-      next: (workouts) => {
-        if (workouts && workouts.length > 0) {
-          // User has assigned workouts = has a trainer, but we can't get name from here
-          // We'll show "Has trainer" or try trainer-client-links
-          this.trainerName = 'Linked';
+  calcLastWorkout() {
+    if (this.completedWorkouts.length === 0) {
+      this.lastWorkoutDate = '';
+      return;
+    }
+    const sorted = [...this.completedWorkouts].sort((a: any, b: any) => b.completedAt - a.completedAt);
+    const last = sorted[0];
+    if (last?.completedAt) {
+      const d = new Date(last.completedAt);
+      const now = new Date();
+      const diffDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays === 0) this.lastWorkoutDate = 'Today';
+      else if (diffDays === 1) this.lastWorkoutDate = 'Yesterday';
+      else if (diffDays < 7) this.lastWorkoutDate = diffDays + ' days ago';
+      else this.lastWorkoutDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+  }
+  /** Try to find trainer name from assigned workouts endpoint */
+  loadTrainerName() {
+    this.http.get<any>(`${this.backendUrl}/trainer/my-trainer/${this.user.username}`).subscribe({
+      next: (link) => {
+        if (link && link.trainerUsername) {
+          this.trainerName = link.trainerUsername;
         }
       },
       error: () => {}
     });
+
+    this.http.get<any[]>(`${this.backendUrl}/workouts/client/${this.user.username}`).subscribe({
+      next: (workouts) => {
+        this.assignedWorkoutsCount = workouts?.length ?? 0;
+        this.calcCompletionRate();
+      },
+      error: () => {}
+    });
+  }
+
+  prevCard() {
+    if (this.cardIndex > 0) this.cardIndex--;
+  }
+
+  nextCard() {
+    if (this.cardIndex < this.cardTitles.length - 1) this.cardIndex++;
+  }
+
+  openTrainerChat() {
+    if (this.trainerName) {
+      this.router.navigateByUrl(`/chat/${this.trainerName}`);
+    }
   }
 
   loadData() {
@@ -167,7 +191,11 @@ export class TabProfilePage implements OnInit, OnDestroy {
     });
 
     this.backend.getCompletedWorkouts(this.user.username).subscribe({
-      next: (data) => { this.completedWorkouts = data; },
+      next: (data) => {
+        this.completedWorkouts = data;
+        this.calcCompletionRate();
+        this.calcLastWorkout();
+      },
       error: () => {}
     });
 
@@ -233,7 +261,6 @@ export class TabProfilePage implements OnInit, OnDestroy {
         this.pendingInviteActions.delete(invite.id);
         this.pendingInvites = this.pendingInvites.filter((i: any) => i.id !== invite.id);
         this.trainerName = invite.trainerUsername;
-        localStorage.setItem('trainerUsername', invite.trainerUsername);
         this.showAlert(`Accepted invite from trainer "${invite.trainerUsername}".`);
       },
       error: () => {
@@ -315,7 +342,6 @@ export class TabProfilePage implements OnInit, OnDestroy {
             await Preferences.remove({ key: 'user' });
             await Preferences.remove({ key: 'authToken' });
             localStorage.removeItem('authToken');
-            localStorage.removeItem('trainerUsername');
             await this.router.navigateByUrl('/login', { replaceUrl: true });
           }
         }
@@ -356,4 +382,5 @@ export class TabProfilePage implements OnInit, OnDestroy {
     });
     await alert.present();
   }
+  
 }
