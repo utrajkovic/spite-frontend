@@ -1,54 +1,188 @@
 <ion-content [fullscreen]="true" class="admin-page">
   <div class="admin-wrapper">
 
-    <div class="filter-row">
-      <span class="filter-label">Filter:</span>
-      <div class="filter-pills">
-        <button class="pill" [class.active]="selectedRole === 'ALL'" (click)="selectedRole='ALL'; applyFilter()">All</button>
-        <button class="pill" [class.active]="selectedRole === 'USER'" (click)="selectedRole='USER'; applyFilter()">Users</button>
-        <button class="pill" [class.active]="selectedRole === 'TRAINER'" (click)="selectedRole='TRAINER'; applyFilter()">Trainers</button>
-        <button class="pill" [class.active]="selectedRole === 'ADMIN'" (click)="selectedRole='ADMIN'; applyFilter()">Admins</button>
-      </div>
+    <!-- Tab switcher -->
+    <div class="admin-tabs">
+      <button class="admin-tab" [class.active]="adminTab === 'users'" (click)="adminTab = 'users'">
+        <i class="fa-solid fa-users"></i> Users
+      </button>
+      <button class="admin-tab" [class.active]="adminTab === 'exercises'" (click)="adminTab = 'exercises'; loadGlobalExercises()">
+        <i class="fa-solid fa-dumbbell"></i> Global Exercises
+      </button>
     </div>
 
-    <div class="user-card" *ngFor="let u of filteredUsers">
-      <div class="user-header">
-        <div class="user-avatar">{{ u.username[0] | uppercase }}</div>
-        <div class="user-info">
-          <span class="username">{{ u.username }}</span>
-          <span class="role-tag" [class]="'role-' + u.role.toLowerCase()">{{ u.role }}</span>
+    <!-- ═══ USERS TAB ═══ -->
+    <ng-container *ngIf="adminTab === 'users'">
+      <div class="filter-row">
+        <span class="filter-label">Filter:</span>
+        <div class="filter-pills">
+          <button class="pill" [class.active]="selectedRole === 'ALL'" (click)="selectedRole='ALL'; applyFilter()">All</button>
+          <button class="pill" [class.active]="selectedRole === 'USER'" (click)="selectedRole='USER'; applyFilter()">Users</button>
+          <button class="pill" [class.active]="selectedRole === 'TRAINER'" (click)="selectedRole='TRAINER'; applyFilter()">Trainers</button>
+          <button class="pill" [class.active]="selectedRole === 'ADMIN'" (click)="selectedRole='ADMIN'; applyFilter()">Admins</button>
         </div>
       </div>
 
-      <div class="btn-row">
-        <ion-button size="small" fill="outline" class="pass-btn" (click)="changePassword(u)">
-          <i class="fa-solid fa-key" slot="start"></i> Password
-        </ion-button>
+      <div class="user-card" *ngFor="let u of filteredUsers">
+        <div class="user-header">
+          <div class="user-avatar">{{ u.username[0] | uppercase }}</div>
+          <div class="user-info">
+            <span class="username">{{ u.username }}</span>
+            <span class="role-tag" [class]="'role-' + u.role.toLowerCase()">{{ u.role }}</span>
+          </div>
+        </div>
 
-        <ion-button size="small" class="role-btn" (click)="changeRole(u, u.role === 'TRAINER' ? 'USER' : 'TRAINER')">
-          <ion-spinner *ngIf="loadingAction === 'role-' + u.username" name="crescent" slot="start"></ion-spinner>
-          <i class="fa-solid fa-arrows-rotate" slot="start" *ngIf="loadingAction !== 'role-' + u.username"></i>
-          {{ u.role === 'TRAINER' ? 'Demote' : 'Promote' }}
-        </ion-button>
+        <div class="btn-row">
+          <ion-button size="small" fill="outline" class="pass-btn" (click)="changePassword(u)">
+            <i class="fa-solid fa-key" slot="start"></i> Password
+          </ion-button>
 
-        <ion-button size="small" [color]="u.blocked ? 'success' : 'warning'" (click)="toggleBlock(u)">
-          <ion-spinner *ngIf="loadingAction === 'block-' + u.username" name="crescent" slot="start"></ion-spinner>
-          <i class="fa-solid" [class.fa-lock]="!u.blocked" [class.fa-lock-open]="u.blocked" slot="start" *ngIf="loadingAction !== 'block-' + u.username"></i>
-          {{ u.blocked ? 'Unblock' : 'Block' }}
-        </ion-button>
+          <ion-button size="small" class="role-btn" (click)="changeRole(u, u.role === 'TRAINER' ? 'USER' : 'TRAINER')">
+            <ion-spinner *ngIf="loadingAction === 'role-' + u.username" name="crescent" slot="start"></ion-spinner>
+            <i class="fa-solid fa-arrows-rotate" slot="start" *ngIf="loadingAction !== 'role-' + u.username"></i>
+            {{ u.role === 'TRAINER' ? 'Demote' : 'Promote' }}
+          </ion-button>
 
-        <ion-button size="small" color="danger" (click)="deleteUser(u)">
-          <ion-spinner *ngIf="loadingAction === 'delete-' + u.username" name="crescent" slot="start"></ion-spinner>
-          <i class="fa-solid fa-trash" slot="start" *ngIf="loadingAction !== 'delete-' + u.username"></i>
-          Delete
-        </ion-button>
+          <ion-button size="small" [color]="u.blocked ? 'success' : 'warning'" (click)="toggleBlock(u)">
+            <ion-spinner *ngIf="loadingAction === 'block-' + u.username" name="crescent" slot="start"></ion-spinner>
+            <i class="fa-solid" [class.fa-lock]="!u.blocked" [class.fa-lock-open]="u.blocked" slot="start" *ngIf="loadingAction !== 'block-' + u.username"></i>
+            {{ u.blocked ? 'Unblock' : 'Block' }}
+          </ion-button>
+
+          <ion-button size="small" color="danger" (click)="deleteUser(u)">
+            <ion-spinner *ngIf="loadingAction === 'delete-' + u.username" name="crescent" slot="start"></ion-spinner>
+            <i class="fa-solid fa-trash" slot="start" *ngIf="loadingAction !== 'delete-' + u.username"></i>
+            Delete
+          </ion-button>
+        </div>
       </div>
-    </div>
 
-    <div class="empty-state" *ngIf="filteredUsers.length === 0">
-      <i class="fa-solid fa-users-slash"></i>
-      <span>No users found</span>
-    </div>
+      <div class="empty-state" *ngIf="filteredUsers.length === 0">
+        <i class="fa-solid fa-users-slash"></i>
+        <span>No users found</span>
+      </div>
+    </ng-container>
+
+<!-- ═══ GLOBAL EXERCISES TAB ═══ -->
+    <ng-container *ngIf="adminTab === 'exercises'">
+
+      <!-- Step 1: Select muscle group -->
+      <p class="ge-section-title"><i class="fa-solid fa-crosshairs"></i> Select Muscle Group</p>
+      <div class="ge-muscle-pills">
+        <button
+          *ngFor="let m of allMuscleGroups"
+          class="ge-muscle-pill"
+          [class.selected]="geSelectedMuscle === m"
+          (click)="geSelectedMuscle = m">
+          {{ m }}
+        </button>
+      </div>
+
+      <!-- Step 2: Your exercises → quick add -->
+      <div class="ge-add-section" *ngIf="geSelectedMuscle">
+        <p class="ge-section-title">
+          <i class="fa-solid fa-plus"></i> Add from your exercises → <strong>{{ geSelectedMuscle }}</strong>
+        </p>
+
+        <div class="ge-search-wrap">
+          <input
+            class="ge-input"
+            [(ngModel)]="geSearchQuery"
+            placeholder="Search your exercises..."
+            (input)="filterMyExercises()"
+          />
+        </div>
+
+        <div class="ge-my-list">
+          <div class="ge-my-item" *ngFor="let ex of filteredMyExercises">
+            <div class="ge-my-info">
+              <span class="ge-my-name">{{ ex.name }}</span>
+              <span class="ge-my-desc" *ngIf="ex.description">{{ ex.description }}</span>
+            </div>
+            <button
+              class="ge-quick-add-btn"
+              (click)="quickAddGlobal(ex)"
+              [disabled]="isAlreadyGlobal(ex.name)">
+              <i class="fa-solid" [class.fa-plus]="!isAlreadyGlobal(ex.name)" [class.fa-check]="isAlreadyGlobal(ex.name)"></i>
+              {{ isAlreadyGlobal(ex.name) ? 'Added' : 'Add' }}
+            </button>
+          </div>
+          <div class="ge-my-empty" *ngIf="filteredMyExercises.length === 0">
+            <span>No exercises found</span>
+          </div>
+        </div>
+
+        <!-- Category & sort for next adds -->
+        <div class="ge-quick-settings">
+          <div class="ge-field ge-small">
+            <label>Category</label>
+            <select [(ngModel)]="geQuickCategory" class="ge-input ge-select">
+              <option value="compound">Compound</option>
+              <option value="isolation">Isolation</option>
+            </select>
+          </div>
+          <div class="ge-field ge-small">
+            <label>Sets</label>
+            <input type="number" inputmode="numeric" [(ngModel)]="geQuickSets" class="ge-input" />
+          </div>
+          <div class="ge-field ge-small">
+            <label>Reps</label>
+            <input [(ngModel)]="geQuickReps" class="ge-input" />
+          </div>
+          <div class="ge-field ge-small">
+            <label>Rest (s)</label>
+            <input type="number" inputmode="numeric" [(ngModel)]="geQuickRest" class="ge-input" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Current global exercises -->
+      <p class="ge-section-title" style="margin-top:20px">
+        <i class="fa-solid fa-globe"></i> Global Exercises ({{ globalExercises.length }})
+      </p>
+
+      <div class="ge-filter-pills">
+        <button class="ge-muscle-pill" [class.selected]="geFilterMuscle === 'ALL'" (click)="geFilterMuscle = 'ALL'">All</button>
+        <button
+          *ngFor="let m of allMuscleGroups"
+          class="ge-muscle-pill"
+          [class.selected]="geFilterMuscle === m"
+          (click)="geFilterMuscle = m">
+          {{ m }}
+        </button>
+      </div>
+
+      <div class="ge-list">
+        <div class="ge-item" *ngFor="let ex of filteredGlobalExercises">
+          <div class="ge-item-top">
+            <div class="ge-item-info">
+              <span class="ge-item-name">{{ ex.name }}</span>
+              <span class="ge-item-desc" *ngIf="ex.description">{{ ex.description }}</span>
+            </div>
+            <span class="ge-item-cat" [class.compound]="ex.category === 'compound'">
+              {{ ex.category }}
+            </span>
+          </div>
+          <div class="ge-item-muscles">
+            <span class="ge-item-muscle" *ngFor="let m of ex.muscleGroups">{{ m }}</span>
+          </div>
+          <div class="ge-item-meta">
+            {{ ex.defaultSets }}×{{ ex.defaultReps }} · Rest {{ ex.defaultRestBetweenSets }}s
+          </div>
+          <div class="ge-item-actions">
+            <button class="ge-delete-btn" (click)="deleteGlobalExercise(ex)">
+              <i class="fa-solid fa-trash"></i> Remove
+            </button>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="filteredGlobalExercises.length === 0">
+          <i class="fa-solid fa-dumbbell"></i>
+          <span>No global exercises yet</span>
+        </div>
+      </div>
+
+    </ng-container>
 
   </div>
 </ion-content>

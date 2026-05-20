@@ -178,3 +178,407 @@ ion-button[color="danger"] {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+/* ─── Admin Tabs ─── */
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 16px;
+  background: rgba(0, 255, 255, 0.06);
+  border: 1px solid var(--border-cyan);
+  border-radius: 14px;
+}
+
+.admin-tab {
+  flex: 1;
+  padding: 10px 0;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: rgba(0, 247, 255, 0.4);
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  &.active {
+    background: rgba(0, 255, 255, 0.15);
+    color: var(--color-primary);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  }
+}
+
+/* ─── Global Exercises ─── */
+.ge-section-title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--color-primary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.7;
+}
+
+.ge-add-card {
+  background: rgba(0, 40, 60, 0.2);
+  border: 1px solid var(--border-cyan);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.ge-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ge-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-family: var(--font-display);
+    font-size: 10px;
+    color: var(--color-primary);
+    opacity: 0.5;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+}
+
+.ge-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(0, 255, 255, 0.04);
+  border: 1px solid var(--border-cyan);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 14px;
+  outline: none;
+
+  &:focus {
+    border-color: var(--border-cyan-hover);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.15);
+  }
+
+  &::placeholder {
+    color: rgba(0, 247, 255, 0.2);
+  }
+}
+
+.ge-select {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.ge-row {
+  display: flex;
+  gap: 8px;
+}
+
+.ge-small {
+  flex: 1;
+}
+
+.ge-muscle-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ge-muscle-pill {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border-cyan);
+  background: rgba(0, 255, 255, 0.04);
+  color: rgba(0, 247, 255, 0.4);
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.selected {
+    background: rgba(0, 255, 255, 0.15);
+    color: var(--color-primary);
+    border-color: var(--border-cyan-hover);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+  }
+}
+
+.ge-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.ge-save-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #00ffaa, #00cc88);
+  border: none;
+  border-radius: 12px;
+  color: #001a10;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+
+  &:active { transform: scale(0.98); }
+  &:disabled { opacity: 0.5; }
+}
+
+.ge-cancel-btn {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--border-cyan);
+  border-radius: 12px;
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 12px;
+  cursor: pointer;
+
+  &:active { background: rgba(0, 255, 255, 0.05); }
+}
+
+/* ─── Exercise List ─── */
+.ge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ge-item {
+  background: rgba(0, 40, 60, 0.2);
+  border: 1px solid var(--border-cyan);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ge-item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ge-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ge-item-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.ge-item-desc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.ge-item-cat {
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(255, 165, 0, 0.1);
+  color: #ffa500;
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  flex-shrink: 0;
+
+  &.compound {
+    background: rgba(0, 255, 170, 0.1);
+    color: var(--color-success);
+    border-color: rgba(0, 255, 170, 0.2);
+  }
+}
+
+.ge-item-muscles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ge-item-muscle {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  background: rgba(0, 255, 255, 0.06);
+  color: var(--color-primary);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  text-transform: capitalize;
+}
+
+.ge-item-meta {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  opacity: 0.5;
+  font-family: var(--font-display);
+}
+
+.ge-item-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 255, 255, 0.08);
+}
+
+.ge-edit-btn, .ge-delete-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border-cyan);
+  background: transparent;
+  font-family: var(--font-display);
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+
+  &:active { transform: scale(0.97); }
+}
+
+.ge-edit-btn {
+  color: var(--color-primary);
+  &:active { background: rgba(0, 255, 255, 0.08); }
+}
+
+.ge-delete-btn {
+  color: var(--color-danger);
+  border-color: rgba(255, 77, 77, 0.2);
+  &:active { background: rgba(255, 77, 77, 0.08); }
+}
+/* ─── Quick Add from My Exercises ─── */
+.ge-add-section {
+  margin-top: 16px;
+}
+
+.ge-search-wrap {
+  margin-bottom: 10px;
+}
+
+.ge-my-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 280px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 12px;
+}
+
+.ge-my-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(0, 40, 60, 0.15);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.ge-my-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ge-my-name {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ge-my-desc {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  opacity: 0.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ge-quick-add-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 170, 0.25);
+  background: rgba(0, 255, 170, 0.08);
+  color: #00ff96;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+
+  &:active { transform: scale(0.95); }
+
+  &:disabled {
+    opacity: 0.4;
+    color: var(--color-text-muted);
+    border-color: var(--border-cyan);
+    background: transparent;
+    cursor: default;
+  }
+}
+
+.ge-my-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--color-text-muted);
+  opacity: 0.4;
+  font-size: 12px;
+}
+
+.ge-quick-settings {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(0, 40, 60, 0.15);
+  border: 1px solid rgba(0, 255, 255, 0.08);
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
