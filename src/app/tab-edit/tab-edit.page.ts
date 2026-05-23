@@ -103,7 +103,13 @@ export class TabEditPage implements OnInit {
 
     const map = new Map((w.exercises ?? []).map(e => [e.id, e]));
 
-    this.editableExercises = w.items!.map(item => map.get(item.exerciseId)!);
+    this.editableExercises = w.items!
+      .map(item => map.get(item.exerciseId))
+      .filter((ex): ex is Exercise => ex != null);
+
+    // Sinhronizuj workoutItems sa editableExercises (ukloni item-e bez vežbe)
+    const validIds = new Set(this.editableExercises.map(e => e.id));
+    this.workoutItems = this.workoutItems.filter(it => validIds.has(it.exerciseId));
 
     this.workoutItems = w.items!.map(it => ({
       exerciseId: it.exerciseId,

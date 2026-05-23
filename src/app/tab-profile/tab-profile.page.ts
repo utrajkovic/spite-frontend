@@ -51,7 +51,6 @@ export class TabProfilePage implements OnInit, OnDestroy {
   completionRate: number = 0;
   lastWorkoutDate: string = '';
 
-
   installPrompt: any = null;
   isIos = false;
   isInstalled = false;
@@ -60,6 +59,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
   pendingInviteActions = new Set<string>();
   pendingShareActions = new Set<string>();
   clearHistoryLoading = false;
+  inactiveClients: any[] = [];
   
 
   private readonly backendUrl = 'https://spite-backend-v2.onrender.com/api';
@@ -162,6 +162,16 @@ export class TabProfilePage implements OnInit, OnDestroy {
       },
       error: () => {}
     });
+
+    if (this.user?.role === 'TRAINER' || this.user?.role === 'ADMIN') {
+      this.http.get<any>(`${this.backendUrl}/trainer/inbox/${this.user.username}`).subscribe({
+        next: (inbox) => {
+          this.inactiveClients = (inbox.priorityClients || [])
+            .sort((a: any, b: any) => (b.daysSinceLastWorkout ?? 0) - (a.daysSinceLastWorkout ?? 0));
+        },
+        error: () => {}
+      });
+    }
   }
 
   prevCard() {
@@ -382,5 +392,4 @@ export class TabProfilePage implements OnInit, OnDestroy {
     });
     await alert.present();
   }
-  
 }
