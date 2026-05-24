@@ -56,7 +56,7 @@ export class Tab2Page implements OnInit {
   isSavingExercise = false;
   isSavingWorkout = false;
 
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+  readonly backendUrl = 'https://spite-backend.fly.dev';
 
   constructor(
     private fb: FormBuilder,

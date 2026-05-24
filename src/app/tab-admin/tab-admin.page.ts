@@ -52,7 +52,7 @@ export class TabAdminPage implements OnInit {
     sortOrder: 0
   };
 
-  private readonly backendUrl = 'https://spite-backend-v2.onrender.com/api';
+  private readonly backendUrl = 'https://spite-backend.fly.dev/api';
 
   constructor(
     private backend: BackendService,

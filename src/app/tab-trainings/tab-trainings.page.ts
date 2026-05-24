@@ -27,7 +27,7 @@ export class TabTrainingsPage implements OnInit {
 
   currentIndex = 0;
 
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+  readonly backendUrl = 'https://spite-backend.fly.dev';
 
   constructor(
     private router: Router,

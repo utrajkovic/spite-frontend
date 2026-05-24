@@ -28,7 +28,7 @@ export class Tab1Page {
   workouts: Workout[] = [];
   loading = false;
   openNotes = new Set<string>();
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+  readonly backendUrl = 'https://spite-backend.fly.dev';
 
   toggleNote(id: string | undefined) {
     if (!id) return;

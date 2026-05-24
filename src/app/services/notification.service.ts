@@ -12,7 +12,7 @@ const INACTIVITY_REMINDER_ID = 1002;
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
 
-  private readonly API_URL = 'https://spite-backend-v2.onrender.com/api';
+  private readonly API_URL = 'https://spite-backend.fly.dev/api';
 
   constructor(private http: HttpClient, private router: Router) {}
 

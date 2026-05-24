@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  backendUrl: 'https://spite-backend-v2.onrender.com/api',
+  backendUrl: 'https://spite-backend.fly.dev/api',
   firebase: {
     apiKey: "AIzaSyAc9Xe3v7Ea5P7KBhCIleD6-6-1LZTiU6Y",
     authDomain: "spite-chat.firebaseapp.com",

@@ -2,7 +2,7 @@
 // i popuni vrednosti
 export const environment = {
   production: false,
-  backendUrl: 'https://spite-backend-v2.onrender.com/api',
+  backendUrl: 'https://spite-backend.fly.dev/api',
   firebase: {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_PROJECT.firebaseapp.com",

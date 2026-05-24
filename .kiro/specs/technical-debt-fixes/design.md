@@ -4,7 +4,7 @@
 
 This document covers the technical design for three targeted technical debt fixes in the Spite Angular/Ionic/Capacitor frontend:
 
-1. **Centralize backend URL** — replace 13+ hardcoded `https://spite-backend-v2.onrender.com` occurrences with a single `environment.backendUrl` value.
+1. **Centralize backend URL** — replace 13+ hardcoded `https://spite-backend.fly.dev` occurrences with a single `environment.backendUrl` value.
 2. **Standardize storage on Capacitor Preferences** — eliminate all `localStorage` reads/writes for `user`, `username`, and `role`; route everything through `Preferences`.
 3. **Fix Tab1 refresh guard** — remove the `initialized` flag and replace it with a `loading` guard so workouts reload on every navigation.
 
@@ -60,7 +60,7 @@ Both environment files already have `backendUrl` defined. No structural change n
 // environment.ts and environment.prod.ts (already correct)
 export const environment = {
   production: false,
-  backendUrl: 'https://spite-backend-v2.onrender.com'
+  backendUrl: 'https://spite-backend.fly.dev'
 };
 ```
 
@@ -70,9 +70,9 @@ Note: `backendUrl` should be the base host only (no `/api` suffix), so each cons
 
 | File | Current | After |
 |------|---------|-------|
-| `backend.service.ts` | `'https://spite-backend-v2.onrender.com/api'` | `environment.backendUrl + '/api'` |
-| `auth.service.ts` | `'https://spite-backend-v2.onrender.com/api/users'` | `environment.backendUrl + '/api/users'` |
-| `login.page.ts` | `'https://spite-backend-v2.onrender.com/api/users/login'` | removed (use `AuthService.login()`) |
+| `backend.service.ts` | `'https://spite-backend.fly.dev/api'` | `environment.backendUrl + '/api'` |
+| `auth.service.ts` | `'https://spite-backend.fly.dev/api/users'` | `environment.backendUrl + '/api/users'` |
+| `login.page.ts` | `'https://spite-backend.fly.dev/api/users/login'` | removed (use `AuthService.login()`) |
 | `tab1.page.ts` | `readonly backendUrl = 'https://...'` | `environment.backendUrl` |
 | `tab2.page.ts` | `readonly backendUrl = 'https://...'` | `environment.backendUrl` |
 | `tab3.page.ts` | `readonly backendUrl = 'https://...'` | `environment.backendUrl` |

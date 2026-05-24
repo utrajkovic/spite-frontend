@@ -62,7 +62,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
   inactiveClients: any[] = [];
   
 
-  private readonly backendUrl = 'https://spite-backend-v2.onrender.com/api';
+  private readonly backendUrl = 'https://spite-backend.fly.dev/api';
 
   constructor(
     private backend: BackendService,

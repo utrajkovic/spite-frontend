@@ -101,7 +101,7 @@ export class Tab3Page implements OnInit {
     });
   }
 
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+  readonly backendUrl = 'https://spite-backend.fly.dev';
 
   constructor(
     private backend: BackendService,

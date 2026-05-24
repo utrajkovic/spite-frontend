@@ -24,7 +24,7 @@ export class ExerciseSettingsModalComponent implements OnInit {
 
   allExercises: Exercise[] = [];
 
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+  readonly backendUrl = 'https://spite-backend.fly.dev';
 
   constructor(
     private modalCtrl: ModalController,

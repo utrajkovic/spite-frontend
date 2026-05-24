@@ -8,7 +8,7 @@ import { Workout, Exercise, WorkoutFeedback, DailyCheckIn, DailyAgenda, TrainerI
 })
 export class BackendService {
 
-  private readonly API_URL = 'https://spite-backend-v2.onrender.com/api';
+  private readonly API_URL = 'https://spite-backend.fly.dev/api';
 
   constructor(private http: HttpClient) { }
 

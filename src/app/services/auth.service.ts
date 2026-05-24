@@ -9,7 +9,7 @@ import { BadgeService } from './badge.service';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly backendUrl = 'https://spite-backend-v2.onrender.com/api/users';
+  private readonly backendUrl = 'https://spite-backend.fly.dev/api/users';
 
   constructor(private http: HttpClient, private badge: BadgeService) {}
 

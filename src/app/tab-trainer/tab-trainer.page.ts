@@ -30,7 +30,7 @@ export class TabTrainerPage {
   clients: { clientUsername: string }[] = [];
   priorityClients: PriorityClient[] = [];
 
-  baseUrl = 'https://spite-backend-v2.onrender.com/api/trainer';
+  baseUrl = 'https://spite-backend.fly.dev/api/trainer';
   isLoading = false;
 
   constructor(
@@ -133,7 +133,7 @@ export class TabTrainerPage {
 
     // 1. Učitaj sve dodeljene treninge za tog klijenta
     this.http.get<any[]>(
-      `https://spite-backend-v2.onrender.com/api/workouts/client/${username}`
+      `https://spite-backend.fly.dev/api/workouts/client/${username}`
     ).subscribe({
       next: async (workouts) => {
         // 2. Unassign svaki trening
@@ -141,7 +141,7 @@ export class TabTrainerPage {
           .filter((w: any) => w.id)
           .map((w: any) =>
             this.http.delete(
-              `https://spite-backend-v2.onrender.com/api/workouts/assign?workoutId=${w.id}&clientUsername=${username}&assignedBy=${t}`,
+              `https://spite-backend.fly.dev/api/workouts/assign?workoutId=${w.id}&clientUsername=${username}&assignedBy=${t}`,
               { responseType: 'text' as 'json' }
             ).toPromise().catch(() => {})
           );

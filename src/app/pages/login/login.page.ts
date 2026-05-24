@@ -29,7 +29,7 @@ import { NotificationService } from 'src/app/services/notification.service';
 })
 export class LoginPage {
   loginForm: FormGroup;
-  readonly backendUrl = 'https://spite-backend-v2.onrender.com/api/users/login';
+  readonly backendUrl = 'https://spite-backend.fly.dev/api/users/login';
   isLoggingIn = false;
 
   constructor(

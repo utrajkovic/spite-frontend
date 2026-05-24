@@ -17,7 +17,7 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent implements OnInit, OnDestroy {
 
   private validateInterval: any;
-  private readonly backendUrl = 'https://spite-backend-v2.onrender.com';
+  private readonly backendUrl = 'https://spite-backend.fly.dev';
 
   constructor(
     private workoutState: WorkoutStateService,

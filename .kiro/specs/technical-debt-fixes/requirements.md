@@ -4,7 +4,7 @@
 
 This document covers three high-priority technical debt fixes for the Spite fitness app (Angular + Ionic + Capacitor frontend, Spring Boot + MongoDB backend).
 
-1. **Centralize the backend URL** — `https://spite-backend-v2.onrender.com` is hardcoded in 13+ locations across the frontend. It must be defined once in Angular environment files and consumed from there everywhere.
+1. **Centralize the backend URL** — `https://spite-backend.fly.dev` is hardcoded in 13+ locations across the frontend. It must be defined once in Angular environment files and consumed from there everywhere.
 2. **Standardize storage on Capacitor Preferences** — the app inconsistently uses both `localStorage` and `Capacitor Preferences` to store and read the `user` object (and derived fields `username`, `role`). All reads and writes must go through `Preferences` so the app works correctly on both web and native platforms.
 3. **Fix the `ionViewWillEnter` refresh guard in Tab1** — an `initialized` flag prevents workouts from reloading when the user navigates back to Tab1, so newly assigned workouts are invisible until the app restarts. The flag must be removed and replaced with a loading guard that prevents duplicate simultaneous requests.
 
@@ -35,7 +35,7 @@ This document covers three high-priority technical debt fixes for the Spite fitn
 2. THE BackendService SHALL read its `API_URL` from `environment.backendUrl` instead of a hardcoded string literal.
 3. THE AuthService SHALL read its backend URL from `environment.backendUrl` instead of a hardcoded string literal.
 4. WHEN any component or service constructs an HTTP request URL, THE App SHALL derive that URL from `environment.backendUrl` or from `BackendService` / `AuthService`, not from a locally declared hardcoded string.
-5. THE App SHALL contain zero occurrences of the literal string `https://spite-backend-v2.onrender.com` outside of the two environment files after the fix is applied.
+5. THE App SHALL contain zero occurrences of the literal string `https://spite-backend.fly.dev` outside of the two environment files after the fix is applied.
 6. IF the `backendUrl` value in the environment files is changed, THEN THE App SHALL use the new value for all HTTP requests without any other code changes.
 
 ---

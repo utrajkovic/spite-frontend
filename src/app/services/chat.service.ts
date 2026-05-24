@@ -127,7 +127,7 @@ export class ChatService {
   }
 
   checkUserExists(username: string) {
-    return fetch(`https://spite-backend-v2.onrender.com/api/users/exists/${username}`)
+    return fetch(`https://spite-backend.fly.dev/api/users/exists/${username}`)
       .then(res => res.json());
   }
 

@@ -8,7 +8,7 @@ const SEEN_INVITES_KEY = 'seen_invite_ids';
 @Injectable({ providedIn: 'root' })
 export class BadgeService {
 
-  private readonly API_URL = 'https://spite-backend-v2.onrender.com/api';
+  private readonly API_URL = 'https://spite-backend.fly.dev/api';
 
   hasProfileBadge$ = new BehaviorSubject<boolean>(false);
   hasWorkoutBadge$ = new BehaviorSubject<boolean>(false);

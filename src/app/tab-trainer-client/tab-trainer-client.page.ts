@@ -53,9 +53,9 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
   private chart: Chart | null = null;
 
-  baseUrl = 'https://spite-backend-v2.onrender.com/api/trainer';
-  feedbackUrl = 'https://spite-backend-v2.onrender.com/api/feedback';
-  checkinUrl = 'https://spite-backend-v2.onrender.com/api/checkins';
+  baseUrl = 'https://spite-backend.fly.dev/api/trainer';
+  feedbackUrl = 'https://spite-backend.fly.dev/api/feedback';
+  checkinUrl = 'https://spite-backend.fly.dev/api/checkins';
 
   loading: HTMLIonLoadingElement | null = null;
   assigningWorkoutIds = new Set<string>();
@@ -146,7 +146,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
 
 
   loadClientWorkouts() {
-    this.http.get<any[]>(`https://spite-backend-v2.onrender.com/api/workouts/client/${this.clientUsername}`)
+    this.http.get<any[]>(`https://spite-backend.fly.dev/api/workouts/client/${this.clientUsername}`)
       .subscribe({
         next: async (res) => {
           this.clientWorkouts = res;
@@ -202,7 +202,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
   }
 
   loadClientInfo() {
-    this.http.get<any>(`https://spite-backend-v2.onrender.com/api/users/username/${this.clientUsername}`)
+    this.http.get<any>(`https://spite-backend.fly.dev/api/users/username/${this.clientUsername}`)
       .subscribe({
         next: (res) => { this.clientInfo = res; },
         error: () => {}
@@ -213,7 +213,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
     if (!workoutId || this.assigningWorkoutIds.has(workoutId)) return;
     this.assigningWorkoutIds.add(workoutId);
     const url =
-      `https://spite-backend-v2.onrender.com/api/workouts/assign?workoutId=${workoutId}&clientUsername=${this.clientUsername}&assignedBy=${this.trainerUsername}`;
+      `https://spite-backend.fly.dev/api/workouts/assign?workoutId=${workoutId}&clientUsername=${this.clientUsername}&assignedBy=${this.trainerUsername}`;
 
     this.http.post(url, {}, { responseType: 'text' as 'json' })
       .subscribe({
@@ -262,7 +262,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
     if (!workoutId || this.savingNoteWorkoutIds.has(workoutId)) return;
     this.savingNoteWorkoutIds.add(workoutId);
     this.http.put(
-      `https://spite-backend-v2.onrender.com/api/workouts/assign/note?workoutId=${workoutId}&clientUsername=${this.clientUsername}&trainerUsername=${this.trainerUsername}&note=${encodeURIComponent(note)}`,
+      `https://spite-backend.fly.dev/api/workouts/assign/note?workoutId=${workoutId}&clientUsername=${this.clientUsername}&trainerUsername=${this.trainerUsername}&note=${encodeURIComponent(note)}`,
       {},
       { responseType: 'text' as 'json' }
     ).subscribe({
@@ -308,7 +308,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
     if (!workoutId || this.unassigningWorkoutIds.has(workoutId)) return;
     this.unassigningWorkoutIds.add(workoutId);
     const url =
-      `https://spite-backend-v2.onrender.com/api/workouts/assign?workoutId=${workoutId}&clientUsername=${this.clientUsername}&assignedBy=${this.trainerUsername}`;
+      `https://spite-backend.fly.dev/api/workouts/assign?workoutId=${workoutId}&clientUsername=${this.clientUsername}&assignedBy=${this.trainerUsername}`;
 
     this.http.delete(url, { responseType: 'text' as 'json' })
       .subscribe({
