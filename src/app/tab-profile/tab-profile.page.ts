@@ -163,7 +163,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
       error: () => {}
     });
 
-    if (this.user?.role === 'TRAINER' || this.user?.role === 'ADMIN') {
+    if (this.user?.role === 'TRAINER'){
       this.http.get<any>(`${this.backendUrl}/trainer/inbox/${this.user.username}`).subscribe({
         next: (inbox) => {
           this.inactiveClients = (inbox.priorityClients || [])
