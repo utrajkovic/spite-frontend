@@ -116,7 +116,7 @@
         <div class="swipe-card">
 
           <!-- TRAINER: Today's Tasks -->
-          <ion-card class="todays-tasks-card" *ngIf="user?.role === 'TRAINER' || user?.role === 'ADMIN'">
+          <ion-card class="todays-tasks-card" *ngIf="user?.role === 'TRAINER'">
             <ion-card-content>
               <div class="tt-header">
                 <i class="fa-solid fa-list-check"></i>
@@ -151,7 +151,7 @@
           </ion-card>
 
           <!-- USER/ADMIN: Trainer Zone -->
-          <ion-card class="trainer-zone-card" *ngIf="user?.role === 'USER' && trainerName">
+          <ion-card class="trainer-zone-card" *ngIf="(user?.role === 'USER' || user?.role === 'ADMIN') && trainerName">
             <ion-card-content>
               <div class="tz-top">
                 <div class="tz-avatar">{{ trainerName[0] | uppercase }}</div>
@@ -201,7 +201,7 @@
             </ion-card-content>
           </ion-card>
 
-          <ion-card class="trainer-zone-card no-trainer" *ngIf="user?.role === 'USER' && !trainerName">
+          <ion-card class="trainer-zone-card no-trainer" *ngIf="(user?.role === 'USER' || user?.role === 'ADMIN') && !trainerName">
             <ion-card-content>
               <div class="tz-empty">
                 <i class="fa-solid fa-user-shield"></i>
