@@ -41,7 +41,7 @@ export class AuthInterceptor implements HttpInterceptor {
               return EMPTY;
             } else if (err.status === 403) {
               const body = typeof err.error === 'string' ? err.error : '';
-              if (body === 'blocked' || body === 'deleted' || err.status === 403) {
+              if (body === 'blocked' || body === 'deleted') {
                 this.forceLogout();
                 return EMPTY;
               }
