@@ -46,6 +46,22 @@
 
     <!-- SCHEDULE -->
     <ng-container *ngIf="view === 'schedule'">
+      <div class="reminder-card">
+        <div class="rem-row">
+          <div class="rem-text">
+            <span class="rem-title"><i class="fa-solid fa-envelope"></i> Dnevni podsetnik</span>
+            <span class="rem-sub">Email sa terminima za taj dan</span>
+          </div>
+          <button class="switch" [class.on]="reminderEnabled" (click)="toggleReminder()">
+            <span class="knob"></span>
+          </button>
+        </div>
+        <div class="rem-time" *ngIf="reminderEnabled">
+          <label>U koliko sati</label>
+          <input type="time" class="sf-input" [(ngModel)]="reminderTime" (change)="saveReminder()">
+        </div>
+      </div>
+
       <div class="cal-card">
         <div class="cal-head">
           <button class="cal-nav" (click)="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>

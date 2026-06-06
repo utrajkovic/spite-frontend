@@ -32,7 +32,12 @@ export class TabTrainerPage {
 
   baseUrl = 'https://spite-backend.fly.dev/api/trainer';
   sessionsUrl = 'https://spite-backend.fly.dev/api/sessions';
+  usersUrl = 'https://spite-backend.fly.dev/api/users';
   isLoading = false;
+
+  // Daily reminder settings
+  reminderEnabled = true;
+  reminderTime = '07:00';
 
   // Scheduling
   view: 'clients' | 'schedule' = 'clients';
@@ -64,7 +69,30 @@ export class TabTrainerPage {
       this.loadClients();
       this.buildCalendar();
       this.loadSessions();
+      this.loadReminderSettings();
     }
+  }
+
+  loadReminderSettings() {
+    this.http.get<any>(`${this.usersUrl}/username/${this.trainerUsername}`).subscribe({
+      next: (u) => {
+        this.reminderEnabled = u?.dailyReminderEnabled !== false;
+        if (u?.dailyReminderTime) this.reminderTime = u.dailyReminderTime;
+      },
+      error: () => {}
+    });
+  }
+
+  toggleReminder() {
+    this.reminderEnabled = !this.reminderEnabled;
+    this.saveReminder();
+  }
+
+  saveReminder() {
+    this.http.put(
+      `${this.usersUrl}/reminder?username=${this.trainerUsername}&enabled=${this.reminderEnabled}&time=${this.reminderTime}`,
+      {}, { responseType: 'text' as 'json' }
+    ).subscribe({ next: () => {}, error: () => {} });
   }
 
   // ───────── Scheduling ─────────
