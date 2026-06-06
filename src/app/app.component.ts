@@ -27,8 +27,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private http: HttpClient
   ) {
     if (Capacitor.isNativePlatform()) {
-      StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
-      StatusBar.setBackgroundColor({ color: '#00111a' }).catch(() => {});
+      // Header ide ispod status bara (neprekidno, bez zasebne fiksne boje)
+      StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {});
       StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
     }
     this.themeService.init();

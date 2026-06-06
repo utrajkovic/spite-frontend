@@ -394,11 +394,22 @@ export class TabProfilePage implements OnInit, OnDestroy {
   }
 
   async showIosInstallGuide() {
+    const message =
+      '<div style="text-align:left;text-shadow:none;line-height:1.55;font-size:14px;color:#f2f2f2">' +
+        '<p style="margin:0 0 14px">Add <b>Spite</b> to your home screen:</p>' +
+        '<ol style="margin:0;padding-left:22px">' +
+          '<li style="margin-bottom:10px">Tap the <b>Share</b> button ' +
+            '<span style="display:inline-block">&#x2191;</span> in Safari\'s bottom bar</li>' +
+          '<li style="margin-bottom:10px">Scroll down and tap <b>&ldquo;Add to Home Screen&rdquo;</b></li>' +
+          '<li>Tap <b>Add</b> in the top-right corner</li>' +
+        '</ol>' +
+      '</div>';
+
     const a = await this.alertCtrl.create({
-      header: 'Add to Home Screen',
-      message: '1. Tap the Share button ⎙ at the bottom of Safari\n\n2. Scroll down and tap "Add to Home Screen"\n\n3. Tap Add',
-      buttons: ['OK'],
-      cssClass: 'custom-alert'
+      header: 'Install Spite',
+      message,
+      buttons: ['Got it'],
+      cssClass: 'custom-alert install-alert'
     });
     await a.present();
   }

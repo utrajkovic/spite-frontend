@@ -33,8 +33,8 @@
   --font-display:       'Orbitron', sans-serif;
   --font-body:          'Tilt Neon', cursive;
 
-  /* Padding top (zbog globalnog headera) */
-  --header-offset:      72px;
+  /* Padding top (zbog globalnog headera) — uključuje status bar (notch) */
+  --header-offset:      calc(72px + env(safe-area-inset-top));
 }
 
 /* Core CSS required for Ionic components */
@@ -110,6 +110,16 @@ ion-alert.custom-alert::part(button):hover {
   filter: brightness(1.2);
   transform: scale(1.04);
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Install guide alert: readable, wider, no glow on body text */
+ion-alert.install-alert {
+  --max-width: 400px;
+}
+ion-alert.install-alert::part(message) {
+  text-align: left !important;
+  text-shadow: none !important;
+  color: var(--color-text) !important;
 }
 
 ion-alert,
