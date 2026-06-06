@@ -519,3 +519,69 @@ ion-content {
   text-align: center;
   padding: 12px 0;
 }
+
+/* Custom names */
+.custom-add {
+  display: flex;
+  gap: 8px;
+}
+
+.custom-add .sf-input { flex: 1; min-width: 0; }
+
+.custom-add-btn {
+  flex-shrink: 0;
+  width: 42px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-primary);
+  cursor: pointer;
+
+  &:active { background: rgba(255, 255, 255, 0.12); }
+}
+
+.custom-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.custom-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 12px;
+  background: rgba(0, 255, 255, 0.06);
+  border: 1px solid var(--border-accent);
+  border-radius: 20px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--color-text);
+
+  button {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-muted);
+    font-size: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.sr-tag {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  font-family: var(--font-display);
+  font-size: 9px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

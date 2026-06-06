@@ -76,7 +76,7 @@
         <div class="sched-existing" *ngIf="sessionsForSelectedDay().length">
           <div class="sched-row" *ngFor="let s of sessionsForSelectedDay()">
             <span class="sr-time">{{ formatTime(s.startTime) }}</span>
-            <span class="sr-client">{{ s.clientUsername }}</span>
+            <span class="sr-client">{{ s.clientUsername }}<span class="sr-tag" *ngIf="s.custom">custom</span></span>
             <button class="sr-cancel" (click)="confirmCancelSession(s)"><i class="fa-solid fa-trash"></i></button>
           </div>
         </div>
@@ -107,10 +107,23 @@
         </div>
         <ng-template #noCl><p class="empty-msg">Nemaš klijente za zakazivanje.</p></ng-template>
 
-        <button class="book-btn" (click)="book()" [disabled]="booking || selectedClients.size === 0">
+        <p class="sched-label">Ručno ime (van aplikacije)</p>
+        <div class="custom-add">
+          <input class="sf-input" [(ngModel)]="customNameInput"
+            placeholder="npr. Marko (nije klijent app-a)" (keyup.enter)="addCustomName()">
+          <button class="custom-add-btn" (click)="addCustomName()"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="custom-chips" *ngIf="customNames.length">
+          <span class="custom-chip" *ngFor="let n of customNames; let i = index">
+            {{ n }}
+            <button (click)="removeCustomName(i)"><i class="fa-solid fa-xmark"></i></button>
+          </span>
+        </div>
+
+        <button class="book-btn" (click)="book()" [disabled]="booking || totalSelected === 0">
           <i *ngIf="booking" class="fa-solid fa-spinner fa-spin"></i>
           <i *ngIf="!booking" class="fa-solid fa-calendar-plus"></i>
-          {{ booking ? 'Zakazivanje...' : 'Zakaži (' + selectedClients.size + ')' }}
+          {{ booking ? 'Zakazivanje...' : 'Zakaži (' + totalSelected + ')' }}
         </button>
       </div>
     </ng-container>

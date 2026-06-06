@@ -44,6 +44,8 @@ export class TabTrainerPage {
   sessionDuration = 60;
   sessionNote = '';
   selectedClients = new Set<string>();
+  customNames: string[] = [];
+  customNameInput = '';
   allSessions: any[] = [];
   booking = false;
 
@@ -137,6 +139,21 @@ export class TabTrainerPage {
     else this.selectedClients.add(username);
   }
 
+  addCustomName() {
+    const name = (this.customNameInput || '').trim();
+    if (!name) return;
+    if (!this.customNames.includes(name)) this.customNames.push(name);
+    this.customNameInput = '';
+  }
+
+  removeCustomName(i: number) {
+    this.customNames.splice(i, 1);
+  }
+
+  get totalSelected(): number {
+    return this.selectedClients.size + this.customNames.length;
+  }
+
   formatTime(ts: number): string {
     return new Date(ts).toLocaleTimeString('sr-RS', { hour: '2-digit', minute: '2-digit' });
   }
@@ -144,7 +161,7 @@ export class TabTrainerPage {
   book() {
     if (this.booking) return;
     if (!this.selectedDate) { this.showAlert('Izaberi datum.'); return; }
-    if (this.selectedClients.size === 0) { this.showAlert('Izaberi bar jednog klijenta.'); return; }
+    if (this.totalSelected === 0) { this.showAlert('Izaberi bar jednog klijenta ili dodaj ime.'); return; }
     if (!/^\d{1,2}:\d{2}$/.test(this.sessionTime)) { this.showAlert('Unesi vreme u formatu HH:MM.'); return; }
 
     const [h, m] = this.sessionTime.split(':').map(Number);
@@ -155,7 +172,8 @@ export class TabTrainerPage {
       startTime: dt.getTime(),
       durationMinutes: Number(this.sessionDuration) || 60,
       note: this.sessionNote.trim(),
-      clientUsernames: Array.from(this.selectedClients)
+      clientUsernames: Array.from(this.selectedClients),
+      customNames: [...this.customNames]
     };
 
     this.booking = true;
@@ -167,6 +185,8 @@ export class TabTrainerPage {
       next: () => {
         this.booking = false;
         this.selectedClients.clear();
+        this.customNames = [];
+        this.customNameInput = '';
         this.sessionNote = '';
         this.loadSessions();
         this.showAlert('Termin je zakazan.');
