@@ -253,17 +253,21 @@
                 <span>{{ user?.role === 'TRAINER' ? 'Scheduled Sessions' : 'My Sessions' }}</span>
               </div>
 
-              <div class="sc-list" *ngIf="scheduledSessions.length; else noSessions">
-                <div class="sc-item" *ngFor="let s of scheduledSessions">
+              <div class="sc-list" *ngIf="scheduleGroups.length; else noSessions">
+                <div class="sc-item" *ngFor="let g of scheduleGroups">
                   <div class="sc-date">
-                    <span class="sc-day">{{ formatSessionTime(s.startTime) }}</span>
-                    <span class="sc-dur">{{ s.durationMinutes }} min</span>
+                    <span class="sc-day">{{ formatSessionTime(g.startTime) }}</span>
+                    <span class="sc-dur">{{ g.durationMinutes }} min</span>
                   </div>
-                  <div class="sc-who">
-                    <i class="fa-solid" [class.fa-user]="user?.role === 'TRAINER'" [class.fa-user-shield]="user?.role !== 'TRAINER'"></i>
-                    {{ user?.role === 'TRAINER' ? s.clientUsername : s.trainerUsername }}
+                  <div class="sc-who" *ngIf="user?.role === 'TRAINER'">
+                    <i class="fa-solid fa-user"></i>
+                    {{ g.names.join(', ') }}
                   </div>
-                  <div class="sc-note" *ngIf="s.note">{{ s.note }}</div>
+                  <div class="sc-who" *ngIf="user?.role !== 'TRAINER'">
+                    <i class="fa-solid fa-user-shield"></i>
+                    {{ g.trainer }}
+                  </div>
+                  <div class="sc-note" *ngIf="g.note">{{ g.note }}</div>
                 </div>
               </div>
 

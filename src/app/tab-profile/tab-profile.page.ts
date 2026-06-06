@@ -169,12 +169,31 @@ export class TabProfilePage implements OnInit, OnDestroy {
       ? `${this.backendUrl}/sessions/trainer/${this.user.username}`
       : `${this.backendUrl}/sessions/client/${this.user.username}`;
     this.http.get<any[]>(url).subscribe({
-      next: (list) => {
-        const cutoff = Date.now() - 12 * 3600 * 1000;
-        this.scheduledSessions = (list || []).filter(s => s.startTime >= cutoff);
-      },
+      next: (list) => { this.scheduledSessions = list || []; },
       error: () => { this.scheduledSessions = []; }
     });
+  }
+
+  // Termini grupisani po vremenu (isti termin = jedan bubble), bez prošlih
+  get scheduleGroups(): any[] {
+    const now = Date.now();
+    const groups = new Map<string, any>();
+    for (const s of this.scheduledSessions) {
+      const endT = s.startTime + (s.durationMinutes || 60) * 60000;
+      if (endT <= now) continue; // termin je prošao -> sakrij
+      const key = s.startTime + '|' + s.trainerUsername;
+      if (!groups.has(key)) {
+        groups.set(key, {
+          startTime: s.startTime,
+          durationMinutes: s.durationMinutes,
+          note: s.note,
+          trainer: s.trainerUsername,
+          names: []
+        });
+      }
+      groups.get(key).names.push(s.clientUsername);
+    }
+    return Array.from(groups.values()).sort((a, b) => a.startTime - b.startTime);
   }
 
   formatSessionTime(ts: number): string {
