@@ -51,10 +51,15 @@ ion-back-button {
   z-index: 10;
   background: var(--bg-page);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  // Na uskim ekranima dozvoli horizontalni scroll umesto stiskanja teksta
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 }
 
 .tab-btn {
-  flex: 1;
+  flex: 1 0 auto;
+  white-space: nowrap;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
@@ -62,7 +67,7 @@ ion-back-button {
   font-family: var(--font-display);
   font-size: 11px;
   letter-spacing: 0.4px;
-  padding: 8px 4px;
+  padding: 8px 6px;
   cursor: pointer;
   transition: all 0.2s;
 
@@ -472,4 +477,121 @@ ion-back-button {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Meal plan editor (trainer) ─── */
+.meals-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.add-meal-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: rgba(0, 255, 255, 0.08);
+  border: 1px solid rgba(0, 255, 255, 0.18);
+  border-radius: 10px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:active { background: rgba(0, 255, 255, 0.15); }
+}
+
+.meal-edit-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.meal-edit-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meal-index {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.meal-name-input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+
+  &::placeholder { color: rgba(255, 255, 255, 0.25); font-weight: 400; }
+  &:focus { border-color: rgba(0, 255, 255, 0.3); }
+}
+
+.meal-foods-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+
+  &::placeholder { color: rgba(255, 255, 255, 0.22); }
+  &:focus { border-color: rgba(0, 255, 255, 0.3); }
+}
+
+.save-meals-btn {
+  width: 100%;
+  margin-top: 4px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 14px;
+  color: #00111a;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:disabled { opacity: 0.6; }
+  &:active { opacity: 0.85; }
 }

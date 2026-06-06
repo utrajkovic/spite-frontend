@@ -774,3 +774,84 @@ ion-card {
 
   ion-card { margin: 10px 0; }
 }
+
+/* ─────────────────────────────────────────
+   MEAL PLAN CARD (client)
+───────────────────────────────────────── */
+.meal-plan-card {
+  ion-card-content {
+    padding: 20px 16px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+
+.mp-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+
+  i { font-size: 16px; color: var(--color-primary); }
+}
+
+.mp-meals {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mp-meal {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.mp-meal-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+.mp-meal-foods {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  opacity: 0.85;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.mp-from {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  margin-top: 2px;
+
+  i { font-size: 11px; color: var(--color-primary); }
+  strong { color: var(--color-text); }
+}
+
+.mp-empty {
+  text-align: center;
+  padding: 24px 0;
+  color: var(--color-text-muted);
+  opacity: 0.4;
+
+  i { font-size: 34px; margin-bottom: 12px; display: block; }
+  p { font-family: var(--font-display); font-size: 14px; margin: 0 0 6px; }
+  span { font-size: 12px; }
+}

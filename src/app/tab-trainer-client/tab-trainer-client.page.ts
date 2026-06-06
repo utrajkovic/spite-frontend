@@ -56,6 +56,10 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
   baseUrl = 'https://spite-backend.fly.dev/api/trainer';
   feedbackUrl = 'https://spite-backend.fly.dev/api/feedback';
   checkinUrl = 'https://spite-backend.fly.dev/api/checkins';
+  mealsUrl = 'https://spite-backend.fly.dev/api/meals';
+
+  clientMeals: { name: string; foods: string }[] = [];
+  savingMealPlan = false;
 
   loading: HTMLIonLoadingElement | null = null;
   assigningWorkoutIds = new Set<string>();
@@ -136,6 +140,7 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
           this.loadFeedback();
           this.loadClientCheckIns();
           this.loadClientInfo();
+          this.loadMealPlan();
         },
         error: async () => {
           await this.hideLoading();
@@ -207,6 +212,47 @@ export class TabTrainerClientPage implements OnInit, OnDestroy {
         next: (res) => { this.clientInfo = res; },
         error: () => {}
       });
+  }
+
+  loadMealPlan() {
+    this.http.get<any>(`${this.mealsUrl}/client/${this.clientUsername}`)
+      .subscribe({
+        next: (plan) => { this.clientMeals = plan?.meals ?? []; },
+        error: () => { this.clientMeals = []; }
+      });
+  }
+
+  addMeal() {
+    this.clientMeals.push({ name: '', foods: '' });
+  }
+
+  removeMeal(i: number) {
+    this.clientMeals.splice(i, 1);
+  }
+
+  saveMealPlan() {
+    if (this.savingMealPlan) return;
+
+    const meals = this.clientMeals
+      .map(m => ({ name: (m.name || '').trim(), foods: (m.foods || '').trim() }))
+      .filter(m => m.name || m.foods);
+
+    this.savingMealPlan = true;
+    this.http.put(
+      `${this.mealsUrl}?trainerUsername=${this.trainerUsername}&clientUsername=${this.clientUsername}`,
+      meals,
+      { responseType: 'text' as 'json' }
+    ).subscribe({
+      next: () => {
+        this.savingMealPlan = false;
+        this.clientMeals = meals;
+        this.showAlert('Meal plan saved.');
+      },
+      error: () => {
+        this.savingMealPlan = false;
+        this.showAlert('Error saving meal plan.');
+      }
+    });
   }
 
   assignWorkout(workoutId: string) {

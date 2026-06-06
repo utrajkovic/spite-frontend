@@ -19,6 +19,8 @@
       (click)="segment = 'logs'; onSegmentChange()">Logs</button>
     <button class="tab-btn" [class.active]="segment === 'info'"
       (click)="segment = 'info'; onSegmentChange()">Calendar</button>
+    <button class="tab-btn" [class.active]="segment === 'meals'"
+      (click)="segment = 'meals'; onSegmentChange()">Meals</button>
     <button class="tab-btn" [class.active]="segment === 'profile'"
       (click)="segment = 'profile'; onSegmentChange()">Profile</button>
   </div>
@@ -106,6 +108,41 @@
     <div class="section">
       <p class="section-label">Workout Calendar</p>
       <workout-calendar-modal [feedbacks]="feedbackList" [inline]="true"></workout-calendar-modal>
+    </div>
+  </ng-container>
+
+  <!-- MEALS -->
+  <ng-container *ngIf="segment === 'meals'">
+    <div class="section">
+      <div class="meals-head">
+        <p class="section-label">Meal Plan</p>
+        <button class="add-meal-btn" (click)="addMeal()">
+          <i class="fa-solid fa-plus"></i> Add meal
+        </button>
+      </div>
+
+      <div *ngIf="clientMeals.length === 0" class="empty-msg">
+        No meals yet. Tap "Add meal" to build a plan for this client.
+      </div>
+
+      <div class="meal-edit-card" *ngFor="let meal of clientMeals; let i = index">
+        <div class="meal-edit-top">
+          <span class="meal-index">{{ i + 1 }}</span>
+          <input class="meal-name-input" [(ngModel)]="meal.name" placeholder="Meal name (e.g. Breakfast)">
+          <button class="icon-btn danger-btn" (click)="removeMeal(i)">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+        <textarea class="meal-foods-input" [(ngModel)]="meal.foods" rows="3"
+          placeholder="Foods (e.g. 4 eggs, 80g oats, 1 banana...)"></textarea>
+      </div>
+
+      <button class="save-meals-btn" *ngIf="clientMeals.length > 0"
+        (click)="saveMealPlan()" [disabled]="savingMealPlan">
+        <i *ngIf="savingMealPlan" class="fa-solid fa-spinner fa-spin"></i>
+        <i *ngIf="!savingMealPlan" class="fa-solid fa-floppy-disk"></i>
+        {{ savingMealPlan ? 'Saving...' : 'Save plan' }}
+      </button>
     </div>
   </ng-container>
 

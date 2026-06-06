@@ -48,6 +48,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
   assignedWorkoutsCount: number = 0;
   cardIndex = 0;
   cardTitles = ['Workout Calendar', 'Trainer Zone'];
+  mealPlan: any = null;
   completionRate: number = 0;
   lastWorkoutDate: string = '';
 
@@ -92,8 +93,12 @@ export class TabProfilePage implements OnInit, OnDestroy {
     this.user = stored.value ? JSON.parse(stored.value) : null;
     if (this.user) {
       this.memberSince = this.extractMemberSince(this.user.id);
+      this.cardTitles = this.user.role === 'TRAINER'
+        ? ['Workout Calendar', "Today's Tasks"]
+        : ['Workout Calendar', 'Trainer Zone', 'Meal Plan'];
       this.loadData();
       this.loadTrainerName();
+      this.loadMealPlan();
     }
   }
 
@@ -102,7 +107,15 @@ export class TabProfilePage implements OnInit, OnDestroy {
       this.badgeService.checkNow();
       this.loadData();
       this.loadTrainerName();
+      this.loadMealPlan();
     }
+  }
+
+  loadMealPlan() {
+    this.http.get<any>(`${this.backendUrl}/meals/client/${this.user.username}`).subscribe({
+      next: (plan) => { this.mealPlan = plan; },
+      error: () => { this.mealPlan = null; }
+    });
   }
 
   ngOnDestroy() {}

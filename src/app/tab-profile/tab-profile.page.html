@@ -212,6 +212,38 @@
           </ion-card>
 
         </div>
+
+        <!-- Card 3: Meal Plan (USER/ADMIN) -->
+        <div class="swipe-card" *ngIf="user?.role === 'USER' || user?.role === 'ADMIN'">
+          <ion-card class="meal-plan-card">
+            <ion-card-content>
+              <div class="mp-header">
+                <i class="fa-solid fa-utensils"></i>
+                <span>Meal Plan</span>
+              </div>
+
+              <div class="mp-meals" *ngIf="mealPlan?.meals?.length; else noMealPlan">
+                <div class="mp-meal" *ngFor="let meal of mealPlan.meals">
+                  <div class="mp-meal-name">{{ meal.name || 'Meal' }}</div>
+                  <div class="mp-meal-foods">{{ meal.foods }}</div>
+                </div>
+                <div class="mp-from" *ngIf="mealPlan.trainerUsername">
+                  <i class="fa-solid fa-user-shield"></i>
+                  From <strong>{{ mealPlan.trainerUsername }}</strong>
+                </div>
+              </div>
+
+              <ng-template #noMealPlan>
+                <div class="mp-empty">
+                  <i class="fa-solid fa-utensils"></i>
+                  <p>No meal plan yet</p>
+                  <span>Your trainer hasn't set one up</span>
+                </div>
+              </ng-template>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
       </div>
     </div>
 
