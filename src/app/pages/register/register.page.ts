@@ -27,6 +27,7 @@ export class RegisterPage {
     this.registerForm = this.fb.group(
       {
         username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(32), this.usernameValidator]],
+        email: ['', [this.emailOptionalValidator]],
         password: ['', [Validators.required, this.passwordValidator]],
         confirmPassword: ['', Validators.required]
       },
@@ -39,6 +40,13 @@ export class RegisterPage {
     if (!username) return null;
     const valid = /^[a-zA-Z0-9._-]+$/.test(username);
     return valid ? null : { usernameRules: true };
+  }
+
+  emailOptionalValidator(control: AbstractControl): ValidationErrors | null {
+    const email = (control.value || '').toString().trim();
+    if (!email) return null; // email je opcion
+    const valid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+    return valid ? null : { emailInvalid: true };
   }
 
   async ngOnInit() {
@@ -101,15 +109,19 @@ export class RegisterPage {
     }
 
     this.loading = true;
+    const email = (this.registerForm.value.email || '').trim();
     const user: User = {
       username: (this.registerForm.value.username || '').trim(),
-      password: this.registerForm.value.password
+      password: this.registerForm.value.password,
+      ...(email ? { email } : {})
     };
 
     this.auth.register(user).subscribe({
       next: () => {
         this.loading = false;
-        this.showAlert('Registration successful! You can now log in.');
+        this.showAlert(email
+          ? 'Registration successful! Check your inbox to verify your email, then log in.'
+          : 'Registration successful! You can now log in.');
         this.router.navigateByUrl('/login', { replaceUrl: true });
       },
       error: (err: HttpErrorResponse) => {

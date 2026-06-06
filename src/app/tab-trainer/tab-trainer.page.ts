@@ -31,7 +31,21 @@ export class TabTrainerPage {
   priorityClients: PriorityClient[] = [];
 
   baseUrl = 'https://spite-backend.fly.dev/api/trainer';
+  sessionsUrl = 'https://spite-backend.fly.dev/api/sessions';
   isLoading = false;
+
+  // Scheduling
+  view: 'clients' | 'schedule' = 'clients';
+  calRef = new Date();
+  calendarDays: { date: Date; inMonth: boolean }[] = [];
+  monthLabel = '';
+  selectedDate: Date | null = null;
+  sessionTime = '18:00';
+  sessionDuration = 60;
+  sessionNote = '';
+  selectedClients = new Set<string>();
+  allSessions: any[] = [];
+  booking = false;
 
   constructor(
     private http: HttpClient,
@@ -46,7 +60,142 @@ export class TabTrainerPage {
       const parsed = JSON.parse(user);
       this.trainerUsername = parsed.username;
       this.loadClients();
+      this.buildCalendar();
+      this.loadSessions();
     }
+  }
+
+  // ───────── Scheduling ─────────
+
+  loadSessions() {
+    if (!this.trainerUsername) return;
+    this.http.get<any[]>(`${this.sessionsUrl}/trainer/${this.trainerUsername}`).subscribe({
+      next: (res) => { this.allSessions = res || []; },
+      error: () => { this.allSessions = []; }
+    });
+  }
+
+  buildCalendar() {
+    const year = this.calRef.getFullYear();
+    const month = this.calRef.getMonth();
+    this.monthLabel = this.calRef.toLocaleDateString('sr-RS', { month: 'long', year: 'numeric' });
+
+    const first = new Date(year, month, 1);
+    const startOffset = (first.getDay() + 6) % 7; // ponedeljak prvi
+    const start = new Date(year, month, 1 - startOffset);
+
+    const days: { date: Date; inMonth: boolean }[] = [];
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      days.push({ date: d, inMonth: d.getMonth() === month });
+    }
+    this.calendarDays = days;
+  }
+
+  prevMonth() {
+    this.calRef = new Date(this.calRef.getFullYear(), this.calRef.getMonth() - 1, 1);
+    this.buildCalendar();
+  }
+
+  nextMonth() {
+    this.calRef = new Date(this.calRef.getFullYear(), this.calRef.getMonth() + 1, 1);
+    this.buildCalendar();
+  }
+
+  selectDay(d: { date: Date; inMonth: boolean }) {
+    this.selectedDate = new Date(d.date);
+  }
+
+  private sameDay(a: Date, b: Date): boolean {
+    return a.getFullYear() === b.getFullYear()
+      && a.getMonth() === b.getMonth()
+      && a.getDate() === b.getDate();
+  }
+
+  isToday(date: Date): boolean {
+    return this.sameDay(date, new Date());
+  }
+
+  isSelected(date: Date): boolean {
+    return !!this.selectedDate && this.sameDay(date, this.selectedDate);
+  }
+
+  hasSessionsOn(date: Date): boolean {
+    return this.allSessions.some(s => this.sameDay(new Date(s.startTime), date));
+  }
+
+  sessionsForSelectedDay(): any[] {
+    if (!this.selectedDate) return [];
+    return this.allSessions
+      .filter(s => this.sameDay(new Date(s.startTime), this.selectedDate as Date))
+      .sort((a, b) => a.startTime - b.startTime);
+  }
+
+  toggleClientSel(username: string) {
+    if (this.selectedClients.has(username)) this.selectedClients.delete(username);
+    else this.selectedClients.add(username);
+  }
+
+  formatTime(ts: number): string {
+    return new Date(ts).toLocaleTimeString('sr-RS', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  book() {
+    if (this.booking) return;
+    if (!this.selectedDate) { this.showAlert('Izaberi datum.'); return; }
+    if (this.selectedClients.size === 0) { this.showAlert('Izaberi bar jednog klijenta.'); return; }
+    if (!/^\d{1,2}:\d{2}$/.test(this.sessionTime)) { this.showAlert('Unesi vreme u formatu HH:MM.'); return; }
+
+    const [h, m] = this.sessionTime.split(':').map(Number);
+    const dt = new Date(this.selectedDate);
+    dt.setHours(h, m, 0, 0);
+
+    const body = {
+      startTime: dt.getTime(),
+      durationMinutes: Number(this.sessionDuration) || 60,
+      note: this.sessionNote.trim(),
+      clientUsernames: Array.from(this.selectedClients)
+    };
+
+    this.booking = true;
+    this.http.post(
+      `${this.sessionsUrl}?trainerUsername=${this.trainerUsername}`,
+      body,
+      { responseType: 'text' as 'json' }
+    ).subscribe({
+      next: () => {
+        this.booking = false;
+        this.selectedClients.clear();
+        this.sessionNote = '';
+        this.loadSessions();
+        this.showAlert('Termin je zakazan.');
+      },
+      error: () => {
+        this.booking = false;
+        this.showAlert('Greška pri zakazivanju.');
+      }
+    });
+  }
+
+  async confirmCancelSession(s: any) {
+    const alert = await this.alertCtrl.create({
+      header: 'Otkaži termin',
+      message: `Otkazati termin sa "${s.clientUsername}" u ${this.formatTime(s.startTime)}?`,
+      buttons: [
+        { text: 'Ne', role: 'cancel' },
+        { text: 'Otkaži termin', role: 'confirm', handler: () => this.cancelSession(s.id) }
+      ],
+      cssClass: 'custom-alert'
+    });
+    await alert.present();
+  }
+
+  cancelSession(id: string) {
+    this.http.delete(`${this.sessionsUrl}/${id}`, { responseType: 'text' as 'json' }).subscribe({
+      next: () => { this.loadSessions(); },
+      error: () => { this.showAlert('Greška pri otkazivanju.'); }
+    });
   }
 
   async loadClients() {

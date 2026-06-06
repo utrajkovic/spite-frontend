@@ -193,3 +193,314 @@ ion-content {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ─── Tab nav (Clients / Schedule) ─── */
+.tab-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tab-nav .tab-btn {
+  flex: 1;
+  padding: 10px 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #00111a;
+    font-weight: 700;
+  }
+}
+
+/* ─── Calendar ─── */
+.cal-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cal-month {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--color-text);
+  text-transform: capitalize;
+}
+
+.cal-nav {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-primary);
+  cursor: pointer;
+
+  &:active { background: rgba(255, 255, 255, 0.1); }
+}
+
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+
+  span {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 10px;
+    color: var(--color-text-muted);
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &.dim { color: var(--color-text-muted); opacity: 0.3; }
+  &.today { border-color: var(--border-cyan-hover); }
+  &.selected {
+    background: var(--color-primary);
+    color: #00111a;
+    font-weight: 700;
+  }
+  &:active { transform: scale(0.94); }
+}
+
+.cal-dot {
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+.cal-cell.selected .cal-dot { background: #00111a; }
+
+/* ─── Schedule panel ─── */
+.sched-hint {
+  text-align: center;
+  padding: 30px 0;
+  color: var(--color-text-muted);
+  opacity: 0.4;
+
+  i { font-size: 28px; margin-bottom: 10px; display: block; }
+  p { font-family: var(--font-display); font-size: 13px; margin: 0; }
+}
+
+.sched-panel {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.sched-day {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--color-primary);
+  margin: 0 0 12px;
+  text-transform: capitalize;
+}
+
+.sched-existing {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.sched-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+}
+
+.sr-time {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.sr-client {
+  flex: 1;
+  font-size: 13px;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sr-cancel {
+  background: transparent;
+  border: none;
+  color: var(--color-danger);
+  opacity: 0.7;
+  font-size: 13px;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+.sched-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 14px 0 8px;
+}
+
+.sched-fields {
+  display: flex;
+  gap: 10px;
+}
+
+.sf {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  label {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--color-text-muted);
+    opacity: 0.6;
+  }
+}
+
+.sf-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 14px;
+  outline: none;
+
+  &.full { margin-top: 10px; font-family: var(--font-body); }
+  &:focus { border-color: var(--border-accent); }
+  &::placeholder { color: rgba(255, 255, 255, 0.25); }
+}
+
+.client-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cp-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &.sel {
+    border-color: var(--color-primary);
+    background: rgba(0, 255, 255, 0.06);
+  }
+
+  .fa-check { margin-left: auto; color: var(--color-primary); font-size: 12px; }
+}
+
+.cp-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.cp-name {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.book-btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 14px;
+  color: #00111a;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.5; }
+  &:active { opacity: 0.85; }
+}
+
+.empty-msg {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  opacity: 0.5;
+  text-align: center;
+  padding: 12px 0;
+}

@@ -49,6 +49,12 @@ export class TabProfilePage implements OnInit, OnDestroy {
   cardIndex = 0;
   cardTitles = ['Workout Calendar', 'Trainer Zone'];
   mealPlan: any = null;
+
+  accountEmail: string | null = null;
+  emailVerified = false;
+  newEmail = '';
+  emailBusy = false;
+  scheduledSessions: any[] = [];
   completionRate: number = 0;
   lastWorkoutDate: string = '';
 
@@ -94,11 +100,13 @@ export class TabProfilePage implements OnInit, OnDestroy {
     if (this.user) {
       this.memberSince = this.extractMemberSince(this.user.id);
       this.cardTitles = this.user.role === 'TRAINER'
-        ? ['Workout Calendar', "Today's Tasks"]
-        : ['Workout Calendar', 'Trainer Zone', 'Meal Plan'];
+        ? ['Workout Calendar', "Today's Tasks", 'Schedule']
+        : ['Workout Calendar', 'Trainer Zone', 'Meal Plan', 'Schedule'];
       this.loadData();
       this.loadTrainerName();
       this.loadMealPlan();
+      this.loadAccount();
+      this.loadSchedule();
     }
   }
 
@@ -108,7 +116,71 @@ export class TabProfilePage implements OnInit, OnDestroy {
       this.loadData();
       this.loadTrainerName();
       this.loadMealPlan();
+      this.loadAccount();
+      this.loadSchedule();
     }
+  }
+
+  loadAccount() {
+    this.http.get<any>(`${this.backendUrl}/users/username/${this.user.username}`).subscribe({
+      next: (u) => {
+        this.accountEmail = u?.email ?? null;
+        this.emailVerified = !!u?.emailVerified;
+      },
+      error: () => {}
+    });
+  }
+
+  saveEmail() {
+    const email = (this.newEmail || '').trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      this.showAlert('Enter a valid email address.');
+      return;
+    }
+    this.emailBusy = true;
+    this.http.put(
+      `${this.backendUrl}/users/email?username=${this.user.username}&email=${encodeURIComponent(email)}`,
+      {}, { responseType: 'text' as 'json' }
+    ).subscribe({
+      next: () => {
+        this.emailBusy = false;
+        this.accountEmail = email;
+        this.emailVerified = false;
+        this.newEmail = '';
+        this.showAlert('Verification email sent. Check your inbox.');
+      },
+      error: () => { this.emailBusy = false; this.showAlert('Error saving email.'); }
+    });
+  }
+
+  resendVerification() {
+    this.emailBusy = true;
+    this.http.post(
+      `${this.backendUrl}/users/email/resend?username=${this.user.username}`,
+      {}, { responseType: 'text' as 'json' }
+    ).subscribe({
+      next: () => { this.emailBusy = false; this.showAlert('Verification email sent.'); },
+      error: () => { this.emailBusy = false; this.showAlert('Error sending email.'); }
+    });
+  }
+
+  loadSchedule() {
+    const url = this.user.role === 'TRAINER'
+      ? `${this.backendUrl}/sessions/trainer/${this.user.username}`
+      : `${this.backendUrl}/sessions/client/${this.user.username}`;
+    this.http.get<any[]>(url).subscribe({
+      next: (list) => {
+        const cutoff = Date.now() - 12 * 3600 * 1000;
+        this.scheduledSessions = (list || []).filter(s => s.startTime >= cutoff);
+      },
+      error: () => { this.scheduledSessions = []; }
+    });
+  }
+
+  formatSessionTime(ts: number): string {
+    return new Date(ts).toLocaleString('sr-RS', {
+      weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+    });
   }
 
   loadMealPlan() {

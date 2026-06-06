@@ -244,12 +244,71 @@
           </ion-card>
         </div>
 
+        <!-- Card: Schedule (everyone) -->
+        <div class="swipe-card">
+          <ion-card class="schedule-card">
+            <ion-card-content>
+              <div class="sc-header">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>{{ user?.role === 'TRAINER' ? 'Scheduled Sessions' : 'My Sessions' }}</span>
+              </div>
+
+              <div class="sc-list" *ngIf="scheduledSessions.length; else noSessions">
+                <div class="sc-item" *ngFor="let s of scheduledSessions">
+                  <div class="sc-date">
+                    <span class="sc-day">{{ formatSessionTime(s.startTime) }}</span>
+                    <span class="sc-dur">{{ s.durationMinutes }} min</span>
+                  </div>
+                  <div class="sc-who">
+                    <i class="fa-solid" [class.fa-user]="user?.role === 'TRAINER'" [class.fa-user-shield]="user?.role !== 'TRAINER'"></i>
+                    {{ user?.role === 'TRAINER' ? s.clientUsername : s.trainerUsername }}
+                  </div>
+                  <div class="sc-note" *ngIf="s.note">{{ s.note }}</div>
+                </div>
+              </div>
+
+              <ng-template #noSessions>
+                <div class="sc-empty">
+                  <i class="fa-solid fa-calendar-xmark"></i>
+                  <p>No upcoming sessions</p>
+                  <span>{{ user?.role === 'TRAINER' ? 'Schedule one from the Trainer tab' : 'Your trainer hasn\'t scheduled anything' }}</span>
+                </div>
+              </ng-template>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
       </div>
     </div>
 
     <div class="swipe-dots">
       <span class="dot" *ngFor="let t of cardTitles; let i = index" [class.active]="cardIndex === i" (click)="cardIndex = i"></span>
     </div>
+  </div>
+
+  <!-- Email + verification -->
+  <div class="email-section">
+    <p class="email-label"><i class="fa-solid fa-envelope"></i> Email</p>
+
+    <div class="email-status" *ngIf="accountEmail">
+      <span class="email-addr">{{ accountEmail }}</span>
+      <span class="email-badge verified" *ngIf="emailVerified"><i class="fa-solid fa-circle-check"></i> Verified</span>
+      <span class="email-badge unverified" *ngIf="!emailVerified"><i class="fa-solid fa-circle-exclamation"></i> Unverified</span>
+    </div>
+
+    <button class="email-resend-btn" *ngIf="accountEmail && !emailVerified" (click)="resendVerification()" [disabled]="emailBusy">
+      <i class="fa-solid fa-paper-plane"></i> Resend verification email
+    </button>
+
+    <div class="email-add">
+      <input class="email-input" type="email" [(ngModel)]="newEmail"
+        [placeholder]="accountEmail ? 'Change email...' : 'Add your email...'">
+      <button class="email-save-btn" (click)="saveEmail()" [disabled]="emailBusy">
+        {{ accountEmail ? 'Update' : 'Add' }}
+      </button>
+    </div>
+
+    <p class="email-hint">Verify your email to receive session reminders from your trainer.</p>
   </div>
 
   <!-- Appearance / Theme -->
