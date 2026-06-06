@@ -252,6 +252,31 @@
     </div>
   </div>
 
+  <!-- Appearance / Theme -->
+  <div class="theme-switch">
+    <p class="theme-switch-label"><i class="fa-solid fa-palette"></i> Appearance</p>
+    <div class="theme-options">
+      <button class="theme-opt" [class.active]="themeService.currentTheme === 'cyberpunk'"
+        (click)="setTheme('cyberpunk')">
+        <span class="theme-swatch sw-cyberpunk"></span>
+        <span class="theme-name">Cyberpunk</span>
+        <i class="fa-solid fa-check" *ngIf="themeService.currentTheme === 'cyberpunk'"></i>
+      </button>
+      <button class="theme-opt" [class.active]="themeService.currentTheme === 'minimal'"
+        (click)="setTheme('minimal')">
+        <span class="theme-swatch sw-minimal-dark"></span>
+        <span class="theme-name">Minimal</span>
+        <i class="fa-solid fa-check" *ngIf="themeService.currentTheme === 'minimal'"></i>
+      </button>
+      <button class="theme-opt" [class.active]="themeService.currentTheme === 'minimal-light'"
+        (click)="setTheme('minimal-light')">
+        <span class="theme-swatch sw-minimal-light"></span>
+        <span class="theme-name">Light</span>
+        <i class="fa-solid fa-check" *ngIf="themeService.currentTheme === 'minimal-light'"></i>
+      </button>
+    </div>
+  </div>
+
   <!-- Personal Records -->
   <div class="quick-actions" *ngIf="prs.length > 0">
     <button class="action-btn" (click)="openPRList()">
