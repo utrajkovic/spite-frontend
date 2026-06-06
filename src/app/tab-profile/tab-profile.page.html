@@ -268,12 +268,6 @@
         <span class="theme-name">Minimal</span>
         <i class="fa-solid fa-check" *ngIf="themeService.currentTheme === 'minimal'"></i>
       </button>
-      <button class="theme-opt" [class.active]="themeService.currentTheme === 'minimal-light'"
-        (click)="setTheme('minimal-light')">
-        <span class="theme-swatch sw-minimal-light"></span>
-        <span class="theme-name">Light</span>
-        <i class="fa-solid fa-check" *ngIf="themeService.currentTheme === 'minimal-light'"></i>
-      </button>
     </div>
   </div>
 

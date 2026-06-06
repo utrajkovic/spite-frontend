@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-export type Theme = 'cyberpunk' | 'dark' | 'light' | 'minimal' | 'minimal-light';
+export type Theme = 'cyberpunk' | 'dark' | 'light' | 'minimal';
 
 const THEME_KEY = 'app_theme';
 

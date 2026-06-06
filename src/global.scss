@@ -617,10 +617,9 @@ ion-content::part(scroll) {
 }
 
 /* ============================================================
-   MINIMAL THEMES (clean, no glow, system font)
+   MINIMAL THEME (clean black & white, no glow, system font)
    ============================================================ */
 
-/* MINIMAL DARK (crno-belo, tamno) */
 [data-theme="minimal"] {
   --color-primary:      #ffffff;
   --color-primary-dim:  #b3b3b3;
@@ -640,29 +639,8 @@ ion-content::part(scroll) {
   --font-body:          system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* MINIMAL LIGHT (crno-belo, svetlo) */
-[data-theme="minimal-light"] {
-  --color-primary:      #111111;
-  --color-primary-dim:  #444444;
-  --color-text:         #141414;
-  --color-text-muted:   #5f5f5f;
-  --color-danger:       #d32f2f;
-  --color-success:      #2e7d32;
-  --color-warning:      #b8860b;
-  --bg-page:            #ffffff;
-  --bg-card:            rgba(0, 0, 0, 0.03);
-  --bg-card-hover:      rgba(0, 0, 0, 0.06);
-  --bg-input:           rgba(0, 0, 0, 0.04);
-  --border-cyan:        rgba(0, 0, 0, 0.10);
-  --border-cyan-hover:  rgba(0, 0, 0, 0.22);
-  --border-accent:      rgba(0, 0, 0, 0.25);
-  --font-display:       system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-body:          system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-}
-
-/* Kill all neon text-glow in minimal themes */
-[data-theme="minimal"] *,
-[data-theme="minimal-light"] * {
+/* Kill all neon text-glow in minimal theme */
+[data-theme="minimal"] * {
   text-shadow: none !important;
 }
 
@@ -670,38 +648,21 @@ ion-content::part(scroll) {
 [data-theme="minimal"] ion-content {
   --background: #0a0a0a !important;
 }
-[data-theme="minimal-light"] ion-content {
-  --background: #ffffff !important;
-  color: #141414;
-}
 
 [data-theme="minimal"] ion-toolbar {
   --background: rgba(10, 10, 10, 0.9) !important;
-}
-[data-theme="minimal-light"] ion-toolbar {
-  --background: rgba(255, 255, 255, 0.92) !important;
 }
 
 [data-theme="minimal"] .main-header {
   border-bottom-color: rgba(255, 255, 255, 0.08) !important;
   box-shadow: none !important;
 }
-[data-theme="minimal-light"] .main-header {
-  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
-  box-shadow: none !important;
-}
 
-/* Tab bar */
+/* Bottom tab bar */
 [data-theme="minimal"] .glass-tab-bar {
-  background: rgba(10, 10, 10, 0.92) !important;
-  --background: rgba(10, 10, 10, 0.92) !important;
+  background: rgba(10, 10, 10, 0.95) !important;
+  --background: rgba(10, 10, 10, 0.95) !important;
   border-top-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: none !important;
-}
-[data-theme="minimal-light"] .glass-tab-bar {
-  background: rgba(255, 255, 255, 0.94) !important;
-  --background: rgba(255, 255, 255, 0.94) !important;
-  border-top-color: rgba(0, 0, 0, 0.08) !important;
   box-shadow: none !important;
 }
 
@@ -709,34 +670,66 @@ ion-content::part(scroll) {
   --color: rgba(255, 255, 255, 0.4);
   --color-selected: #ffffff;
 }
-[data-theme="minimal-light"] ion-tab-button {
-  --color: rgba(0, 0, 0, 0.4);
-  --color-selected: #111111;
-}
 
 /* No icon glow, no underline glow on selected tab */
-[data-theme="minimal"] ion-tab-button.ion-selected i,
-[data-theme="minimal-light"] ion-tab-button.ion-selected i {
+[data-theme="minimal"] ion-tab-button.ion-selected i {
   filter: none !important;
   transform: none !important;
 }
-[data-theme="minimal"] ion-tab-button.ion-selected::after,
-[data-theme="minimal-light"] ion-tab-button.ion-selected::after {
+[data-theme="minimal"] ion-tab-button.ion-selected::after {
   box-shadow: none !important;
 }
 
-/* App title: drop Monoton + glow, use clean font */
+/* App name: KEEP Monoton (same as cyberpunk), just white, no glow */
 [data-theme="minimal"] .workout-title {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
-  font-weight: 800 !important;
-  letter-spacing: 2px !important;
   color: #ffffff !important;
+  text-shadow: none !important;
 }
-[data-theme="minimal-light"] .workout-title {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
-  font-weight: 800 !important;
-  letter-spacing: 2px !important;
-  color: #111111 !important;
+
+/* Alerts */
+[data-theme="minimal"] ion-alert.custom-alert {
+  --background: rgba(20, 20, 20, 0.97) !important;
+  --box-shadow: 0 12px 34px rgba(0, 0, 0, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+[data-theme="minimal"] ion-alert.custom-alert::part(button) {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+[data-theme="minimal"] ion-alert.custom-alert::part(button):hover {
+  box-shadow: none !important;
+}
+
+/* Toast */
+[data-theme="minimal"] ion-toast.custom-toast::part(container) {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Modals: neutral dark, no cyan glow */
+[data-theme="minimal"] .feedback-modal,
+[data-theme="minimal"] .pr-list-modal,
+[data-theme="minimal"] .pr-modal,
+[data-theme="minimal"] .cal-modal,
+[data-theme="minimal"] .trim-modal,
+[data-theme="minimal"] .modal-box {
+  background: #161616 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* Sticky inner surfaces inside modals */
+[data-theme="minimal"] .feedback-modal .close-btn,
+[data-theme="minimal"] .modal-actions {
+  background: #161616 !important;
+}
+
+/* Exercise settings modal (background via ion-content var) */
+[data-theme="minimal"] app-exercise-settings-modal ion-content {
+  --background: #161616 !important;
+}
+
+/* Bottom-sheet exercise preview */
+[data-theme="minimal"] ion-modal.ex-preview-sheet::part(content) {
+  background: #121212 !important;
 }
 
 /* ──────────────────────────────────────────
