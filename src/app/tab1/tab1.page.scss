@@ -4,7 +4,7 @@ ion-content {
 }
 
 .agenda-card {
-  background: rgba(0, 40, 60, 0.273);
+  background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 16px;
   padding: 14px;
@@ -89,19 +89,14 @@ ion-content {
   background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 18px;
-  margin: 0 0 14px;
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.08);
-  transition: all 0.3s ease;
-  animation: fadeIn 0.35s ease forwards;
+  margin: 0 0 12px;
+  transition: border-color 0.2s;
+  animation: fadeIn 0.3s ease forwards;
   overflow: hidden;
-}
 
-.workout-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--border-cyan-hover);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  &:active {
+    border-color: var(--border-cyan-hover);
+  }
 }
 
 .card-top {
@@ -114,8 +109,7 @@ ion-content {
 ion-card-title {
   font-family: var(--font-display);
   font-size: 17px;
-  color: var(--color-primary);
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  color: var(--color-text);
   line-height: 1.3;
 }
 

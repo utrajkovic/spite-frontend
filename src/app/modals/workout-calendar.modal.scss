@@ -160,7 +160,7 @@
 }
 
 .fb-card {
-  background: rgba(0, 40, 60, 0.3);
+  background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 12px;
   padding: 12px 14px;

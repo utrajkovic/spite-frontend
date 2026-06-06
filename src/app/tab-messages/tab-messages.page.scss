@@ -10,7 +10,7 @@ ion-content {
   padding: 14px;
   border-radius: 14px;
   border: 1px solid var(--border-cyan);
-  background: rgba(0, 40, 60, 0.25);
+  background: var(--bg-card);
 }
 
 .section-head {
@@ -22,7 +22,7 @@ ion-content {
   h3 {
     margin: 0;
     font-size: 14px;
-    color: var(--color-primary);
+    color: var(--color-text);
   }
 }
 
@@ -133,17 +133,15 @@ ion-content {
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
-  background: rgba(0, 40, 60, 0.25);
+  background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 16px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: border-color 0.2s;
   animation: fadeIn 0.3s ease;
 
-  &:hover {
+  &:active {
     border-color: var(--border-cyan-hover);
-    box-shadow: 0 0 14px rgba(0, 255, 255, 0.12);
-    transform: translateY(-1px);
   }
 }
 
@@ -194,7 +192,7 @@ ion-content {
 .username {
   font-family: var(--font-display);
   font-size: 15px;
-  color: var(--color-primary);
+  color: var(--color-text);
 }
 
 .tap-hint {

@@ -20,13 +20,14 @@
 
   /* Pozadine */
   --bg-page:            radial-gradient(circle at top, #00111a 0%, #000000 100%);
-  --bg-card:            rgba(0, 40, 60, 0.25);
-  --bg-card-hover:      rgba(0, 40, 60, 0.45);
-  --bg-input:           rgba(0, 40, 60, 0.35);
+  --bg-card:            rgba(255, 255, 255, 0.025);
+  --bg-card-hover:      rgba(255, 255, 255, 0.05);
+  --bg-input:           rgba(255, 255, 255, 0.04);
 
   /* Borderi */
-  --border-cyan:        rgba(0, 255, 255, 0.25);
-  --border-cyan-hover:  rgba(0, 255, 255, 0.5);
+  --border-cyan:        rgba(255, 255, 255, 0.08);
+  --border-cyan-hover:  rgba(255, 255, 255, 0.15);
+  --border-accent:      rgba(0, 255, 255, 0.2);
 
   /* Fontovi */
   --font-display:       'Orbitron', sans-serif;
@@ -355,14 +356,13 @@ ion-spinner {
 
 h2, h3 {
   font-family: var(--font-display);
-  color: var(--color-primary);
+  color: var(--color-text);
 }
 
 h2 {
   font-size: 20px;
   font-weight: 700;
   text-align: center;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
   margin-bottom: 16px;
 }
 
@@ -380,7 +380,7 @@ h3 {
 ------------------------------------------------------- */
 
 ion-label {
-  color: var(--color-primary) !important;
+  color: var(--color-text) !important;
   font-family: var(--font-display) !important;
 }
 
@@ -388,7 +388,7 @@ ion-list-header ion-label {
   font-size: 15px !important;
   letter-spacing: 1px;
   text-transform: uppercase;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+  color: var(--color-primary) !important;
 }
 
 /* ------------------------------------------------------
@@ -517,11 +517,12 @@ ion-content::part(scroll) {
   --color-success:      #00ffaa;
   --color-warning:      #ffe600;
   --bg-page:            radial-gradient(circle at top, #00111a 0%, #000000 100%);
-  --bg-card:            rgba(0, 40, 60, 0.25);
-  --bg-card-hover:      rgba(0, 40, 60, 0.45);
-  --bg-input:           rgba(0, 40, 60, 0.35);
-  --border-cyan:        rgba(0, 255, 255, 0.25);
-  --border-cyan-hover:  rgba(0, 255, 255, 0.5);
+  --bg-card:            rgba(255, 255, 255, 0.025);
+  --bg-card-hover:      rgba(255, 255, 255, 0.05);
+  --bg-input:           rgba(255, 255, 255, 0.04);
+  --border-cyan:        rgba(255, 255, 255, 0.08);
+  --border-cyan-hover:  rgba(255, 255, 255, 0.15);
+  --border-accent:      rgba(0, 255, 255, 0.2);
   --font-display:       'Orbitron', sans-serif;
   --font-body:          'Tilt Neon', cursive;
 }
@@ -613,6 +614,137 @@ ion-content::part(scroll) {
 [data-theme="dark"] .workout-title {
   color: #a78bfa !important;
   text-shadow: 0 0 10px rgba(167, 139, 250, 0.4) !important;
+}
+
+/* ──────────────────────────────────────────
+   EXERCISE PREVIEW SHEET
+────────────────────────────────────────── */
+ion-modal.ex-preview-sheet::part(content) {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  top: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 88vh !important;
+  border-radius: 20px 20px 0 0;
+  background: rgba(0, 13, 20, 0.99) !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+ion-modal.ex-preview-sheet::part(backdrop) {
+  background: rgba(0, 0, 0, 0.72) !important;
+  --backdrop-opacity: 0.72 !important;
+}
+
+@media (min-width: 600px) {
+  ion-modal.ex-preview-sheet::part(content) {
+    bottom: auto !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 92% !important;
+    max-width: 440px !important;
+    border-radius: 20px !important;
+  }
+}
+
+.preview-sheet {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.preview-drag-handle {
+  width: 36px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  margin: 12px auto 0;
+  flex-shrink: 0;
+}
+
+.preview-video-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-top: 12px;
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+}
+
+.preview-no-video {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-top: 12px;
+
+  i { font-size: 32px; color: var(--color-primary); opacity: 0.2; }
+  span { font-family: var(--font-display); font-size: 12px; color: var(--color-text-muted); opacity: 0.3; letter-spacing: 1px; }
+}
+
+.preview-body {
+  padding: 20px 20px 8px;
+  flex: 1;
+}
+
+.preview-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 10px;
+  text-align: left;
+}
+
+.preview-desc {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.preview-footer {
+  padding: 12px 20px calc(16px + env(safe-area-inset-bottom));
+  flex-shrink: 0;
+}
+
+.preview-close-btn {
+  width: 100%;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:active { background: rgba(255, 255, 255, 0.1); }
 }
 
 /* PR List Modal */

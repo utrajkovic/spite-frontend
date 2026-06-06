@@ -9,31 +9,28 @@ ion-content {
 .tab-switcher {
   display: flex;
   margin: 16px 16px 0;
-  background: rgba(0, 255, 255, 0.06);
-  border: 1px solid var(--border-cyan);
-  border-radius: 14px;
-  padding: 4px;
-  gap: 4px;
+  gap: 6px;
 }
 
 .tab-btn {
   flex: 1;
-  padding: 10px 0;
-  background: transparent;
-  border: none;
+  padding: 9px 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
-  color: rgba(0, 247, 255, 0.4);
+  color: var(--color-text-muted);
   font-family: var(--font-display);
   font-size: 12px;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s;
 
   &.active {
-    background: rgba(0, 255, 255, 0.15);
-    color: var(--color-primary);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #00111a;
+    font-weight: 700;
   }
 }
 
@@ -115,7 +112,7 @@ ion-content {
   align-items: center;
   gap: 10px;
   padding: 12px 14px;
-  background: rgba(0, 40, 60, 0.25);
+  background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 14px;
   margin-bottom: 8px;
@@ -154,16 +151,43 @@ ion-searchbar {
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: rgba(0, 40, 60, 0.15);
-  border: 1px solid rgba(0, 255, 255, 0.12);
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   margin-bottom: 6px;
+  gap: 8px;
+}
 
-  span {
-    font-family: var(--font-display);
-    font-size: 13px;
-    color: var(--color-text-muted);
-  }
+.search-item-name {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--color-text);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  &:active { opacity: 0.7; }
+}
+
+.search-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.preview-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  opacity: 0.4;
+  font-size: 16px;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 8px;
+  &:active { opacity: 0.8; background: rgba(0, 255, 255, 0.08); }
 }
 
 /* BUTTONS */

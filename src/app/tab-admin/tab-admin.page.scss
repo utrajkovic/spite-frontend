@@ -46,15 +46,15 @@ ion-content {
   transition: all 0.2s ease;
 
   &.active {
-    background: rgba(0, 255, 255, 0.12);
-    color: var(--color-primary);
-    border-color: var(--border-cyan-hover);
-    box-shadow: 0 0 8px rgba(0, 255, 255, 0.15);
+    background: var(--color-primary);
+    color: #00111a;
+    border-color: var(--color-primary);
+    font-weight: 700;
   }
 }
 
 .user-card {
-  background: rgba(0, 40, 60, 0.25);
+  background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 16px;
   padding: 14px 16px;
@@ -98,7 +98,7 @@ ion-content {
 .username {
   font-family: var(--font-display);
   font-size: 15px;
-  color: var(--color-primary);
+  color: var(--color-text);
 }
 
 .role-tag {
@@ -229,7 +229,7 @@ ion-button[color="danger"] {
 }
 
 .ge-add-card {
-  background: rgba(0, 40, 60, 0.2);
+  background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 16px;
   padding: 16px;
@@ -369,7 +369,7 @@ ion-button[color="danger"] {
 }
 
 .ge-item {
-  background: rgba(0, 40, 60, 0.2);
+  background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 14px;
   padding: 14px;
@@ -507,7 +507,7 @@ ion-button[color="danger"] {
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: rgba(0, 40, 60, 0.15);
+  background: var(--bg-card);
   border: 1px solid rgba(0, 255, 255, 0.1);
   border-radius: 12px;
 }
@@ -577,7 +577,7 @@ ion-button[color="danger"] {
   display: flex;
   gap: 8px;
   padding: 12px;
-  background: rgba(0, 40, 60, 0.15);
+  background: var(--bg-card);
   border: 1px solid rgba(0, 255, 255, 0.08);
   border-radius: 12px;
   margin-bottom: 8px;

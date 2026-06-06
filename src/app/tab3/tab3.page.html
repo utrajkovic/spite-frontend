@@ -146,15 +146,28 @@
 
 </ion-content>
 
-<!-- EXERCISE MODAL -->
-<ion-modal #exerciseModal class="exercise-modal" [presentingElement]="null">
+<!-- EXERCISE PREVIEW SHEET -->
+<ion-modal #exerciseModal class="ex-preview-sheet" [presentingElement]="null">
   <ng-template>
-    <div class="modal-box">
-      <h2 class="modal-title">{{ previewExercise?.name }}</h2>
-      <video [src]="previewExercise?.videoUrl" [hidden]="!previewExercise?.videoUrl"
-        autoplay loop [muted]="true" playsinline class="modal-video"></video>
-      <p class="modal-desc">{{ previewExercise?.description || 'No description' }}</p>
-      <ion-button expand="block" (click)="closeExerciseModal()">Close</ion-button>
+    <div class="preview-sheet">
+      <div class="preview-drag-handle"></div>
+
+      <div class="preview-video-wrap" *ngIf="previewExercise?.videoUrl">
+        <video [src]="previewExercise?.videoUrl" autoplay loop [muted]="true" playsinline></video>
+      </div>
+      <div class="preview-no-video" *ngIf="!previewExercise?.videoUrl">
+        <i class="fa-solid fa-video-slash"></i>
+        <span>NO VIDEO</span>
+      </div>
+
+      <div class="preview-body">
+        <h2 class="preview-name">{{ previewExercise?.name }}</h2>
+        <p class="preview-desc">{{ previewExercise?.description || 'No description available.' }}</p>
+      </div>
+
+      <div class="preview-footer">
+        <button class="preview-close-btn" (click)="closeExerciseModal()">Close</button>
+      </div>
     </div>
   </ng-template>
 </ion-modal>

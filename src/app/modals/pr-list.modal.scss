@@ -71,7 +71,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
-  background: rgba(0, 40, 60, 0.25);
+  background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 12px;
   cursor: pointer;

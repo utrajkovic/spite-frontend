@@ -45,9 +45,8 @@ ion-content {
 .workout-title {
   font-family: var(--font-display);
   font-size: 24px;
-  color: var(--color-primary);
+  color: var(--color-text);
   text-align: center;
-  text-shadow: 0 0 12px rgba(0,255,255,0.5);
   margin: 0;
 }
 
@@ -75,7 +74,7 @@ ion-content {
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background: rgba(0, 40, 60, 0.25);
+  background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 12px;
 }
@@ -271,11 +270,10 @@ ion-content {
 .ex-name {
   font-family: var(--font-display);
   font-size: 20px;
-  color: var(--color-primary);
-  text-shadow: 0 0 10px rgba(0,255,255,0.5);
+  color: var(--color-text);
   margin: 0 0 4px;
 
-  &.superset-name { color: #ffe600; text-shadow: 0 0 10px rgba(255,220,0,0.5); }
+  &.superset-name { color: #ffe600; }
 }
 
 .ex-desc {
@@ -426,7 +424,7 @@ ion-content {
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  background: rgba(0, 40, 60, 0.3);
+  background: var(--bg-card);
   border: 1px solid var(--border-cyan);
   border-radius: 14px;
 }

@@ -130,10 +130,15 @@
       <ion-searchbar [value]="searchQuery" (ionInput)="onSearch($event)" placeholder="Search exercises..."></ion-searchbar>
 
       <div class="search-item" *ngFor="let ex of visibleExercises">
-        <span>{{ ex.name }}</span>
-        <ion-button fill="outline" class="add-btn" (click)="addExercise(ex)">
-          <i class="fa-solid fa-plus" slot="start"></i> Add
-        </ion-button>
+        <span class="search-item-name" (click)="openExercisePreview(ex)">{{ ex.name }}</span>
+        <div class="search-item-actions">
+          <button class="preview-icon-btn" (click)="openExercisePreview(ex)" title="Preview">
+            <i class="fa-solid fa-circle-info"></i>
+          </button>
+          <ion-button fill="outline" class="add-btn" (click)="addExercise(ex)">
+            <i class="fa-solid fa-plus" slot="start"></i> Add
+          </ion-button>
+        </div>
       </div>
 
       <button
@@ -153,3 +158,29 @@
   </ng-container>
 
 </ion-content>
+
+<!-- EXERCISE PREVIEW SHEET -->
+<ion-modal #exPreviewModal class="ex-preview-sheet" [presentingElement]="null">
+  <ng-template>
+    <div class="preview-sheet">
+      <div class="preview-drag-handle"></div>
+
+      <div class="preview-video-wrap" *ngIf="previewExercise?.videoUrl">
+        <video [src]="previewExercise?.videoUrl" autoplay loop [muted]="true" playsinline></video>
+      </div>
+      <div class="preview-no-video" *ngIf="!previewExercise?.videoUrl">
+        <i class="fa-solid fa-video-slash"></i>
+        <span>NO VIDEO</span>
+      </div>
+
+      <div class="preview-body">
+        <h2 class="preview-name">{{ previewExercise?.name }}</h2>
+        <p class="preview-desc">{{ previewExercise?.description || 'No description available.' }}</p>
+      </div>
+
+      <div class="preview-footer">
+        <button class="preview-close-btn" (click)="closeExercisePreview()">Close</button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>

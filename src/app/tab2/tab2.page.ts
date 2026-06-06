@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { IonContent, IonItem, IonInput, IonButton, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder, IonSelectOption, IonSelect } from '@ionic/angular/standalone';
+import { IonContent, IonItem, IonInput, IonButton, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder, IonSelectOption, IonSelect, IonModal } from '@ionic/angular/standalone';
 
 import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
@@ -26,11 +26,15 @@ import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loadin
     IonSearchbar, IonSpinner,
     IonReorderGroup, IonReorder,
     IonSelect, IonSelectOption,
+    IonModal,
     PageLoadingOverlayComponent
   ],
   providers: [ModalController]
 })
 export class Tab2Page implements OnInit {
+
+  @ViewChild('exPreviewModal') exPreviewModal!: IonModal;
+  previewExercise: Exercise | null = null;
 
   tab: 'exercise' | 'workout' = 'exercise';
 
@@ -272,6 +276,15 @@ export class Tab2Page implements OnInit {
       cssClass: 'custom-alert'
     });
     a.present();
+  }
+
+  openExercisePreview(ex: Exercise) {
+    this.previewExercise = ex;
+    this.exPreviewModal.present();
+  }
+
+  closeExercisePreview() {
+    this.exPreviewModal.dismiss();
   }
 
   async openExerciseModal(i: number) {
