@@ -15,6 +15,7 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonList
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AvatarComponent } from '../shared/avatar/avatar.component';
 
 
 @Component({
@@ -29,7 +30,8 @@ import { FormsModule } from '@angular/forms';
     IonContent, IonHeader, IonTitle, IonToolbar,
     IonItem, IonLabel, IonList, IonListHeader, IonButton,
     IonSegment, IonSegmentButton,
-    WorkoutCalendarModal
+    WorkoutCalendarModal,
+    AvatarComponent
   ],
   providers: [ModalController]
 

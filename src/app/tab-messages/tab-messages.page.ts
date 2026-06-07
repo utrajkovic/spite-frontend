@@ -13,6 +13,7 @@ import { LocalDataService } from '../services/local-data.service';
 import { BackendService } from '../services/backend.service';
 import { TrainerInbox } from '../services/models';
 import { AlertController } from '@ionic/angular';
+import { AvatarComponent } from '../shared/avatar/avatar.component';
 
 @Component({
   selector: 'app-tab-messages',
@@ -27,7 +28,8 @@ import { AlertController } from '@ionic/angular';
     UpperCasePipe,
     IonContent,
     IonButton,
-    IonInput
+    IonInput,
+    AvatarComponent
   ]
 })
 export class TabMessagesPage {

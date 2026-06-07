@@ -18,6 +18,9 @@ import { WorkoutCalendarModal } from '../modals/workout-calendar.modal';
 import { ModalController } from '@ionic/angular';
 import { ThemeService, Theme } from '../services/theme.service';
 import { HttpClient } from '@angular/common/http';
+import { AvatarComponent } from '../shared/avatar/avatar.component';
+import { AvatarService } from '../shared/avatar/avatar.service';
+import { AvatarCropModal } from '../shared/avatar/avatar-crop.modal';
 
 @Component({
   selector: 'app-tab-profile',
@@ -30,7 +33,8 @@ import { HttpClient } from '@angular/common/http';
     IonItem, IonLabel, IonButton, IonList,
     IonBadge,
     PageLoadingOverlayComponent,
-    WorkoutCalendarModal
+    WorkoutCalendarModal,
+    AvatarComponent
   ],
   providers: [ModalController]
 })
@@ -80,7 +84,8 @@ export class TabProfilePage implements OnInit, OnDestroy {
     private modalCtrl: ModalController,
     private router: Router,
     public themeService: ThemeService,
-    private http: HttpClient
+    private http: HttpClient,
+    private avatarService: AvatarService
   ) {
     window.addEventListener('beforeinstallprompt', (e: any) => {
       e.preventDefault();
@@ -200,6 +205,36 @@ export class TabProfilePage implements OnInit, OnDestroy {
     return new Date(ts).toLocaleString('sr-RS', {
       weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
     });
+  }
+
+  onAvatarSelected(ev: any) {
+    const file: File = ev.target.files?.[0];
+    ev.target.value = '';
+    if (file) this.openCropper(file);
+  }
+
+  async openCropper(file: File) {
+    const modal = await this.modalCtrl.create({
+      component: AvatarCropModal,
+      componentProps: { file },
+      cssClass: 'avatar-crop-modal'
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+    if (data) this.uploadAvatar(data as Blob);
+  }
+
+  uploadAvatar(blob: Blob) {
+    const form = new FormData();
+    form.append('image', blob, 'avatar.jpg');
+    this.http.post(`${this.backendUrl}/users/avatar?username=${this.user.username}`, form,
+      { responseType: 'text' }).subscribe({
+        next: (url) => {
+          this.avatarService.set(this.user.username, url as string);
+          this.showAlert('Profile photo updated.');
+        },
+        error: () => this.showAlert('Photo upload failed.')
+      });
   }
 
   loadMealPlan() {

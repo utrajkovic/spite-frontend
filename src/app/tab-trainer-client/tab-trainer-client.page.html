@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>{{ clientUsername }}</ion-title>
     <ion-buttons slot="end">
-      <div class="header-avatar">{{ clientUsername?.[0] | uppercase }}</div>
+      <div class="header-avatar"><app-avatar [username]="clientUsername" [name]="clientUsername"></app-avatar></div>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -150,7 +150,7 @@
   <ng-container *ngIf="segment === 'profile'">
 
     <div class="section profile-header-section">
-      <div class="profile-avatar-lg">{{ clientUsername?.[0] | uppercase }}</div>
+      <div class="profile-avatar-lg"><app-avatar [username]="clientUsername" [name]="clientUsername"></app-avatar></div>
       <h2 class="profile-username">{{ clientUsername }}</h2>
       <span class="profile-role" *ngIf="clientInfo">{{ clientInfo.role }}</span>
     </div>

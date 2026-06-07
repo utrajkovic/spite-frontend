@@ -15,7 +15,7 @@
   <div class="chat-list">
     <div *ngFor="let user of conversations" class="chat-item" (click)="openChat(user)">
       <div class="avatar-wrapper">
-        <div class="avatar">{{ user[0] | uppercase }}</div>
+        <div class="avatar"><app-avatar [username]="user" [name]="user"></app-avatar></div>
         <div *ngIf="hasUnread(user)" class="badge">!</div>
       </div>
       <div class="chat-meta">

@@ -38,6 +38,7 @@
     "chart.js": "^4.5.1",
     "firebase": "^12.6.0",
     "ionicons": "^7.0.0",
+    "ngx-image-cropper": "^9.1.6",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.26.3",
     "swiper": "^12.0.3",

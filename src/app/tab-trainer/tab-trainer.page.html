@@ -32,7 +32,7 @@
         </div>
 
         <div class="client-card" *ngFor="let c of clients" (click)="goToClient(c.clientUsername)">
-          <div class="avatar">{{ c.clientUsername[0] | uppercase }}</div>
+          <div class="avatar"><app-avatar [username]="c.clientUsername"></app-avatar></div>
           <div class="client-info">
             <span class="client-name">{{ c.clientUsername }}</span>
             <span class="client-hint">Tap to manage</span>
@@ -116,7 +116,7 @@
           <button class="cp-item" *ngFor="let c of clients"
             [class.sel]="selectedClients.has(c.clientUsername)"
             (click)="toggleClientSel(c.clientUsername)">
-            <span class="cp-avatar">{{ c.clientUsername[0] | uppercase }}</span>
+            <span class="cp-avatar"><app-avatar [username]="c.clientUsername"></app-avatar></span>
             <span class="cp-name">{{ c.clientUsername }}</span>
             <i class="fa-solid fa-check" *ngIf="selectedClients.has(c.clientUsername)"></i>
           </button>

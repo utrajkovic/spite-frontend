@@ -6,6 +6,7 @@ import { BackendService } from '../services/backend.service';
 import { AlertController } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { HttpClient } from '@angular/common/http';
+import { AvatarComponent } from '../shared/avatar/avatar.component';
 
 @Component({
   selector: 'app-tab-admin',
@@ -17,7 +18,8 @@ import { HttpClient } from '@angular/common/http';
     FormsModule,
     IonContent,
     IonButton,
-    IonSpinner
+    IonSpinner,
+    AvatarComponent
   ],
 })
 export class TabAdminPage implements OnInit {

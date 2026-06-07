@@ -25,7 +25,7 @@
 
       <div class="user-card" *ngFor="let u of filteredUsers">
         <div class="user-header">
-          <div class="user-avatar">{{ u.username[0] | uppercase }}</div>
+          <div class="user-avatar"><app-avatar [username]="u.username"></app-avatar></div>
           <div class="user-info">
             <span class="username">{{ u.username }}</span>
             <span class="role-tag" [class]="'role-' + u.role.toLowerCase()">{{ u.role }}</span>

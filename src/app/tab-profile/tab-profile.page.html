@@ -5,7 +5,11 @@
   <!-- User info + trainer info -->
   <ion-card class="profile-card" *ngIf="user">
     <ion-card-header>
-      <div class="avatar"><i class="fa-solid fa-user-circle"></i></div>
+      <div class="avatar" (click)="avatarInput.click()">
+        <app-avatar [username]="user?.username"></app-avatar>
+        <span class="avatar-cam"><i class="fa-solid fa-camera"></i></span>
+        <input #avatarInput type="file" accept="image/*" hidden (change)="onAvatarSelected($event)">
+      </div>
       <ion-card-title>{{ user.username }}</ion-card-title>
       <p class="role-badge">{{ user.role }}</p>
     </ion-card-header>
@@ -133,7 +137,7 @@
 
                 <div class="tt-client-list">
                   <div class="tt-client" *ngFor="let c of inactiveClients">
-                    <div class="tt-client-avatar">{{ c.clientUsername[0] | uppercase }}</div>
+                    <div class="tt-client-avatar"><app-avatar [username]="c.clientUsername"></app-avatar></div>
                     <div class="tt-client-info">
                       <span class="tt-client-name">{{ c.clientUsername }}</span>
                       <span class="tt-client-days">
@@ -154,7 +158,7 @@
           <ion-card class="trainer-zone-card" *ngIf="(user?.role === 'USER' || user?.role === 'ADMIN') && trainerName">
             <ion-card-content>
               <div class="tz-top">
-                <div class="tz-avatar">{{ trainerName[0] | uppercase }}</div>
+                <div class="tz-avatar"><app-avatar [username]="trainerName" [name]="trainerName"></app-avatar></div>
                 <div class="tz-details">
                   <span class="tz-name">{{ trainerName }}</span>
                   <span class="tz-role">Your Personal Trainer</span>

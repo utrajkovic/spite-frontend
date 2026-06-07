@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
 import { BackendService } from '../services/backend.service';
 import { PriorityClient } from '../services/models';
+import { AvatarComponent } from '../shared/avatar/avatar.component';
 
 @Component({
   selector: 'app-tab-trainer',
@@ -20,7 +21,8 @@ import { PriorityClient } from '../services/models';
     CommonModule, FormsModule, RouterModule,
     IonContent,
     IonInput, IonButton,
-    PageLoadingOverlayComponent
+    PageLoadingOverlayComponent,
+    AvatarComponent
 ]
 })
 export class TabTrainerPage {
