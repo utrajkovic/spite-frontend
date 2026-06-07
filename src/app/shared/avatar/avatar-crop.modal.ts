@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
@@ -138,7 +138,7 @@ export class AvatarCropModal implements OnInit {
   private lastX = 0;
   private lastY = 0;
 
-  constructor(private modalCtrl: ModalController) {}
+  constructor(private modalCtrl: ModalController, private zone: NgZone) {}
 
   ngOnInit() {
     this.downscaleAndLoad(this.file);
@@ -161,14 +161,16 @@ export class AvatarCropModal implements OnInit {
         canvas.width = w;
         canvas.height = h;
         const ctx = canvas.getContext('2d');
-        if (!ctx) { this.imgSrc = tmp.src; return; }
-        ctx.drawImage(tmp, 0, 0, w, h);
-        this.imgSrc = canvas.toDataURL('image/jpeg', 0.92);
+        this.zone.run(() => {
+          if (!ctx) { this.imgSrc = tmp.src; return; }
+          ctx.drawImage(tmp, 0, 0, w, h);
+          this.imgSrc = canvas.toDataURL('image/jpeg', 0.92);
+        });
       };
-      tmp.onerror = () => { this.modalCtrl.dismiss(null); };
+      tmp.onerror = () => this.zone.run(() => this.modalCtrl.dismiss(null));
       tmp.src = reader.result as string;
     };
-    reader.onerror = () => { this.modalCtrl.dismiss(null); };
+    reader.onerror = () => this.zone.run(() => this.modalCtrl.dismiss(null));
     reader.readAsDataURL(file);
   }
 
@@ -241,8 +243,10 @@ export class AvatarCropModal implements OnInit {
     ctx.drawImage(this.imgRef.nativeElement, sx, sy, sSize, sSize, 0, 0, out, out);
 
     canvas.toBlob((blob) => {
-      this.cleanup();
-      this.modalCtrl.dismiss(blob);
+      this.zone.run(() => {
+        this.cleanup();
+        this.modalCtrl.dismiss(blob);
+      });
     }, 'image/jpeg', 0.9);
   }
 
