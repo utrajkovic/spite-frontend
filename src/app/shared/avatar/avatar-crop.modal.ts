@@ -82,17 +82,23 @@ import {
       top: 50%;
       left: 50%;
       transform-origin: center;
-      will-change: transform;
       pointer-events: none;
       -webkit-user-drag: none;
     }
+    /* jeftina maska: tamno van kruga, providno unutar (ograničeno na viewport) */
     .crop-ring {
       position: absolute;
       inset: 0;
-      border-radius: 50%;
-      box-shadow: 0 0 0 2000px rgba(0, 0, 0, 0.55);
-      border: 2px solid rgba(255, 255, 255, 0.85);
       pointer-events: none;
+      background: radial-gradient(circle closest-side at 50% 50%,
+                  transparent 0 99%, rgba(0, 0, 0, 0.55) 100%);
+    }
+    .crop-ring::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.85);
     }
     .zoom-row {
       display: flex;
