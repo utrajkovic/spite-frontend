@@ -1,79 +1,61 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalController } from '@ionic/angular';
+import {
+  IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButtons, IonButton
+} from '@ionic/angular/standalone';
 import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-avatar-crop',
   standalone: true,
-  imports: [CommonModule, ImageCropperComponent],
+  imports: [
+    CommonModule,
+    IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButtons, IonButton,
+    ImageCropperComponent
+  ],
   template: `
-    <div class="crop-sheet">
-      <p class="crop-title">Adjust your photo</p>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Adjust photo</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-      <div class="crop-area">
-        <image-cropper
-          [imageFile]="file"
-          [maintainAspectRatio]="true"
-          [aspectRatio]="1"
-          [roundCropper]="true"
-          [resizeToWidth]="400"
-          [cropperMinWidth]="64"
-          format="jpeg"
-          (imageCropped)="onCropped($event)">
-        </image-cropper>
-      </div>
+    <ion-content class="crop-content">
+      <image-cropper
+        [imageFile]="file"
+        [maintainAspectRatio]="true"
+        [aspectRatio]="1"
+        [roundCropper]="true"
+        [resizeToWidth]="400"
+        format="jpeg"
+        (imageCropped)="onCropped($event)"
+        (loadImageFailed)="onFail()">
+      </image-cropper>
+    </ion-content>
 
-      <div class="crop-actions">
-        <button class="crop-btn cancel" (click)="cancel()">Cancel</button>
-        <button class="crop-btn save" (click)="confirm()" [disabled]="!croppedBlob">Use photo</button>
-      </div>
-    </div>
+    <ion-footer>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="cancel()">Cancel</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button [strong]="true" [disabled]="!croppedBlob" (click)="confirm()">Use photo</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-footer>
   `,
   styles: [`
-    .crop-sheet {
-      background: #0d0d0d;
-      padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
-      border-radius: 20px 20px 0 0;
-      color: #f2f2f2;
+    .crop-content {
+      --background: #0d0d0d;
     }
-    .crop-title {
-      text-align: center;
-      font-family: var(--font-display);
-      font-size: 16px;
-      font-weight: 700;
-      margin: 0 0 14px;
+    image-cropper {
+      display: block;
+      width: 100%;
+      max-height: 70vh;
+      padding: 8px;
+      box-sizing: border-box;
     }
-    .crop-area {
-      max-height: 60vh;
-      overflow: hidden;
-      border-radius: 12px;
-    }
-    .crop-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-    }
-    .crop-btn {
-      flex: 1;
-      padding: 14px;
-      border-radius: 14px;
-      font-family: var(--font-display);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-    .crop-btn.cancel {
-      background: rgba(255, 255, 255, 0.06);
-      color: #f2f2f2;
-    }
-    .crop-btn.save {
-      background: var(--color-primary);
-      border-color: var(--color-primary);
-      color: #00111a;
-    }
-    .crop-btn:disabled { opacity: 0.5; }
   `]
 })
 export class AvatarCropModal {
@@ -85,6 +67,10 @@ export class AvatarCropModal {
 
   onCropped(event: ImageCroppedEvent): void {
     this.croppedBlob = event.blob ?? null;
+  }
+
+  onFail(): void {
+    this.modalCtrl.dismiss(null);
   }
 
   cancel(): void {
