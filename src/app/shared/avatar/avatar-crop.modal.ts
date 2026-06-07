@@ -138,7 +138,35 @@ export class AvatarCropModal implements OnInit {
   constructor(private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    this.imgSrc = URL.createObjectURL(this.file);
+    this.downscaleAndLoad(this.file);
+  }
+
+  /** Smanji sliku pre prikaza (telefonske fotke su ogromne -> renderer pukne). */
+  private downscaleAndLoad(file: File) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const tmp = new Image();
+      tmp.onload = () => {
+        const MAX = 1000;
+        let w = tmp.naturalWidth;
+        let h = tmp.naturalHeight;
+        const scale = Math.min(1, MAX / Math.max(w, h));
+        w = Math.round(w * scale);
+        h = Math.round(h * scale);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) { this.imgSrc = tmp.src; return; }
+        ctx.drawImage(tmp, 0, 0, w, h);
+        this.imgSrc = canvas.toDataURL('image/jpeg', 0.92);
+      };
+      tmp.onerror = () => { this.modalCtrl.dismiss(null); };
+      tmp.src = reader.result as string;
+    };
+    reader.onerror = () => { this.modalCtrl.dismiss(null); };
+    reader.readAsDataURL(file);
   }
 
   get transform(): string {
@@ -215,6 +243,6 @@ export class AvatarCropModal implements OnInit {
   }
 
   private cleanup() {
-    if (this.imgSrc) URL.revokeObjectURL(this.imgSrc);
+    // imgSrc je data URL (downscaled) — nema šta da se oslobađa
   }
 }
