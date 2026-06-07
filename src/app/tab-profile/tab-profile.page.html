@@ -116,6 +116,72 @@
           </ion-card>
         </div>
 
+<!-- Card 2: Trainer Zone (USER only) -->
+        <div class="swipe-card" *ngIf="user?.role !== 'TRAINER'">
+
+          <!-- USER/ADMIN: Trainer Zone -->
+          <ion-card class="trainer-zone-card" *ngIf="(user?.role === 'USER' || user?.role === 'ADMIN') && trainerName">
+            <ion-card-content>
+              <div class="tz-top">
+                <div class="tz-avatar"><app-avatar [username]="trainerName" [name]="trainerName"></app-avatar></div>
+                <div class="tz-details">
+                  <span class="tz-name">{{ trainerName }}</span>
+                  <span class="tz-role">Your Personal Trainer</span>
+                </div>
+                <div class="tz-status">
+                  <span class="tz-status-dot"></span>
+                  <span>Linked</span>
+                </div>
+              </div>
+              <div class="tz-stats">
+                <div class="tz-stat">
+                  <i class="fa-solid fa-clipboard-list"></i>
+                  <span class="tz-stat-value">{{ assignedWorkoutsCount }}</span>
+                  <span class="tz-stat-label">Assigned</span>
+                </div>
+                <div class="tz-stat">
+                  <i class="fa-solid fa-check-double"></i>
+                  <span class="tz-stat-value">{{ completedWorkouts.length }}</span>
+                  <span class="tz-stat-label">Completed</span>
+                </div>
+                <div class="tz-stat">
+                  <i class="fa-solid fa-fire"></i>
+                  <span class="tz-stat-value">{{ completionRate }}%</span>
+                  <span class="tz-stat-label">Rate</span>
+                </div>
+              </div>
+              <div class="tz-progress" *ngIf="assignedWorkoutsCount > 0">
+                <div class="tz-progress-header">
+                  <span>Completion</span>
+                  <span>{{ completionRate }}%</span>
+                </div>
+                <div class="tz-progress-bar">
+                  <div class="tz-progress-fill" [style.width.%]="completionRate"></div>
+                </div>
+              </div>
+              <div class="tz-last-workout" *ngIf="lastWorkoutDate">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Last workout: <strong>{{ lastWorkoutDate }}</strong></span>
+              </div>
+              <button class="tz-message-btn" (click)="openTrainerChat()">
+                <i class="fa-solid fa-comment"></i>
+                Message Trainer
+              </button>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card class="trainer-zone-card no-trainer" *ngIf="(user?.role === 'USER' || user?.role === 'ADMIN') && !trainerName">
+            <ion-card-content>
+              <div class="tz-empty">
+                <i class="fa-solid fa-user-shield"></i>
+                <p>No trainer linked</p>
+                <span>Ask a trainer to send you an invite</span>
+              </div>
+            </ion-card-content>
+          </ion-card>
+
+        </div>
+
         <!-- Card 3: Meal Plan (USER/ADMIN) -->
         <div class="swipe-card" *ngIf="user?.role === 'USER' || user?.role === 'ADMIN'">
           <ion-card class="meal-plan-card">
@@ -153,7 +219,7 @@
             <ion-card-content>
               <div class="sc-header">
                 <i class="fa-solid fa-calendar-check"></i>
-                <span>{{ user?.role === 'TRAINER' ? 'Scheduled Sessions' : 'My Sessions' }}</span>
+                <span>Today's Tasks</span>
               </div>
 
               <div class="sc-list" *ngIf="scheduleGroups.length; else noSessions">

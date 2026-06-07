@@ -104,8 +104,8 @@ export class TabProfilePage implements OnInit, OnDestroy {
     if (this.user) {
       this.memberSince = this.extractMemberSince(this.user.id);
       this.cardTitles = this.user.role === 'TRAINER'
-        ? ['Workout Calendar', "Today's Tasks", 'Schedule']
-        : ['Workout Calendar', 'Trainer Zone', 'Meal Plan', 'Schedule'];
+        ? ['Workout Calendar', "Today's Tasks"]
+        : ['Workout Calendar', 'Trainer Zone', 'Meal Plan', "Today's Tasks"];
       this.loadData();
       this.loadTrainerName();
       this.loadMealPlan();
