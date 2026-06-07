@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButtons, IonButton
+  IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButtons, IonButton, IonSpinner
 } from '@ionic/angular/standalone';
 import { AvatarService } from '../shared/avatar/avatar.service';
 import { HttpClient } from '@angular/common/http';
@@ -15,7 +15,7 @@ import { Preferences } from '@capacitor/preferences';
   standalone: true,
   imports: [
     CommonModule, FormsModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButtons, IonButton
+    IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButtons, IonButton, IonSpinner
   ],
   templateUrl: './avatar-crop.page.html',
   styleUrls: ['./avatar-crop.page.scss']
