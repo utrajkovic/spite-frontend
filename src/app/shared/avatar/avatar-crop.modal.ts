@@ -32,7 +32,8 @@ import {
              (pointerup)="onUp($event)"
              (pointercancel)="onUp($event)"
              (pointerleave)="onUp($event)">
-          <img #img class="crop-img" [src]="imgSrc" [style.transform]="transform"
+          <img #img class="crop-img" [src]="imgSrc"
+               [style.width.px]="coverW" [style.height.px]="coverH" [style.transform]="transform"
                (load)="onImgLoad()" draggable="false" alt="" />
           <div class="crop-ring"></div>
         </div>
@@ -123,6 +124,8 @@ export class AvatarCropModal implements OnInit {
   imgSrc = '';
   zoom = 1;
   ready = false;
+  coverW = 0;
+  coverH = 0;
 
   private offsetX = 0;
   private offsetY = 0;
@@ -170,8 +173,7 @@ export class AvatarCropModal implements OnInit {
   }
 
   get transform(): string {
-    const s = this.baseScale * this.zoom;
-    return `translate(-50%, -50%) translate(${this.offsetX}px, ${this.offsetY}px) scale(${s})`;
+    return `translate(-50%, -50%) translate(${this.offsetX}px, ${this.offsetY}px) scale(${this.zoom})`;
   }
 
   onImgLoad() {
@@ -180,6 +182,8 @@ export class AvatarCropModal implements OnInit {
     this.natH = img.naturalHeight;
     this.vp = this.viewportRef.nativeElement.clientWidth || 300;
     this.baseScale = this.vp / Math.min(this.natW, this.natH); // cover
+    this.coverW = this.natW * this.baseScale;
+    this.coverH = this.natH * this.baseScale;
     this.offsetX = 0;
     this.offsetY = 0;
     this.zoom = 1;
