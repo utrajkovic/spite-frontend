@@ -20,7 +20,6 @@ import { ThemeService, Theme } from '../services/theme.service';
 import { HttpClient } from '@angular/common/http';
 import { AvatarComponent } from '../shared/avatar/avatar.component';
 import { AvatarService } from '../shared/avatar/avatar.service';
-import { AvatarCropModal } from '../shared/avatar/avatar-crop.modal';
 
 @Component({
   selector: 'app-tab-profile',
@@ -210,31 +209,8 @@ export class TabProfilePage implements OnInit, OnDestroy {
   onAvatarSelected(ev: any) {
     const file: File = ev.target.files?.[0];
     ev.target.value = '';
-    if (file) this.openCropper(file);
-  }
-
-  async openCropper(file: File) {
-    const modal = await this.modalCtrl.create({
-      component: AvatarCropModal,
-      componentProps: { file },
-      cssClass: 'avatar-crop-modal'
-    });
-    await modal.present();
-    const { data } = await modal.onDidDismiss();
-    if (data) this.uploadAvatar(data as Blob);
-  }
-
-  uploadAvatar(blob: Blob) {
-    const form = new FormData();
-    form.append('image', blob, 'avatar.jpg');
-    this.http.post(`${this.backendUrl}/users/avatar?username=${this.user.username}`, form,
-      { responseType: 'text' }).subscribe({
-        next: (url) => {
-          this.avatarService.set(this.user.username, url as string);
-          this.showAlert('Profile photo updated.');
-        },
-        error: () => this.showAlert('Photo upload failed.')
-      });
+    if (!file) return;
+    this.router.navigateByUrl('/avatar-crop', { state: { file } });
   }
 
   loadMealPlan() {

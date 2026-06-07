@@ -98,6 +98,12 @@ export const routes: Routes = [
   },
 
   {
+    path: 'avatar-crop',
+    loadComponent: () =>
+      import('./avatar-crop/avatar-crop.page').then(m => m.AvatarCropPage),
+  },
+
+  {
     path: 'tab-edit/:id',
     loadComponent: () =>
       import('./tab-edit/tab-edit.page').then(m => m.TabEditPage),

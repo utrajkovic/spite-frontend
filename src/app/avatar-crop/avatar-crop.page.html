@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Adjust photo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="crop-content">
+  <div class="crop-stage">
+
+    <div #viewport class="crop-viewport"
+         (pointerdown)="onDown($event)"
+         (pointermove)="onMove($event)"
+         (pointerup)="onUp($event)"
+         (pointercancel)="onUp($event)"
+         (pointerleave)="onUp($event)">
+      <img #img class="crop-img" [src]="imgSrc"
+           [style.width.px]="coverW"
+           [style.height.px]="coverH"
+           [style.transform]="transform"
+           (load)="onImgLoad()"
+           draggable="false" alt="" />
+      <div class="crop-ring"></div>
+    </div>
+
+    <div class="zoom-row">
+      <i class="fa-solid fa-magnifying-glass-minus"></i>
+      <input type="range" min="1" max="4" step="0.01" [(ngModel)]="zoom" (input)="clamp()" />
+      <i class="fa-solid fa-magnifying-glass-plus"></i>
+    </div>
+
+    <div class="hint" *ngIf="!ready">
+      <ion-spinner name="crescent"></ion-spinner>
+      <span>Loading photo...</span>
+    </div>
+
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button [strong]="true" [disabled]="!ready || uploading" (click)="confirm()">
+        <ion-spinner *ngIf="uploading" name="crescent" slot="start"></ion-spinner>
+        {{ uploading ? 'Uploading...' : 'Use photo' }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
