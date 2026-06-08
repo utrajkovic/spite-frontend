@@ -11,7 +11,8 @@ import { FeedbackViewModal } from './feedback-view.modal';
   selector: 'workout-calendar-modal',
   templateUrl: './workout-calendar.modal.html',
   styleUrls: ['./workout-calendar.modal.scss'],
-  imports: [CommonModule]
+  imports: [CommonModule],
+  providers: [ModalController]
 })
 export class WorkoutCalendarModal implements OnInit, OnChanges {
 

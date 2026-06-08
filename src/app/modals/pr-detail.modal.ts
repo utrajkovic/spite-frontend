@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ModalController } from '@ionic/angular';
 import { IonButton } from '@ionic/angular/standalone';
 import { ExercisePR } from '../services/pr.service';
-import { Chart, registerables } from 'chart.js';
+import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip } from 'chart.js';
 
-Chart.register(...registerables);
+Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip);
 
 @Component({
   standalone: true,
