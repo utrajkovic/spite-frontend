@@ -393,3 +393,13 @@ ion-title {
   opacity: 0.8;
   line-height: 1.4;
 }
+
+/* ── Laptop: kalendar manji i centriran ── */
+@media (min-width: 900px) {
+  .cal-weekdays,
+  .cal-grid {
+    max-width: 380px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

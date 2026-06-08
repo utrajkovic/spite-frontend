@@ -766,3 +766,24 @@ ion-content {
   color: var(--color-success);
   opacity: 0.8;
 }
+
+/* ── Laptop: kalendar levo (manji), forma desno ── */
+@media (min-width: 900px) {
+  .schedule-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .schedule-layout .cal-card {
+    flex: 0 0 360px;
+    max-width: 360px;
+    position: sticky;
+    top: 12px;
+  }
+
+  .schedule-side {
+    flex: 1;
+    min-width: 0;
+  }
+}

@@ -109,6 +109,7 @@
         </div>
       </div>
 
+      <div class="schedule-layout">
       <div class="cal-card">
         <div class="cal-head">
           <button class="cal-nav" (click)="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
@@ -128,6 +129,7 @@
         </div>
       </div>
 
+      <div class="schedule-side">
       <div class="sched-hint" *ngIf="!selectedDate">
         <i class="fa-solid fa-hand-pointer"></i>
         <p>Izaberi datum da zakažeš termin</p>
@@ -199,6 +201,8 @@
           <i *ngIf="!booking" class="fa-solid fa-calendar-plus"></i>
           {{ booking ? 'Zakazivanje...' : 'Zakaži (' + totalSelected + ')' }}
         </button>
+      </div>
+      </div>
       </div>
     </ng-container>
 
