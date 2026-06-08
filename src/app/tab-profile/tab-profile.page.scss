@@ -204,7 +204,7 @@ ion-card {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 
   &:active {
     background: rgba(255, 255, 255, 0.08);
@@ -226,6 +226,7 @@ ion-card {
 .swipe-track {
   display: flex;
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .swipe-card {
@@ -253,7 +254,7 @@ ion-card {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 
   &.active {
     background: var(--color-primary);
@@ -663,7 +664,7 @@ ion-card {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
   width: 100%;
   text-align: left;
 
