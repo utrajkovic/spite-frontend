@@ -10,10 +10,10 @@
    ============================================================ */
 :root {
   /* Primarne boje */
-  --color-primary:      #00f7ff;   /* cyan – naslovi, ikonice, akcenti */
-  --color-primary-dim:  #8efcff;   /* svetliji cyan – labele, sekundarni tekst */
-  --color-text:         #e0ffff;   /* beli tekst sa cyan nijansama */
-  --color-text-muted:   #aefcff;   /* muted tekst, opisi */
+  --color-primary:      #ffffff;   /* belo – naslovi, ikonice, akcenti */
+  --color-primary-dim:  #b3b3b3;   /* svetlo sivo – labele, sekundarni tekst */
+  --color-text:         #f2f2f2;   /* beli tekst */
+  --color-text-muted:   #9a9a9a;   /* muted tekst, opisi */
   --color-danger:       #ff4d4d;   /* crvena – brisanje, greška */
   --color-success:      #00ffaa;   /* zelena – uspeh */
   --color-warning:      #ffe600;   /* žuta – superset */
@@ -27,11 +27,11 @@
   /* Borderi */
   --border-cyan:        rgba(255, 255, 255, 0.08);
   --border-cyan-hover:  rgba(255, 255, 255, 0.15);
-  --border-accent:      rgba(0, 255, 255, 0.2);
+  --border-accent:      rgba(255, 255, 255, 0.25);
 
   /* Fontovi */
-  --font-display:       'Orbitron', sans-serif;
-  --font-body:          'Tilt Neon', cursive;
+  --font-display:       system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body:          system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   /* Padding top (zbog globalnog headera) — uključuje status bar (notch) */
   --header-offset:      calc(72px + env(safe-area-inset-top));
@@ -517,12 +517,12 @@ ion-content::part(scroll) {
    THEMES
    ============================================================ */
 
-/* CYBERPUNK (default - već definisan u :root) */
+/* CYBERPUNK (default - već definisan u :root) — čist, beli tekst, system font */
 [data-theme="cyberpunk"] {
-  --color-primary:      #00f7ff;
-  --color-primary-dim:  #8efcff;
-  --color-text:         #e0ffff;
-  --color-text-muted:   #aefcff;
+  --color-primary:      #ffffff;
+  --color-primary-dim:  #b3b3b3;
+  --color-text:         #f2f2f2;
+  --color-text-muted:   #9a9a9a;
   --color-danger:       #ff4d4d;
   --color-success:      #00ffaa;
   --color-warning:      #ffe600;
@@ -532,9 +532,14 @@ ion-content::part(scroll) {
   --bg-input:           rgba(255, 255, 255, 0.04);
   --border-cyan:        rgba(255, 255, 255, 0.08);
   --border-cyan-hover:  rgba(255, 255, 255, 0.15);
-  --border-accent:      rgba(0, 255, 255, 0.2);
-  --font-display:       'Orbitron', sans-serif;
-  --font-body:          'Tilt Neon', cursive;
+  --border-accent:      rgba(255, 255, 255, 0.25);
+  --font-display:       system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body:          system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Ugasi neon text-glow u cyberpunk temi (hardkodovani cyan shadow smeta čitljivosti) */
+[data-theme="cyberpunk"] * {
+  text-shadow: none !important;
 }
 
 /* DARK */
