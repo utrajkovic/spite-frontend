@@ -59,6 +59,17 @@ export class TabProfilePage implements OnInit, OnDestroy {
   emailBusy = false;
   scheduledSessions: any[] = [];
   scheduleGroups: any[] = [];
+
+  // Workout reminders (CLIENT)
+  clientReminderEnabled = false;
+  clientReminderMode: 'SESSIONS' | 'CUSTOM' = 'SESSIONS';
+  clientReminderTime = '07:00';
+  customReminders: { days: number[]; time: string; note: string }[] = [];
+  reminderBusy = false;
+  weekDays = [
+    { v: 1, l: 'Mon' }, { v: 2, l: 'Tue' }, { v: 3, l: 'Wed' },
+    { v: 4, l: 'Thu' }, { v: 5, l: 'Fri' }, { v: 6, l: 'Sat' }, { v: 7, l: 'Sun' }
+  ];
   completionRate: number = 0;
   lastWorkoutDate: string = '';
 
@@ -131,8 +142,66 @@ export class TabProfilePage implements OnInit, OnDestroy {
       next: (u) => {
         this.accountEmail = u?.email ?? null;
         this.emailVerified = !!u?.emailVerified;
+        this.clientReminderEnabled = !!u?.clientReminderEnabled;
+        this.clientReminderMode = u?.clientReminderMode === 'CUSTOM' ? 'CUSTOM' : 'SESSIONS';
+        if (u?.clientReminderTime) this.clientReminderTime = u.clientReminderTime;
+        this.customReminders = Array.isArray(u?.customReminders)
+          ? u.customReminders.map((r: any) => ({
+              days: Array.isArray(r.days) ? r.days : [],
+              time: r.time || '07:00',
+              note: r.note || ''
+            }))
+          : [];
       },
       error: () => {}
+    });
+  }
+
+  // ── Workout reminders (CLIENT) ──
+  toggleClientReminder() {
+    this.clientReminderEnabled = !this.clientReminderEnabled;
+    this.saveClientReminder();
+  }
+
+  setReminderMode(mode: 'SESSIONS' | 'CUSTOM') {
+    this.clientReminderMode = mode;
+  }
+
+  isReminderDayOn(r: { days: number[] }, day: number): boolean {
+    return r.days.includes(day);
+  }
+
+  toggleReminderDay(r: { days: number[] }, day: number) {
+    const i = r.days.indexOf(day);
+    if (i >= 0) r.days.splice(i, 1);
+    else r.days.push(day);
+  }
+
+  addCustomReminder() {
+    this.customReminders.push({ days: [], time: '07:00', note: '' });
+  }
+
+  removeCustomReminder(i: number) {
+    this.customReminders.splice(i, 1);
+  }
+
+  saveClientReminder() {
+    this.reminderBusy = true;
+    const payload = {
+      enabled: this.clientReminderEnabled,
+      mode: this.clientReminderMode,
+      time: this.clientReminderTime,
+      customReminders: this.customReminders.filter(r => r.days.length > 0)
+    };
+    this.http.put(
+      `${this.backendUrl}/users/client-reminder?username=${this.user.username}`,
+      payload, { responseType: 'text' as 'json' }
+    ).subscribe({
+      next: () => {
+        this.reminderBusy = false;
+        this.showAlert('Reminder settings saved.');
+      },
+      error: () => { this.reminderBusy = false; this.showAlert('Error saving reminder settings.'); }
     });
   }
 

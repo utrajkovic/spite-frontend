@@ -284,6 +284,80 @@
     <p class="email-hint">Verify your email to receive session reminders from your trainer.</p>
   </div>
 
+  <!-- Workout Reminders (non-trainer) -->
+  <div class="reminder-section" *ngIf="user && user.role !== 'TRAINER'">
+    <div class="rem-head">
+      <div class="rem-head-text">
+        <span class="rem-head-title"><i class="fa-solid fa-bell"></i> Workout Reminders</span>
+        <span class="rem-head-sub">Get an email reminder to train</span>
+      </div>
+      <button class="rem-switch" [class.on]="clientReminderEnabled" (click)="toggleClientReminder()">
+        <span class="rem-knob"></span>
+      </button>
+    </div>
+
+    <div class="rem-body" *ngIf="clientReminderEnabled">
+      <!-- Mode selector -->
+      <div class="rem-modes">
+        <button class="rem-mode" [class.active]="clientReminderMode === 'SESSIONS'"
+          (click)="setReminderMode('SESSIONS')">
+          <i class="fa-solid fa-user-shield"></i>
+          <span>Trainer sessions</span>
+        </button>
+        <button class="rem-mode" [class.active]="clientReminderMode === 'CUSTOM'"
+          (click)="setReminderMode('CUSTOM')">
+          <i class="fa-solid fa-calendar-day"></i>
+          <span>Custom schedule</span>
+        </button>
+      </div>
+
+      <!-- SESSIONS mode -->
+      <div class="rem-sessions" *ngIf="clientReminderMode === 'SESSIONS'">
+        <p class="rem-desc">Each morning we'll email you the sessions your trainer scheduled for that day.</p>
+        <div class="rem-time-row">
+          <label>Send time</label>
+          <input type="time" class="rem-time-input" [(ngModel)]="clientReminderTime">
+        </div>
+      </div>
+
+      <!-- CUSTOM mode -->
+      <div class="rem-custom" *ngIf="clientReminderMode === 'CUSTOM'">
+        <p class="rem-desc">Pick the days and time, and write what to do. You'll get an email each of those mornings.</p>
+
+        <div class="rem-item" *ngFor="let r of customReminders; let i = index">
+          <div class="rem-item-head">
+            <span class="rem-item-label">Reminder {{ i + 1 }}</span>
+            <button class="rem-remove" (click)="removeCustomReminder(i)"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+          <div class="rem-days">
+            <button class="rem-day" *ngFor="let d of weekDays"
+              [class.on]="isReminderDayOn(r, d.v)" (click)="toggleReminderDay(r, d.v)">
+              {{ d.l }}
+            </button>
+          </div>
+          <div class="rem-time-row">
+            <label>Time</label>
+            <input type="time" class="rem-time-input" [(ngModel)]="r.time">
+          </div>
+          <textarea class="rem-note" rows="2" [(ngModel)]="r.note"
+            placeholder="What to do that day (e.g. Upper body, 5km run...)"></textarea>
+        </div>
+
+        <button class="rem-add" (click)="addCustomReminder()">
+          <i class="fa-solid fa-plus"></i> Add reminder
+        </button>
+      </div>
+
+      <button class="rem-save" (click)="saveClientReminder()" [disabled]="reminderBusy">
+        <i class="fa-solid fa-floppy-disk"></i> {{ reminderBusy ? 'Saving...' : 'Save reminder settings' }}
+      </button>
+
+      <p class="rem-hint" *ngIf="!emailVerified">
+        <i class="fa-solid fa-circle-exclamation"></i> Verify your email above to actually receive reminders.
+      </p>
+    </div>
+  </div>
+
   <!-- Appearance / Theme -->
   <div class="theme-switch">
     <p class="theme-switch-label"><i class="fa-solid fa-palette"></i> Appearance</p>
