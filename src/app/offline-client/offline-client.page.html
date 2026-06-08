@@ -11,6 +11,9 @@
 
   <ng-container *ngIf="client">
 
+    <div class="oc-layout">
+    <div class="oc-col-right">
+
     <!-- PROFIL -->
     <div class="oc-card">
       <p class="oc-card-title"><i class="fa-solid fa-id-card"></i> Profil</p>
@@ -124,13 +127,16 @@
       </div>
     </div>
 
+    </div>
+    <div class="oc-col-left">
+
     <!-- WORKOUT CALENDAR -->
     <button class="oc-cal-open" (click)="toggleCalendar()">
       <i class="fa-solid fa-calendar-days"></i>
       {{ showCalendar ? 'Sakrij kalendar' : 'Workout Calendar' }}
     </button>
 
-    <div class="oc-card" *ngIf="showCalendar">
+    <div class="oc-card oc-cal-card" [class.open]="showCalendar">
       <div class="cal-head">
         <button class="cal-nav" (click)="calPrev()"><i class="fa-solid fa-chevron-left"></i></button>
         <span class="cal-month">{{ calMonthLabel }}</span>
@@ -159,6 +165,9 @@
           <span class="cal-detail-note" *ngIf="l.note">{{ l.note }}</span>
         </div>
       </div>
+    </div>
+
+    </div>
     </div>
 
   </ng-container>

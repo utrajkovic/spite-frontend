@@ -187,7 +187,8 @@ export class OfflineClientPage implements OnInit, OnDestroy {
 
   private rebuildLogKeys() {
     this.logDateKeys = new Set(this.logs.map(l => this.toKey(new Date(l.date))));
-    if (this.showCalendar) this.buildLogCalendar();
+    // Uvek gradi (na laptopu je kalendar stalno vidljiv, na telefonu iza dugmeta)
+    this.buildLogCalendar();
   }
 
   get calMonthLabel(): string {

@@ -394,12 +394,32 @@ ion-title {
   line-height: 1.4;
 }
 
-/* ── Laptop: kalendar manji i centriran ── */
+/* ── Telefon: kalendar iza dugmeta (kao pre) ── */
+.oc-cal-card { display: none; }
+.oc-cal-card.open { display: flex; }
+
+/* ── Laptop: kalendar levo (uvek vidljiv), informacije desno ── */
 @media (min-width: 900px) {
-  .cal-weekdays,
-  .cal-grid {
-    max-width: 380px;
-    margin-left: auto;
-    margin-right: auto;
+  .oc-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
   }
+
+  .oc-col-left {
+    order: 0;
+    flex: 0 0 360px;
+    max-width: 360px;
+    position: sticky;
+    top: 12px;
+  }
+
+  .oc-col-right {
+    order: 1;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .oc-cal-open { display: none; }            /* dugme nije potrebno na laptopu */
+  .oc-cal-card { display: flex !important; } /* kalendar uvek vidljiv */
 }
