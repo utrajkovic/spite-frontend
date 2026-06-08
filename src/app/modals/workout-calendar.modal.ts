@@ -6,6 +6,15 @@ import { BackendService } from '../services/backend.service';
 import { FeedbackViewModal } from './feedback-view.modal';
 
 
+interface CalCell {
+  key: string | null;
+  dayNum: number;
+  hasWorkout: boolean;
+  noFeedback: boolean;
+  isToday: boolean;
+  isSelected: boolean;
+}
+
 @Component({
   standalone: true,
   selector: 'workout-calendar-modal',
@@ -33,7 +42,7 @@ export class WorkoutCalendarModal implements OnInit, OnChanges {
   // Map: 'YYYY-MM-DD' -> completedWorkout (bez feedbacka)
   completedMap: Record<string, any[]> = {};
 
-  weeks: (string | null)[][] = [];
+  weeks: CalCell[][] = [];
   monthNames = ['January','February','March','April','May','June',
                 'July','August','September','October','November','December'];
   dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -59,6 +68,7 @@ profileCards = ['calendar', 'snapshot', 'upcoming', 'trainerZone'] as const;
       this.buildCompletedMap();
       this.selectedDay = null;
       this.selectedFeedbacks = [];
+      this.buildCalendar();
     }
   }
 
@@ -90,53 +100,70 @@ profileCards = ['calendar', 'snapshot', 'upcoming', 'trainerZone'] as const;
     let startDow = firstDay.getDay() - 1;
     if (startDow < 0) startDow = 6;
 
+    const todayKey = this.toKey(new Date());
     this.weeks = [];
-    let week: (string | null)[] = Array(startDow).fill(null);
+    let week: CalCell[] = [];
+    for (let i = 0; i < startDow; i++) week.push(this.makeCell(null, todayKey));
 
     for (let d = 1; d <= lastDay.getDate(); d++) {
       const date = new Date(this.currentYear, this.currentMonth, d);
-      week.push(this.toKey(date));
+      week.push(this.makeCell(this.toKey(date), todayKey));
       if (week.length === 7) {
         this.weeks.push(week);
         week = [];
       }
     }
     if (week.length > 0) {
-      while (week.length < 7) week.push(null);
+      while (week.length < 7) week.push(this.makeCell(null, todayKey));
       this.weeks.push(week);
+    }
+  }
+
+  /** Pre-izračuna sve flag-ove za ćeliju jednom (umesto poziva funkcija po CD ciklusu). */
+  private makeCell(key: string | null, todayKey: string): CalCell {
+    return {
+      key,
+      dayNum: key ? parseInt(key.split('-')[2]) : 0,
+      hasWorkout: !!key && !!this.feedbackMap[key],
+      noFeedback: !!key && !!this.completedMap[key],
+      isToday: key === todayKey,
+      isSelected: key === this.selectedDay,
+    };
+  }
+
+  /** Osveži samo selected flag na ćelijama (jeftino, na klik). */
+  private refreshSelection() {
+    for (const week of this.weeks) {
+      for (const cell of week) cell.isSelected = cell.key === this.selectedDay;
     }
   }
 
   prevMonth() {
     if (this.currentMonth === 0) { this.currentMonth = 11; this.currentYear--; }
     else this.currentMonth--;
-    this.buildCalendar();
     this.selectedDay = null;
     this.selectedFeedbacks = [];
+    this.buildCalendar();
   }
 
   nextMonth() {
     if (this.currentMonth === 11) { this.currentMonth = 0; this.currentYear++; }
     else this.currentMonth++;
-    this.buildCalendar();
     this.selectedDay = null;
     this.selectedFeedbacks = [];
+    this.buildCalendar();
   }
 
   selectDay(key: string | null) {
     if (!key) return;
     if (!this.feedbackMap[key] && !this.completedMap[key]) return;
     this.selectedDay = key;
-    this.selectedFeedbacks = this.feedbackMap[key] || [];
-  }
-
-  hasWorkout(key: string | null): boolean {
-    return !!key && !!this.feedbackMap[key];
-  }
-
-  hasNoFeedback(key: string | null): boolean {
-    // Žuta ako postoji bar jedan completed bez feedbacka tog dana
-    return !!key && !!this.completedMap[key];
+    // Pre-izračunaj intenzitet jednom po feedbacku (umesto avgIntensity() po CD ciklusu).
+    this.selectedFeedbacks = (this.feedbackMap[key] || []).map(fb => ({
+      ...fb,
+      _intensity: this.avgIntensity(fb)
+    }));
+    this.refreshSelection();
   }
 
   async openAddFeedback(cw: any) {
@@ -253,19 +280,6 @@ profileCards = ['calendar', 'snapshot', 'upcoming', 'trainerZone'] as const;
   });
   await modal.present();
 }
-
-  isToday(key: string | null): boolean {
-    return key === this.toKey(new Date());
-  }
-
-  isSelected(key: string | null): boolean {
-    return key === this.selectedDay;
-  }
-
-  getDayNumber(key: string | null): number {
-    if (!key) return 0;
-    return parseInt(key.split('-')[2]);
-  }
 
   avgIntensity(fb: any): string {
     if (!fb.exercises?.length) return '-';

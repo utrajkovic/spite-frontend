@@ -15,15 +15,15 @@
   <!-- Calendar grid -->
   <div class="cal-grid">
     <ng-container *ngFor="let week of weeks">
-      <div *ngFor="let day of week" class="cal-cell"
-        [class.has-workout]="hasWorkout(day)"
-        [class.no-feedback]="hasNoFeedback(day)"
-        [class.today]="isToday(day)"
-        [class.selected]="isSelected(day)"
-        [class.empty]="!day"
-        (click)="selectDay(day)">
-        <span *ngIf="day">{{ getDayNumber(day) }}</span>
-        <div class="dot" *ngIf="hasWorkout(day)"></div>
+      <div *ngFor="let cell of week" class="cal-cell"
+        [class.has-workout]="cell.hasWorkout"
+        [class.no-feedback]="cell.noFeedback"
+        [class.today]="cell.isToday"
+        [class.selected]="cell.isSelected"
+        [class.empty]="!cell.key"
+        (click)="selectDay(cell.key)">
+        <span *ngIf="cell.key">{{ cell.dayNum }}</span>
+        <div class="dot" *ngIf="cell.hasWorkout"></div>
       </div>
     </ng-container>
   </div>
@@ -44,10 +44,10 @@
         <i class="fa-solid fa-spinner fa-spin"></i> Saving
       </span>
       <span class="intensity-badge"
-        [class.easy]="avgIntensity(fb)==='Easy'"
-        [class.normal]="avgIntensity(fb)==='Normal'"
-        [class.hard]="avgIntensity(fb)==='Hard'">
-        {{ avgIntensity(fb) }}
+        [class.easy]="fb._intensity==='Easy'"
+        [class.normal]="fb._intensity==='Normal'"
+        [class.hard]="fb._intensity==='Hard'">
+        {{ fb._intensity }}
       </span>
       <i class="fa-solid fa-chevron-right edit-arrow" *ngIf="username"></i>
     </div>

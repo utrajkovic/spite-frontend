@@ -58,6 +58,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
   newEmail = '';
   emailBusy = false;
   scheduledSessions: any[] = [];
+  scheduleGroups: any[] = [];
   completionRate: number = 0;
   lastWorkoutDate: string = '';
 
@@ -173,13 +174,14 @@ export class TabProfilePage implements OnInit, OnDestroy {
       ? `${this.backendUrl}/sessions/trainer/${this.user.username}`
       : `${this.backendUrl}/sessions/client/${this.user.username}`;
     this.http.get<any[]>(url).subscribe({
-      next: (list) => { this.scheduledSessions = list || []; },
-      error: () => { this.scheduledSessions = []; }
+      next: (list) => { this.scheduledSessions = list || []; this.computeScheduleGroups(); },
+      error: () => { this.scheduledSessions = []; this.computeScheduleGroups(); }
     });
   }
 
-  // Termini grupisani po vremenu (isti termin = jedan bubble), bez prošlih
-  get scheduleGroups(): any[] {
+  // Termini grupisani po vremenu (isti termin = jedan bubble), bez prošlih.
+  // Računa se jednom po učitavanju (NE getter) da ne gradi Map na svaki CD ciklus.
+  private computeScheduleGroups() {
     const now = Date.now();
     const groups = new Map<string, any>();
     for (const s of this.scheduledSessions) {
@@ -197,7 +199,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
       }
       groups.get(key).names.push(s.clientUsername);
     }
-    return Array.from(groups.values()).sort((a, b) => a.startTime - b.startTime);
+    this.scheduleGroups = Array.from(groups.values()).sort((a, b) => a.startTime - b.startTime);
   }
 
   formatSessionTime(ts: number): string {
