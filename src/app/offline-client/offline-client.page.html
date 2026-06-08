@@ -124,6 +124,43 @@
       </div>
     </div>
 
+    <!-- WORKOUT CALENDAR -->
+    <button class="oc-cal-open" (click)="toggleCalendar()">
+      <i class="fa-solid fa-calendar-days"></i>
+      {{ showCalendar ? 'Sakrij kalendar' : 'Workout Calendar' }}
+    </button>
+
+    <div class="oc-card" *ngIf="showCalendar">
+      <div class="cal-head">
+        <button class="cal-nav" (click)="calPrev()"><i class="fa-solid fa-chevron-left"></i></button>
+        <span class="cal-month">{{ calMonthLabel }}</span>
+        <button class="cal-nav" (click)="calNext()"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+
+      <div class="cal-weekdays">
+        <span *ngFor="let d of calDayNames">{{ d }}</span>
+      </div>
+
+      <div class="cal-grid">
+        <ng-container *ngFor="let w of calWeeks">
+          <button class="cal-cell" *ngFor="let c of w"
+            [class.empty]="!c.key" [class.has-log]="c.hasLog"
+            [class.today]="c.isToday" [class.selected]="c.isSelected"
+            (click)="selectCalDay(c.key)">
+            <span *ngIf="c.key">{{ c.dayNum }}</span>
+            <span class="cal-dot" *ngIf="c.hasLog"></span>
+          </button>
+        </ng-container>
+      </div>
+
+      <div class="cal-detail" *ngIf="selectedCalKey && selectedCalLogs.length">
+        <div class="cal-detail-item" *ngFor="let l of selectedCalLogs">
+          <span class="cal-detail-title"><i class="fa-solid fa-dumbbell"></i> {{ l.workoutTitle || 'Trening' }}</span>
+          <span class="cal-detail-note" *ngIf="l.note">{{ l.note }}</span>
+        </div>
+      </div>
+    </div>
+
   </ng-container>
 
 </ion-content>

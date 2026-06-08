@@ -13,6 +13,14 @@ import {
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip);
 
+interface CalCell {
+  key: string | null;
+  dayNum: number;
+  hasLog: boolean;
+  isToday: boolean;
+  isSelected: boolean;
+}
+
 @Component({
   selector: 'app-offline-client',
   templateUrl: './offline-client.page.html',
@@ -43,6 +51,16 @@ export class OfflineClientPage implements OnInit, OnDestroy {
     exercises: [],
     records: []
   };
+
+  // Workout calendar (read-only — ističe dane treninga iz logova)
+  showCalendar = false;
+  calYear = new Date().getFullYear();
+  calMonth = new Date().getMonth();
+  calWeeks: CalCell[][] = [];
+  calDayNames = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'];
+  private logDateKeys = new Set<string>();
+  selectedCalKey: string | null = null;
+  selectedCalLogs: any[] = [];
 
   private chart: Chart | null = null;
   private baseUrl = 'https://spite-backend.fly.dev/api/offline-clients';
@@ -76,6 +94,7 @@ export class OfflineClientPage implements OnInit, OnDestroy {
     this.http.get<any[]>(`${this.baseUrl}/${this.id}/logs`).subscribe({
       next: (rows) => {
         this.logs = rows || [];
+        this.rebuildLogKeys();
         setTimeout(() => this.renderChart(), 50);
       },
       error: () => { this.logs = []; }
@@ -123,6 +142,7 @@ export class OfflineClientPage implements OnInit, OnDestroy {
       next: (saved) => {
         this.addingLog = false;
         this.logs = [saved, ...this.logs];
+        this.rebuildLogKeys();
         if (body.bodyWeightKg != null && this.client) this.client.weightKg = body.bodyWeightKg;
         this.newLog = { date: this.todayInput(), workoutTitle: '', note: '', bodyWeightKg: null, exercises: [], records: [] };
         this.showLogForm = false;
@@ -149,6 +169,7 @@ export class OfflineClientPage implements OnInit, OnDestroy {
     this.http.delete(`${this.baseUrl}/logs/${logId}`, { responseType: 'text' as 'json' }).subscribe({
       next: () => {
         this.logs = this.logs.filter(l => l.id !== logId);
+        this.rebuildLogKeys();
         setTimeout(() => this.renderChart(), 50);
       },
       error: () => this.showAlert('Greška pri brisanju.')
@@ -157,6 +178,84 @@ export class OfflineClientPage implements OnInit, OnDestroy {
 
   formatDate(ts: number): string {
     return new Date(ts).toLocaleDateString('sr-RS', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
+  // ── Workout calendar ──
+  private toKey(d: Date): string {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  private rebuildLogKeys() {
+    this.logDateKeys = new Set(this.logs.map(l => this.toKey(new Date(l.date))));
+    if (this.showCalendar) this.buildLogCalendar();
+  }
+
+  get calMonthLabel(): string {
+    return new Date(this.calYear, this.calMonth, 1).toLocaleDateString('sr-RS', { month: 'long', year: 'numeric' });
+  }
+
+  toggleCalendar() {
+    this.showCalendar = !this.showCalendar;
+    if (this.showCalendar) {
+      this.calYear = new Date().getFullYear();
+      this.calMonth = new Date().getMonth();
+      this.buildLogCalendar();
+    }
+  }
+
+  private makeCalCell(key: string | null, todayKey: string): CalCell {
+    return {
+      key,
+      dayNum: key ? parseInt(key.split('-')[2]) : 0,
+      hasLog: !!key && this.logDateKeys.has(key),
+      isToday: key === todayKey,
+      isSelected: key === this.selectedCalKey
+    };
+  }
+
+  private buildLogCalendar() {
+    const first = new Date(this.calYear, this.calMonth, 1);
+    let startDow = first.getDay() - 1;
+    if (startDow < 0) startDow = 6;
+    const lastDay = new Date(this.calYear, this.calMonth + 1, 0).getDate();
+    const todayKey = this.toKey(new Date());
+
+    this.calWeeks = [];
+    let week: CalCell[] = [];
+    for (let i = 0; i < startDow; i++) week.push(this.makeCalCell(null, todayKey));
+    for (let d = 1; d <= lastDay; d++) {
+      week.push(this.makeCalCell(this.toKey(new Date(this.calYear, this.calMonth, d)), todayKey));
+      if (week.length === 7) { this.calWeeks.push(week); week = []; }
+    }
+    if (week.length) {
+      while (week.length < 7) week.push(this.makeCalCell(null, todayKey));
+      this.calWeeks.push(week);
+    }
+  }
+
+  calPrev() {
+    if (this.calMonth === 0) { this.calMonth = 11; this.calYear--; }
+    else this.calMonth--;
+    this.selectedCalKey = null;
+    this.selectedCalLogs = [];
+    this.buildLogCalendar();
+  }
+
+  calNext() {
+    if (this.calMonth === 11) { this.calMonth = 0; this.calYear++; }
+    else this.calMonth++;
+    this.selectedCalKey = null;
+    this.selectedCalLogs = [];
+    this.buildLogCalendar();
+  }
+
+  selectCalDay(key: string | null) {
+    if (!key || !this.logDateKeys.has(key)) return;
+    this.selectedCalKey = key;
+    this.selectedCalLogs = this.logs.filter(l => this.toKey(new Date(l.date)) === key);
+    for (const w of this.calWeeks) {
+      for (const c of w) c.isSelected = c.key === this.selectedCalKey;
+    }
   }
 
   get hasWeightData(): boolean {
