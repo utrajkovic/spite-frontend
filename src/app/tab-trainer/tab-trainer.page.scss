@@ -671,3 +671,98 @@ ion-content {
 
   .sf-input { width: auto; max-width: 130px; }
 }
+
+/* ───────── Offline clients ───────── */
+.offline-section {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.section-sub {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  opacity: 0.65;
+  margin: 0 0 12px;
+}
+
+.offline-toggle {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+
+  &:active { background: rgba(255, 255, 255, 0.07); }
+}
+
+.offline-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.of-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+
+  &::placeholder { color: rgba(255, 255, 255, 0.28); }
+  &:focus { border-color: var(--border-accent); }
+}
+
+.of-row {
+  display: flex;
+  gap: 10px;
+
+  .of-input { flex: 1; }
+}
+
+.of-save {
+  width: 100%;
+  padding: 12px;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 10px;
+  color: #00111a;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:disabled { opacity: 0.6; }
+}
+
+.cp-mail {
+  font-size: 10px;
+  margin-left: 6px;
+  color: var(--color-success);
+  opacity: 0.8;
+}

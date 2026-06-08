@@ -42,6 +42,53 @@
           </button>
         </div>
       </div>
+
+      <!-- OFFLINE CLIENTS -->
+      <div class="offline-section">
+        <div class="page-header">
+          <h1 class="page-title">Offline Clients</h1>
+          <span class="count-badge" *ngIf="offlineClients.length > 0">{{ offlineClients.length }}</span>
+        </div>
+        <p class="section-sub">Klijenti uživo koji nisu korisnici aplikacije</p>
+
+        <button class="offline-toggle" (click)="showOfflineForm = !showOfflineForm">
+          <i class="fa-solid" [class.fa-plus]="!showOfflineForm" [class.fa-xmark]="showOfflineForm"></i>
+          {{ showOfflineForm ? 'Zatvori' : 'Dodaj offline klijenta' }}
+        </button>
+
+        <div class="offline-form" *ngIf="showOfflineForm">
+          <input class="of-input" [(ngModel)]="newOffline.name" placeholder="Ime *">
+          <input class="of-input" [(ngModel)]="newOffline.email" type="email" placeholder="Email (za zakazivanje)">
+          <div class="of-row">
+            <input class="of-input" [(ngModel)]="newOffline.heightCm" type="number" placeholder="Visina (cm)">
+            <input class="of-input" [(ngModel)]="newOffline.weightKg" type="number" placeholder="Kilaža (kg)">
+          </div>
+          <input class="of-input" [(ngModel)]="newOffline.goal" placeholder="Cilj (opciono)">
+          <textarea class="of-input" rows="2" [(ngModel)]="newOffline.notes" placeholder="Beleške (opciono)"></textarea>
+          <button class="of-save" (click)="addOfflineClient()" [disabled]="addingOffline">
+            <i *ngIf="addingOffline" class="fa-solid fa-spinner fa-spin"></i>
+            {{ addingOffline ? 'Čuvam...' : 'Sačuvaj klijenta' }}
+          </button>
+        </div>
+
+        <div class="clients-wrap">
+          <div class="empty-state" *ngIf="offlineClients.length === 0">
+            <i class="fa-solid fa-user-pen"></i>
+            <p>Još nema offline klijenata.</p>
+          </div>
+
+          <div class="client-card" *ngFor="let c of offlineClients" (click)="goToOfflineClient(c.id)">
+            <div class="avatar"><app-avatar [name]="c.name"></app-avatar></div>
+            <div class="client-info">
+              <span class="client-name">{{ c.name }}</span>
+              <span class="client-hint">{{ c.goal || 'Tap to manage' }}</span>
+            </div>
+            <button class="remove-btn" (click)="confirmRemoveOfflineClient(c); $event.stopPropagation()">
+              <i class="fa-solid fa-user-minus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </ng-container>
 
     <!-- SCHEDULE -->
@@ -122,6 +169,17 @@
           </button>
         </div>
         <ng-template #noCl><p class="empty-msg">Nemaš klijente za zakazivanje.</p></ng-template>
+
+        <p class="sched-label" *ngIf="offlineClients.length">Offline klijenti</p>
+        <div class="client-pick" *ngIf="offlineClients.length">
+          <button class="cp-item" *ngFor="let c of offlineClients"
+            [class.sel]="selectedOfflineIds.has(c.id)"
+            (click)="toggleOfflineSel(c.id)">
+            <span class="cp-avatar"><app-avatar [name]="c.name"></app-avatar></span>
+            <span class="cp-name">{{ c.name }}<i class="fa-solid fa-envelope cp-mail" *ngIf="c.email"></i></span>
+            <i class="fa-solid fa-check" *ngIf="selectedOfflineIds.has(c.id)"></i>
+          </button>
+        </div>
 
         <p class="sched-label">Ručno ime (van aplikacije)</p>
         <div class="custom-add">

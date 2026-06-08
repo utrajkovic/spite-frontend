@@ -6,7 +6,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loading-overlay.component";
 import { BackendService } from '../services/backend.service';
 import { PriorityClient } from '../services/models';
@@ -56,11 +56,20 @@ export class TabTrainerPage {
   allSessions: any[] = [];
   booking = false;
 
+  // Offline (non-app) clients
+  offlineClientsUrl = 'https://spite-backend.fly.dev/api/offline-clients';
+  offlineClients: any[] = [];
+  selectedOfflineIds = new Set<string>();
+  newOffline = { name: '', email: '', heightCm: null as number | null, weightKg: null as number | null, goal: '', notes: '' };
+  addingOffline = false;
+  showOfflineForm = false;
+
   constructor(
     private http: HttpClient,
     private alertCtrl: AlertController,
     private zone: NgZone,
-    private backend: BackendService
+    private backend: BackendService,
+    private router: Router
   ) {}
 
   ionViewWillEnter() {
@@ -69,6 +78,7 @@ export class TabTrainerPage {
       const parsed = JSON.parse(user);
       this.trainerUsername = parsed.username;
       this.loadClients();
+      this.loadOfflineClients();
       this.buildCalendar();
       this.loadSessions();
       this.loadReminderSettings();
@@ -169,6 +179,11 @@ export class TabTrainerPage {
     else this.selectedClients.add(username);
   }
 
+  toggleOfflineSel(id: string) {
+    if (this.selectedOfflineIds.has(id)) this.selectedOfflineIds.delete(id);
+    else this.selectedOfflineIds.add(id);
+  }
+
   addCustomName() {
     const name = (this.customNameInput || '').trim();
     if (!name) return;
@@ -181,7 +196,7 @@ export class TabTrainerPage {
   }
 
   get totalSelected(): number {
-    return this.selectedClients.size + this.customNames.length;
+    return this.selectedClients.size + this.customNames.length + this.selectedOfflineIds.size;
   }
 
   formatTime(ts: number): string {
@@ -203,7 +218,8 @@ export class TabTrainerPage {
       durationMinutes: Number(this.sessionDuration) || 60,
       note: this.sessionNote.trim(),
       clientUsernames: Array.from(this.selectedClients),
-      customNames: [...this.customNames]
+      customNames: [...this.customNames],
+      offlineClientIds: Array.from(this.selectedOfflineIds)
     };
 
     this.booking = true;
@@ -215,6 +231,7 @@ export class TabTrainerPage {
       next: () => {
         this.booking = false;
         this.selectedClients.clear();
+        this.selectedOfflineIds.clear();
         this.customNames = [];
         this.customNameInput = '';
         this.sessionNote = '';
@@ -287,6 +304,70 @@ export class TabTrainerPage {
     this.backend.sendBulkLateReminders(this.trainerUsername).subscribe({
       next: (msg) => this.showAlert(msg || 'Reminders sent.'),
       error: () => this.showAlert('❌ Failed to send reminders.')
+    });
+  }
+
+  // ───────── Offline (non-app) clients ─────────
+
+  loadOfflineClients() {
+    if (!this.trainerUsername) return;
+    this.http.get<any[]>(`${this.offlineClientsUrl}/trainer/${this.trainerUsername}`).subscribe({
+      next: (res) => { this.offlineClients = res || []; },
+      error: () => { this.offlineClients = []; }
+    });
+  }
+
+  addOfflineClient() {
+    const name = (this.newOffline.name || '').trim();
+    if (!name) { this.showAlert('Unesi ime klijenta.'); return; }
+    if (this.addingOffline) return;
+    this.addingOffline = true;
+
+    const body = {
+      name,
+      email: (this.newOffline.email || '').trim(),
+      heightCm: this.newOffline.heightCm,
+      weightKg: this.newOffline.weightKg,
+      goal: (this.newOffline.goal || '').trim(),
+      notes: (this.newOffline.notes || '').trim()
+    };
+    this.http.post<any>(
+      `${this.offlineClientsUrl}?trainerUsername=${this.trainerUsername}`, body
+    ).subscribe({
+      next: (created) => {
+        this.addingOffline = false;
+        this.offlineClients = [...this.offlineClients, created];
+        this.newOffline = { name: '', email: '', heightCm: null, weightKg: null, goal: '', notes: '' };
+        this.showOfflineForm = false;
+      },
+      error: () => { this.addingOffline = false; this.showAlert('Greška pri dodavanju klijenta.'); }
+    });
+  }
+
+  goToOfflineClient(id: string) {
+    this.router.navigateByUrl(`/offline-client/${id}`);
+  }
+
+  async confirmRemoveOfflineClient(c: any) {
+    const alert = await this.alertCtrl.create({
+      header: 'Remove Client',
+      message: `Obrisati offline klijenta "${c.name}" i sve njegove zapise?`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        { text: 'Remove', role: 'confirm', cssClass: 'alert-confirm', handler: () => this.removeOfflineClient(c.id) }
+      ],
+      cssClass: 'custom-alert'
+    });
+    await alert.present();
+  }
+
+  removeOfflineClient(id: string) {
+    this.http.delete(`${this.offlineClientsUrl}/${id}`, { responseType: 'text' as 'json' }).subscribe({
+      next: () => {
+        this.offlineClients = this.offlineClients.filter(c => c.id !== id);
+        this.selectedOfflineIds.delete(id);
+      },
+      error: () => this.showAlert('Greška pri brisanju klijenta.')
     });
   }
 

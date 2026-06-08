@@ -1,0 +1,129 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab-trainer" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ client?.name || 'Klijent' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ng-container *ngIf="client">
+
+    <!-- PROFIL -->
+    <div class="oc-card">
+      <p class="oc-card-title"><i class="fa-solid fa-id-card"></i> Profil</p>
+      <input class="oc-input" [(ngModel)]="client.name" placeholder="Ime *">
+      <input class="oc-input" [(ngModel)]="client.email" type="email" placeholder="Email (za zakazivanje)">
+      <div class="oc-row">
+        <div class="oc-field">
+          <label>Visina (cm)</label>
+          <input class="oc-input" [(ngModel)]="client.heightCm" type="number">
+        </div>
+        <div class="oc-field">
+          <label>Kilaža (kg)</label>
+          <input class="oc-input" [(ngModel)]="client.weightKg" type="number">
+        </div>
+      </div>
+      <input class="oc-input" [(ngModel)]="client.goal" placeholder="Cilj">
+      <textarea class="oc-input" rows="3" [(ngModel)]="client.notes" placeholder="Beleške (bitne stvari o klijentu)"></textarea>
+      <button class="oc-btn" (click)="saveProfile()" [disabled]="savingProfile">
+        <i *ngIf="savingProfile" class="fa-solid fa-spinner fa-spin"></i>
+        <i *ngIf="!savingProfile" class="fa-solid fa-floppy-disk"></i>
+        {{ savingProfile ? 'Čuvam...' : 'Sačuvaj profil' }}
+      </button>
+    </div>
+
+    <!-- NAPREDAK -->
+    <div class="oc-card" *ngIf="hasWeightData">
+      <p class="oc-card-title"><i class="fa-solid fa-chart-line"></i> Napredak (kilaža)</p>
+      <div class="oc-chart"><canvas #weightChart></canvas></div>
+    </div>
+
+    <!-- DNEVNIK -->
+    <div class="oc-card">
+      <div class="oc-log-head">
+        <p class="oc-card-title"><i class="fa-solid fa-dumbbell"></i> Dnevnik treninga</p>
+        <button class="oc-add-toggle" (click)="showLogForm = !showLogForm">
+          <i class="fa-solid" [class.fa-plus]="!showLogForm" [class.fa-xmark]="showLogForm"></i>
+        </button>
+      </div>
+
+      <!-- Forma za novi zapis -->
+      <div class="oc-log-form" *ngIf="showLogForm">
+        <div class="oc-row">
+          <div class="oc-field">
+            <label>Datum</label>
+            <input class="oc-input" [(ngModel)]="newLog.date" type="date">
+          </div>
+          <div class="oc-field">
+            <label>Kilaža (kg)</label>
+            <input class="oc-input" [(ngModel)]="newLog.bodyWeightKg" type="number" placeholder="opciono">
+          </div>
+        </div>
+        <input class="oc-input" [(ngModel)]="newLog.workoutTitle" placeholder="Šta je rađeno (npr. Noge)">
+        <textarea class="oc-input" rows="2" [(ngModel)]="newLog.note" placeholder="Napomena (opciono)"></textarea>
+
+        <!-- Vežbe -->
+        <div class="oc-sub">
+          <span>Vežbe</span>
+          <button class="oc-mini" (click)="addExerciseRow()"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="oc-ex-row" *ngFor="let e of newLog.exercises; let i = index">
+          <input class="oc-input ex-name" [(ngModel)]="e.name" placeholder="Vežba">
+          <input class="oc-input ex-sm" [(ngModel)]="e.sets" type="number" placeholder="ser">
+          <input class="oc-input ex-sm" [(ngModel)]="e.reps" placeholder="pon">
+          <input class="oc-input ex-sm" [(ngModel)]="e.weightKg" type="number" placeholder="kg">
+          <button class="oc-del" (click)="removeExerciseRow(i)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Rekordi -->
+        <div class="oc-sub">
+          <span>Rekordi</span>
+          <button class="oc-mini" (click)="addRecordRow()"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="oc-ex-row" *ngFor="let r of newLog.records; let i = index">
+          <input class="oc-input ex-name" [(ngModel)]="r.name" placeholder="npr. Bench 1RM">
+          <input class="oc-input ex-sm" [(ngModel)]="r.value" type="number" placeholder="vred">
+          <input class="oc-input ex-sm" [(ngModel)]="r.unit" placeholder="kg">
+          <button class="oc-del" (click)="removeRecordRow(i)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <button class="oc-btn" (click)="addLog()" [disabled]="addingLog">
+          <i *ngIf="addingLog" class="fa-solid fa-spinner fa-spin"></i>
+          <i *ngIf="!addingLog" class="fa-solid fa-check"></i>
+          {{ addingLog ? 'Čuvam...' : 'Dodaj zapis' }}
+        </button>
+      </div>
+
+      <!-- Lista zapisa -->
+      <div class="oc-empty" *ngIf="logs.length === 0">
+        <i class="fa-solid fa-clipboard"></i>
+        <p>Još nema zabeleženih treninga.</p>
+      </div>
+
+      <div class="oc-log" *ngFor="let log of logs">
+        <div class="oc-log-top">
+          <span class="oc-log-date">{{ formatDate(log.date) }}</span>
+          <span class="oc-log-title" *ngIf="log.workoutTitle">{{ log.workoutTitle }}</span>
+          <span class="oc-log-weight" *ngIf="log.bodyWeightKg != null">{{ log.bodyWeightKg }} kg</span>
+          <button class="oc-del" (click)="confirmDeleteLog(log)"><i class="fa-solid fa-trash"></i></button>
+        </div>
+        <p class="oc-log-note" *ngIf="log.note">{{ log.note }}</p>
+        <div class="oc-chips" *ngIf="log.exercises?.length">
+          <span class="oc-chip" *ngFor="let e of log.exercises">
+            {{ e.name }}<span *ngIf="e.sets || e.reps"> {{ e.sets }}×{{ e.reps }}</span><span *ngIf="e.weightKg"> @{{ e.weightKg }}kg</span>
+          </span>
+        </div>
+        <div class="oc-chips" *ngIf="log.records?.length">
+          <span class="oc-chip rec" *ngFor="let r of log.records">
+            <i class="fa-solid fa-trophy"></i> {{ r.name }}: {{ r.value }}{{ r.unit }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+
+</ion-content>

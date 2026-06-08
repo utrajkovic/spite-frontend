@@ -92,6 +92,12 @@ export const routes: Routes = [
   },
 
   {
+    path: 'offline-client/:id',
+    loadComponent: () =>
+      import('./offline-client/offline-client.page').then(m => m.OfflineClientPage),
+  },
+
+  {
     path: 'tab-trainings',
     loadComponent: () =>
       import('./tab-trainings/tab-trainings.page').then(m => m.TabTrainingsPage)
