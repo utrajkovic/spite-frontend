@@ -387,7 +387,7 @@
   </div>
 
   <!-- Install app -->
-  <ion-card class="install-card" *ngIf="!isInstalled && (installPrompt || isIos)">
+  <ion-card class="install-card" *ngIf="!isInstalled && (installPrompt || isIos || isAndroid)">
     <ion-card-header>
       <ion-card-title><i class="fa-solid fa-mobile-screen"></i> Install App</ion-card-title>
     </ion-card-header>
@@ -398,6 +398,9 @@
       </ion-button>
       <ion-button expand="block" fill="outline" (click)="showIosInstallGuide()" *ngIf="isIos && !installPrompt">
         <i class="fa-brands fa-apple" slot="start"></i> How to install on iOS
+      </ion-button>
+      <ion-button expand="block" fill="outline" (click)="showAndroidInstallGuide()" *ngIf="isAndroid && !installPrompt">
+        <i class="fa-brands fa-android" slot="start"></i> How to install on Android
       </ion-button>
     </ion-card-content>
   </ion-card>

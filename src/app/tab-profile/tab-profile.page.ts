@@ -75,6 +75,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
 
   installPrompt: any = null;
   isIos = false;
+  isAndroid = false;
   isInstalled = false;
   notificationsEnabled = false;
   notificationsSupported = 'Notification' in window;
@@ -103,6 +104,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
       this.installPrompt = e;
     });
     this.isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+    this.isAndroid = /android/.test(navigator.userAgent.toLowerCase());
     this.isInstalled = window.matchMedia('(display-mode: standalone)').matches
       || (navigator as any).standalone === true;
     if ('Notification' in window) {
@@ -503,6 +505,27 @@ export class TabProfilePage implements OnInit, OnDestroy {
             '<span style="display:inline-block">&#x2191;</span> in Safari\'s bottom bar</li>' +
           '<li style="margin-bottom:10px">Scroll down and tap <b>&ldquo;Add to Home Screen&rdquo;</b></li>' +
           '<li>Tap <b>Add</b> in the top-right corner</li>' +
+        '</ol>' +
+      '</div>';
+
+    const a = await this.alertCtrl.create({
+      header: 'Install Spite',
+      message,
+      buttons: ['Got it'],
+      cssClass: 'custom-alert install-alert'
+    });
+    await a.present();
+  }
+
+  async showAndroidInstallGuide() {
+    const message =
+      '<div style="text-align:left;text-shadow:none;line-height:1.55;font-size:14px;color:#f2f2f2">' +
+        '<p style="margin:0 0 14px">Add <b>Spite</b> to your home screen (Chrome):</p>' +
+        '<ol style="margin:0;padding-left:22px">' +
+          '<li style="margin-bottom:10px">Tap the <b>menu</b> ' +
+            '<span style="display:inline-block">&#x22EE;</span> in the top-right corner</li>' +
+          '<li style="margin-bottom:10px">Tap <b>&ldquo;Install app&rdquo;</b> or <b>&ldquo;Add to Home screen&rdquo;</b></li>' +
+          '<li>Tap <b>Install</b> to confirm</li>' +
         '</ol>' +
       '</div>';
 
