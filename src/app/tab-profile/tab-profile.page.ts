@@ -20,6 +20,7 @@ import { ThemeService, Theme } from '../services/theme.service';
 import { HttpClient } from '@angular/common/http';
 import { AvatarComponent } from '../shared/avatar/avatar.component';
 import { AvatarService } from '../shared/avatar/avatar.service';
+import { PwaInstallService } from '../services/pwa-install.service';
 
 @Component({
   selector: 'app-tab-profile',
@@ -97,7 +98,8 @@ export class TabProfilePage implements OnInit, OnDestroy {
     private router: Router,
     public themeService: ThemeService,
     private http: HttpClient,
-    private avatarService: AvatarService
+    private avatarService: AvatarService,
+    public pwa: PwaInstallService
   ) {
     window.addEventListener('beforeinstallprompt', (e: any) => {
       e.preventDefault();
@@ -491,10 +493,12 @@ export class TabProfilePage implements OnInit, OnDestroy {
   }
 
   async installApp() {
-    if (this.installPrompt) {
-      this.installPrompt.prompt();
-      const { outcome } = await this.installPrompt.userChoice;
-      if (outcome === 'accepted') { this.installPrompt = null; this.isInstalled = true; }
+    const outcome = await this.pwa.prompt();
+    if (outcome === 'accepted') { this.isInstalled = true; return; }
+    if (outcome === 'unavailable') {
+      // Nema native prompt (npr. iOS, ili in-app/neeligibilan Chrome) → uputstvo kao fallback
+      if (this.isIos) await this.showIosInstallGuide();
+      else await this.showAndroidInstallGuide();
     }
   }
 
