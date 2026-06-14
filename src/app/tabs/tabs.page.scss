@@ -13,8 +13,9 @@ ion-content {
   -webkit-backdrop-filter: blur(10px) saturate(140%);
   border-bottom: none;
   box-shadow: none;
-  // Header popunjava i status bar (notch) da bude neprekidno do vrha
-  padding-top: env(safe-area-inset-top);
+  // NAPOMENA: bez ručnog padding-top: env(safe-area-inset-top) — Ionic-ov
+  // translucent toolbar već dodaje safe-area (notch) razmak. Dupliranje je
+  // pravilo header duplo visokim u iOS standalone (home screen) modu.
   z-index: 10;
 }
 
