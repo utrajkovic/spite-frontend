@@ -106,6 +106,8 @@ export class TabProfilePage implements OnInit, OnDestroy {
     this.isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
     this.isAndroid = /android/.test(navigator.userAgent.toLowerCase());
     this.isInstalled = window.matchMedia('(display-mode: standalone)').matches
+      || window.matchMedia('(display-mode: fullscreen)').matches
+      || window.matchMedia('(display-mode: minimal-ui)').matches
       || (navigator as any).standalone === true;
     if ('Notification' in window) {
       this.notificationsEnabled = Notification.permission === 'granted';

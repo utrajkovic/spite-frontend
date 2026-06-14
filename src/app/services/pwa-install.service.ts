@@ -28,6 +28,8 @@ export class PwaInstallService {
   /** App je pokrenuta kao instalirana (standalone), ne u browser tabu. */
   isStandalone(): boolean {
     return window.matchMedia('(display-mode: standalone)').matches
+      || window.matchMedia('(display-mode: fullscreen)').matches
+      || window.matchMedia('(display-mode: minimal-ui)').matches
       || (navigator as any).standalone === true;
   }
 
