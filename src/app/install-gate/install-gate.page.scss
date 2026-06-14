@@ -65,6 +65,22 @@
   b { color: var(--color-text, #f2f2f2); }
 }
 
+.gate-steps {
+  text-align: left;
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text, #f2f2f2);
+
+  b { color: var(--color-primary, #fff); }
+  i { color: var(--color-primary, #fff); margin: 0 2px; }
+}
+
 .gate-btn {
   width: 100%;
   padding: 14px;

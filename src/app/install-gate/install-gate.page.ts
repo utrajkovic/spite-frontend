@@ -17,6 +17,7 @@ export class InstallGatePage implements OnInit {
   busy = true;      // dok se ne odluči da li prikazati gate
   installing = false;
   inApp = false;    // otvoreno u in-app browseru (Instagram, FB, TikTok...)
+  isIos = false;    // iOS uređaj (drugačiji tok — Safari / Add to Home Screen)
 
   constructor(
     private router: Router,
@@ -36,11 +37,16 @@ export class InstallGatePage implements OnInit {
 
     // Gate prikazujemo SAMO na Androidu koji nije instaliran i nije već izabrao web.
     // iOS i desktop idu pravo na login (na iOS-u home-screen već radi odlično).
-    if (!this.pwa.isAndroid() || this.pwa.isStandalone() || choseWeb) {
+    const android = this.pwa.isAndroid();
+    const ios = this.pwa.isIos();
+
+    // Gate samo na mobilnom (Android/iOS), kad nije instaliran i nije već izabran web.
+    if ((!android && !ios) || this.pwa.isStandalone() || choseWeb) {
       this.router.navigateByUrl('/login', { replaceUrl: true });
       return;
     }
 
+    this.isIos = ios;
     this.inApp = this.isInAppBrowser();
     this.busy = false; // prikaži gate
   }

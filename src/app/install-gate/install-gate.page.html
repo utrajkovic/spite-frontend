@@ -4,8 +4,31 @@
     <div class="gate-logo">SPITE</div>
     <p class="gate-sub">Fitness app za trenere i klijente</p>
 
-    <!-- In-app browser (Instagram, FB, TikTok...) — ne može install ovde -->
-    <div class="gate-card" *ngIf="inApp">
+    <!-- iOS — in-app browser (Instagram, FB...) -->
+    <div class="gate-card" *ngIf="isIos && inApp">
+      <i class="fa-brands fa-safari gate-icon"></i>
+      <p class="gate-q">Otvorio si link preko druge aplikacije. Za instalaciju otvori Spite u <b>Safari</b>-ju.</p>
+      <p class="gate-hint">
+        Tapni <b>⋯</b> / <b>Share</b> → <b>“Open in Safari”</b>, pa u Safari-ju: Share
+        <i class="fa-solid fa-arrow-up-from-bracket"></i> → <b>Add to Home Screen</b>.
+      </p>
+      <button class="gate-btn ghost" (click)="continueWeb()">Nastavi ovde (bez instalacije)</button>
+    </div>
+
+    <!-- iOS — Safari -->
+    <div class="gate-card" *ngIf="isIos && !inApp">
+      <i class="fa-solid fa-mobile-screen gate-icon"></i>
+      <p class="gate-q">Dodaj Spite na početni ekran:</p>
+      <ol class="gate-steps">
+        <li>Tapni <b>Share</b> <i class="fa-solid fa-arrow-up-from-bracket"></i> u donjoj traci Safari-ja</li>
+        <li>Izaberi <b>“Add to Home Screen”</b></li>
+        <li>Tapni <b>Add</b> gore desno</li>
+      </ol>
+      <button class="gate-btn ghost" (click)="continueWeb()">Nastavi na web-u</button>
+    </div>
+
+    <!-- Android — in-app browser (Instagram, FB, TikTok...) -->
+    <div class="gate-card" *ngIf="!isIos && inApp">
       <i class="fa-brands fa-chrome gate-icon"></i>
       <p class="gate-q">Otvorio si link preko druge aplikacije. Za instalaciju otvori Spite u <b>Chrome</b> pregledaču.</p>
 
@@ -17,13 +40,11 @@
         Ako se ne otvori: tapni <b>⋮</b> (gore desno) → <b>“Open in Chrome”</b> ili <b>“Open in external browser”</b>
       </p>
 
-      <button class="gate-btn ghost" (click)="continueWeb()">
-        Nastavi ovde (bez instalacije)
-      </button>
+      <button class="gate-btn ghost" (click)="continueWeb()">Nastavi ovde (bez instalacije)</button>
     </div>
 
-    <!-- Pravi browser (Chrome) — ponudi install -->
-    <div class="gate-card" *ngIf="!inApp">
+    <!-- Android — Chrome -->
+    <div class="gate-card" *ngIf="!isIos && !inApp">
       <i class="fa-solid fa-mobile-screen gate-icon"></i>
       <p class="gate-q">Instaliraj aplikaciju za najbolji doživljaj — radi kao prava app, bez browser trake.</p>
 
@@ -32,9 +53,7 @@
         {{ installing ? 'Instaliranje...' : 'Instaliraj aplikaciju' }}
       </button>
 
-      <button class="gate-btn ghost" (click)="continueWeb()">
-        Nastavi na web-u
-      </button>
+      <button class="gate-btn ghost" (click)="continueWeb()">Nastavi na web-u</button>
     </div>
 
   </div>
