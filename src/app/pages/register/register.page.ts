@@ -49,17 +49,6 @@ export class RegisterPage {
     return valid ? null : { emailInvalid: true };
   }
 
-  async ngOnInit() {
-    const pass = prompt("Enter registration access code:");
-
-    if (pass !== "spite2025") {
-      alert("Invalid access code.");
-      this.router.navigateByUrl('/login');
-      return;
-    }
-  }
-
-
   passwordValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.value;
     if (!password) return null;
