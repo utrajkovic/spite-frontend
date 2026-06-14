@@ -5,8 +5,14 @@ import { LoginGuard } from './guards/login.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/login',
+    redirectTo: '/welcome',
     pathMatch: 'full',
+  },
+
+  {
+    path: 'welcome',
+    loadComponent: () =>
+      import('./install-gate/install-gate.page').then((m) => m.InstallGatePage),
   },
 
 

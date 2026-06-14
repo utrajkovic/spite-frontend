@@ -5,6 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import { WorkoutStateService } from './services/workout-state.service';
 import { BackendService } from './services/backend.service';
 import { ThemeService } from './services/theme.service';
+import { PwaInstallService } from './services/pwa-install.service';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { Preferences } from '@capacitor/preferences';
 import { HttpClient } from '@angular/common/http';
@@ -24,7 +25,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private backend: BackendService,
     private themeService: ThemeService,
     private authInterceptor: AuthInterceptor,
-    private http: HttpClient
+    private http: HttpClient,
+    private pwaInstall: PwaInstallService // instanciraj rano da uhvati beforeinstallprompt
   ) {
     if (Capacitor.isNativePlatform()) {
       // Header ide ispod status bara (neprekidno, bez zasebne fiksne boje)

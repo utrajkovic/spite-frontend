@@ -1,0 +1,87 @@
+.gate {
+  --background: radial-gradient(circle at top, #00111a 0%, #000000 100%);
+}
+
+.gate-wrap {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px calc(32px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.gate-logo {
+  font-family: 'Monoton', cursive;
+  font-size: 40px;
+  letter-spacing: 6px;
+  color: var(--color-primary, #fff);
+  margin-bottom: 8px;
+}
+
+.gate-sub {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-muted, #9a9a9a);
+  margin: 0 0 36px;
+}
+
+.gate-card {
+  width: 100%;
+  max-width: 360px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.gate-icon {
+  font-size: 34px;
+  color: var(--color-primary, #fff);
+  opacity: 0.85;
+}
+
+.gate-q {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text, #f2f2f2);
+  margin: 0 0 6px;
+}
+
+.gate-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &.primary {
+    background: var(--color-primary, #fff);
+    color: #00111a;
+    border: none;
+
+    &:disabled { opacity: 0.6; }
+    &:active { opacity: 0.85; }
+  }
+
+  &.ghost {
+    background: transparent;
+    color: var(--color-text-muted, #9a9a9a);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    &:active { background: rgba(255, 255, 255, 0.05); }
+  }
+}

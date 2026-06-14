@@ -1,0 +1,22 @@
+<ion-content class="gate" [fullscreen]="true">
+  <div class="gate-wrap" *ngIf="!busy">
+
+    <div class="gate-logo">SPITE</div>
+    <p class="gate-sub">Fitness app za trenere i klijente</p>
+
+    <div class="gate-card">
+      <i class="fa-solid fa-mobile-screen gate-icon"></i>
+      <p class="gate-q">Instaliraj aplikaciju za najbolji doživljaj — radi kao prava app, bez browser trake.</p>
+
+      <button class="gate-btn primary" (click)="install()" [disabled]="installing">
+        <i class="fa-solid fa-download"></i>
+        {{ installing ? 'Instaliranje...' : 'Instaliraj aplikaciju' }}
+      </button>
+
+      <button class="gate-btn ghost" (click)="continueWeb()">
+        Nastavi na web-u
+      </button>
+    </div>
+
+  </div>
+</ion-content>
