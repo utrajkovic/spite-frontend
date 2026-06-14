@@ -55,6 +55,16 @@
   margin: 0 0 6px;
 }
 
+.gate-hint {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-text-muted, #9a9a9a);
+  margin: 0;
+
+  b { color: var(--color-text, #f2f2f2); }
+}
+
 .gate-btn {
   width: 100%;
   padding: 14px;

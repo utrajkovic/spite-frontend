@@ -4,7 +4,26 @@
     <div class="gate-logo">SPITE</div>
     <p class="gate-sub">Fitness app za trenere i klijente</p>
 
-    <div class="gate-card">
+    <!-- In-app browser (Instagram, FB, TikTok...) — ne može install ovde -->
+    <div class="gate-card" *ngIf="inApp">
+      <i class="fa-brands fa-chrome gate-icon"></i>
+      <p class="gate-q">Otvorio si link preko druge aplikacije. Za instalaciju otvori Spite u <b>Chrome</b> pregledaču.</p>
+
+      <button class="gate-btn primary" (click)="openInChrome()">
+        <i class="fa-brands fa-chrome"></i> Otvori u Chrome-u
+      </button>
+
+      <p class="gate-hint">
+        Ako se ne otvori: tapni <b>⋮</b> (gore desno) → <b>“Open in Chrome”</b> ili <b>“Open in external browser”</b>
+      </p>
+
+      <button class="gate-btn ghost" (click)="continueWeb()">
+        Nastavi ovde (bez instalacije)
+      </button>
+    </div>
+
+    <!-- Pravi browser (Chrome) — ponudi install -->
+    <div class="gate-card" *ngIf="!inApp">
       <i class="fa-solid fa-mobile-screen gate-icon"></i>
       <p class="gate-q">Instaliraj aplikaciju za najbolji doživljaj — radi kao prava app, bez browser trake.</p>
 

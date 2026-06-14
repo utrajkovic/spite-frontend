@@ -16,6 +16,7 @@ import { PwaInstallService } from '../services/pwa-install.service';
 export class InstallGatePage implements OnInit {
   busy = true;      // dok se ne odluči da li prikazati gate
   installing = false;
+  inApp = false;    // otvoreno u in-app browseru (Instagram, FB, TikTok...)
 
   constructor(
     private router: Router,
@@ -40,7 +41,20 @@ export class InstallGatePage implements OnInit {
       return;
     }
 
+    this.inApp = this.isInAppBrowser();
     this.busy = false; // prikaži gate
+  }
+
+  /** In-app browseri (Instagram, FB, TikTok...) ne podržavaju PWA install. */
+  private isInAppBrowser(): boolean {
+    const ua = navigator.userAgent || '';
+    return /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line\/|Twitter|TikTok|musical_ly|BytedanceWebview|Snapchat|Pinterest/i.test(ua);
+  }
+
+  /** Forsira otvaranje u Chrome-u (Android intent) — odatle PWA install radi. */
+  openInChrome() {
+    const target = `${location.host}/`;
+    window.location.href = `intent://${target}#Intent;scheme=https;package=com.android.chrome;end`;
   }
 
   async install() {
