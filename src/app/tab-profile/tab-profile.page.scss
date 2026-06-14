@@ -791,8 +791,9 @@ ion-card {
 ───────────────────────────────────────── */
 @media (max-width: 480px) {
   .profile-card {
-    padding: 20px 12px 6px;
-    ion-card-title { font-size: 19px; margin-top: 14px; display: block; }
+    padding: 10px 12px 6px;                  /* ceo sadržaj bliže gornjoj ivici */
+    ion-card-title { font-size: 19px; margin-top: 22px; display: block; }  /* avatar ↔ username veći razmak */
+    .role-badge { margin-top: 2px; }         /* role bliže username-u */
   }
 
   ion-card { margin: 10px 0; }
