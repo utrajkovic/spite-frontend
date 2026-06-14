@@ -792,9 +792,10 @@ ion-card {
 @media (max-width: 480px) {
   .profile-card {
     padding: 10px 12px 6px;                  /* ceo sadržaj bliže gornjoj ivici */
-    .avatar { margin-bottom: 26px; }         /* avatar ↔ username veći razmak (pouzdano — plain div) */
-    ion-card-title { font-size: 19px; margin: 0; }  /* bez ekstra razmaka */
-    .role-badge { margin-top: 2px; }         /* role tik ispod username-a */
+    /* ion-card-header je column-reverse → vizuelno: role, username, avatar */
+    .avatar { margin-top: 22px; }            /* gornja ivica avatara = razmak username ↔ avatar (veći) */
+    ion-card-title { font-size: 19px; margin: 0; }
+    .role-badge { margin: 0; }               /* uklanja podrazumevani <p> razmak → role tik uz username */
   }
 
   ion-card { margin: 10px 0; }
