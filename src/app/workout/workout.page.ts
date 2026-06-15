@@ -69,6 +69,11 @@ export class WorkoutPage implements OnInit, OnDestroy {
     private modalCtrl: ModalController
   ) {}
 
+  /** Nazad na listu treninga (start ekran — ako je neko slučajno kliknuo Start). */
+  goBack() {
+    this.router.navigate(['/tabs/tab1']);
+  }
+
   ngOnInit() {
     this.unlockVideoPlayback();
     const id = this.route.snapshot.paramMap.get('id')!;

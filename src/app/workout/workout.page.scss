@@ -19,6 +19,27 @@ ion-content {
   align-items: center;
   justify-content: center;
   padding: 24px 20px;
+  position: relative;
+}
+
+.workout-back-btn {
+  position: absolute;
+  top: calc(14px + env(safe-area-inset-top)); // ispod notch-a (iOS standalone)
+  left: 14px;
+  z-index: 10;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-primary);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:active { background: rgba(255, 255, 255, 0.1); }
 }
 
 .start-content {

@@ -36,6 +36,8 @@ ion-title {
 
 .oc-input {
   width: 100%;
+  min-width: 0;            // dozvoli skupljanje (date input ima veliku intrinzičnu širinu na iOS)
+  max-width: 100%;
   box-sizing: border-box;
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.04);
@@ -46,9 +48,17 @@ ion-title {
   font-size: 14px;
   outline: none;
   resize: vertical;
+  -webkit-appearance: none;
+  appearance: none;
 
   &::placeholder { color: rgba(255, 255, 255, 0.28); }
   &:focus { border-color: var(--border-accent); }
+}
+
+// Native date kontrola na iOS-u zna da bude šira od kontejnera — drži je u okviru
+.oc-input[type="date"] {
+  display: block;
+  text-align: left;
 }
 
 .oc-row {
@@ -57,7 +67,8 @@ ion-title {
 }
 
 .oc-field {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;            // ključno: bez ovoga flex stavka ne može ispod širine date inputa
   display: flex;
   flex-direction: column;
   gap: 4px;
