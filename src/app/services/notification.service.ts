@@ -16,12 +16,14 @@ export class NotificationService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  async init(username: string) {
+  // allowPrompt=false (login): registruj token TIHO samo ako je dozvola već data.
+  // allowPrompt=true (dugme "Enable Notifications"): tek tada traži dozvolu (user gesture).
+  async init(username: string, allowPrompt = false) {
     if (Capacitor.isNativePlatform()) {
-      await this.initNativePush(username);
+      await this.initNativePush(username, allowPrompt);
       await this.initLocalNotifications();
     } else {
-      await this.initWebPush(username);
+      await this.initWebPush(username, allowPrompt);
     }
   }
 
@@ -29,7 +31,7 @@ export class NotificationService {
   // WEB PUSH (browser - Android Chrome, iOS Safari 16.4+)
   // =============================================
 
-  private async initWebPush(username: string) {
+  private async initWebPush(username: string, allowPrompt: boolean) {
     if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
 
     const vapidKey = (environment.vapidKey || '').trim();
@@ -38,8 +40,13 @@ export class NotificationService {
       return;
     }
 
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') return;
+    // Ne traži dozvolu automatski (Chrome blokira ako se ignoriše više puta).
+    if (Notification.permission === 'denied') return;
+    if (Notification.permission !== 'granted') {
+      if (!allowPrompt) return;                       // login: tiho izađi
+      const permission = await Notification.requestPermission(); // dugme: traži (user gesture)
+      if (permission !== 'granted') return;
+    }
 
     try {
       const app = getApps().length ? getApps()[0] : initializeApp(environment.firebase);
@@ -77,10 +84,14 @@ export class NotificationService {
   // NATIVE PUSH (Capacitor - Android/iOS APK)
   // =============================================
 
-  private async initNativePush(username: string) {
+  private async initNativePush(username: string, allowPrompt: boolean) {
     const { PushNotifications } = await import('@capacitor/push-notifications');
-    const { receive } = await PushNotifications.requestPermissions();
-    if (receive !== 'granted') return;
+    let receive = (await PushNotifications.checkPermissions()).receive;
+    if (receive !== 'granted') {
+      if (!allowPrompt) return;                      // login: ne traži automatski
+      receive = (await PushNotifications.requestPermissions()).receive;
+      if (receive !== 'granted') return;
+    }
 
     await PushNotifications.register();
 

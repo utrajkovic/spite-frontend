@@ -546,8 +546,12 @@ export class TabProfilePage implements OnInit, OnDestroy {
 
   async enableNotifications() {
     if (!this.user) return;
-    await this.notificationService.init(this.user.username);
-    this.notificationsEnabled = Notification.permission === 'granted';
+    if ('Notification' in window && Notification.permission === 'denied') {
+      this.showAlert('Notifications are blocked in your browser. Tap the lock/tune icon next to the address bar → Notifications → Allow, then try again.');
+      return;
+    }
+    await this.notificationService.init(this.user.username, true); // dugme = traži dozvolu
+    this.notificationsEnabled = ('Notification' in window) && Notification.permission === 'granted';
     if (this.notificationsEnabled) this.showAlert('Notifications enabled.');
   }
 
