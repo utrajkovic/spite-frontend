@@ -299,6 +299,22 @@ ion-reorder {
   i { font-size: 11px; }
 }
 
+.video-hint {
+  margin: 10px 0 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  opacity: 0.75;
+  text-align: left;
+
+  i {
+    color: var(--color-primary);
+    margin-right: 5px;
+    opacity: 0.8;
+  }
+}
+
 .remove-video-btn {
   background: none;
   border: none;

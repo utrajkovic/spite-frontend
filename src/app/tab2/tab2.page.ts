@@ -166,8 +166,8 @@ export class Tab2Page implements OnInit {
     if (!file) return;
 
     const fileMB = file.size / 1024 / 1024;
-    if (fileMB > 10) {
-      this.showAlert(`Video is too large (${fileMB.toFixed(1)} MB). Maximum allowed is 10 MB.`);
+    if (fileMB > 20) {
+      this.showAlert(`Video is too large (${fileMB.toFixed(1)} MB). Maximum allowed is 20 MB.`);
       ev.target.value = '';
       return;
     }

@@ -30,13 +30,17 @@
         <input #videoInput type="file" accept="video/*" (change)="onVideoSelected($event)" style="display:none" />
         <button class="video-pick-btn" (click)="videoInput.click()">
           <i class="fa-solid fa-photo-film"></i>
-          {{ selectedVideo ? selectedVideo.name : 'Choose Video (max 10 MB)' }}
+          {{ selectedVideo ? selectedVideo.name : 'Choose Video' }}
         </button>
         <span class="video-selected" *ngIf="selectedVideo">
           <i class="fa-solid fa-check"></i>
           {{ (selectedVideo.size / 1024 / 1024).toFixed(1) }} MB
           <button class="remove-video-btn" (click)="selectedVideo = null; videoInput.value = ''">✕</button>
         </span>
+        <p class="video-hint">
+          <i class="fa-solid fa-circle-info"></i>
+          Add a short clip of a single repetition — it plays on a loop, so one clean rep is all your client needs to follow the form.
+        </p>
       </div>
 
       <ion-button expand="block" class="primary-btn" (click)="saveExercise()">
