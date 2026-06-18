@@ -88,6 +88,12 @@ export class Tab2Page implements OnInit {
     this.filterList();
   }
 
+  // Osveži listu svaki put kad se uđe u tab (npr. posle brisanja vežbe u tab3)
+  async ionViewWillEnter() {
+    await this.loadExercises();
+    this.filterList();
+  }
+
   async loadExercises() {
     const user = await this.localData.getUser();
     if (!user) return;
@@ -201,6 +207,7 @@ export class Tab2Page implements OnInit {
         form.append('video', this.selectedVideo);
         this.uploadProgress = 0;
         ex.videoUrl = await this.uploadVideo(form);
+        this.uploadProgress = null; // upload gotov → sledeći korak je upis vežbe ("Saving...")
       } catch {
         this.isSavingExercise = false;
         this.uploadProgress = null;

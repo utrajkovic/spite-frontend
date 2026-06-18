@@ -47,7 +47,9 @@
         <ion-spinner *ngIf="isSavingExercise" name="crescent" slot="start"></ion-spinner>
         <i class="fa-solid fa-plus" slot="start" *ngIf="!isSavingExercise"></i>
         {{ isSavingExercise
-            ? (uploadProgress !== null ? 'Uploading ' + uploadProgress + '%' : 'Saving...')
+            ? (uploadProgress === null ? 'Saving...'
+               : uploadProgress < 100 ? 'Uploading ' + uploadProgress + '%'
+               : 'Processing...')
             : 'Add Exercise' }}
       </ion-button>
     </div>
