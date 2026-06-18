@@ -299,6 +299,14 @@ ion-reorder {
   i { font-size: 11px; }
 }
 
+.upload-progress {
+  margin-top: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+  --background: rgba(255, 255, 255, 0.08);
+  --progress-background: var(--color-primary);
+}
+
 .video-hint {
   margin: 10px 0 0;
   font-family: var(--font-body);
