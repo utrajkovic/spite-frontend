@@ -196,7 +196,10 @@ export class Tab3Page implements OnInit {
       await this.backend.deleteExercise(id).toPromise();
 
       this.zone.run(() => {
+        // Lista se renderuje iz filteredExercises (preko visibleExercises) — ukloni iz oba odmah
         this.exercises = this.exercises.filter(e => e.id !== id);
+        this.filteredExercises = this.filteredExercises.filter(e => e.id !== id);
+        this.selectedIds.delete(id);
       });
 
       await this.showAlert('Exercise deleted successfully!');

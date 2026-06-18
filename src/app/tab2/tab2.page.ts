@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { IonContent, IonItem, IonInput, IonButton, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder, IonSelectOption, IonSelect, IonModal } from '@ionic/angular/standalone';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEventType } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 
 import { Exercise, WorkoutItem } from '../services/models';
@@ -42,6 +42,7 @@ export class Tab2Page implements OnInit {
   workoutForm: FormGroup;
 
   selectedVideo: File | null = null;
+  uploadProgress: number | null = null; // % upload-a videa (null = nema upload-a u toku)
   allExercises: Exercise[] = [];
   editableExercises: Exercise[] = [];
   filteredExercises: Exercise[] = [];
@@ -198,13 +199,11 @@ export class Tab2Page implements OnInit {
       try {
         const form = new FormData();
         form.append('video', this.selectedVideo);
-
-        ex.videoUrl = await this.http.post(
-          `${this.backendUrl}/api/exercises/upload`,
-          form, { responseType: 'text' }
-        ).toPromise();
+        this.uploadProgress = 0;
+        ex.videoUrl = await this.uploadVideo(form);
       } catch {
         this.isSavingExercise = false;
+        this.uploadProgress = null;
         return this.showAlert('Video upload failed.');
       }
     }
@@ -218,10 +217,31 @@ export class Tab2Page implements OnInit {
 
     this.exerciseForm.reset();
     this.selectedVideo = null;
+    this.uploadProgress = null;
     this.isSavingExercise = false;
 
     await this.loadExercises();
     this.filterList();
+  }
+
+  /** Upload videa uz praćenje napretka (%). Vraća videoUrl iz odgovora. */
+  private uploadVideo(form: FormData): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      this.http.post(`${this.backendUrl}/api/exercises/upload`, form, {
+        responseType: 'text',
+        observe: 'events',
+        reportProgress: true
+      }).subscribe({
+        next: (event: any) => {
+          if (event.type === HttpEventType.UploadProgress && event.total) {
+            this.uploadProgress = Math.round((100 * event.loaded) / event.total);
+          } else if (event.type === HttpEventType.Response) {
+            resolve(event.body as string);
+          }
+        },
+        error: (err) => reject(err)
+      });
+    });
   }
 
   async saveNewWorkout() {
