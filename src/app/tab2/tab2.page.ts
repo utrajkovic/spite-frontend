@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { IonContent, IonItem, IonInput, IonButton, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder, IonSelectOption, IonSelect, IonModal, IonProgressBar } from '@ionic/angular/standalone';
+import { IonContent, IonItem, IonInput, IonButton, IonSearchbar, IonSpinner, IonReorderGroup, IonReorder, IonSelectOption, IonSelect, IonModal } from '@ionic/angular/standalone';
 
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
@@ -26,7 +26,7 @@ import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loadin
     IonSearchbar, IonSpinner,
     IonReorderGroup, IonReorder,
     IonSelect, IonSelectOption,
-    IonModal, IonProgressBar,
+    IonModal,
     PageLoadingOverlayComponent
   ],
   providers: [ModalController]
@@ -229,6 +229,22 @@ export class Tab2Page implements OnInit {
 
     await this.loadExercises();
     this.filterList();
+  }
+
+  // Poruka i progres za full-screen overlay (sa blur+spinner)
+  get overlayMessage(): string {
+    if (this.isSavingExercise) {
+      if (this.uploadProgress === null) return 'Saving...';
+      if (this.uploadProgress < 100) return `Uploading ${this.uploadProgress}%`;
+      return 'Processing video...';
+    }
+    return 'Saving...';
+  }
+
+  get overlayProgress(): number | null {
+    return (this.isSavingExercise && this.uploadProgress !== null && this.uploadProgress < 100)
+      ? this.uploadProgress
+      : null;
   }
 
   /** Upload videa uz praćenje napretka (%). Vraća videoUrl iz odgovora. */

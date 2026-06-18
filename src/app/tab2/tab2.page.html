@@ -1,5 +1,9 @@
 <ion-content [fullscreen]="true">
-  <page-loading-overlay [active]="isSavingExercise || isSavingWorkout" message="Please wait..."></page-loading-overlay>
+  <page-loading-overlay
+    [active]="isSavingExercise || isSavingWorkout"
+    [message]="overlayMessage"
+    [progress]="overlayProgress">
+  </page-loading-overlay>
 
   <div class="tab-switcher">
     <button class="tab-btn" [class.active]="tab === 'exercise'" (click)="tab = 'exercise'">
@@ -52,13 +56,6 @@
                : 'Processing...')
             : 'Add Exercise' }}
       </ion-button>
-
-      <ion-progress-bar
-        *ngIf="isSavingExercise"
-        class="upload-progress"
-        [type]="(uploadProgress !== null && uploadProgress < 100) ? 'determinate' : 'indeterminate'"
-        [value]="(uploadProgress || 0) / 100">
-      </ion-progress-bar>
     </div>
   </ng-container>
 
