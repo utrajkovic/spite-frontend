@@ -6,7 +6,14 @@
   border: 1px solid var(--border-cyan);
   font-family: var(--font-display);
   color: var(--color-text);
+  display: flex;
+  flex-direction: column;
   max-height: 90vh;
+}
+
+.fb-body {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -171,20 +178,14 @@
 }
 
 .modal-actions {
+  flex-shrink: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 8px;
-  margin-top: 12px;
-  padding: 10px 14px;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid var(--border-cyan);
-  position: sticky;
-  bottom: 0;
-  background: rgba(0, 15, 25, 0.98);
-  margin-left: -14px;
-  margin-right: -14px;
-  z-index: 10;
 
   ion-button {
     margin: 0;
