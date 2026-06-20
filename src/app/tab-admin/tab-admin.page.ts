@@ -7,6 +7,7 @@ import { AlertController } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { HttpClient } from '@angular/common/http';
 import { AvatarComponent } from '../shared/avatar/avatar.component';
+import { ChatService } from '../services/chat.service';
 
 @Component({
   selector: 'app-tab-admin',
@@ -59,7 +60,8 @@ export class TabAdminPage implements OnInit {
   constructor(
     private backend: BackendService,
     private alertCtrl: AlertController,
-    private http: HttpClient
+    private http: HttpClient,
+    private chat: ChatService
   ) {}
 
   async ngOnInit() {
@@ -115,7 +117,13 @@ export class TabAdminPage implements OnInit {
     if (!ok) return;
     this.loadingAction = 'delete-' + user.username;
     this.backend.deleteUser(user.username).subscribe({
-      next: () => { this.users = this.users.filter((u: any) => u.username !== user.username); this.applyFilter(); this.loadingAction = null; },
+      next: () => {
+        // Backend obriše MongoDB podatke; chatove (Firestore) brišemo odavde
+        this.chat.deleteAllForUser(user.username).catch(() => {});
+        this.users = this.users.filter((u: any) => u.username !== user.username);
+        this.applyFilter();
+        this.loadingAction = null;
+      },
       error: () => { this.loadingAction = null; }
     });
   }

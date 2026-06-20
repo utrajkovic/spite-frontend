@@ -3,7 +3,7 @@ import { db } from '../firebase';
 import {
   collection, addDoc, query, where,
   orderBy, onSnapshot, serverTimestamp,
-  getDocs, updateDoc, doc
+  getDocs, updateDoc, doc, deleteDoc
 } from 'firebase/firestore';
 
 @Injectable({
@@ -120,6 +120,27 @@ export class ChatService {
   markAsRead(username: string) {
     this.unreadMap[username] = false;
     this.updateGlobalUnread();
+  }
+
+  /** Obriše celu konverzaciju između `me` i `other` iz Firestore-a. */
+  async deleteChat(me: string, other: string) {
+    const q = query(collection(db, 'messages'), where('participants', 'array-contains', me));
+    const snaps = await getDocs(q);
+    const toDelete = snaps.docs.filter(d => {
+      const m: any = d.data();
+      return (m.senderId === me && m.receiverId === other)
+          || (m.senderId === other && m.receiverId === me);
+    });
+    await Promise.all(toDelete.map(d => deleteDoc(doc(db, 'messages', d.id))));
+    delete this.unreadMap[other];
+    this.updateGlobalUnread();
+  }
+
+  /** Obriše SVE poruke u kojima učestvuje `username` (za admin brisanje korisnika). */
+  async deleteAllForUser(username: string) {
+    const q = query(collection(db, 'messages'), where('participants', 'array-contains', username));
+    const snaps = await getDocs(q);
+    await Promise.all(snaps.docs.map(d => deleteDoc(doc(db, 'messages', d.id))));
   }
 
   private updateGlobalUnread() {

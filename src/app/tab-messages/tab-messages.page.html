@@ -27,6 +27,9 @@
         <span class="username">{{ user }}</span>
         <span class="tap-hint">Tap to open</span>
       </div>
+      <button class="chat-delete" (click)="deleteConversation(user, $event)" aria-label="Delete chat">
+        <i class="fa-solid fa-trash"></i>
+      </button>
       <i class="fa-solid fa-chevron-right chevron"></i>
     </div>
   </div>

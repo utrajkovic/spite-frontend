@@ -85,6 +85,32 @@ export class TabMessagesPage {
     this.router.navigate(['/chat', username]);
   }
 
+  async deleteConversation(username: string, ev: Event) {
+    ev.stopPropagation();
+    const alert = await this.alertCtrl.create({
+      header: 'Delete chat',
+      message: `Delete the conversation with "${username}"? All messages will be removed for both of you.`,
+      cssClass: 'custom-alert',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          role: 'confirm',
+          cssClass: 'alert-button-danger',
+          handler: async () => {
+            try {
+              await this.chat.deleteChat(this.myId, username);
+              this.conversations = this.conversations.filter(u => u !== username);
+            } catch {
+              this.showAlert('Failed to delete chat.');
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   get isTrainer(): boolean {
     return this.myRole === 'TRAINER';
   }

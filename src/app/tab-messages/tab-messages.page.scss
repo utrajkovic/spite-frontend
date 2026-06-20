@@ -202,6 +202,19 @@ ion-content {
   opacity: 0.4;
 }
 
+.chat-delete {
+  background: transparent;
+  border: none;
+  color: var(--color-danger);
+  opacity: 0.55;
+  font-size: 15px;
+  padding: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:active { opacity: 1; }
+}
+
 .chevron {
   color: var(--color-primary);
   opacity: 0.3;
