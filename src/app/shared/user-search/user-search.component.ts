@@ -55,10 +55,10 @@ import { AvatarComponent } from '../avatar/avatar.component';
     }
     .us-dropdown {
       position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 50;
-      background: var(--bg-card, #06222b);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: #08202a;            /* neprozirno — da se sadržaj ispod ne providi */
+      border: 1px solid rgba(255,255,255,0.18);
       border-radius: 12px; overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.55);
       max-height: 260px; overflow-y: auto;
     }
     .us-item {
