@@ -1,7 +1,7 @@
 import { Component, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
-  IonButton, IonContent, IonInput,
+  IonButton, IonContent,
   AlertController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,7 @@ import { PageLoadingOverlayComponent } from "../page-loading-overlay/page-loadin
 import { BackendService } from '../services/backend.service';
 import { PriorityClient } from '../services/models';
 import { AvatarComponent } from '../shared/avatar/avatar.component';
+import { UserSearchComponent } from '../shared/user-search/user-search.component';
 
 @Component({
   selector: 'app-tab-trainer',
@@ -20,9 +21,10 @@ import { AvatarComponent } from '../shared/avatar/avatar.component';
   imports: [
     CommonModule, FormsModule, RouterModule,
     IonContent,
-    IonInput, IonButton,
+    IonButton,
     PageLoadingOverlayComponent,
-    AvatarComponent
+    AvatarComponent,
+    UserSearchComponent
 ]
 })
 export class TabTrainerPage {

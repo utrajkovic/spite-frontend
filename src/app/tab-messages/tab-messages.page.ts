@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IonContent,
-  IonButton,
-  IonInput
+  IonButton
 } from '@ionic/angular/standalone';
 import { CommonModule, UpperCasePipe, NgForOf, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +13,7 @@ import { BackendService } from '../services/backend.service';
 import { TrainerInbox } from '../services/models';
 import { AlertController } from '@ionic/angular';
 import { AvatarComponent } from '../shared/avatar/avatar.component';
+import { UserSearchComponent } from '../shared/user-search/user-search.component';
 
 @Component({
   selector: 'app-tab-messages',
@@ -28,8 +28,8 @@ import { AvatarComponent } from '../shared/avatar/avatar.component';
     UpperCasePipe,
     IonContent,
     IonButton,
-    IonInput,
-    AvatarComponent
+    AvatarComponent,
+    UserSearchComponent
   ]
 })
 export class TabMessagesPage {

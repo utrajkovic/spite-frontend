@@ -18,7 +18,12 @@
       <div class="invite-card">
         <p class="card-label">Invite a client</p>
         <div class="invite-row">
-          <ion-input [(ngModel)]="clientUsername" placeholder="Client username" class="invite-input"></ion-input>
+          <app-user-search
+            class="invite-input"
+            placeholder="Client username"
+            [exclude]="trainerUsername"
+            (picked)="clientUsername = $event">
+          </app-user-search>
           <ion-button (click)="addClient()" class="invite-btn">
             <i class="fa-solid fa-paper-plane" slot="icon-only"></i>
           </ion-button>
