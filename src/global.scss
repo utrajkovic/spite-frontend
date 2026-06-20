@@ -349,6 +349,21 @@ ion-modal.feedback-transparent::part(wrapper) {
   }
 }
 
+/* Feedback edit modal — centriran, auto-visina (dvh fix za mobilni), jedan scroll */
+ion-modal.feedback-edit {
+  --width: 100%;
+  --max-width: 460px;
+  --height: auto;
+  --max-height: 88dvh;
+  --border-radius: 18px;
+  --background: transparent;
+}
+
+ion-modal.feedback-edit::part(backdrop) {
+  background: rgba(0, 0, 0, 0.6);
+  --backdrop-opacity: 0.6;
+}
+
 /* ------------------------------------------------------
    GLOBAL SPINNER COLOR
 ------------------------------------------------------- */

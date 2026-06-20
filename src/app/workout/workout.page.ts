@@ -420,7 +420,7 @@ export class WorkoutPage implements OnInit, OnDestroy {
 
     const modal = await this.modalCtrl.create({
       component: WorkoutFeedbackModal,
-      cssClass: 'feedback-transparent',
+      cssClass: 'feedback-edit',
       componentProps: { exercises: exerciseList }
     });
 

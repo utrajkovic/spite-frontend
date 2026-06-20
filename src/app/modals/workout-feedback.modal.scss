@@ -6,14 +6,9 @@
   border: 1px solid var(--border-cyan);
   font-family: var(--font-display);
   color: var(--color-text);
-  display: flex;
-  flex-direction: column;
-  max-height: 90vh;
-}
-
-.fb-body {
-  flex: 1 1 auto;
-  min-height: 0;
+  border-radius: 18px;
+  max-height: 88vh;
+  max-height: 88dvh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }

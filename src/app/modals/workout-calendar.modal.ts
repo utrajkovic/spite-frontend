@@ -184,7 +184,7 @@ profileCards = ['calendar', 'snapshot', 'upcoming', 'trainerZone'] as const;
 
         const modal = await this.modalCtrl.create({
           component: WorkoutFeedbackModal,
-          cssClass: 'feedback-transparent',
+          cssClass: 'feedback-edit',
           componentProps: { exercises }
         });
         await modal.present();
@@ -224,7 +224,7 @@ profileCards = ['calendar', 'snapshot', 'upcoming', 'trainerZone'] as const;
         // Ako ne mozemo da ucitamo vezbe, otvori prazan feedback
         const modal = await this.modalCtrl.create({
           component: WorkoutFeedbackModal,
-          cssClass: 'feedback-transparent',
+          cssClass: 'feedback-edit',
           componentProps: { exercises: [{ exerciseId: '', name: cw.workoutTitle, sets: 1, reps: '10' }] }
         });
         await modal.present();
@@ -237,7 +237,7 @@ profileCards = ['calendar', 'snapshot', 'upcoming', 'trainerZone'] as const;
     this.editingFeedbackIds.add(fb.id);
     const modal = await this.modalCtrl.create({
       component: WorkoutFeedbackModal,
-      cssClass: 'feedback-transparent',
+      cssClass: 'feedback-edit',
       componentProps: {
         exercises: fb.exercises.map((ex: any) => ({
           exerciseId: ex.exerciseId,
