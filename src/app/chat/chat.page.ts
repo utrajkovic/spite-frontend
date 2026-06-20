@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChatService } from '../services/chat.service';
 import { LocalDataService } from '../services/local-data.service';
@@ -24,6 +24,8 @@ import { Location } from '@angular/common';
 })
 export class ChatPage implements OnInit {
 
+  @ViewChild(IonContent) content?: IonContent;
+
   me!: string;
   other!: string;
   messages: any[] = [];
@@ -46,11 +48,8 @@ export class ChatPage implements OnInit {
 
     this.chat.listenToChat(this.me, this.other, (msgs: any[]) => {
       this.messages = msgs;
-
-      setTimeout(() => {
-        const el = document.getElementById('chat-bottom');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      // Pouzdano skrolovanje do dna (ion-content ima svoj scroll kontejner)
+      setTimeout(() => this.content?.scrollToBottom(250), 100);
     });
   }
 
