@@ -38,11 +38,6 @@ export class WorkoutFeedbackModal {
             maxKg: ex.maxKg ?? null,
             intensity: ex.intensity ?? 'normal'
         }));
-
-        // Fix: force layout recalculation so modal renders fully
-        setTimeout(() => {
-            window.dispatchEvent(new Event('resize'));
-        }, 100);
     }
 
     setIntensity(index: number, val: 'easy' | 'normal' | 'hard') {
