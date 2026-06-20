@@ -6,6 +6,9 @@
   border: 1px solid var(--border-cyan);
   font-family: var(--font-display);
   color: var(--color-text);
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 600px) {
@@ -106,9 +109,8 @@
   flex: 1;
   padding: 5px 0;
   border-radius: 8px;
-  border: 1px solid var(--border-cyan);
-  background: rgba(0, 255, 255, 0.04);
-  color: rgba(0, 247, 255, 0.45);
+  border: 1px solid transparent;
+  background: transparent;
   font-family: var(--font-display);
   font-size: 11px;
   letter-spacing: 0.3px;
@@ -116,12 +118,15 @@
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   text-align: center;
 
-  &.active {
-    background: rgba(0, 255, 255, 0.15);
-    color: var(--color-primary);
-    border-color: var(--border-cyan-hover);
-    font-weight: 700;
-  }
+  &.active { font-weight: 700; }
+
+  &.easy   { color: #46d39a; border-color: rgba(70, 211, 154, 0.4); }
+  &.normal { color: #ffd24a; border-color: rgba(255, 210, 74, 0.4); }
+  &.hard   { color: #ff6b6b; border-color: rgba(255, 107, 107, 0.4); }
+
+  &.easy.active   { background: rgba(70, 211, 154, 0.18); border-color: #46d39a; }
+  &.normal.active { background: rgba(255, 210, 74, 0.18); border-color: #ffd24a; }
+  &.hard.active   { background: rgba(255, 107, 107, 0.18); border-color: #ff6b6b; }
 }
 
 /* DESKTOP tabela */
@@ -167,11 +172,12 @@
 
 .modal-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 8px;
   margin-top: 12px;
-  padding: 12px 14px;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 10px 14px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border-cyan);
   position: sticky;
   bottom: 0;
@@ -179,14 +185,22 @@
   margin-left: -14px;
   margin-right: -14px;
   z-index: 10;
+
+  ion-button {
+    margin: 0;
+    height: 40px;
+    font-size: 13px;
+    --border-radius: 10px;
+  }
 }
 
+.skip-btn { flex: 0 0 auto; min-width: 84px; }
+
 .send-btn {
+  flex: 1;
   --background: linear-gradient(90deg, #00ffaa, #00cc88);
   --color: #001a10;
-  --border-radius: 12px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 14px;
   letter-spacing: 0.5px;
 }

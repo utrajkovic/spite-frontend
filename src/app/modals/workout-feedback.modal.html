@@ -30,18 +30,18 @@
         </div>
 
         <div class="difficulty mobile-difficulty">
-            <button class="pill" [class.active]="f.intensity==='easy'" (click)="setIntensity(i,'easy')">Easy</button>
-            <button class="pill" [class.active]="f.intensity==='normal'" (click)="setIntensity(i,'normal')">Normal</button>
-            <button class="pill" [class.active]="f.intensity==='hard'" (click)="setIntensity(i,'hard')">Hard</button>
+            <button class="pill easy" [class.active]="f.intensity==='easy'" (click)="setIntensity(i,'easy')">Easy</button>
+            <button class="pill normal" [class.active]="f.intensity==='normal'" (click)="setIntensity(i,'normal')">Normal</button>
+            <button class="pill hard" [class.active]="f.intensity==='hard'" (click)="setIntensity(i,'hard')">Hard</button>
         </div>
 
     </div>
 
     <div class="modal-actions">
-        <ion-button expand="block" fill="outline" color="medium" class="skip-btn" (click)="skip()">
+        <ion-button fill="outline" color="medium" class="skip-btn" (click)="skip()">
             Skip
         </ion-button>
-        <ion-button expand="block" color="success" class="send-btn" (click)="finish()">
+        <ion-button color="success" class="send-btn" (click)="finish()">
             Send Feedback
         </ion-button>
     </div>
