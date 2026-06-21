@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonInput, IonButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Location } from '@angular/common';
+import { UserNameComponent } from '../shared/user-name/user-name.component';
 
 
 @Component({
@@ -19,7 +20,8 @@ import { Location } from '@angular/common';
     FormsModule,
     IonContent,
     IonInput,
-    IonButton
+    IonButton,
+    UserNameComponent
   ]
 })
 export class ChatPage implements OnInit {

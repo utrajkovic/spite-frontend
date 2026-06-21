@@ -30,9 +30,12 @@ import { AvatarComponent } from '../avatar/avatar.component';
       </div>
 
       <div class="us-dropdown" *ngIf="showList && results.length">
-        <button class="us-item" *ngFor="let u of results" (click)="pick(u.username)">
-          <span class="us-avatar"><app-avatar [username]="u.username" [name]="u.username"></app-avatar></span>
-          <span class="us-name">{{ u.username }}</span>
+        <button class="us-item" *ngFor="let u of results" (click)="pick(u)">
+          <span class="us-avatar"><app-avatar [username]="u.username" [name]="u.fullName || u.username"></app-avatar></span>
+          <span class="us-main">
+            <span class="us-name">{{ u.fullName || u.username }}</span>
+            <span class="us-handle" *ngIf="u.fullName">{{ '@' + u.username }}</span>
+          </span>
           <span class="us-role">{{ u.role }}</span>
         </button>
       </div>
@@ -75,7 +78,9 @@ import { AvatarComponent } from '../avatar/avatar.component';
       display: flex; align-items: center; justify-content: center;
       font-family: var(--font-display); color: var(--color-primary); font-size: 13px;
     }
-    .us-name { flex: 1; font-family: var(--font-display); font-size: 14px; color: var(--color-text); }
+    .us-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .us-name { font-family: var(--font-display); font-size: 14px; color: var(--color-text); }
+    .us-handle { font-size: 11px; color: var(--color-text-muted); opacity: 0.6; }
     .us-role {
       font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase;
       color: var(--color-text-muted); opacity: 0.6;
@@ -88,7 +93,7 @@ export class UserSearchComponent {
   @Output() picked = new EventEmitter<string>();
 
   query = '';
-  results: { username: string; role: string }[] = [];
+  results: { username: string; role: string; fullName?: string }[] = [];
   showList = false;
 
   private readonly url = 'https://spite-backend.fly.dev/api/users/search';
@@ -115,11 +120,11 @@ export class UserSearchComponent {
     });
   }
 
-  pick(username: string) {
-    this.query = username;
+  pick(u: { username: string; fullName?: string }) {
+    this.query = u.fullName || u.username;   // prikaz
     this.results = [];
     this.showList = false;
-    this.picked.emit(username);
+    this.picked.emit(u.username);            // operacije i dalje po username-u
   }
 
   clear() {

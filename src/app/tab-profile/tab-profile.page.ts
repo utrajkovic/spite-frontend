@@ -21,6 +21,7 @@ import { HttpClient } from '@angular/common/http';
 import { AvatarComponent } from '../shared/avatar/avatar.component';
 import { AvatarService } from '../shared/avatar/avatar.service';
 import { PwaInstallService } from '../services/pwa-install.service';
+import { NameService } from '../shared/user-name/name.service';
 
 @Component({
   selector: 'app-tab-profile',
@@ -54,6 +55,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
   cardTitles = ['Workout Calendar', 'Trainer Zone'];
   mealPlan: any = null;
 
+  fullName: string | null = null;
   accountEmail: string | null = null;
   emailVerified = false;
   newEmail = '';
@@ -99,7 +101,8 @@ export class TabProfilePage implements OnInit, OnDestroy {
     public themeService: ThemeService,
     private http: HttpClient,
     private avatarService: AvatarService,
-    public pwa: PwaInstallService
+    public pwa: PwaInstallService,
+    private nameService: NameService
   ) {
     window.addEventListener('beforeinstallprompt', (e: any) => {
       e.preventDefault();
@@ -148,6 +151,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
       next: (u) => {
         this.accountEmail = u?.email ?? null;
         this.emailVerified = !!u?.emailVerified;
+        this.fullName = u?.fullName ?? null;
         this.clientReminderEnabled = !!u?.clientReminderEnabled;
         this.clientReminderMode = u?.clientReminderMode === 'CUSTOM' ? 'CUSTOM' : 'SESSIONS';
         if (u?.clientReminderTime) this.clientReminderTime = u.clientReminderTime;
@@ -288,6 +292,35 @@ export class TabProfilePage implements OnInit, OnDestroy {
     ev.target.value = '';
     if (!file) return;
     this.router.navigateByUrl('/avatar-crop', { state: { file } });
+  }
+
+  async editFullName() {
+    const alert = await this.alertCtrl.create({
+      header: 'Your name',
+      inputs: [{
+        name: 'fullName', type: 'text', value: this.fullName || '',
+        placeholder: 'e.g. Uros Trajkovic', attributes: { maxlength: 60 }
+      }],
+      cssClass: 'custom-alert',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        { text: 'Save', handler: (data) => this.saveFullName((data.fullName || '').trim()) }
+      ]
+    });
+    await alert.present();
+  }
+
+  private saveFullName(name: string) {
+    this.http.put(
+      `${this.backendUrl}/users/fullname?username=${this.user.username}&fullName=${encodeURIComponent(name)}`,
+      {}, { responseType: 'text' as 'json' }
+    ).subscribe({
+      next: () => {
+        this.fullName = name || null;
+        this.nameService.set(this.user.username, this.fullName);
+      },
+      error: () => this.showAlert('Error saving name.')
+    });
   }
 
   loadMealPlan() {

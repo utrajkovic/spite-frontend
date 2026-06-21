@@ -39,8 +39,8 @@
         <div class="client-card" *ngFor="let c of clients" (click)="goToClient(c.clientUsername)">
           <div class="avatar"><app-avatar [username]="c.clientUsername"></app-avatar></div>
           <div class="client-info">
-            <span class="client-name">{{ c.clientUsername }}</span>
-            <span class="client-hint">Tap to manage</span>
+            <span class="client-name"><app-user-name [username]="c.clientUsername"></app-user-name></span>
+            <span class="client-hint">{{ '@' + c.clientUsername }}</span>
           </div>
           <button class="remove-btn" (click)="confirmRemoveClient(c.clientUsername); $event.stopPropagation()">
             <i class="fa-solid fa-user-minus"></i>
@@ -171,7 +171,7 @@
             [class.sel]="selectedClients.has(c.clientUsername)"
             (click)="toggleClientSel(c.clientUsername)">
             <span class="cp-avatar"><app-avatar [username]="c.clientUsername"></app-avatar></span>
-            <span class="cp-name">{{ c.clientUsername }}</span>
+            <span class="cp-name"><app-user-name [username]="c.clientUsername"></app-user-name></span>
             <i class="fa-solid fa-check" *ngIf="selectedClients.has(c.clientUsername)"></i>
           </button>
         </div>

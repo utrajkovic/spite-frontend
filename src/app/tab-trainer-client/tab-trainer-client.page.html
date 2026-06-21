@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/tab-trainer"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ clientUsername }}</ion-title>
+    <ion-title><app-user-name [username]="clientUsername"></app-user-name></ion-title>
     <ion-buttons slot="end">
       <div class="header-avatar"><app-avatar [username]="clientUsername" [name]="clientUsername"></app-avatar></div>
     </ion-buttons>
@@ -151,7 +151,8 @@
 
     <div class="section profile-header-section">
       <div class="profile-avatar-lg"><app-avatar [username]="clientUsername" [name]="clientUsername"></app-avatar></div>
-      <h2 class="profile-username">{{ clientUsername }}</h2>
+      <h2 class="profile-username"><app-user-name [username]="clientUsername"></app-user-name></h2>
+      <span class="profile-handle">{{ '@' + clientUsername }}</span>
       <span class="profile-role" *ngIf="clientInfo">{{ clientInfo.role }}</span>
     </div>
 

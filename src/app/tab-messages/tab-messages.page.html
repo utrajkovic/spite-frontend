@@ -24,7 +24,7 @@
         <div *ngIf="hasUnread(user)" class="badge">!</div>
       </div>
       <div class="chat-meta">
-        <span class="username">{{ user }}</span>
+        <span class="username"><app-user-name [username]="user"></app-user-name></span>
         <span class="tap-hint">Tap to open</span>
       </div>
       <button class="chat-delete" (click)="deleteConversation(user, $event)" aria-label="Delete chat">

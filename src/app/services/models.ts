@@ -40,6 +40,7 @@ export interface User {
   username: string;
   password: string;
   email?: string;
+  fullName?: string;
 }
 export interface ExerciseFeedback {
   exerciseId: string;

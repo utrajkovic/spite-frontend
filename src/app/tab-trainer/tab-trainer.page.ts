@@ -12,6 +12,7 @@ import { BackendService } from '../services/backend.service';
 import { PriorityClient } from '../services/models';
 import { AvatarComponent } from '../shared/avatar/avatar.component';
 import { UserSearchComponent } from '../shared/user-search/user-search.component';
+import { UserNameComponent } from '../shared/user-name/user-name.component';
 
 @Component({
   selector: 'app-tab-trainer',
@@ -24,7 +25,8 @@ import { UserSearchComponent } from '../shared/user-search/user-search.component
     IonButton,
     PageLoadingOverlayComponent,
     AvatarComponent,
-    UserSearchComponent
+    UserSearchComponent,
+    UserNameComponent
 ]
 })
 export class TabTrainerPage {

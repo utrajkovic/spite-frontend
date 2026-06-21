@@ -26,6 +26,7 @@ export class RegisterPage {
   ) {
     this.registerForm = this.fb.group(
       {
+        fullName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
         username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(32), this.usernameValidator]],
         email: ['', [this.emailOptionalValidator]],
         password: ['', [Validators.required, this.passwordValidator]],
@@ -99,9 +100,11 @@ export class RegisterPage {
 
     this.loading = true;
     const email = (this.registerForm.value.email || '').trim();
+    const fullName = (this.registerForm.value.fullName || '').trim();
     const user: User = {
       username: (this.registerForm.value.username || '').trim(),
       password: this.registerForm.value.password,
+      ...(fullName ? { fullName } : {}),
       ...(email ? { email } : {})
     };
 

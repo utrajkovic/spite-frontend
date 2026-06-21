@@ -10,8 +10,11 @@
         <span class="avatar-cam"><i class="fa-solid fa-camera"></i></span>
         <input #avatarInput type="file" accept="image/*" hidden (change)="onAvatarSelected($event)">
       </div>
-      <ion-card-title>{{ user.username }}</ion-card-title>
-      <p class="role-badge">{{ user.role }}</p>
+      <ion-card-title class="display-name" (click)="editFullName()">
+        {{ fullName || user.username }}
+        <i class="fa-solid fa-pen edit-name-ic"></i>
+      </ion-card-title>
+      <p class="role-badge"><span *ngIf="fullName">@{{ user.username }} · </span>{{ user.role }}</p>
     </ion-card-header>
     <ion-card-content class="info-grid">
       <div class="info-item">

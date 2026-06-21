@@ -14,6 +14,7 @@ import { TrainerInbox } from '../services/models';
 import { AlertController } from '@ionic/angular';
 import { AvatarComponent } from '../shared/avatar/avatar.component';
 import { UserSearchComponent } from '../shared/user-search/user-search.component';
+import { UserNameComponent } from '../shared/user-name/user-name.component';
 
 @Component({
   selector: 'app-tab-messages',
@@ -29,7 +30,8 @@ import { UserSearchComponent } from '../shared/user-search/user-search.component
     IonContent,
     IonButton,
     AvatarComponent,
-    UserSearchComponent
+    UserSearchComponent,
+    UserNameComponent
   ]
 })
 export class TabMessagesPage {

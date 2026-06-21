@@ -9,8 +9,15 @@
     <form [formGroup]="registerForm" (ngSubmit)="register()" class="auth-form">
 
       <div class="field">
+        <label>Full name</label>
+        <ion-input formControlName="fullName" placeholder="e.g. Uros Trajkovic" autocomplete="name"></ion-input>
+        <span class="field-hint">Shown to your trainer and in chat.</span>
+      </div>
+
+      <div class="field">
         <label>Username</label>
         <ion-input formControlName="username" placeholder="Choose a username"></ion-input>
+        <span class="field-hint">Used to log in (no spaces).</span>
       </div>
 
       <div class="field">
