@@ -167,68 +167,55 @@ profileCards = ['calendar', 'snapshot', 'upcoming', 'trainerZone'] as const;
   }
 
   async openAddFeedback(cw: any) {
-    if (!cw?.id || this.addingFeedbackForCompletedId.has(cw.id)) return;
-    this.addingFeedbackForCompletedId.add(cw.id);
-    // Učitaj vežbe sa backenda
-    this.backend.getWorkoutById(cw.workoutId).subscribe({
-      next: async (workout: any) => {
-        const exercises = (workout.items || []).map((item: any) => {
-          const ex = (workout.exercises || []).find((e: any) => e.id === item.exerciseId);
-          return {
-            exerciseId: item.exerciseId,
-            name: ex?.name || 'Exercise',
-            sets: item.sets,
-            reps: item.reps
-          };
-        });
+    const guardKey = cw?.id || cw?.completedAt;
+    if (guardKey && this.addingFeedbackForCompletedId.has(guardKey)) return;
+    if (guardKey) this.addingFeedbackForCompletedId.add(guardKey);
 
-        const modal = await this.modalCtrl.create({
-          component: WorkoutFeedbackModal,
-          cssClass: 'feedback-edit',
-          componentProps: { exercises }
+    // Pokušaj da učitaš vežbe; ako poziv ne uspe/ne emituje — otvori sa placeholderom.
+    // UVEK otvaramo modal (ranije se otvarao u callback-u, pa se nije pojavljivao ako poziv zataji).
+    let exercises: any[] = [{ exerciseId: '', name: cw?.workoutTitle || 'Exercise', sets: 1, reps: '10' }];
+    try {
+      const workout: any = await this.backend.getWorkoutById(cw.workoutId).toPromise();
+      if (workout?.items?.length) {
+        exercises = workout.items.map((item: any) => {
+          const ex = (workout.exercises || []).find((e: any) => e.id === item.exerciseId);
+          return { exerciseId: item.exerciseId, name: ex?.name || 'Exercise', sets: item.sets, reps: item.reps };
         });
-        await modal.present();
-        const result = await modal.onDidDismiss();
-        if (result.data) {
-          const feedbackPayload = {
-            workoutId: cw.workoutId,
-            workoutTitle: cw.workoutTitle,
-            userId: this.username,
-            timestamp: cw.completedAt,
-            completionPercent: 100,
-            exercises: result.data
-          };
-          this.backend.sendWorkoutFeedback(feedbackPayload).subscribe({
-            next: (saved: any) => {
-              this.addingFeedbackForCompletedId.delete(cw.id);
-              this.feedbacks = [...this.feedbacks, saved];
-              this.completedWorkouts = this.completedWorkouts.map(c =>
-                c.id === cw.id ? { ...c, hasFeedback: true, feedbackId: saved.id } : c
-              );
-              this.buildFeedbackMap();
-              this.buildCompletedMap();
-              this.selectedDay = null;
-              this.selectedFeedbacks = [];
-              this.dataChanged.emit();
-            },
-            error: () => {
-              this.addingFeedbackForCompletedId.delete(cw.id);
-            }
-          });
-          return;
-        }
-        this.addingFeedbackForCompletedId.delete(cw.id);
-      },
-      error: async () => {
-        this.addingFeedbackForCompletedId.delete(cw.id);
-        // Ako ne mozemo da ucitamo vezbe, otvori prazan feedback
-        const modal = await this.modalCtrl.create({
-          component: WorkoutFeedbackModal,
-          cssClass: 'feedback-edit',
-          componentProps: { exercises: [{ exerciseId: '', name: cw.workoutTitle, sets: 1, reps: '10' }] }
-        });
-        await modal.present();
       }
+    } catch { /* zadrži placeholder */ }
+
+    const modal = await this.modalCtrl.create({
+      component: WorkoutFeedbackModal,
+      cssClass: 'feedback-edit',
+      componentProps: { exercises }
+    });
+    await modal.present();
+    const result = await modal.onDidDismiss();
+    if (guardKey) this.addingFeedbackForCompletedId.delete(guardKey);
+    if (!result.data) return;
+
+    const feedbackPayload = {
+      workoutId: cw.workoutId,
+      workoutTitle: cw.workoutTitle,
+      userId: this.username,
+      timestamp: cw.completedAt,
+      completionPercent: 100,
+      exercises: result.data
+    };
+    this.backend.sendWorkoutFeedback(feedbackPayload).subscribe({
+      next: (saved: any) => {
+        this.feedbacks = [...this.feedbacks, saved];
+        this.completedWorkouts = this.completedWorkouts.map(c =>
+          c.id === cw.id ? { ...c, hasFeedback: true, feedbackId: saved.id } : c
+        );
+        this.buildFeedbackMap();
+        this.buildCompletedMap();
+        this.selectedDay = null;
+        this.selectedFeedbacks = [];
+        this.buildCalendar();
+        this.dataChanged.emit();
+      },
+      error: () => {}
     });
   }
 
@@ -261,6 +248,7 @@ profileCards = ['calendar', 'snapshot', 'upcoming', 'trainerZone'] as const;
           this.buildFeedbackMap();
           this.selectedDay = null;
           this.selectedFeedbacks = [];
+          this.buildCalendar();
           this.dataChanged.emit();
         },
         error: () => {
